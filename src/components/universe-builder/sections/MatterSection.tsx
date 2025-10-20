@@ -165,7 +165,7 @@ export default function MatterSection({
                   step={0.1}
                   className="w-full"
                 />
-                <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                      style={{
                        left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
                        width: `${((1.2 - 0.8) / (2 - 0.1)) * 100}%`
@@ -201,11 +201,12 @@ export default function MatterSection({
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What holds protons together?</strong> Protons are made of smaller pieces called quarks, held together by the strong force. It's like having three marbles glued together - the "glue" is the strong force.</p>
-                    <p><strong>What if the glue is too weak?</strong> If the strong force were just 2% weaker, protons would fall apart instantly. No protons means no atoms, no chemistry, no life. Everything would just be a soup of loose quarks.</p>
-                    <p><strong>What if the glue is too strong?</strong> If the strong force were 2% stronger, protons would stick to each other so tightly that no hydrogen could exist. All matter would immediately fuse into heavy elements, and stars couldn't form or shine.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> ParticleField shows proton formation with orbiting neutrons - visualizing how the strong force binds quarks together.</p>
+                    <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.8-1.2 range - just 2% precision for stable protons. This is extraordinary fine-tuning.</p>
+                    <p><strong>2% weaker = no protons:</strong> Quarks would fly apart instantly. No atoms, no chemistry, no life - just a soup of loose quarks.</p>
+                    <p><strong>2% stronger = no hydrogen:</strong> Protons would stick so tightly that all matter fuses immediately into heavy elements. No stars could form or shine.</p>
                   </div>
                 </div>
               )}
@@ -234,7 +235,7 @@ export default function MatterSection({
                     step={0.01}
                     className="w-full"
                   />
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((0.9 - 0.5) / (2 - 0.5)) * 100}%`,
                          width: `${((1.1 - 0.9) / (2 - 0.5)) * 100}%`
@@ -249,11 +250,12 @@ export default function MatterSection({
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What's the hierarchy problem?</strong> Imagine you have four friends of different heights. One is 1 foot tall, another is 10 feet, the third is 100 feet, and the fourth is 1,000 feet tall. That's like the difference between gravity and the other forces - it's incredibly weak compared to everything else.</p>
-                    <p><strong>Why is this weird?</strong> According to our best theories, quantum effects should make all forces roughly the same strength. It's like having a recipe that should make four identical cakes, but one comes out the size of a crumb while the others are normal-sized.</p>
-                    <p><strong>How precise does it need to be?</strong> The mass of particles needs to be fine-tuned to 1 part in 10^34. That's like balancing the entire Earth on the tip of a needle and having it stay perfectly stable.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> Bar chart displays relative strengths of fundamental forces - gravity is 10^40 times weaker than the others.</p>
+                    <p><strong>The hierarchy mystery:</strong> Forces differ by 10^40 - requires 1 part in 10^34 fine-tuning. Why is gravity so incredibly weak compared to everything else?</p>
+                    <p><strong>Quantum puzzle:</strong> Our theories predict all forces should be roughly equal strength, like identical cakes from the same recipe. Instead, one is crumb-sized while others are normal.</p>
+                    <p><strong>Precision required:</strong> Like balancing the entire Earth on a needle tip and having it stay perfectly stable. This remains one of physics' greatest unsolved problems.</p>
                   </div>
                 </div>
               )}
@@ -282,7 +284,7 @@ export default function MatterSection({
                     step={0.001}
                     className="w-full"
                   />
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((0.08 - 0) / (0.2 - 0)) * 100}%`,
                          width: `${((0.12 - 0.08) / (0.2 - 0)) * 100}%`
@@ -297,11 +299,12 @@ export default function MatterSection({
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What should have happened?</strong> The Big Bang should have created equal amounts of matter and antimatter - like having equal numbers of left and right shoes. When matter and antimatter meet, they completely destroy each other, leaving only energy.</p>
-                    <p><strong>Why do we exist?</strong> Somehow, there was a tiny excess of matter - about 1 extra matter particle for every billion matter-antimatter pairs. After all the annihilation, this tiny leftover became everything we see: stars, planets, and us.</p>
-                    <p><strong>How mysterious is this?</strong> Our best theories predict the wrong amount of leftover matter by a factor of 100 million. It's like predicting someone will be 6 feet tall, but they turn out to be 600 million feet tall. We literally don't know why we exist instead of nothing.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> Particle visualization shows matter/antimatter distribution - the tiny excess that became everything we see.</p>
+                    <p><strong>The existence puzzle:</strong> Need 8-12% matter excess, but theory is off by factor of 100 million. Why does anything exist instead of nothing?</p>
+                    <p><strong>What should have happened:</strong> Big Bang creates equal matter/antimatter (like equal left/right shoes). They annihilate completely, leaving only energy.</p>
+                    <p><strong>Miraculous leftover:</strong> Somehow 1 extra matter particle per billion pairs survived annihilation. This tiny excess became stars, planets, and us - but we don't know why.</p>
                   </div>
                 </div>
               )}
@@ -330,7 +333,7 @@ export default function MatterSection({
                     step={0.1}
                     className="w-full"
                   />
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((34 - 30) / (40 - 30)) * 100}%`,
                          width: `${((36 - 34) / (40 - 30)) * 100}%`
@@ -345,11 +348,12 @@ export default function MatterSection({
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What's a proton?</strong> Protons are like the cores of atoms - every hydrogen atom has one proton, and they're in the center of every other atom too. They're the basic building blocks that make up you, me, and everything we see.</p>
-                    <p><strong>Do protons last forever?</strong> We used to think so, but our theories suggest they should eventually fall apart. The question is: how long do they last? If they decay too quickly, atoms would fall apart and nothing stable could exist.</p>
-                    <p><strong>How long is long enough?</strong> Protons need to last at least 10^34 years for life to be possible. That's a trillion trillion trillion times longer than the universe has existed! We've been watching protons for decades and haven't seen one decay yet - they're incredibly stable.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> Decay timeline shows proton lifetime scenarios - building blocks must last longer than stellar evolution.</p>
+                    <p><strong>Stability requirement:</strong> Protons must exceed 10^34 years lifetime - trillion trillion times the universe's age. They're the cores of every atom.</p>
+                    <p><strong>The stability mystery:</strong> Our theories predict protons should decay, but we've never observed it. They appear incredibly stable against all expectations.</p>
+                    <p><strong>Life's foundation:</strong> If protons decayed too quickly, atoms would fall apart and nothing stable could exist. This stability enables chemistry, biology, and consciousness.</p>
                   </div>
                 </div>
               )}
@@ -357,51 +361,6 @@ export default function MatterSection({
           </Card>
         </div>
 
-        {educatorMode && (
-          <div className="space-y-4 mt-8">
-            <Card className="bg-blue-900/20 border-blue-500/30">
-              <CardHeader>
-                <CardTitle className="text-blue-300">Educational Notes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm text-blue-200">
-                  <div>
-                    <p className="font-semibold text-blue-100 mb-1">Four Core Matter Formation Concepts:</p>
-                    <p>• <strong>Quark Binding Force:</strong> ParticleField shows proton formation with orbiting neutrons</p>
-                    <p>• <strong>Mass Hierarchy:</strong> Bar chart displays relative strengths of fundamental forces</p>
-                    <p>• <strong>Matter vs Antimatter:</strong> Particle visualization shows matter/antimatter distribution</p>
-                    <p>• <strong>Proton Stability:</strong> Decay timeline shows proton lifetime scenarios</p>
-                  </div>
-                  
-                  <div>
-                    <p className="font-semibold text-blue-100 mb-1">Fine-Tuning Requirements:</p>
-                    <p>• <strong>Strong Force (αs):</strong> Must be within 0.8-1.2 range - 2% precision for stable protons</p>
-                    <p>• <strong>Mass Hierarchy:</strong> Forces differ by 10^40 - requires 1 part in 10^34 fine-tuning</p>
-                    <p>• <strong>Matter Asymmetry:</strong> Need 8-12% matter excess - theory off by factor of 100 million</p>
-                    <p>• <strong>Proton Lifetime:</strong> Must exceed 10^34 years - trillion trillion times universe age</p>
-                  </div>
-                  
-                  <div>
-                    <p className="font-semibold text-blue-100 mb-1">Key Physics Problems:</p>
-                    <p>• <strong>Strong Force Precision:</strong> 2% weaker = no protons, 2% stronger = no hydrogen</p>
-                    <p>• <strong>Hierarchy Mystery:</strong> Why is gravity 10^40 times weaker than other forces?</p>
-                    <p>• <strong>Existence Puzzle:</strong> Why does anything exist instead of nothing?</p>
-                    <p>• <strong>Stability Requirement:</strong> Building blocks must last longer than stellar evolution</p>
-                  </div>
-                  
-                  <div>
-                    <p className="font-semibold text-blue-100 mb-1">Interactive Learning:</p>
-                    <p>• Each visualization responds immediately to parameter changes</p>
-                    <p>• Green optimal ranges show narrow "Goldilocks zones" for each parameter</p>
-                    <p>• Educator mode provides contextual explanations with everyday analogies</p>
-                    <p>• Scientific units (αs, %, 10^X years) connect to real physics research</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-          </div>
-        )}
       </div>
     </div>
   )

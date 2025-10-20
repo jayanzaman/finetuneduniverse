@@ -340,43 +340,6 @@ export default function BeginningSection({
                   </div>
                 </div>
               </div>
-              
-              {/* Outcome Display */}
-              <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
-                <h4 className="font-semibold mb-2 text-white">Universe Outcome:</h4>
-                <p className={`text-sm font-medium ${
-                  universeOutcome.includes('✨') || universeOutcome.includes('Perfect') ? 'text-green-400' : 
-                  universeOutcome.includes('🌟') || universeOutcome.includes('Excellent') ? 'text-emerald-400' :
-                  universeOutcome.includes('⚠️') || universeOutcome.includes('Marginal') ? 'text-yellow-400' : 
-                  universeOutcome.includes('❌') || universeOutcome.includes('Poor') ? 'text-orange-400' :
-                  'text-red-400'
-                }`}>
-                  {universeOutcome}
-                </p>
-              </div>
-              
-              {/* Physics Metrics */}
-              <div className="mt-4 p-3 rounded-lg bg-black/20 border border-white/5">
-                <h4 className="font-semibold mb-3 text-white text-xs">Cosmic Parameters:</h4>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Entropy Score:</span>
-                    <span className="text-white">{(Math.max(0, 1 - Math.abs(entropy - 1) / 2) * 100).toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Expansion Score:</span>
-                    <span className="text-white">{(Math.max(0, 1 - Math.abs(expansionRate - 0.7) / 0.5) * 100).toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Fluctuation Score:</span>
-                    <span className="text-white">{(Math.max(0, 1 - Math.abs(densityFluctuations - 0.2) / 0.3) * 100).toFixed(1)}%</span>
-                  </div>
-                  <div className="flex justify-between border-t border-white/10 pt-2 mt-2">
-                    <span className="text-gray-300 font-medium">Total Viability:</span>
-                    <span className="text-white font-bold">{((Math.max(0, 1 - Math.abs(entropy - 1) / 2) * 0.4) + (Math.max(0, 1 - Math.abs(expansionRate - 0.7) / 0.5) * 0.35) + (Math.max(0, 1 - Math.abs(densityFluctuations - 0.2) / 0.3) * 0.25) * 100).toFixed(1)}%</span>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -412,7 +375,7 @@ export default function BeginningSection({
                     className="w-full"
                   />
                   {/* Optimal range indicator */}
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((0.5 - 0.1) / (10 - 0.1)) * 100}%`,
                          width: `${((1.5 - 0.5) / (10 - 0.1)) * 100}%`
@@ -437,12 +400,12 @@ export default function BeginningSection({
               )}
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What's the fundamental problem?</strong> Imagine you have a perfectly organized deck of cards. There's only one way to arrange it perfectly, but millions of ways to shuffle it into chaos. The universe started perfectly organized (low entropy) instead of chaotic (high entropy).</p>
-                    <p><strong>Why is this so weird?</strong> It's like throwing a deck of cards in the air and having them land in perfect order every single time. The odds are so small they're basically impossible - yet here we are.</p>
-                    <p><strong>How impossible exactly?</strong> The chance is 1 in 10^(10^123). To put this in perspective: if you wrote one zero per atom in the entire observable universe, you still couldn't write this number down. It's that impossibly small.</p>
-                    <p><strong>Why does this matter?</strong> This initial order is what allowed gravity to clump matter into stars, galaxies, and eventually us. Without this precise initial state, the universe would be a uniform, lifeless soup of particles.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> Blue particles show order (organized circle) vs chaos (scattered randomly). This visualizes how entropy affects cosmic structure.</p>
+                    <p><strong>The fundamental problem:</strong> The universe began in an impossibly low-entropy state - the odds were 1 in 10^(10^123). Imagine throwing a deck of cards and having them land in perfect order every time.</p>
+                    <p><strong>Why this matters for life:</strong> This initial order allowed gravity to clump matter into stars, galaxies, and eventually us. Without this precise initial state, the universe would be a uniform, lifeless soup of particles.</p>
+                    <p><strong>The fine-tuning challenge:</strong> Each parameter requires extraordinary precision for a life-permitting universe. The interactive slider demonstrates how narrow the "Goldilocks zone" really is.</p>
                   </div>
                 </div>
               )}
@@ -469,7 +432,7 @@ export default function BeginningSection({
                     className="w-full"
                   />
                   {/* Optimal range indicator */}
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((0.5 - 0.1) / (2 - 0.1)) * 100}%`,
                          width: `${((0.9 - 0.5) / (2 - 0.1)) * 100}%`
@@ -484,12 +447,12 @@ export default function BeginningSection({
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What is the Hubble constant?</strong> It measures how fast space itself is expanding. Think of it like a balloon being inflated - every point on the balloon moves away from every other point as the balloon gets bigger.</p>
-                    <p><strong>Why is the expansion rate critical?</strong> Too slow, and gravity would pull everything back together in a "Big Crunch" before stars could form. Too fast, and matter would be torn apart so quickly that gravity could never clump it into stars and galaxies.</p>
-                    <p><strong>How precise does it need to be?</strong> The expansion rate needs to be fine-tuned to about 1 part in 10^55. That's like setting a timer that needs to be accurate to within a trillionth of a trillionth of a second over the entire age of the universe.</p>
-                    <p><strong>What makes this mysterious?</strong> We can measure the current expansion rate very precisely (~70 km/s/Mpc), but we don't fully understand why it has exactly the value needed for complexity to emerge.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> Yellow galaxies move away from the red center point at different speeds, visualizing cosmic expansion at various rates.</p>
+                    <p><strong>The Hubble constant:</strong> Measures how fast space itself expands (~70 km/s/Mpc). Think of a balloon inflating - every point moves away from every other point.</p>
+                    <p><strong>Fine-tuning precision:</strong> The expansion rate is fine-tuned to 1 part in 10^55 for structure formation. Too slow = Big Crunch before stars form. Too fast = matter torn apart before gravity can work.</p>
+                    <p><strong>Cosmological mystery:</strong> We can measure this precisely, but don't understand why it has exactly the value needed for complexity to emerge. This remains one of the deepest mysteries in cosmology.</p>
                   </div>
                 </div>
               )}
@@ -516,7 +479,7 @@ export default function BeginningSection({
                     className="w-full"
                   />
                   {/* Optimal range indicator */}
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((0.1 - 0) / (1 - 0)) * 100}%`,
                          width: `${((0.3 - 0.1) / (1 - 0)) * 100}%`
@@ -531,12 +494,12 @@ export default function BeginningSection({
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                  <div className="text-xs text-red-200 space-y-2">
-                    <p><strong>What are density fluctuations?</strong> Think of the early universe like a perfectly smooth lake surface. Quantum mechanics says this perfect smoothness is impossible - there must be tiny ripples. These microscopic variations in density are the "seeds" that eventually grew into all the structure we see today.</p>
-                    <p><strong>Why are they so important?</strong> Without these quantum ripples, the universe would have remained perfectly uniform forever - no stars, no galaxies, no planets, no life. Gravity needs something to grab onto to start clumping matter together.</p>
-                    <p><strong>How small were these ripples?</strong> The density variations were incredibly tiny - only about 1 part in 100,000 (10⁻⁵). That's like having a perfectly flat field with bumps only 1 millimeter high over an entire football stadium.</p>
-                    <p><strong>What makes this fine-tuned?</strong> Too small, and gravity would never overcome the expansion to form structures. Too large, and the universe would collapse into black holes before stars could form. The range that works is extremely narrow.</p>
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 space-y-2">
+                    <p><strong>What you're seeing:</strong> Purple grid cells pulse to show quantum ripples in spacetime - the tiny density variations that seeded all cosmic structures.</p>
+                    <p><strong>Quantum seeds of structure:</strong> These ripples at the 10⁻⁵ scale (δρ/ρ) were microscopic variations in the early universe - like 1mm bumps across a football stadium.</p>
+                    <p><strong>Critical for everything:</strong> Without these quantum fluctuations, the universe would remain perfectly uniform forever - no stars, galaxies, planets, or life. Gravity needs something to grab onto.</p>
+                    <p><strong>Goldilocks precision:</strong> Too small = gravity never overcomes expansion. Too large = universe collapses into black holes before stars form. The working range is extraordinarily narrow.</p>
                   </div>
                 </div>
               )}
@@ -579,7 +542,7 @@ export default function BeginningSection({
                       step={0.01}
                       className="w-full"
                     />
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.8 - 0) / (2 - 0)) * 100}%`,
                            width: `${((1.2 - 0.8) / (2 - 0)) * 100}%`
@@ -594,11 +557,12 @@ export default function BeginningSection({
                 </div>
                 
                 {educatorMode && (
-                  <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                    <div className="text-xs text-red-200 space-y-2">
-                      <p><strong>What's dark energy?</strong> Think of it as an invisible force that pushes everything in the universe apart. It's like having tiny springs between every piece of matter, constantly pushing outward.</p>
-                      <p><strong>What did scientists try to calculate?</strong> They wanted to figure out how strong this pushing force should be. Using quantum physics (the rules that govern tiny particles), they calculated how much energy empty space itself should contain - because even "empty" space isn't truly empty.</p>
-                      <p><strong>What's the problem?</strong> When scientists compared their calculation to what we actually observe, they were off by a factor of 1 followed by 120 zeros! That's like predicting someone weighs 1 pound but they actually weigh less than a single atom.</p>
+                  <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                    <div className="text-xs text-blue-200 space-y-2">
+                      <p><strong>The cosmological constant problem:</strong> Dark energy (Λ) is off by 120 orders of magnitude from quantum theory predictions - the worst prediction in physics history.</p>
+                      <p><strong>What's dark energy?</strong> An invisible force pushing everything apart, like tiny springs between all matter. It makes up ~68% of the universe but we don't understand it.</p>
+                      <p><strong>Fine-tuning mystery:</strong> If dark energy were slightly stronger, the universe would expand too fast for galaxies to form. Slightly weaker, and it would collapse before stars could shine.</p>
+                      <p><strong>Theoretical crisis:</strong> Our best theories predict dark energy should be 10^120 times stronger than observed. This remains one of physics' greatest unsolved problems.</p>
                     </div>
                   </div>
                 )}
@@ -627,7 +591,7 @@ export default function BeginningSection({
                       step={0.001}
                       className="w-full"
                     />
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.99 - 0.5) / (1.5 - 0.5)) * 100}%`,
                            width: `${((1.01 - 0.99) / (1.5 - 0.5)) * 100}%`
@@ -642,11 +606,12 @@ export default function BeginningSection({
                 </div>
                 
                 {educatorMode && (
-                  <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                    <div className="text-xs text-red-200 space-y-2">
-                      <p><strong>What determines the universe's shape?</strong> The amount of matter and energy in space. Think of it like a stretched rubber sheet - too much weight makes it curve inward, too little keeps it flat, and way too little makes it curve outward.</p>
-                      <p><strong>Why is "flat" special?</strong> A flat universe expands at just the right speed. If it curved inward (too much matter), gravity would pull everything back together in a "Big Crunch." If it curved outward (too little matter), it would expand so fast that nothing could ever come together to form stars or galaxies.</p>
-                      <p><strong>How precise does it need to be?</strong> At the very beginning of time, the density had to be exactly right to 1 part in 10^60. That's like throwing a dart at a dartboard the size of North America and hitting a target smaller than an atom.</p>
+                  <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                    <div className="text-xs text-blue-200 space-y-2">
+                      <p><strong>The flatness problem:</strong> Universe density (Ω) must equal the critical value to 1 part in 10^60 for a flat, life-permitting cosmos.</p>
+                      <p><strong>Cosmic geometry:</strong> Like a rubber sheet - too much matter curves it inward (Big Crunch), too little curves it outward (runaway expansion), just right keeps it flat.</p>
+                      <p><strong>Precision required:</strong> At the beginning of time, density had to be exactly right to 1 part in 10^60. Like hitting an atom-sized target on a North America-sized dartboard.</p>
+                      <p><strong>Why it matters:</strong> Only a flat universe expands at the perfect speed for structure formation. This fine-tuning problem remains a central mystery in cosmology.</p>
                     </div>
                   </div>
                 )}
@@ -675,7 +640,7 @@ export default function BeginningSection({
                       step={0.00001}
                       className="w-full"
                     />
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.99998 - 0.9) / (1 - 0.9)) * 100}%`,
                            width: `${((1 - 0.99998) / (1 - 0.9)) * 100}%`
@@ -690,11 +655,12 @@ export default function BeginningSection({
                 </div>
                 
                 {educatorMode && (
-                  <div className="mt-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
-                    <div className="text-xs text-red-200 space-y-2">
-                      <p><strong>What's the cosmic microwave background?</strong> It's the leftover heat from the Big Bang, like the warm glow from a campfire after the flames die out. We can see this ancient light coming from every direction in space.</p>
-                      <p><strong>What's weird about it?</strong> This ancient light has almost exactly the same temperature everywhere we look - 2.725 degrees above absolute zero. It varies by only about 1 part in 100,000, which is incredibly uniform.</p>
-                      <p><strong>Why is this a problem?</strong> Imagine two people on opposite sides of Earth trying to coordinate their watches without any way to communicate. That's what happened in the early universe - regions of space that are now on opposite sides of the sky were never close enough to "talk" to each other and agree on the same temperature.</p>
+                  <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                    <div className="text-xs text-blue-200 space-y-2">
+                      <p><strong>CMB temperature map:</strong> Shows variations from the perfect 2.725K uniformity - tiny fluctuations that reveal the universe's quantum origins.</p>
+                      <p><strong>The horizon problem:</strong> Regions of space now on opposite sides of the sky were never close enough to "communicate" and agree on the same temperature, yet they match perfectly.</p>
+                      <p><strong>Incredible precision:</strong> The cosmic microwave background varies by only 1 part in 100,000 across the entire observable universe - impossibly uniform without inflation.</p>
+                      <p><strong>Fine-tuning insight:</strong> This uniformity, combined with the tiny variations that seeded structure, represents another extraordinary cosmic coincidence that enabled complexity to emerge.</p>
                     </div>
                   </div>
                 )}
@@ -704,48 +670,6 @@ export default function BeginningSection({
         </div>
       </div>
 
-      {/* Educational Content */}
-      {educatorMode && (
-            <div className="space-y-4">
-              <Card className="bg-blue-900/20 border-blue-500/30">
-                <CardHeader>
-                  <CardTitle className="text-blue-300">Educational Notes</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-sm text-blue-200">
-                    <div>
-                      <p className="font-semibold text-blue-100 mb-1">Main Visualizations:</p>
-                      <p>• <strong>Entropy Visual:</strong> Blue particles show order (organized circle) vs chaos (scattered randomly)</p>
-                      <p>• <strong>Expansion Visual:</strong> Yellow galaxies move away from red center point at different speeds</p>
-                      <p>• <strong>Density Fluctuations:</strong> Purple grid cells pulse to show quantum ripples in spacetime</p>
-                    </div>
-                    
-                    <div>
-                      <p className="font-semibold text-blue-100 mb-1">Primary Parameters:</p>
-                      <p>• <strong>Initial Entropy (S/k):</strong> Universe began in impossibly low-entropy state (1 in 10^(10^123) odds)</p>
-                      <p>• <strong>Expansion Rate (km/s/Mpc):</strong> Hubble constant fine-tuned to 1 part in 10^55 for structure formation</p>
-                      <p>• <strong>Density Fluctuations (δρ/ρ):</strong> Quantum ripples at 10^-5 scale that seeded all cosmic structures</p>
-                    </div>
-                    
-                    <div>
-                      <p className="font-semibold text-blue-100 mb-1">Fine-Tuning Problems:</p>
-                      <p>• <strong>Dark Energy (Λ):</strong> Cosmological constant problem - off by 120 orders of magnitude from theory</p>
-                      <p>• <strong>Universe Shape (Ω):</strong> Flatness problem - density must equal critical value to 1 part in 10^60</p>
-                      <p>• <strong>Temperature Uniformity (K):</strong> CMB temperature map shows variations from perfect 2.725K uniformity</p>
-                    </div>
-                    
-                    <div>
-                      <p className="font-semibold text-blue-100 mb-1">Key Insights:</p>
-                      <p>• Each parameter requires extraordinary precision for a life-permitting universe</p>
-                      <p>• The interactive sliders demonstrate how narrow the "Goldilocks zones" really are</p>
-                      <p>• These fine-tuning problems remain among the deepest mysteries in cosmology</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-        </div>
-      )}
       </div>
     </div>
   )

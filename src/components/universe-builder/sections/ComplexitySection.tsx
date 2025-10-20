@@ -238,7 +238,7 @@ export default function ComplexitySection({ educatorMode, cosmicTime = 0 }: { ed
                       className="w-full"
                     />
                     {/* Optimal range indicator - moderate selection */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.3 - 0) / (1 - 0)) * 100}%`,
                            width: `${((0.7 - 0.3) / (1 - 0)) * 100}%`
@@ -273,7 +273,7 @@ export default function ComplexitySection({ educatorMode, cosmicTime = 0 }: { ed
                       className="w-full"
                     />
                     {/* Optimal range indicator - moderate mutation */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.1 - 0) / (1 - 0)) * 100}%`,
                            width: `${((0.4 - 0.1) / (1 - 0)) * 100}%`
@@ -308,7 +308,7 @@ export default function ComplexitySection({ educatorMode, cosmicTime = 0 }: { ed
                       className="w-full"
                     />
                     {/* Optimal range indicator - moderate stability */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.6 - 0) / (1 - 0)) * 100}%`,
                            width: `${((0.9 - 0.6) / (1 - 0)) * 100}%`

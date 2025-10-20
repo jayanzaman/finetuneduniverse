@@ -189,7 +189,7 @@ export default function StarlightSection({ educatorMode, cosmicTime = 0 }: { edu
                       className="w-full"
                     />
                     {/* Optimal range indicator - Sun-like stars */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
                            width: `${((1.4 - 0.8) / (2 - 0.1)) * 100}%`
@@ -224,7 +224,7 @@ export default function StarlightSection({ educatorMode, cosmicTime = 0 }: { edu
                       className="w-full"
                     />
                     {/* Optimal range indicator - Solar metallicity */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.01 - 0) / (0.1 - 0)) * 100}%`,
                            width: `${((0.03 - 0.01) / (0.1 - 0)) * 100}%`
@@ -264,7 +264,7 @@ export default function StarlightSection({ educatorMode, cosmicTime = 0 }: { edu
                       className="w-full"
                     />
                     {/* Optimal range indicator - Moderate formation rate */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
                            width: `${((1.5 - 0.8) / (2 - 0.1)) * 100}%`

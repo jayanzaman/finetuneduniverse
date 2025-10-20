@@ -287,7 +287,7 @@ export default function PlanetsSection({ educatorMode, cosmicTime = 0 }: { educa
                       className="w-full"
                     />
                     {/* Optimal range indicator - Goldilocks zone */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.8 - 0.1) / (3 - 0.1)) * 100}%`,
                            width: `${((1.5 - 0.8) / (3 - 0.1)) * 100}%`
@@ -322,7 +322,7 @@ export default function PlanetsSection({ educatorMode, cosmicTime = 0 }: { educa
                       className="w-full"
                     />
                     {/* Optimal range indicator - Earth-like mass */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.5 - 0.1) / (3 - 0.1)) * 100}%`,
                            width: `${((2.0 - 0.5) / (3 - 0.1)) * 100}%`
@@ -357,7 +357,7 @@ export default function PlanetsSection({ educatorMode, cosmicTime = 0 }: { educa
                       className="w-full"
                     />
                     {/* Optimal range indicator - Earth-like atmosphere */}
-                    <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                          style={{
                            left: `${((0.5 - 0) / (2 - 0)) * 100}%`,
                            width: `${((1.5 - 0.5) / (2 - 0)) * 100}%`

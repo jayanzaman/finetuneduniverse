@@ -416,7 +416,7 @@ export default function GalacticHeartSection({
                     className="w-full"
                   />
                   {/* Optimal range indicator - around Milky Way mass */}
-                  <div className="absolute top-0 h-2 bg-green-500/30 rounded" 
+                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
                        style={{
                          left: `${((6.0 - 5) / (10 - 5)) * 100}%`,
                          width: `${((7.5 - 6.0) / (10 - 5)) * 100}%`

@@ -843,7 +843,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '25%' : '20%',
                            width: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '20%' : '15%'
@@ -883,7 +883,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 3 ? '50%' : simulationState.stage < 5 ? '40%' : '30%',
                            width: simulationState.stage < 3 ? '30%' : simulationState.stage < 5 ? '20%' : '25%'
@@ -923,7 +923,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '60%' : '70%',
                            width: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '20%' : '15%'
@@ -963,7 +963,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 2 ? '60%' : simulationState.stage < 4 ? '70%' : '80%',
                            width: simulationState.stage < 2 ? '30%' : simulationState.stage < 4 ? '20%' : '15%'
@@ -1012,7 +1012,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 1 ? '50%' : simulationState.stage < 4 ? '70%' : '85%',
                            width: simulationState.stage < 1 ? '40%' : simulationState.stage < 4 ? '25%' : '15%'
@@ -1049,7 +1049,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 3 ? '60%' : simulationState.stage < 5 ? '70%' : '75%',
                            width: simulationState.stage < 3 ? '35%' : simulationState.stage < 5 ? '20%' : '15%'
@@ -1087,7 +1087,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: `${((298 - (simulationState.stage < 4 ? 10 : simulationState.stage < 5 ? 5 : 3) - 253) / (673 - 253)) * 100}%`,
                            width: `${((simulationState.stage < 4 ? 20 : simulationState.stage < 5 ? 10 : 6) / (673 - 253)) * 100}%`
