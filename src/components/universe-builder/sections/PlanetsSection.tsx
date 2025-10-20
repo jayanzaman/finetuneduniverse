@@ -10,12 +10,12 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure }: {
   planetMass: number;
   atmosphericPressure: number;
 }) {
-  const starSize = 40;
-  const planetSize = 8 + (planetMass * 12);
-  const orbitRadius = 60 + (orbitalDistance * 80);
+  const starSize = 30;
+  const planetSize = 6 + (planetMass * 8);
+  const orbitRadius = 40 + (orbitalDistance * 60);
   const temperature = 400 / (orbitalDistance * orbitalDistance); // Simplified inverse square law
-  const habitableZoneInner = 80;
-  const habitableZoneOuter = 140;
+  const habitableZoneInner = 60;
+  const habitableZoneOuter = 100;
   
   // Planet color based on temperature and atmosphere
   const getPlanetColor = () => {
@@ -28,30 +28,24 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure }: {
   };
 
   return (
-    <div className="relative w-full h-80 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
-      <div className="solar-system">
+    <div className="relative w-full h-48 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
+      <div className="solar-system relative w-48 h-48">
         {/* Habitable Zone */}
         <div 
-          className="habitable-zone"
+          className="absolute border-2 border-green-500/30 rounded-full"
           style={{
             width: `${habitableZoneOuter * 2}px`,
             height: `${habitableZoneOuter * 2}px`,
-            border: '2px solid rgba(100, 255, 100, 0.3)',
-            borderRadius: '50%',
-            position: 'absolute',
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
           }}
         />
         <div 
-          className="habitable-zone-inner"
+          className="absolute border-2 border-green-500/30 rounded-full"
           style={{
             width: `${habitableZoneInner * 2}px`,
             height: `${habitableZoneInner * 2}px`,
-            border: '2px solid rgba(100, 255, 100, 0.3)',
-            borderRadius: '50%',
-            position: 'absolute',
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
@@ -60,30 +54,23 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure }: {
         
         {/* Star */}
         <div 
-          className="star"
+          className="absolute rounded-full bg-yellow-400"
           style={{
             width: `${starSize}px`,
             height: `${starSize}px`,
-            backgroundColor: 'rgba(255, 255, 100, 0.9)',
-            borderRadius: '50%',
-            position: 'absolute',
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            boxShadow: '0 0 30px rgba(255, 255, 100, 0.6)',
-            animation: 'stellar-glow 2s ease-in-out infinite alternate',
+            boxShadow: `0 0 ${starSize}px rgba(255, 255, 0, 0.5)`,
           }}
         />
         
         {/* Planet Orbit */}
         <div 
-          className="orbit"
+          className="absolute border border-white/20 rounded-full"
           style={{
             width: `${orbitRadius * 2}px`,
             height: `${orbitRadius * 2}px`,
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            borderRadius: '50%',
-            position: 'absolute',
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
@@ -92,352 +79,266 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure }: {
         
         {/* Planet */}
         <div 
-          className="planet"
+          className="absolute rounded-full"
           style={{
             width: `${planetSize}px`,
             height: `${planetSize}px`,
             backgroundColor: getPlanetColor(),
-            borderRadius: '50%',
-            position: 'absolute',
-            left: '50%',
+            left: `${50 + (orbitRadius / 96) * 50}%`,
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            animation: `planet-orbit ${6 / Math.sqrt(orbitalDistance)}s linear infinite`,
-            transformOrigin: '0 0',
-            boxShadow: atmosphericPressure > 0.3 ? '0 0 8px rgba(100, 150, 255, 0.5)' : 'none',
+            boxShadow: atmosphericPressure > 0.3 ? `0 0 ${planetSize * 2}px rgba(100, 150, 255, 0.3)` : 'none',
           }}
         />
         
-        {/* Atmosphere effect */}
-        {atmosphericPressure > 0.2 && (
-          <div 
-            className="atmosphere"
-            style={{
-              width: `${planetSize + 4}px`,
-              height: `${planetSize + 4}px`,
-              backgroundColor: 'transparent',
-              border: `2px solid rgba(150, 200, 255, ${atmosphericPressure})`,
-              borderRadius: '50%',
-              position: 'absolute',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              animation: `planet-orbit ${6 / Math.sqrt(orbitalDistance)}s linear infinite`,
-              transformOrigin: '0 0',
-            }}
-          />
-        )}
+        {/* Temperature indicator */}
+        <div className="absolute bottom-2 left-2 text-xs text-white bg-black/50 px-2 py-1 rounded">
+          {temperature.toFixed(0)}°C
+        </div>
       </div>
-      
-      <style jsx>{`
-        .solar-system {
-          position: relative;
-          width: 300px;
-          height: 300px;
-        }
-        .planet {
-          left: calc(50% + ${orbitRadius}px);
-        }
-        .atmosphere {
-          left: calc(50% + ${orbitRadius - 2}px);
-        }
-        @keyframes stellar-glow {
-          0% { box-shadow: 0 0 20px rgba(255, 255, 100, 0.4); }
-          100% { box-shadow: 0 0 40px rgba(255, 255, 100, 0.8); }
-        }
-        @keyframes planet-orbit {
-          from { transform: translate(-50%, -50%) rotate(0deg) translateX(${orbitRadius}px) rotate(0deg); }
-          to { transform: translate(-50%, -50%) rotate(360deg) translateX(${orbitRadius}px) rotate(-360deg); }
-        }
-      `}</style>
     </div>
   )
 }
 
-export default function PlanetsSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
-  const [orbitalDistance, setOrbitalDistance] = useState(1.0) // AU
-  const [planetMass, setPlanetMass] = useState(1.0) // Earth masses
-  const [atmosphericPressure, setAtmosphericPressure] = useState(1.0) // Earth atmospheres
-  const [outcome, setOutcome] = useState('')
+export default function PlanetsSection({ 
+  educatorMode, 
+  cosmicTime = 0
+}: { 
+  educatorMode: boolean; 
+  cosmicTime?: number;
+}) {
+  const [orbitalDistance, setOrbitalDistance] = useState(1) // AU
+  const [planetMass, setPlanetMass] = useState(1) // Earth masses
+  const [atmosphericPressure, setAtmosphericPressure] = useState(1) // Earth atmospheres
+  const [magneticField, setMagneticField] = useState(1) // Earth strength
 
   useEffect(() => {
     const handleRandomize = () => {
-      setOrbitalDistance(Math.random() * 3 + 0.1)
-      setPlanetMass(Math.random() * 3 + 0.1)
-      setAtmosphericPressure(Math.random() * 2)
+      setOrbitalDistance(0.3 + Math.random() * 2.7) // 0.3 to 3 AU
+      setPlanetMass(0.1 + Math.random() * 4.9) // 0.1 to 5 Earth masses
+      setAtmosphericPressure(Math.random() * 3) // 0 to 3 atmospheres
+      setMagneticField(Math.random() * 2) // 0 to 2x Earth strength
     }
 
     window.addEventListener('randomizeUniverse', handleRandomize)
     return () => window.removeEventListener('randomizeUniverse', handleRandomize)
   }, [])
 
-  useEffect(() => {
-    // Calculate habitability
-    const temperature = 400 / (orbitalDistance * orbitalDistance); // Simplified
-    const inHabitableZone = orbitalDistance >= 0.8 && orbitalDistance <= 1.5;
-    const hasAtmosphere = atmosphericPressure > 0.1;
-    const rightSize = planetMass > 0.5 && planetMass < 2.0;
-    
-    const distanceScore = inHabitableZone ? 1 : Math.max(0, 1 - Math.abs(orbitalDistance - 1.0) / 1.0);
-    const massScore = rightSize ? 1 : Math.max(0, 1 - Math.abs(planetMass - 1.0) / 1.0);
-    const atmosphereScore = hasAtmosphere ? Math.min(1, atmosphericPressure) : 0;
-    
-    const totalScore = (distanceScore * 0.5) + (massScore * 0.3) + (atmosphereScore * 0.2);
-    
-    if (totalScore > 0.8 && temperature > 0 && temperature < 100) {
-      setOutcome('✨ Perfect - liquid water and stable climate!')
-    } else if (totalScore > 0.6 && inHabitableZone) {
-      setOutcome('🌟 Good - potentially habitable conditions')
-    } else if (totalScore > 0.4) {
-      setOutcome('⚠️ Marginal - some favorable conditions present')
-    } else if (temperature > 100) {
-      setOutcome('🔥 Too hot - surface water boils away')
-    } else if (temperature < 0) {
-      setOutcome('❄️ Too cold - frozen ice world')
-    } else if (planetMass < 0.3) {
-      setOutcome('💨 Too small - cannot retain atmosphere')
-    } else if (planetMass > 3) {
-      setOutcome('🪐 Too massive - becomes gas giant')
-    } else if (atmosphericPressure < 0.1) {
-      setOutcome('🌑 No atmosphere - like Mars or Mercury')
-    } else {
-      setOutcome('❌ Poor conditions - hostile to life')
-    }
-  }, [orbitalDistance, planetMass, atmosphericPressure])
-
   return (
     <div className="container mx-auto px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4 text-white">Planets & Habitability</h2>
-          <p className="text-xl text-gray-300">
-            Rocky planets form in the habitable zone around stars
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Planetary System Visualization */}
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">Planetary System</CardTitle>
-              <CardDescription className="text-gray-300">
-                Adjust orbital parameters and watch habitability change
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <PlanetarySystem 
-                orbitalDistance={orbitalDistance}
-                planetMass={planetMass}
-                atmosphericPressure={atmosphericPressure}
-              />
-              
-              {/* Outcome Display */}
-              <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
-                <h4 className="font-semibold mb-2 text-white">Habitability Assessment:</h4>
-                <p className={`text-sm font-medium ${
-                  outcome.includes('✨') ? 'text-green-400' : 
-                  outcome.includes('🌟') ? 'text-emerald-400' :
-                  outcome.includes('⚠️') ? 'text-yellow-400' : 
-                  outcome.includes('❌') ? 'text-orange-400' :
-                  'text-red-400'
-                }`}>
-                  {outcome}
-                </p>
-              </div>
-              
-              {/* Environmental Data */}
-              <div className="mt-4 p-3 rounded-lg bg-black/20 border border-white/5">
-                <h4 className="font-semibold mb-3 text-white text-xs">Environmental Data:</h4>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Surface Temperature:</span>
-                    <span className="text-white">{(400 / (orbitalDistance * orbitalDistance)).toFixed(0)}°C</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Orbital Period:</span>
-                    <span className="text-white">{(orbitalDistance ** 1.5).toFixed(1)} Earth years</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Surface Gravity:</span>
-                    <span className="text-white">{planetMass.toFixed(1)}g</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Controls */}
-          <div className="space-y-6">
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Orbital Distance</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Distance from star (Astronomical Units)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Slider
-                      value={[orbitalDistance]}
-                      onValueChange={(value) => setOrbitalDistance(value[0])}
-                      max={3}
-                      min={0.1}
-                      step={0.1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - Goldilocks zone */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                         style={{
-                           left: `${((0.8 - 0.1) / (3 - 0.1)) * 100}%`,
-                           width: `${((1.5 - 0.8) / (3 - 0.1)) * 100}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>Mercury-like</span>
-                    <span className="text-green-400 font-bold">0.8-1.5 AU (habitable)</span>
-                    <span className="text-white font-medium">{orbitalDistance.toFixed(1)} AU</span>
-                    <span>Mars-like</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Planet Mass</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Mass relative to Earth
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Slider
-                      value={[planetMass]}
-                      onValueChange={(value) => setPlanetMass(value[0])}
-                      max={3}
-                      min={0.1}
-                      step={0.1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - Earth-like mass */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                         style={{
-                           left: `${((0.5 - 0.1) / (3 - 0.1)) * 100}%`,
-                           width: `${((2.0 - 0.5) / (3 - 0.1)) * 100}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>Mars-size</span>
-                    <span className="text-green-400 font-bold">0.5-2.0 M⊕ (optimal)</span>
-                    <span className="text-white font-medium">{planetMass.toFixed(1)} M⊕</span>
-                    <span>Super-Earth</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Atmospheric Pressure</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Atmospheric density relative to Earth
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Slider
-                      value={[atmosphericPressure]}
-                      onValueChange={(value) => setAtmosphericPressure(value[0])}
-                      max={2}
-                      min={0}
-                      step={0.1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - Earth-like atmosphere */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                         style={{
-                           left: `${((0.5 - 0) / (2 - 0)) * 100}%`,
-                           width: `${((1.5 - 0.5) / (2 - 0)) * 100}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>No Atmosphere</span>
-                    <span className="text-green-400 font-bold">0.5-1.5 atm (optimal)</span>
-                    <span className="text-white font-medium">{atmosphericPressure.toFixed(1)} atm</span>
-                    <span>Dense</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {educatorMode && (
-          <div className="space-y-4 mt-8">
-            <Card className="bg-blue-900/20 border-blue-500/30">
-              <CardHeader>
-                <CardTitle className="text-blue-300">Educational Notes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm text-blue-200">
-                  <p>• The habitable zone is where liquid water can exist on a planet's surface</p>
-                  <p>• Planet mass affects gravity and ability to retain atmosphere</p>
-                  <p>• Atmospheric pressure determines whether water stays liquid</p>
-                  <p>• Temperature follows inverse square law with distance from star</p>
-                  <p>• Earth sits in the "Goldilocks zone" - not too hot, not too cold</p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-red-900/20 border-red-500/30">
-              <CardHeader>
-                <CardTitle className="text-red-300">⚠️ The Planetary Habitability Assumptions</CardTitle>
-                <CardDescription className="text-red-200">
-                  Major unknowns in planetary formation and habitability science
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm text-red-200">
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Water-Centric Bias:</p>
-                    <p className="text-xs">We define habitability as "liquid water on surface" because that's what we know. But life might thrive in <strong>subsurface oceans, methane lakes, or hydrogen atmospheres</strong>. Europa, Enceladus, and Titan may be more habitable than Mars, despite being outside the "habitable zone."</p>
-                  </div>
-                  
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Rare Earth Hypothesis:</p>
-                    <p className="text-xs">Earth may require <strong>dozens of unlikely coincidences</strong>: large moon for tides and stability, Jupiter as comet shield, plate tectonics for carbon cycle, magnetic field for radiation protection, right axial tilt, stable orbit. The probability of all factors aligning may be astronomically small.</p>
-                  </div>
-
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Late Heavy Bombardment Problem:</p>
-                    <p className="text-xs">Earth was likely sterilized multiple times by massive impacts until ~3.8 billion years ago. <strong>We don't know how life survived</strong> or re-emerged. Most exoplanets may experience similar bombardment periods that prevent life from taking hold.</p>
-                  </div>
-
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Atmospheric Escape Mystery:</p>
-                    <p className="text-xs">Mars lost its atmosphere, Venus became a greenhouse hell, but Earth maintained habitability for 4 billion years. <strong>We don't fully understand why</strong>. Stellar activity, magnetic fields, and atmospheric composition interact in complex ways we're still discovering.</p>
-                  </div>
-
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Tidal Locking Dilemma:</p>
-                    <p className="text-xs">Most exoplanets around red dwarf stars (75% of all stars) are tidally locked - one side always faces the star. This creates <strong>extreme temperature gradients and atmospheric dynamics</strong> we don't understand. Can life exist on such worlds?</p>
-                  </div>
-
-                  <div className="mt-4 p-3 bg-yellow-900/30 border border-yellow-500/40 rounded">
-                    <p className="text-yellow-200 font-semibold mb-2">🌍 The Sobering Reality:</p>
-                    <p className="text-xs text-yellow-100">
-                      Despite finding 5,000+ exoplanets, <strong>we haven't confirmed life on any of them</strong>. Our models predict thousands of "habitable" worlds, but habitability ≠ inhabited. Earth may be far more special than we assume, or life may be far more adaptable than we imagine. We simply don't know which assumption is correct.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+      {/* Header Section */}
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Planets & Habitability</h2>
+        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          Rocky planets form around stars, but only those in the habitable zone with the right conditions can support liquid water and life.
+        </p>
       </div>
+
+      {/* Primary Controls - Balanced Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+        {/* Orbital Distance */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Orbital Distance</CardTitle>
+            <CardDescription className="text-gray-300">
+              Distance from the host star (AU)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PlanetarySystem 
+              orbitalDistance={orbitalDistance}
+              planetMass={planetMass}
+              atmosphericPressure={atmosphericPressure}
+            />
+            <div className="relative mt-4">
+              <Slider
+                value={[orbitalDistance]}
+                onValueChange={(value) => setOrbitalDistance(value[0])}
+                max={3}
+                min={0.3}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.8 - 0.3) / (3 - 0.3)) * 100}%`,
+                     width: `${((1.5 - 0.8) / (3 - 0.3)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>Too Hot</span>
+              <span className="text-green-400 font-bold">0.8-1.5 AU (habitable)</span>
+              <span className="text-white font-medium">{orbitalDistance.toFixed(1)} AU</span>
+              <span>Too Cold</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> Planetary system visualization showing orbital distance, habitable zone (green rings), and resulting surface temperature.</p>
+                  <p><strong>Habitable zone:</strong> The "Goldilocks zone" where liquid water can exist - not too hot, not too cold, but just right for life.</p>
+                  <p><strong>Inverse square law:</strong> Planet temperature drops with distance squared - small orbital changes have dramatic climate effects.</p>
+                  <p><strong>Solar system comparison:</strong> Earth at 1 AU, Venus at 0.7 AU (too hot), Mars at 1.5 AU (too cold but borderline habitable).</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Planet Mass */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Planet Mass</CardTitle>
+            <CardDescription className="text-gray-300">
+              Mass relative to Earth
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <div className="text-2xl mb-2">🪐</div>
+                <div className="text-sm text-gray-300">Mass</div>
+                <div className="text-lg font-bold text-white">{planetMass.toFixed(1)} M⊕</div>
+              </div>
+            </div>
+            <div className="relative">
+              <Slider
+                value={[planetMass]}
+                onValueChange={(value) => setPlanetMass(value[0])}
+                max={5}
+                min={0.1}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.5 - 0.1) / (5 - 0.1)) * 100}%`,
+                     width: `${((2.0 - 0.5) / (5 - 0.1)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>Too Small</span>
+              <span className="text-green-400 font-bold">0.5-2.0 M⊕ (optimal)</span>
+              <span className="text-white font-medium">{planetMass.toFixed(1)} M⊕</span>
+              <span>Too Large</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> Planet mass indicator showing how planetary size affects gravity, atmosphere retention, and geological activity.</p>
+                  <p><strong>Mass matters:</strong> Planets need 0.5-2.0 Earth masses for optimal conditions - enough gravity to hold atmosphere, not too much to crush life.</p>
+                  <p><strong>Too small:</strong> Low gravity can't retain atmosphere (like Mars) - water boils away into space, no protection from radiation.</p>
+                  <p><strong>Too large:</strong> High gravity creates thick atmospheres (like Venus) - runaway greenhouse effect, crushing surface pressure.</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Atmospheric Pressure */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Atmospheric Pressure</CardTitle>
+            <CardDescription className="text-gray-300">
+              Atmospheric density relative to Earth
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <div className="text-2xl mb-2">🌬️</div>
+                <div className="text-sm text-gray-300">Pressure</div>
+                <div className="text-lg font-bold text-white">{atmosphericPressure.toFixed(1)} atm</div>
+              </div>
+            </div>
+            <div className="relative">
+              <Slider
+                value={[atmosphericPressure]}
+                onValueChange={(value) => setAtmosphericPressure(value[0])}
+                max={3}
+                min={0}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.3 - 0) / (3 - 0)) * 100}%`,
+                     width: `${((2.0 - 0.3) / (3 - 0)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>No Atmosphere</span>
+              <span className="text-green-400 font-bold">0.3-2.0 atm (habitable)</span>
+              <span className="text-white font-medium">{atmosphericPressure.toFixed(1)} atm</span>
+              <span>Too Dense</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> Atmospheric pressure gauge showing the density of gases surrounding the planet.</p>
+                  <p><strong>Pressure balance:</strong> Need 0.3-2.0 atmospheres for liquid water - too little and water boils, too much creates crushing conditions.</p>
+                  <p><strong>Greenhouse effect:</strong> Moderate atmosphere provides temperature regulation through greenhouse warming and heat distribution.</p>
+                  <p><strong>Atmospheric loss:</strong> Planets lose atmosphere through solar wind stripping, impact erosion, and thermal escape - mass and magnetic fields help retention.</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Magnetic Field */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Magnetic Field</CardTitle>
+            <CardDescription className="text-gray-300">
+              Magnetic field strength relative to Earth
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <div className="text-2xl mb-2">🧲</div>
+                <div className="text-sm text-gray-300">Field Strength</div>
+                <div className="text-lg font-bold text-white">{magneticField.toFixed(1)}x Earth</div>
+              </div>
+            </div>
+            <div className="relative">
+              <Slider
+                value={[magneticField]}
+                onValueChange={(value) => setMagneticField(value[0])}
+                max={2}
+                min={0}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.3 - 0) / (2 - 0)) * 100}%`,
+                     width: `${((1.5 - 0.3) / (2 - 0)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>No Field</span>
+              <span className="text-green-400 font-bold">0.3-1.5x (protective)</span>
+              <span className="text-white font-medium">{magneticField.toFixed(1)}x</span>
+              <span>Very Strong</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> Magnetic field strength indicator showing the planet's ability to deflect harmful solar radiation.</p>
+                  <p><strong>Radiation shield:</strong> Magnetic fields (0.3-1.5x Earth) deflect solar wind and cosmic rays, protecting atmosphere and surface life.</p>
+                  <p><strong>Mars comparison:</strong> Mars lost its magnetic field ~4 billion years ago, allowing solar wind to strip away its atmosphere over time.</p>
+                  <p><strong>Dynamo effect:</strong> Generated by molten iron core convection - requires sufficient planetary mass and internal heat for long-term stability.</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
     </div>
   )
 }

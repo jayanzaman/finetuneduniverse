@@ -94,7 +94,6 @@ export default function MatterSection({
   cosmicTime?: number;
 }) {
   const [strongForce, setStrongForce] = useState(1)
-  const [outcome, setOutcome] = useState('')
   
   // Additional fine-tuning parameters
   const [hierarchyScale, setHierarchyScale] = useState(1)
@@ -112,27 +111,6 @@ export default function MatterSection({
     window.addEventListener('randomizeUniverse', handleRandomize)
     return () => window.removeEventListener('randomizeUniverse', handleRandomize)
   }, [])
-
-  useEffect(() => {
-    // Enhanced strong force calculations
-    const protonStability = Math.exp(-Math.abs(strongForce - 1) * 2);
-    const nucleosynthesisEfficiency = 1 / (1 + Math.pow(Math.abs(strongForce - 1) * 3, 2));
-    const forceScore = protonStability * nucleosynthesisEfficiency;
-    
-    if (forceScore > 0.8) {
-      setOutcome('✨ Perfect - stable nuclei and efficient fusion!')
-    } else if (forceScore > 0.5) {
-      setOutcome('🌟 Good - atoms form, some instability present')
-    } else if (forceScore > 0.2) {
-      setOutcome('⚠️ Marginal - unstable atoms, limited chemistry')
-    } else if (strongForce < 0.5) {
-      setOutcome('💥 Too weak - protons decay instantly, no atoms')
-    } else if (strongForce > 1.5) {
-      setOutcome('🔥 Too strong - runaway fusion, no hydrogen left')
-    } else {
-      setOutcome('❌ Poor - nuclear chaos, chemistry impossible')
-    }
-  }, [strongForce])
 
   return (
     <div className="container mx-auto px-4">

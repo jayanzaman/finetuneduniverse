@@ -843,7 +843,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '25%' : '20%',
                            width: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '20%' : '15%'
@@ -883,7 +883,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 3 ? '50%' : simulationState.stage < 5 ? '40%' : '30%',
                            width: simulationState.stage < 3 ? '30%' : simulationState.stage < 5 ? '20%' : '25%'
@@ -923,7 +923,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '60%' : '70%',
                            width: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '20%' : '15%'
@@ -963,7 +963,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 2 ? '60%' : simulationState.stage < 4 ? '70%' : '80%',
                            width: simulationState.stage < 2 ? '30%' : simulationState.stage < 4 ? '20%' : '15%'
@@ -1012,7 +1012,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 1 ? '50%' : simulationState.stage < 4 ? '70%' : '85%',
                            width: simulationState.stage < 1 ? '40%' : simulationState.stage < 4 ? '25%' : '15%'
@@ -1049,7 +1049,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: simulationState.stage < 3 ? '60%' : simulationState.stage < 5 ? '70%' : '75%',
                            width: simulationState.stage < 3 ? '35%' : simulationState.stage < 5 ? '20%' : '15%'
@@ -1087,7 +1087,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
                          style={{
                            left: `${((298 - (simulationState.stage < 4 ? 10 : simulationState.stage < 5 ? 5 : 3) - 253) / (673 - 253)) * 100}%`,
                            width: `${((simulationState.stage < 4 ? 20 : simulationState.stage < 5 ? 10 : 6) / (673 - 253)) * 100}%`
@@ -1175,132 +1175,134 @@ export default function AbiogenesisLabSection({
               </div>
             </CardContent>
           </Card>
-          <Card className='bg-white/5 border-white/20 text-white'>
-            <CardHeader>
-              <CardTitle className='text-lg'>System Readouts</CardTitle>
-              {educatorMode && (
-                <CardDescription className='text-sm text-gray-300'>
-                  These metrics track the molecular complexity and replication fidelity of your prebiotic system
-                </CardDescription>
-              )}
-            </CardHeader>
-            <CardContent className='space-y-3'>
-              <div className='grid grid-cols-2 gap-4 text-sm'>
-                <div>
-                  <span className='text-gray-400'>Amino Acids:</span>
-                  <div className='font-mono'>{simulationState.aminoAcidYield.toFixed(1)} ppm</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Building blocks of proteins. Miller-Urey experiments produced ~2-15 ppm. <span className='text-red-300'>⚠️ Lab produces 50/50 mix of left/right-handed amino acids, but life uses only left-handed forms.</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>Peptides:</span>
-                  <div className='font-mono'>{simulationState.peptideCount.toFixed(0)}</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Short protein chains. Fox's thermal proteins formed 3-18 amino acid chains. Catalytic activity emerges at 5+ residues. <span className='text-red-300'>⚠️ Mixed chirality peptides have different properties than biological proteins.</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>Vesicles:</span>
-                  <div className='font-mono'>{simulationState.vesicleCount.toFixed(0)}</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Fatty acid bubbles that concentrate reactions. Szostak lab creates stable vesicles from 8-12 carbon chains.
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>Templates:</span>
-                  <div className='font-mono'>{simulationState.templateStrands.toFixed(0)}</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Simple self-copying molecules. Lincoln & Joyce (2009) created RNA enzymes that replicate each other <span className='text-yellow-300'>using purified components - not from prebiotic conditions.</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>RNA:</span>
-                  <div className='font-mono'>{simulationState.rnaStrands.toFixed(0)}</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Catalytic RNA (ribozymes). Ribosomes use 23S rRNA to catalyze peptide bonds. Some speed reactions 10⁷x. <span className='text-yellow-300'>⚠️ No prebiotic pathway to complex ribozymes demonstrated.</span> <span className='text-red-300'>RNA requires right-handed sugars - prebiotic synthesis gives mixed chirality.</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>DNA:</span>
-                  <div className='font-mono'>{simulationState.dnaStrands.toFixed(0)}</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Stable double helix storing 3.2 billion base pairs in humans. 100,000x more stable than RNA. <span className='text-yellow-300'>⚠️ Prebiotic DNA synthesis remains unsolved.</span> <span className='text-red-300'>DNA also requires homochiral (right-handed) sugars not found in prebiotic chemistry.</span>
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>Per-Base:</span>
-                  <div className='font-mono'>{(simulationState.perBaseAccuracy * 100).toFixed(1)}%</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Accuracy per nucleotide. E. coli DNA polymerase: 99.9%. Early RNA replicases: ~85-95%.
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>Strand:</span>
-                  <div className='font-mono'>{(simulationState.strandFidelity * 100).toFixed(1)}%</div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      Whole-strand fidelity = (per-base accuracy)^length. 90% accuracy over 100 bases = 0.003% success.
-                    </div>
-                  )}
-                </div>
-                <div>
-                  <span className='text-gray-400'>Eigen:</span>
-                  <div className={`font-mono text-xs ${simulationState.passesEigen ? 'text-green-400' : 'text-red-400'}`}>
-                    {simulationState.passesEigen ? '✓ Pass' : '✗ Fail'}
-                    {simulationState.stage >= 4 && !simulationState.passesEigen && (
-                      <span className='ml-2 text-red-400'>⚠️ Critical for RNA</span>
-                    )}
-                  </div>
-                  {educatorMode && (
-                    <div className='text-xs text-blue-300 mt-1'>
-                      <strong>Theoretical limit:</strong> Eigen's threshold (1971): p_crit = 1 - ln(s)/L. For 100-base RNA: need 99.3% accuracy. <span className='text-yellow-300'>⚠️ No lab has achieved prebiotic RNA/DNA formation meeting this threshold.</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Life Potential Gauge */}
-              <div className='space-y-2'>
-                <div className='flex justify-between items-center'>
-                  <span className='text-sm font-medium'>Life Potential</span>
-                  <div className='flex items-center gap-2'>
-                    <span className='text-sm text-green-400'>{simulationState.lifePotential.toFixed(0)}%</span>
-                    {simulationState.stage >= 4 && simulationState.lifePotential < 70 && (
-                      <span className='text-xs text-red-400'>⚠️ Low</span>
-                    )}
-                  </div>
-                </div>
-                <div className='w-full bg-gray-700 rounded-full h-3'>
-                  <div 
-                    className='bg-gradient-to-r from-green-600 to-green-400 h-3 rounded-full transition-all duration-500'
-                    style={{ width: `${simulationState.lifePotential}%` }}
-                  />
-                </div>
-                {educatorMode && (
-                  <div className='text-xs text-blue-300 mt-2'>
-                    <strong>Stage-dependent metric:</strong> Basic chemistry (max 40%) → Templates (max 60%) → RNA World (max 80%) → DNA (max 100%). Formula: 30% catalysis + 30% compartmentalization + 40% heredity, with stage multipliers for RNA/DNA achievements.
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
+      
+      {/* System Readouts - Full Width */}
+      <Card className='bg-white/5 border-white/20 text-white mt-6'>
+        <CardHeader>
+          <CardTitle className='text-xl'>System Readouts</CardTitle>
+          {educatorMode && (
+            <CardDescription className='text-sm text-gray-300'>
+              These metrics track the molecular complexity and replication fidelity of your prebiotic system
+            </CardDescription>
+          )}
+        </CardHeader>
+        <CardContent className='space-y-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 text-sm'>
+            <div>
+              <span className='text-gray-400'>Amino Acids:</span>
+              <div className='font-mono text-lg'>{simulationState.aminoAcidYield.toFixed(1)} ppm</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Building blocks of proteins. Miller-Urey experiments produced ~2-15 ppm. <span className='text-red-300'>⚠️ Lab produces 50/50 mix of left/right-handed amino acids, but life uses only left-handed forms.</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>Peptides:</span>
+              <div className='font-mono text-lg'>{simulationState.peptideCount.toFixed(0)}</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Short protein chains. Fox's thermal proteins formed 3-18 amino acid chains. Catalytic activity emerges at 5+ residues. <span className='text-red-300'>⚠️ Mixed chirality peptides have different properties than biological proteins.</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>Vesicles:</span>
+              <div className='font-mono text-lg'>{simulationState.vesicleCount.toFixed(0)}</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Fatty acid bubbles that concentrate reactions. Szostak lab creates stable vesicles from 8-12 carbon chains.
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>Templates:</span>
+              <div className='font-mono text-lg'>{simulationState.templateStrands.toFixed(0)}</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Simple self-copying molecules. Lincoln & Joyce (2009) created RNA enzymes that replicate each other <span className='text-yellow-300'>using purified components - not from prebiotic conditions.</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>RNA:</span>
+              <div className='font-mono text-lg'>{simulationState.rnaStrands.toFixed(0)}</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Catalytic RNA (ribozymes). Ribosomes use 23S rRNA to catalyze peptide bonds. Some speed reactions 10⁷x. <span className='text-yellow-300'>⚠️ No prebiotic pathway to complex ribozymes demonstrated.</span> <span className='text-red-300'>RNA requires right-handed sugars - prebiotic synthesis gives mixed chirality.</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>DNA:</span>
+              <div className='font-mono text-lg'>{simulationState.dnaStrands.toFixed(0)}</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Stable double helix storing 3.2 billion base pairs in humans. 100,000x more stable than RNA. <span className='text-yellow-300'>⚠️ Prebiotic DNA synthesis remains unsolved.</span> <span className='text-red-300'>DNA also requires homochiral (right-handed) sugars not found in prebiotic chemistry.</span>
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>Per-Base:</span>
+              <div className='font-mono text-lg'>{(simulationState.perBaseAccuracy * 100).toFixed(1)}%</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Accuracy per nucleotide. E. coli DNA polymerase: 99.9%. Early RNA replicases: ~85-95%.
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>Strand:</span>
+              <div className='font-mono text-lg'>{(simulationState.strandFidelity * 100).toFixed(1)}%</div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  Whole-strand fidelity = (per-base accuracy)^length. 90% accuracy over 100 bases = 0.003% success.
+                </div>
+              )}
+            </div>
+            <div>
+              <span className='text-gray-400'>Eigen:</span>
+              <div className={`font-mono text-lg ${simulationState.passesEigen ? 'text-green-400' : 'text-red-400'}`}>
+                {simulationState.passesEigen ? '✓ Pass' : '✗ Fail'}
+                {simulationState.stage >= 4 && !simulationState.passesEigen && (
+                  <span className='ml-2 text-red-400'>⚠️ Critical for RNA</span>
+                )}
+              </div>
+              {educatorMode && (
+                <div className='text-xs text-blue-300 mt-1'>
+                  <strong>Theoretical limit:</strong> Eigen's threshold (1971): p_crit = 1 - ln(s)/L. For 100-base RNA: need 99.3% accuracy. <span className='text-yellow-300'>⚠️ No lab has achieved prebiotic RNA/DNA formation meeting this threshold.</span>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          {/* Life Potential Gauge - Full Width */}
+          <div className='space-y-3 pt-4 border-t border-white/10'>
+            <div className='flex justify-between items-center'>
+              <span className='text-lg font-medium'>Life Potential</span>
+              <div className='flex items-center gap-2'>
+                <span className='text-lg text-green-400 font-mono'>{simulationState.lifePotential.toFixed(0)}%</span>
+                {simulationState.stage >= 4 && simulationState.lifePotential < 70 && (
+                  <span className='text-sm text-red-400'>⚠️ Low</span>
+                )}
+              </div>
+            </div>
+            <div className='w-full bg-gray-700 rounded-full h-4'>
+              <div 
+                className='bg-gradient-to-r from-green-600 to-green-400 h-4 rounded-full transition-all duration-500'
+                style={{ width: `${simulationState.lifePotential}%` }}
+              />
+            </div>
+            {educatorMode && (
+              <div className='text-sm text-blue-300 mt-2'>
+                <strong>Stage-dependent metric:</strong> Basic chemistry (max 40%) → Templates (max 60%) → RNA World (max 80%) → DNA (max 100%). Formula: 30% catalysis + 30% compartmentalization + 40% heredity, with stage multipliers for RNA/DNA achievements.
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

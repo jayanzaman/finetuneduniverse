@@ -1,0 +1,34 @@
+[build]
+  publish = ".next"
+  command = "npm run build"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[context.production.environment]
+  NODE_ENV = "production"
+
+# Force HTTPS redirect
+[[redirects]]
+  from = "http://finetuneduniverse.net/*"
+  to = "https://finetuneduniverse.net/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.finetuneduniverse.net/*"
+  to = "https://finetuneduniverse.net/:splat"
+  status = 301
+  force = true
+
+# Ensure both www and non-www work
+[[redirects]]
+  from = "https://www.finetuneduniverse.net/*"
+  to = "https://finetuneduniverse.net/:splat"
+  status = 301
+  force = true

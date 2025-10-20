@@ -84,271 +84,192 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
   )
 }
 
-export default function StarlightSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
-  const [stellarMass, setStellarMass] = useState(1.0)
+export default function StarlightSection({ 
+  educatorMode, 
+  cosmicTime = 0
+}: { 
+  educatorMode: boolean; 
+  cosmicTime?: number;
+}) {
+  const [stellarMass, setStellarMass] = useState(1)
   const [metallicity, setMetallicity] = useState(0.02)
-  const [starFormationRate, setStarFormationRate] = useState(0.5)
-  const [outcome, setOutcome] = useState('')
+  const [starFormationRate, setStarFormationRate] = useState(1)
 
   useEffect(() => {
     const handleRandomize = () => {
-      setStellarMass(Math.random() * 2)
+      setStellarMass(0.1 + Math.random() * 1.9)
       setMetallicity(Math.random() * 0.1)
-      setStarFormationRate(Math.random() * 2)
+      setStarFormationRate(0.1 + Math.random() * 1.9)
     }
 
     window.addEventListener('randomizeUniverse', handleRandomize)
     return () => window.removeEventListener('randomizeUniverse', handleRandomize)
   }, [])
 
-  useEffect(() => {
-    // Calculate stellar evolution outcome
-    const massScore = stellarMass > 0.8 && stellarMass < 1.4 ? 1 : Math.max(0, 1 - Math.abs(stellarMass - 1.1) / 0.5);
-    const metallicityScore = metallicity > 0.01 && metallicity < 0.05 ? 1 : Math.max(0, 1 - Math.abs(metallicity - 0.02) / 0.03);
-    const formationScore = Math.max(0, 1 - Math.abs(starFormationRate - 0.7) / 0.5);
-    
-    const totalScore = (massScore * 0.4) + (metallicityScore * 0.35) + (formationScore * 0.25);
-    
-    if (totalScore > 0.8) {
-      setOutcome('✨ Perfect stellar nursery - heavy elements abundant!')
-    } else if (totalScore > 0.6) {
-      setOutcome('🌟 Good conditions - stars forge essential elements')
-    } else if (totalScore > 0.4) {
-      setOutcome('⚠️ Marginal - limited heavy element production')
-    } else if (stellarMass > 2) {
-      setOutcome('💥 Too massive - stars explode too quickly')
-    } else if (stellarMass < 0.5) {
-      setOutcome('❄️ Too small - insufficient fusion temperatures')
-    } else if (metallicity > 0.08) {
-      setOutcome('🔥 Too metal-rich - runaway stellar formation')
-    } else {
-      setOutcome('❌ Poor conditions - no heavy elements created')
-    }
-  }, [stellarMass, metallicity, starFormationRate])
-
   return (
     <div className="container mx-auto px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4 text-white">Starlight & Heavy Elements</h2>
-          <p className="text-xl text-gray-300">
-            The first stars ignite, forging heavy elements and seeding the cosmos
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Star Visualization */}
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">Stellar Nucleosynthesis</CardTitle>
-              <CardDescription className="text-gray-300">
-                Watch stars forge heavy elements through nuclear fusion
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <StarField 
-                stellarMass={stellarMass}
-                metallicity={metallicity}
-                starFormationRate={starFormationRate}
-              />
-              
-              {/* Outcome Display */}
-              <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
-                <h4 className="font-semibold mb-2 text-white">Stellar Outcome:</h4>
-                <p className={`text-sm font-medium ${
-                  outcome.includes('✨') ? 'text-green-400' : 
-                  outcome.includes('🌟') ? 'text-emerald-400' :
-                  outcome.includes('⚠️') ? 'text-yellow-400' : 
-                  outcome.includes('❌') ? 'text-orange-400' :
-                  'text-red-400'
-                }`}>
-                  {outcome}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Controls */}
-          <div className="space-y-6">
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Stellar Mass</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Mass of first-generation stars (in solar masses)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Slider
-                      value={[stellarMass]}
-                      onValueChange={(value) => setStellarMass(value[0])}
-                      max={2}
-                      min={0.1}
-                      step={0.1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - Sun-like stars */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                         style={{
-                           left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
-                           width: `${((1.4 - 0.8) / (2 - 0.1)) * 100}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>Red Dwarf</span>
-                    <span className="text-green-400 font-bold">0.8-1.4 M☉ (optimal)</span>
-                    <span className="text-white font-medium">{stellarMass.toFixed(1)} M☉</span>
-                    <span>Supergiant</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Metallicity</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Fraction of heavy elements in stellar composition
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Slider
-                      value={[metallicity]}
-                      onValueChange={(value) => setMetallicity(value[0])}
-                      max={0.1}
-                      min={0}
-                      step={0.001}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - Solar metallicity */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                         style={{
-                           left: `${((0.01 - 0) / (0.1 - 0)) * 100}%`,
-                           width: `${((0.03 - 0.01) / (0.1 - 0)) * 100}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>Population III</span>
-                    <span className="text-green-400 font-bold">1-3% (optimal)</span>
-                    <span className="text-white font-medium">{(metallicity * 100).toFixed(2)}%</span>
-                    <span>Metal-Rich</span>
-                  </div>
-                  {educatorMode && metallicity < 0.005 && (
-                    <div className="mt-3 p-2 bg-yellow-900/20 border border-yellow-500/30 rounded text-xs text-yellow-200">
-                      <strong>⚠️ JWST Update:</strong> James Webb has discovered unexpectedly metal-rich galaxies at z{'>'}10, suggesting rapid early enrichment or alternative formation pathways.
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Star Formation Rate</CardTitle>
-                <CardDescription className="text-gray-300">
-                  Rate of new star formation in the galaxy
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="relative">
-                    <Slider
-                      value={[starFormationRate]}
-                      onValueChange={(value) => setStarFormationRate(value[0])}
-                      max={2}
-                      min={0.1}
-                      step={0.1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - Moderate formation rate */}
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                         style={{
-                           left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
-                           width: `${((1.5 - 0.8) / (2 - 0.1)) * 100}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>Slow</span>
-                    <span className="text-green-400 font-bold">0.8-1.5 (optimal)</span>
-                    <span className="text-white font-medium">{starFormationRate.toFixed(1)}</span>
-                    <span>Rapid</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {educatorMode && (
-          <div className="space-y-4 mt-8">
-            <Card className="bg-blue-900/20 border-blue-500/30">
-              <CardHeader>
-                <CardTitle className="text-blue-300">Educational Notes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2 text-sm text-blue-200">
-                  <p>• Population III stars were the first stars, made only of hydrogen and helium</p>
-                  <p>• Nuclear fusion in stellar cores creates elements up to iron</p>
-                  <p>• Supernova explosions create elements heavier than iron</p>
-                  <p>• Stellar winds and supernovae seed space with heavy elements</p>
-                  <p>• Second-generation stars can form rocky planets due to heavy elements</p>
-                  <div className="mt-4 p-3 bg-yellow-900/30 border border-yellow-500/40 rounded">
-                    <p className="text-yellow-200 font-semibold mb-2">🔭 Recent JWST Discoveries (2022-2024):</p>
-                    <p className="text-xs text-yellow-100">James Webb has observed galaxies at redshift z{'>'}10 (400-600 Myr after Big Bang) with unexpectedly high metallicities. Some show carbon, oxygen, and nitrogen abundances suggesting very rapid early star formation and enrichment - challenging our timeline of Population III star formation.</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-red-900/20 border-red-500/30">
-              <CardHeader>
-                <CardTitle className="text-red-300">⚠️ The Stellar Nucleosynthesis Puzzles</CardTitle>
-                <CardDescription className="text-red-200">
-                  Critical gaps in our understanding of how elements formed
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm text-red-200">
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Triple-Alpha Process Fine-Tuning:</p>
-                    <p className="text-xs">Carbon-12 formation requires <strong>three helium-4 nuclei</strong> to collide simultaneously - astronomically unlikely. Fred Hoyle predicted a precise energy resonance (7.65 MeV) that makes this possible. Without this exact resonance, no carbon → no organic chemistry → no life. <strong>The resonance exists, but we don't know why.</strong></p>
-                  </div>
-                  
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Lithium Problem:</p>
-                    <p className="text-xs">Big Bang nucleosynthesis predicts 3-4x more lithium-7 than observed in old stars. Either: (1) unknown physics destroyed lithium, (2) stellar models are wrong, or (3) Big Bang models are incomplete. <strong>After 25+ years, this remains unsolved.</strong></p>
-                  </div>
-
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The r-Process Mystery:</p>
-                    <p className="text-xs">Half of elements heavier than iron require rapid neutron capture (r-process) in extreme environments. We thought this happened in core-collapse supernovae, but models can't reproduce observed abundances. <strong>Neutron star mergers help, but the full picture remains unclear.</strong></p>
-                  </div>
-
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">Population III Star Problem:</p>
-                    <p className="text-xs">We've never directly observed a Population III star. Theory predicts they were 100-1000x more massive than the Sun, but JWST finds metal-rich galaxies too early. Either: (1) Pop III stars were different than predicted, (2) enrichment happened faster than possible, or (3) alternative formation pathways exist.</p>
-                  </div>
-
-                  <div className="bg-red-900/30 p-3 rounded border border-red-500/40">
-                    <p className="font-semibold text-red-100 mb-2">The Oxygen Isotope Anomaly:</p>
-                    <p className="text-xs">Meteorites show oxygen isotope ratios that don't match stellar nucleosynthesis models. The Sun's composition differs from the local interstellar medium in ways we can't explain. <strong>Our stellar evolution models may be fundamentally incomplete.</strong></p>
-                  </div>
-
-                  <div className="mt-4 p-3 bg-yellow-900/30 border border-yellow-500/40 rounded">
-                    <p className="text-yellow-200 font-semibold mb-2">🌟 The Uncomfortable Truth:</p>
-                    <p className="text-xs text-yellow-100">
-                      We can simulate stellar interiors and predict element production, but <strong>we've never seen it happen</strong>. Stellar lifetimes are millions to billions of years - far longer than human observation. Our models work for some elements but fail for others. The recent JWST discoveries suggest our timeline of cosmic chemical evolution may be fundamentally wrong.
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+      {/* Header Section */}
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Starlight & Heavy Elements</h2>
+        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          The first stars ignite, forging heavy elements through nuclear fusion and seeding the cosmos with the building blocks of complexity.
+        </p>
       </div>
+
+      {/* Primary Controls - Balanced Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+        {/* Stellar Mass */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Stellar Mass</CardTitle>
+            <CardDescription className="text-gray-300">
+              Mass of first-generation stars (in solar masses)
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <StarField 
+              stellarMass={stellarMass}
+              metallicity={metallicity}
+              starFormationRate={starFormationRate}
+            />
+            <div className="relative mt-4">
+              <Slider
+                value={[stellarMass]}
+                onValueChange={(value) => setStellarMass(value[0])}
+                max={2}
+                min={0.1}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
+                     width: `${((1.4 - 0.8) / (2 - 0.1)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>Red Dwarf</span>
+              <span className="text-green-400 font-bold">0.8-1.4 M☉ (optimal)</span>
+              <span className="text-white font-medium">{stellarMass.toFixed(1)} M☉</span>
+              <span>Supergiant</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> StarField visualization shows stellar nucleosynthesis - how stars forge heavy elements through nuclear fusion.</p>
+                  <p><strong>Mass matters:</strong> Stars need 0.8-1.4 solar masses for optimal heavy element production. Too small = insufficient fusion, too large = short-lived supergiants.</p>
+                  <p><strong>The triple-alpha process:</strong> Carbon formation requires three helium nuclei to collide simultaneously - astronomically unlikely without precise energy resonance.</p>
+                  <p><strong>Cosmic seeding:</strong> These first stars created and dispersed carbon, oxygen, silicon, and iron - the building blocks for planets and life.</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Metallicity */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Metallicity</CardTitle>
+            <CardDescription className="text-gray-300">
+              Fraction of heavy elements in stellar composition
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <div className="text-2xl mb-2">⚛️</div>
+                <div className="text-sm text-gray-300">Heavy Elements</div>
+                <div className="text-lg font-bold text-white">{(metallicity * 100).toFixed(2)}%</div>
+              </div>
+            </div>
+            <div className="relative">
+              <Slider
+                value={[metallicity]}
+                onValueChange={(value) => setMetallicity(value[0])}
+                max={0.1}
+                min={0}
+                step={0.001}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.01 - 0) / (0.1 - 0)) * 100}%`,
+                     width: `${((0.03 - 0.01) / (0.1 - 0)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>Population III</span>
+              <span className="text-green-400 font-bold">1-3% (optimal)</span>
+              <span className="text-white font-medium">{(metallicity * 100).toFixed(2)}%</span>
+              <span>Metal-Rich</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> Heavy element percentage display - the fraction of elements heavier than hydrogen and helium in stellar composition.</p>
+                  <p><strong>Solar metallicity:</strong> Our Sun has ~2% heavy elements, which is optimal for planet formation and complex chemistry.</p>
+                  <p><strong>Population III mystery:</strong> The first stars had zero metallicity but somehow produced the heavy elements needed for later generations.</p>
+                  <p><strong>Goldilocks zone:</strong> Too little metallicity = no planets, too much = runaway stellar formation disrupts galactic structure.</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Star Formation Rate */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Star Formation Rate</CardTitle>
+            <CardDescription className="text-gray-300">
+              Rate of stellar birth in early galaxies
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center">
+                <div className="text-2xl mb-2">⭐</div>
+                <div className="text-sm text-gray-300">Formation Rate</div>
+                <div className="text-lg font-bold text-white">{starFormationRate.toFixed(1)}x</div>
+              </div>
+            </div>
+            <div className="relative">
+              <Slider
+                value={[starFormationRate]}
+                onValueChange={(value) => setStarFormationRate(value[0])}
+                max={2}
+                min={0.1}
+                step={0.1}
+                className="w-full"
+              />
+              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                   style={{
+                     left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
+                     width: `${((1.5 - 0.8) / (2 - 0.1)) * 100}%`
+                   }}></div>
+            </div>
+            <div className="flex justify-between text-sm text-gray-400 mt-4">
+              <span>Slow</span>
+              <span className="text-green-400 font-bold">0.8-1.5 (optimal)</span>
+              <span className="text-white font-medium">{starFormationRate.toFixed(1)}</span>
+              <span>Rapid</span>
+            </div>
+            
+            {educatorMode && (
+              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="text-xs text-blue-200 space-y-2">
+                  <p><strong>What you're seeing:</strong> Star formation rate multiplier - how quickly early galaxies converted gas into stars compared to today's rate.</p>
+                  <p><strong>Timing is critical:</strong> Moderate formation rates (0.8-1.5x) allow proper heavy element enrichment between stellar generations.</p>
+                  <p><strong>Too fast:</strong> Rapid star formation depletes gas reservoirs before sufficient heavy elements accumulate for planet formation.</p>
+                  <p><strong>Too slow:</strong> Insufficient stellar nucleosynthesis means the universe remains dominated by hydrogen and helium forever.</p>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
     </div>
   )
 }
