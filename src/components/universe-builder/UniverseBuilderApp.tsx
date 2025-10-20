@@ -159,7 +159,7 @@ export default function UniverseBuilderApp() {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-[140px] sm:pt-[150px] pb-20" {...swipeHandlers}>
+      <main className="pt-[160px] sm:pt-[180px] pb-20" {...swipeHandlers}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSection}

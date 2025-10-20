@@ -136,27 +136,28 @@ export default function MatterSection({
 
   return (
     <div className="container mx-auto px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Formation of Matter</h2>
-          <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed">
-            As the universe cools, quarks combine to form the first protons and neutrons
-          </p>
-        </div>
+      {/* Header Section */}
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Formation of Matter</h2>
+        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+          As the universe cools, quarks combine to form the first protons and neutrons. 
+          The precise strength of fundamental forces determines whether matter can exist at all.
+        </p>
+      </div>
 
-        {/* Four Core Matter Formation Concepts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
-          {/* Quark Binding Force */}
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">Quark Binding Force</CardTitle>
-              <CardDescription className="text-gray-300">
-                How tightly are the pieces of protons held together?
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ParticleField strongForce={strongForce} />
-              <div className="relative mt-4">
+      {/* Primary Controls - Balanced Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+        {/* Quark Binding Force */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Quark Binding Force</CardTitle>
+            <CardDescription className="text-gray-300">
+              How tightly are the pieces of protons held together?
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ParticleField strongForce={strongForce} />
+            <div className="relative mt-4">
                 <Slider
                   value={[strongForce]}
                   onValueChange={(value) => setStrongForce(value[0])}
@@ -177,28 +178,6 @@ export default function MatterSection({
                 <span className="text-white font-medium">{strongForce.toFixed(2)} αs</span>
                 <span>Too Strong</span>
               </div>
-              <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
-                <h4 className="font-semibold mb-2 text-white">Nuclear Outcome:</h4>
-                <p className={`text-sm font-medium ${
-                  outcome.includes('✨') ? 'text-green-400' : 
-                  outcome.includes('🌟') ? 'text-emerald-400' :
-                  outcome.includes('⚠️') ? 'text-yellow-400' : 
-                  outcome.includes('❌') ? 'text-orange-400' :
-                  'text-red-400'
-                }`}>
-                  {outcome}
-                </p>
-              </div>
-              <div className="mt-4 space-y-3 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Proton Stability:</span>
-                  <span className="text-white">{(Math.exp(-Math.abs(strongForce - 1) * 2) * 100).toFixed(1)}%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Fusion Efficiency:</span>
-                  <span className="text-white">{((1 / (1 + Math.pow(Math.abs(strongForce - 1) * 3, 2))) * 100).toFixed(1)}%</span>
-                </div>
-              </div>
               
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
@@ -210,18 +189,18 @@ export default function MatterSection({
                   </div>
                 </div>
               )}
-            </CardContent>
-          </Card>
+          </CardContent>
+        </Card>
 
-          {/* Mass Hierarchy */}
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">Mass Hierarchy</CardTitle>
-              <CardDescription className="text-gray-300">
-                Why are fundamental forces so different in strength?
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+        {/* Mass Hierarchy */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Mass Hierarchy</CardTitle>
+            <CardDescription className="text-gray-300">
+              Why are fundamental forces so different in strength?
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
               <div className="space-y-4">
                 <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
                   <SimpleHierarchyVisual massScale={hierarchyScale} />
@@ -259,18 +238,18 @@ export default function MatterSection({
                   </div>
                 </div>
               )}
-            </CardContent>
-          </Card>
+          </CardContent>
+        </Card>
 
-          {/* Matter vs Antimatter */}
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">Matter vs Antimatter</CardTitle>
-              <CardDescription className="text-gray-300">
-                Why does matter exist instead of nothing?
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+        {/* Matter vs Antimatter */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Matter vs Antimatter</CardTitle>
+            <CardDescription className="text-gray-300">
+              Why does matter exist instead of nothing?
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
               <div className="space-y-4">
                 <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
                   <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />
@@ -308,18 +287,18 @@ export default function MatterSection({
                   </div>
                 </div>
               )}
-            </CardContent>
-          </Card>
+          </CardContent>
+        </Card>
 
-          {/* Proton Stability */}
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">Proton Stability</CardTitle>
-              <CardDescription className="text-gray-300">
-                How long do the building blocks of atoms last?
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+        {/* Proton Stability */}
+        <Card className="bg-black/20 border-white/10">
+          <CardHeader>
+            <CardTitle className="text-white">Proton Stability</CardTitle>
+            <CardDescription className="text-gray-300">
+              How long do the building blocks of atoms last?
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
               <div className="space-y-4">
                 <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
                   <SimpleProtonStabilityVisual lifetime={protonLifetime} />
@@ -357,11 +336,10 @@ export default function MatterSection({
                   </div>
                 </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
-
+          </CardContent>
+        </Card>
       </div>
+
     </div>
   )
 }
