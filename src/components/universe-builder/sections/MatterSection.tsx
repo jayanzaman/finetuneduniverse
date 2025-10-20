@@ -137,15 +137,15 @@ export default function MatterSection({
   return (
     <div className="container mx-auto px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4 text-white">Formation of Matter</h2>
-          <p className="text-xl text-gray-300">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Formation of Matter</h2>
+          <p className="text-base sm:text-lg lg:text-xl text-gray-300 leading-relaxed">
             As the universe cools, quarks combine to form the first protons and neutrons
           </p>
         </div>
 
         {/* Four Core Matter Formation Concepts */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
           {/* Quark Binding Force */}
           <Card className="bg-black/20 border-white/10">
             <CardHeader>

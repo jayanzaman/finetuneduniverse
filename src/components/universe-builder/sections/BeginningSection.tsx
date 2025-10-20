@@ -300,9 +300,9 @@ export default function BeginningSection({
   return (
     <div className="container mx-auto px-4">
       {/* Header Section */}
-      <div className="text-center mb-12">
-        <h2 className="text-4xl font-bold mb-4 text-white">The Beginning</h2>
-        <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+      <div className="text-center mb-8 sm:mb-12">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">The Beginning</h2>
+        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
           Adjust the fundamental parameters of the early universe and witness the consequences.
           Only precise conditions allow for the formation of structure and complexity.
         </p>
@@ -320,22 +320,22 @@ export default function BeginningSection({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-96">
-                <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-white text-center">Initial Entropy</h4>
-                  <div className="h-full">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Initial Entropy</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
                     <EntropyVisual entropy={entropy} />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-white text-center">Expansion Rate</h4>
-                  <div className="h-full">
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Expansion Rate</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
                     <ExpansionVisual expansionRate={expansionRate} />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <h4 className="text-sm font-semibold text-white text-center">Density Fluctuations</h4>
-                  <div className="h-full">
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Density Fluctuations</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
                     <DensityFluctuationsVisual densityFluctuations={densityFluctuations} />
                   </div>
                 </div>
@@ -382,7 +382,7 @@ export default function BeginningSection({
         </div>
 
       {/* Primary Controls - Balanced Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
 
           {/* Initial Entropy Control */}
           <Card className="bg-black/20 border-white/10">

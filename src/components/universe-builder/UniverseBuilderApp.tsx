@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { RotateCcw, Shuffle } from 'lucide-react'
+import { useSwipeable } from 'react-swipeable'
 
 // Section Components
 import BeginningSection from './sections/BeginningSection'
@@ -70,43 +71,57 @@ export default function UniverseBuilderApp() {
     return () => clearInterval(interval)
   }, [])
 
+  // Swipe handlers for mobile navigation
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => handleNext(),
+    onSwipedRight: () => handlePrevious(),
+    trackMouse: false, // Only track touch, not mouse
+    preventScrollOnSwipe: false,
+    delta: 50, // Minimum swipe distance
+  })
+
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/20">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-              Our Finetuned Universe
-            </h1>
-            <p className="text-xs text-gray-400">Exploring the Improbable Path to Complexity</p>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setEducatorMode(!educatorMode)}
-              className="bg-white/5 border-white/20 hover:bg-white/10 text-white"
-            >
-              {educatorMode ? 'Student Mode' : 'Educator Mode'}
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleRandomize}
-              className="bg-white/5 border-white/20 hover:bg-white/10 text-white"
-            >
-              <Shuffle className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleReset}
-              className="bg-white/5 border-white/20 hover:bg-white/10 text-white"
-            >
-              <RotateCcw className="h-4 w-4" />
-            </Button>
+        <div className="container mx-auto px-4 py-3 sm:py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent truncate">
+                Our Finetuned Universe
+              </h1>
+              <p className="text-xs sm:text-sm text-gray-400 hidden sm:block">Exploring the Improbable Path to Complexity</p>
+            </div>
+            
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setEducatorMode(!educatorMode)}
+                className="bg-white/5 border-white/20 hover:bg-white/10 text-white min-h-[44px] px-3 sm:px-4 text-xs sm:text-sm"
+              >
+                <span className="hidden sm:inline">{educatorMode ? 'Student Mode' : 'Educator Mode'}</span>
+                <span className="sm:hidden">{educatorMode ? 'Student' : 'Educator'}</span>
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleRandomize}
+                className="bg-white/5 border-white/20 hover:bg-white/10 text-white min-h-[44px] min-w-[44px]"
+                title="Randomize Parameters"
+              >
+                <Shuffle className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleReset}
+                className="bg-white/5 border-white/20 hover:bg-white/10 text-white min-h-[44px] min-w-[44px]"
+                title="Reset to Defaults"
+              >
+                <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -122,21 +137,21 @@ export default function UniverseBuilderApp() {
       </div>
 
       {/* Section Navigation */}
-      <nav className="fixed top-[90px] left-0 right-0 z-40 bg-black/70 backdrop-blur-sm border-b border-white/10">
-        <div className="container mx-auto px-4 py-2">
-          <div className="flex items-center justify-between overflow-x-auto scrollbar-hide">
+      <nav className="fixed top-[73px] sm:top-[81px] left-0 right-0 z-40 bg-black/70 backdrop-blur-sm border-b border-white/10">
+        <div className="container mx-auto px-2 sm:px-4 py-2">
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
             {sections.map((section, idx) => (
               <button
                 key={section.id}
                 onClick={() => setCurrentSection(idx)}
-                className={`flex-shrink-0 px-4 py-3 text-sm transition-all ${
+                className={`flex-shrink-0 snap-start px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm transition-all min-w-[100px] sm:min-w-[120px] min-h-[44px] rounded-lg mx-1 ${
                   currentSection === idx
-                    ? 'text-orange-400 border-b-2 border-orange-400'
-                    : 'text-gray-500 hover:text-gray-300'
+                    ? 'text-orange-400 bg-orange-400/10 border border-orange-400/30'
+                    : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
                 }`}
               >
-                <div className="font-semibold text-sm">{section.title}</div>
-                <div className="text-xs opacity-70">{section.subtitle}</div>
+                <div className="font-semibold text-xs sm:text-sm leading-tight">{section.title}</div>
+                <div className="text-xs opacity-70 hidden sm:block">{section.subtitle}</div>
               </button>
             ))}
           </div>
@@ -144,7 +159,7 @@ export default function UniverseBuilderApp() {
       </nav>
 
       {/* Main Content */}
-      <main className="pt-[150px] pb-20">
+      <main className="pt-[140px] sm:pt-[150px] pb-20" {...swipeHandlers}>
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSection}
