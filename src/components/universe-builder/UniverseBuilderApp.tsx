@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/button'
+import { Button } from '../ui/button'
 import { RotateCcw, Shuffle } from 'lucide-react'
 import { useSwipeable } from 'react-swipeable'
 

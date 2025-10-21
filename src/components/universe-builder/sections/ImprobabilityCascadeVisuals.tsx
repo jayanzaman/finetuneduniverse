@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react'
-import { Slider } from '@/components/ui/slider'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Slider } from '../../ui/slider'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
+import { Badge } from '../../ui/badge'
+import { Button } from '../../ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs'
 import { Info, Play, Pause, RotateCcw } from 'lucide-react'
 
 // Penrose Entropy Visualization

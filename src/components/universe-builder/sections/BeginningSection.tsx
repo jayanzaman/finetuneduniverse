@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react'
-import { Slider } from '@/components/ui/slider'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { Slider } from '../../ui/slider'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
+import { Badge } from '../../ui/badge'
 import { Info } from 'lucide-react'
 import { SimplePenroseVisual, SimpleDarkEnergyVisual, SimpleFlatnessVisual, SimpleHorizonVisual } from './SimpleImprobabilityVisuals'
 

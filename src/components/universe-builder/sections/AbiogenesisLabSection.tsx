@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Slider } from '@/components/ui/slider'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
+import { Slider } from '../../ui/slider'
+import { Button } from '../../ui/button'
 import { Play, Pause, RotateCcw, Info } from 'lucide-react'
 
 // Types and Interfaces

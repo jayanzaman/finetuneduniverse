@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Slider } from '@/components/ui/slider'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
+import { Slider } from '../../ui/slider'
 import { SimpleStrongForceVisual, SimpleHierarchyVisual, SimpleMatterAntimatterVisual, SimpleProtonStabilityVisual } from './SimpleMatterVisuals'
 
 // Particle Visualization Component
