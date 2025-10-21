@@ -1,6 +1,6 @@
 'use client'
 
-import UniverseBuilderApp from '@/components/universe-builder/UniverseBuilderApp'
+import UniverseBuilderApp from '../components/universe-builder/UniverseBuilderApp'
 
 export default function Home() {
   return (
