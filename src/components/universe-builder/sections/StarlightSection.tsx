@@ -131,7 +131,11 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
             
             {/* Habitable Zone Ring */}
             {metallicity > 0.01 && metallicity < 0.05 && (
-              <div className="habitable-zone">
+              <div className="habitable-zone" style={{
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)'
+              }}>
                 <div className="hz-ring" />
                 <div className="hz-label">Habitable Zone</div>
               </div>
@@ -268,9 +272,7 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
         }
         .habitable-zone {
           position: absolute;
-          left: 50%;
-          top: 50%;
-          transform: translate(-50%, -50%);
+          pointer-events: none;
         }
         .hz-ring {
           width: 120px;
@@ -278,6 +280,10 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
           border: 2px dashed rgba(0, 255, 0, 0.6);
           border-radius: 50%;
           animation: hz-pulse 3s ease-in-out infinite;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
         }
         .hz-label {
           position: absolute;
@@ -364,6 +370,101 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
           0%, 100% { transform: scale(1); opacity: 0.8; }
           50% { transform: scale(1.2); opacity: 1; }
         }
+        .spectrum-container {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+        .spectrum-bar {
+          position: relative;
+          height: 40px;
+          margin: 10px 0;
+          border-radius: 4px;
+          overflow: hidden;
+        }
+        .rainbow-gradient {
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(to right, 
+            #8b00ff 0%,   /* Violet */
+            #4b0082 14%,  /* Indigo */
+            #0000ff 28%,  /* Blue */
+            #00ff00 42%,  /* Green */
+            #ffff00 57%,  /* Yellow */
+            #ff7f00 71%,  /* Orange */
+            #ff0000 85%   /* Red */
+          );
+        }
+        .absorption-lines {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+        .absorption-line {
+          position: absolute;
+          width: 2px;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.8);
+          box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+        }
+        .fe-line-1 { left: 25%; }
+        .fe-line-2 { left: 45%; }
+        .fe-line-3 { left: 65%; }
+        .ca-line-1 { left: 15%; }
+        .ca-line-2 { left: 18%; }
+        .na-line-1 { left: 58%; }
+        .na-line-2 { left: 59%; }
+        .mg-line-1 { left: 52%; }
+        .ti-line-1 { left: 35%; }
+        .ti-line-2 { left: 72%; }
+        .si-line-1 { left: 40%; }
+        .cr-line-1 { left: 48%; }
+        .ni-line-1 { left: 78%; }
+        .element-list {
+          position: absolute;
+          bottom: -20px;
+          left: 0;
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 4px;
+          justify-content: center;
+          align-items: center;
+        }
+        .element-tag {
+          font-size: 10px;
+          font-weight: bold;
+          background: rgba(0, 0, 0, 0.8);
+          padding: 2px 4px;
+          border-radius: 3px;
+          border: 1px solid currentColor;
+          text-shadow: none;
+          transition: opacity 0.3s ease;
+        }
+        .wavelength-scale {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 5px;
+          padding: 0 10px;
+        }
+        .star-temp-indicator {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          text-align: center;
+        }
+        .temp-star {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          margin: 0 auto;
+          transition: all 0.3s ease;
+        }
       `}</style>
     </div>
   )
@@ -377,13 +478,65 @@ export default function StarlightSection({
   cosmicTime?: number;
 }) {
   const [stellarMass, setStellarMass] = useState(1)
-  const [metallicity, setMetallicity] = useState(0.02)
+  const [selectedStar, setSelectedStar] = useState('sun')
+  
+  // Real stellar data from astronomical observations
+  const stellarDatabase = {
+    'popiii': { name: 'Population III', nickname: 'First Stars (Theoretical)', metallicity: 0.00001, distance: '∞ ly', age: '13.7 Gyr', type: 'Population III Primordial' },
+    'hd140283': { name: 'HD 140283', nickname: '"Methuselah Star"', metallicity: 0.0004, distance: '190 ly', age: '14.5 Gyr', type: 'Population II Halo' },
+    'tauceti': { name: 'Tau Ceti', nickname: 'Metal-Poor Neighbor', metallicity: 0.008, distance: '11.9 ly', age: '5.8 Gyr', type: 'Population II Disk' },
+    'sun': { name: 'Sun (Sol)', nickname: 'Solar Standard', metallicity: 0.02, distance: '0 ly', age: '4.6 Gyr', type: 'Population I Disk' },
+    'muleo': { name: 'μ Leonis', nickname: 'Metal-Rich Giant', metallicity: 0.04, distance: '133 ly', age: '2.5 Gyr', type: 'Population I Enriched' },
+    'galcenter': { name: 'Sgr A* Region', nickname: 'Galactic Core Stars', metallicity: 0.08, distance: '26,000 ly', age: '1.0 Gyr', type: 'Super Metal-Rich' }
+  }
+  
+  const currentStar = stellarDatabase[selectedStar as keyof typeof stellarDatabase]
+  const metallicity = currentStar.metallicity
   const [starFormationRate, setStarFormationRate] = useState(1)
+  const [isTimeLapseActive, setIsTimeLapseActive] = useState(false)
+  const [currentCosmicAge, setCurrentCosmicAge] = useState(13.8) // Start at Big Bang
+
+  // Time-lapse animation effect
+  useEffect(() => {
+    if (!isTimeLapseActive) return
+
+    const interval = setInterval(() => {
+      setCurrentCosmicAge(prevAge => {
+        const newAge = prevAge - 0.2 // Progress forward in time (age decreases)
+        
+        // Determine formation rate based on cosmic age
+        let newRate
+        if (newAge > 13.0) {
+          newRate = 0.1 // Dark Ages
+        } else if (newAge > 11.0) {
+          newRate = 0.5 // First Light
+        } else if (newAge > 8.0) {
+          newRate = 1.5 // Peak Era
+        } else if (newAge > 4.6) {
+          newRate = 1.2 // Post-Peak
+        } else if (newAge > 0) {
+          newRate = 1.0 // Modern Era
+        } else {
+          // Reset to beginning
+          setIsTimeLapseActive(false)
+          return 13.8
+        }
+        
+        setStarFormationRate(newRate)
+        return newAge
+      })
+    }, 500) // Update every 500ms
+
+    return () => clearInterval(interval)
+  }, [isTimeLapseActive])
 
   useEffect(() => {
     const handleRandomize = () => {
       setStellarMass(0.1 + Math.random() * 1.9)
-      setMetallicity(Math.random() * 0.1)
+      // Randomly select a star for metallicity
+      const starKeys = Object.keys(stellarDatabase)
+      const randomStar = starKeys[Math.floor(Math.random() * starKeys.length)]
+      setSelectedStar(randomStar)
       setStarFormationRate(0.1 + Math.random() * 1.9)
     }
 
@@ -395,9 +548,11 @@ export default function StarlightSection({
     <div className="container mx-auto px-4">
       {/* Header Section */}
       <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Starlight & Heavy Elements</h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          The first stars ignite, forging heavy elements through nuclear fusion and seeding the cosmos with the building blocks of complexity.
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
+          Formation of Stars
+        </h2>
+        <p className="text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          The cosmic forge that created the building blocks of planets and life
         </p>
       </div>
 
@@ -461,41 +616,189 @@ export default function StarlightSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <div className="text-2xl mb-2">⚛️</div>
-                <div className="text-sm text-gray-300">Heavy Elements</div>
-                <div className="text-lg font-bold text-white">{(metallicity * 100).toFixed(2)}%</div>
+            <div className="h-48 bg-black/30 rounded-lg p-4 mb-4 relative overflow-hidden">
+              {/* Stellar Spectrum Visualization */}
+              <div className="spectrum-container">
+                {/* Title */}
+                <div className="text-xs text-gray-300 mb-2 text-center">Stellar Spectrum Analysis</div>
+                
+                {/* Rainbow Spectrum Bar */}
+                <div className="spectrum-bar">
+                  <div className="rainbow-gradient" />
+                  
+                  {/* Absorption Lines */}
+                  <div className="absorption-lines">
+                    {/* Iron (Fe) Lines - Multiple strong lines */}
+                    {metallicity > 0.0003 && (
+                      <>
+                        <div className="absorption-line fe-line-1" style={{ opacity: Math.min(metallicity * 40, 0.9) }} />
+                        <div className="absorption-line fe-line-2" style={{ opacity: Math.min(metallicity * 35, 0.8) }} />
+                        <div className="absorption-line fe-line-3" style={{ opacity: Math.min(metallicity * 45, 0.9) }} />
+                      </>
+                    )}
+                    
+                    {/* Calcium (Ca) H&K Lines */}
+                    {metallicity > 0.0005 && (
+                      <>
+                        <div className="absorption-line ca-line-1" style={{ opacity: Math.min(metallicity * 30, 0.8) }} />
+                        <div className="absorption-line ca-line-2" style={{ opacity: Math.min(metallicity * 25, 0.7) }} />
+                      </>
+                    )}
+                    
+                    {/* Sodium (Na) D Lines */}
+                    {metallicity > 0.001 && (
+                      <>
+                        <div className="absorption-line na-line-1" style={{ opacity: Math.min(metallicity * 25, 0.7) }} />
+                        <div className="absorption-line na-line-2" style={{ opacity: Math.min(metallicity * 23, 0.7) }} />
+                      </>
+                    )}
+                    
+                    {/* Magnesium (Mg) Lines */}
+                    {metallicity > 0.003 && (
+                      <div className="absorption-line mg-line-1" style={{ opacity: Math.min(metallicity * 20, 0.7) }} />
+                    )}
+                    
+                    {/* Titanium (Ti) Lines */}
+                    {metallicity > 0.005 && (
+                      <>
+                        <div className="absorption-line ti-line-1" style={{ opacity: Math.min(metallicity * 18, 0.6) }} />
+                        <div className="absorption-line ti-line-2" style={{ opacity: Math.min(metallicity * 16, 0.6) }} />
+                      </>
+                    )}
+                    
+                    {/* Silicon (Si) Lines */}
+                    {metallicity > 0.008 && (
+                      <div className="absorption-line si-line-1" style={{ opacity: Math.min(metallicity * 15, 0.6) }} />
+                    )}
+                    
+                    {/* Chromium (Cr) Lines */}
+                    {metallicity > 0.01 && (
+                      <div className="absorption-line cr-line-1" style={{ opacity: Math.min(metallicity * 12, 0.5) }} />
+                    )}
+                    
+                    {/* Nickel (Ni) Lines */}
+                    {metallicity > 0.015 && (
+                      <div className="absorption-line ni-line-1" style={{ opacity: Math.min(metallicity * 10, 0.5) }} />
+                    )}
+                  </div>
+                  
+                  {/* Element Labels - Compact List Below Spectrum */}
+                  <div className="element-list">
+                    {[
+                      { key: 'fe', name: 'Fe', threshold: 0.0003, multiplier: 40, color: '#ff6b6b' },
+                      { key: 'ca', name: 'Ca', threshold: 0.0005, multiplier: 30, color: '#4ecdc4' },
+                      { key: 'na', name: 'Na', threshold: 0.001, multiplier: 25, color: '#ffd93d' },
+                      { key: 'mg', name: 'Mg', threshold: 0.003, multiplier: 20, color: '#45b7d1' },
+                      { key: 'ti', name: 'Ti', threshold: 0.005, multiplier: 18, color: '#c44569' },
+                      { key: 'si', name: 'Si', threshold: 0.008, multiplier: 15, color: '#96ceb4' },
+                      { key: 'cr', name: 'Cr', threshold: 0.01, multiplier: 12, color: '#a55eea' },
+                      { key: 'ni', name: 'Ni', threshold: 0.015, multiplier: 10, color: '#fd79a8' }
+                    ].filter(element => metallicity > element.threshold).map((element, index) => (
+                      <span 
+                        key={element.key}
+                        className="element-tag"
+                        style={{ 
+                          color: element.color,
+                          opacity: Math.min(metallicity * element.multiplier, 1)
+                        }}
+                      >
+                        {element.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Wavelength Scale */}
+                <div className="wavelength-scale">
+                  <span className="text-xs text-purple-300">400nm</span>
+                  <span className="text-xs text-blue-300">450nm</span>
+                  <span className="text-xs text-green-300">550nm</span>
+                  <span className="text-xs text-yellow-300">600nm</span>
+                  <span className="text-xs text-red-300">700nm</span>
+                </div>
+                
+                {/* Star Color Temperature Indicator */}
+                <div className="star-temp-indicator">
+                  <div 
+                    className="temp-star"
+                    style={{
+                      backgroundColor: `rgb(${255 - metallicity * 500}, ${240 - metallicity * 300}, ${200 - metallicity * 200})`,
+                      boxShadow: `0 0 15px rgb(${255 - metallicity * 500}, ${240 - metallicity * 300}, ${200 - metallicity * 200})`,
+                    }}
+                  />
+                  <div className="text-xs text-gray-300 mt-1">
+                    {metallicity < 0.01 ? "Hot Blue-White" :
+                     metallicity < 0.03 ? "Yellow (Sun-like)" :
+                     "Cool Red Giant"}
+                  </div>
+                </div>
+                
+                {/* Metallicity Reading */}
+                <div className="absolute bottom-2 right-2 text-right">
+                  <div className="text-xs text-gray-400">Metallicity [Fe/H]</div>
+                  <div className="text-sm font-bold text-white">
+                    {metallicity < 0.001 ? "-∞" : 
+                     metallicity < 0.01 ? `${(Math.log10(metallicity / 0.02)).toFixed(1)}` :
+                     `+${(Math.log10(metallicity / 0.02)).toFixed(1)}`}
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="relative">
-              <Slider
-                value={[metallicity]}
-                onValueChange={(value) => setMetallicity(value[0])}
-                max={0.1}
-                min={0}
-                step={0.001}
-                className="w-full"
-              />
-              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                   style={{
-                     left: `${((0.01 - 0) / (0.1 - 0)) * 100}%`,
-                     width: `${((0.03 - 0.01) / (0.1 - 0)) * 100}%`
-                   }}></div>
+            {/* Observatory Telescope Selector */}
+            <div className="space-y-3">
+              <div className="text-sm text-gray-300 mb-2">🔭 Select Target Star:</div>
+              <div className="grid grid-cols-1 gap-2">
+                {Object.entries(stellarDatabase).map(([key, star]) => (
+                  <button
+                    key={key}
+                    onClick={() => setSelectedStar(key)}
+                    className={`p-3 rounded-lg border text-left transition-all ${
+                      selectedStar === key 
+                        ? 'bg-blue-600/30 border-blue-400 text-white' 
+                        : 'bg-black/20 border-white/20 text-gray-300 hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="font-medium">{star.name}</div>
+                        <div className="text-xs text-gray-400">{star.nickname}</div>
+                        <div className="text-xs text-blue-300 mt-1">{star.type}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-white">{(star.metallicity * 100).toFixed(2)}%</div>
+                        <div className="text-xs text-gray-400">{star.distance}</div>
+                        <div className="text-xs text-gray-500">{star.age}</div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-between text-sm text-gray-400 mt-4">
-              <span>Population III</span>
-              <span className="text-green-400 font-bold">1-3% (optimal)</span>
-              <span className="text-white font-medium">{(metallicity * 100).toFixed(2)}%</span>
-              <span>Metal-Rich</span>
+            
+            {/* Current Star Info */}
+            <div className="mt-4 p-3 bg-green-900/20 border border-green-500/30 rounded-lg">
+              <div className="text-sm text-green-200">
+                <strong>Observing:</strong> {currentStar.name} • <strong>Metallicity:</strong> {(metallicity * 100).toFixed(3)}% • <strong>[Fe/H]:</strong> {metallicity < 0.001 ? "-∞" : (Math.log10(metallicity / 0.02)).toFixed(1)}
+              </div>
             </div>
             
             {educatorMode && (
               <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                 <div className="text-xs text-blue-200 space-y-2">
-                  <p><strong>What you're seeing:</strong> Heavy element percentage display - the fraction of elements heavier than hydrogen and helium in stellar composition.</p>
-                  <p><strong>Solar metallicity:</strong> Our Sun has ~2% heavy elements, which is optimal for planet formation and complex chemistry.</p>
-                  <p><strong>Population III mystery:</strong> The first stars had zero metallicity but somehow produced the heavy elements needed for later generations.</p>
+                  <p><strong>What you're seeing:</strong> A stellar spectrum showing how astronomers actually measure metallicity. The rainbow bar represents starlight spread into its component wavelengths (like a prism), while dark absorption lines reveal which elements are present in the star's atmosphere.</p>
+                  <p><strong>Reading the spectrum:</strong> Each element absorbs light at specific wavelengths, creating dark lines. More metallicity = more absorption lines and stronger/darker existing lines. Watch as Fe, Ca, Na, Mg, Ti, Si, Cr, and Ni lines appear and intensify as you select more metal-rich stars.</p>
+                  <p><strong>The [Fe/H] scale:</strong> Astronomers use logarithmic notation where 0.0 = solar metallicity, negative values = metal-poor stars, positive = metal-rich. The star's color also shifts from blue-white (metal-poor) to yellow (solar) to red (metal-rich).</p>
+                  <p><strong>Solar metallicity:</strong> Our Sun has ~2% heavy elements ([Fe/H] ≈ 0.0), which is optimal for planet formation and complex chemistry.</p>
+                  <div className="p-3 bg-yellow-900/30 border border-yellow-500/50 rounded-lg mt-2">
+                    <p className="text-yellow-200"><strong>🌟 The Population III Mystery - The Ultimate Fine-Tuning Paradox:</strong></p>
+                    <div className="text-xs text-yellow-100 mt-2 space-y-1">
+                      <p><strong>The Problem:</strong> The first stars (Population III) had ZERO metallicity - only hydrogen and helium from Big Bang nucleosynthesis. But how did they form without heavy elements to cool the gas clouds?</p>
+                      <p><strong>The Paradox:</strong> Modern star formation requires dust grains (made of heavy elements) to cool gas from 10,000K to 10K. Population III had no dust, yet somehow formed anyway at much higher temperatures.</p>
+                      <p><strong>The Stakes:</strong> If Population III stars hadn't formed, there would be no heavy elements, no planets, no life. The universe would be forever stuck with only hydrogen and helium.</p>
+                      <p><strong>The Evidence:</strong> We've never directly observed a Population III star - they all died 13+ billion years ago. We only know they existed because we see their heavy element "fingerprints" in ancient Population II stars.</p>
+                      <p><strong>The Fine-Tuning:</strong> The conditions had to be EXACTLY right - dark matter halos massive enough to trap gas, but not so massive that they collapsed into black holes before forming stars.</p>
+                    </div>
+                  </div>
                   <p><strong>Goldilocks zone:</strong> Too little metallicity = no planets, too much = runaway stellar formation disrupts galactic structure.</p>
                 </div>
               </div>
@@ -506,48 +809,245 @@ export default function StarlightSection({
         {/* Star Formation Rate */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Star Formation Rate</CardTitle>
-            <CardDescription className="text-gray-300">
-              Rate of stellar birth in early galaxies
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <div className="text-2xl mb-2">⭐</div>
-                <div className="text-sm text-gray-300">Formation Rate</div>
-                <div className="text-lg font-bold text-white">{starFormationRate.toFixed(1)}x</div>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-white">Star Formation Rate</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Rate of stellar birth in early galaxies
+                </CardDescription>
+              </div>
+              
+              {/* Time-Lapse Controls */}
+              <div className="flex items-center gap-2">
+                {/* Play/Pause Button */}
+                <button
+                  onClick={() => setIsTimeLapseActive(!isTimeLapseActive)}
+                  className={`group relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-xs transition-all duration-300 ${
+                    isTimeLapseActive 
+                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md shadow-red-500/25 hover:shadow-red-500/40 hover:scale-105' 
+                      : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105'
+                  }`}
+                >
+                  <div className={`w-3 h-3 flex items-center justify-center transition-transform duration-300 ${
+                    isTimeLapseActive ? 'scale-110' : 'scale-100'
+                  }`}>
+                    {isTimeLapseActive ? (
+                      <div className="flex gap-0.5">
+                        <div className="w-0.5 h-2 bg-white rounded-full"></div>
+                        <div className="w-0.5 h-2 bg-white rounded-full"></div>
+                      </div>
+                    ) : (
+                      <div className="w-0 h-0 border-l-[4px] border-l-white border-t-[3px] border-t-transparent border-b-[3px] border-b-transparent ml-0.5"></div>
+                    )}
+                  </div>
+                  <span className="font-semibold">
+                    {isTimeLapseActive ? 'Pause' : 'Play'}
+                  </span>
+                  <div className={`absolute inset-0 rounded-lg bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
+                </button>
+                
+                {/* Reset Button */}
+                <button
+                  onClick={() => {
+                    setCurrentCosmicAge(13.8)
+                    setStarFormationRate(0.1)
+                    setIsTimeLapseActive(false)
+                  }}
+                  className="group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-slate-600 to-slate-700 text-white font-medium text-xs shadow-md shadow-slate-600/25 hover:shadow-slate-600/40 hover:scale-105 transition-all duration-300"
+                >
+                  <div className="w-3 h-3 flex items-center justify-center">
+                    <div className="w-2 h-2 border-2 border-white border-t-transparent rounded-full animate-spin group-hover:animate-none transition-all duration-300"></div>
+                  </div>
+                  <span className="font-semibold">Reset</span>
+                  <div className="absolute inset-0 rounded-lg bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </button>
               </div>
             </div>
-            <div className="relative">
-              <Slider
-                value={[starFormationRate]}
-                onValueChange={(value) => setStarFormationRate(value[0])}
-                max={2}
-                min={0.1}
-                step={0.1}
-                className="w-full"
-              />
-              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                   style={{
-                     left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
-                     width: `${((1.5 - 0.8) / (2 - 0.1)) * 100}%`
-                   }}></div>
-            </div>
-            <div className="flex justify-between text-sm text-gray-400 mt-4">
-              <span>Slow</span>
-              <span className="text-green-400 font-bold">0.8-1.5 (optimal)</span>
-              <span className="text-white font-medium">{starFormationRate.toFixed(1)}</span>
-              <span>Rapid</span>
+          </CardHeader>
+          <CardContent>
+            {/* Cosmic Timeline & Factory Settings Combined */}
+            <div className="space-y-4">
+              <div className="flex justify-between items-center mb-2">
+                <div className="text-sm text-gray-300">Universe Factory Settings</div>
+                
+                {/* Current Status - Modern UI */}
+                <div className="flex items-center gap-3 px-3 py-1.5 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg border border-slate-600/30 backdrop-blur-sm min-w-[280px]">
+                  <div className="flex items-center gap-2 min-w-[120px]">
+                    <div className={`w-2 h-2 rounded-full ${
+                      starFormationRate <= 0.6 ? 'bg-blue-400 animate-pulse' :
+                      starFormationRate > 1.5 ? 'bg-red-400 animate-pulse' : 
+                      'bg-green-400 animate-pulse'
+                    }`}></div>
+                    <span className="text-xs font-medium text-white truncate">
+                      {starFormationRate <= 0.2 ? 'Shutdown' :
+                       starFormationRate <= 0.6 ? 'Maintenance Mode' :
+                       starFormationRate <= 1.1 ? 'Standard Operation' :
+                       starFormationRate <= 1.6 ? 'High Demand' : 'Emergency Production'}
+                    </span>
+                  </div>
+                  <div className="h-4 w-px bg-slate-500/50 flex-shrink-0"></div>
+                  <div className="flex items-center gap-3 text-xs text-slate-300 min-w-[100px]">
+                    <span className="min-w-[35px]"><strong className="text-white">{starFormationRate.toFixed(1)}x</strong> Rate</span>
+                    <span className="min-w-[45px]"><strong className="text-white">{Math.min(100, starFormationRate * 50).toFixed(0)}%</strong> Eff</span>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Animated Timeline Visualization */}
+              <div className="relative bg-black/40 rounded-lg p-3 mb-4">
+                <div className="text-xs text-gray-400 mb-2 text-center">Cosmic Star Formation History</div>
+                
+                <div className="relative h-8 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded overflow-hidden">
+                  {/* Timeline markers */}
+                  <div className="absolute inset-0 flex items-center justify-between px-2">
+                    <span className="text-xs text-white font-bold">13.8 Gya</span>
+                    <span className="text-xs text-white font-bold">Peak (10 Gya)</span>
+                    <span className="text-xs text-white font-bold">Today</span>
+                  </div>
+                  
+                  {/* Animated position indicator */}
+                  <div 
+                    className={`absolute top-0 w-2 h-full bg-white shadow-lg transition-all duration-500 ${
+                      isTimeLapseActive ? 'animate-pulse' : ''
+                    }`}
+                    style={{ 
+                      left: `${Math.max(0, Math.min(100, ((13.8 - currentCosmicAge) / 13.8) * 100))}%`
+                    }}
+                  />
+                  
+                  {/* Progress fill */}
+                  <div 
+                    className="absolute top-0 left-0 h-full bg-white/20 transition-all duration-500"
+                    style={{ 
+                      width: `${Math.max(0, Math.min(100, ((13.8 - currentCosmicAge) / 13.8) * 100))}%`
+                    }}
+                  />
+                </div>
+                
+                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <span>Big Bang</span>
+                  <span>Star Formation Peak</span>
+                  <span>Present Day</span>
+                </div>
+                
+                {/* Current Age Display */}
+                <div className="text-center mt-2">
+                  <div className="text-sm font-bold text-white">
+                    {currentCosmicAge.toFixed(1)} Gya 
+                    <span className="text-xs text-gray-400 ml-2">
+                      ({currentCosmicAge > 13.0 ? 'Dark Ages' :
+                        currentCosmicAge > 11.0 ? 'First Light Era' :
+                        currentCosmicAge > 8.0 ? 'Peak Formation Era' :
+                        currentCosmicAge > 4.6 ? 'Post-Peak Era' :
+                        'Modern Era'})
+                    </span>
+                  </div>
+                  {isTimeLapseActive && (
+                    <div className="text-xs text-blue-300 mt-1 animate-pulse">
+                      ⏰ Time-lapse in progress... Factory settings auto-adjusting
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Era-Based Factory Settings */}
+              <div className="grid grid-cols-1 gap-2">
+                {[
+                  { 
+                    key: 'dark_ages', 
+                    label: 'Dark Ages Era', 
+                    rate: 0.1, 
+                    era: '13.8-13.0 Gya',
+                    description: 'Before first stars - factory not yet built', 
+                    status: 'danger',
+                    cosmicEvent: 'Recombination complete, no stars yet'
+                  },
+                  { 
+                    key: 'first_light', 
+                    label: 'First Light Era', 
+                    rate: 0.5, 
+                    era: '13.0-11.0 Gya',
+                    description: 'Population III stars ignite - factory startup', 
+                    status: 'warning',
+                    cosmicEvent: 'First stars end cosmic dark ages'
+                  },
+                  { 
+                    key: 'modern', 
+                    label: 'Modern Era', 
+                    rate: 1.0, 
+                    era: '4.6 Gya-Today',
+                    description: 'Current galactic production rate', 
+                    status: 'success',
+                    cosmicEvent: 'Solar system formation, life emerges'
+                  },
+                  { 
+                    key: 'peak', 
+                    label: 'Peak Production Era', 
+                    rate: 1.5, 
+                    era: '11.0-8.0 Gya',
+                    description: 'Maximum cosmic star formation rate', 
+                    status: 'success',
+                    cosmicEvent: 'Universe reaches peak star formation'
+                  },
+                  { 
+                    key: 'starburst', 
+                    label: 'Starburst Events', 
+                    rate: 2.0, 
+                    era: 'Various Times',
+                    description: 'Galaxy mergers trigger extreme production', 
+                    status: 'danger',
+                    cosmicEvent: 'Galactic collisions, rapid gas consumption'
+                  }
+                ].map((setting) => (
+                  <button
+                    key={setting.key}
+                    onClick={() => setStarFormationRate(setting.rate)}
+                    className={`p-3 rounded-lg border text-left transition-all ${
+                      Math.abs(starFormationRate - setting.rate) < 0.05
+                        ? setting.status === 'success' 
+                          ? 'bg-green-600/30 border-green-400 text-white' 
+                          : setting.status === 'warning'
+                          ? 'bg-yellow-600/30 border-yellow-400 text-white'
+                          : 'bg-red-600/30 border-red-400 text-white'
+                        : 'bg-black/20 border-white/20 text-gray-300 hover:bg-white/5'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="font-medium flex items-center gap-2">
+                          {setting.status === 'success' ? '🟢' : setting.status === 'warning' ? '🟡' : '🔴'}
+                          {setting.label}
+                        </div>
+                        <div className="text-xs text-blue-300 font-medium">{setting.era}</div>
+                        <div className="text-xs text-gray-400 mt-1">{setting.description}</div>
+                        <div className="text-xs text-purple-300 mt-1 italic">{setting.cosmicEvent}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-white">{setting.rate}x</div>
+                        <div className="text-xs text-gray-400">
+                          {setting.rate <= 0.3 ? 'Dormant' :
+                           setting.rate <= 0.7 ? 'Startup' :
+                           setting.rate <= 1.2 ? 'Standard' :
+                           setting.rate <= 1.6 ? 'Peak' : 'Extreme'}
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
             
             {educatorMode && (
               <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                 <div className="text-xs text-blue-200 space-y-2">
-                  <p><strong>What you're seeing:</strong> Star formation rate multiplier - how quickly early galaxies converted gas into stars compared to today's rate.</p>
-                  <p><strong>Timing is critical:</strong> Moderate formation rates (0.8-1.5x) allow proper heavy element enrichment between stellar generations.</p>
-                  <p><strong>Too fast:</strong> Rapid star formation depletes gas reservoirs before sufficient heavy elements accumulate for planet formation.</p>
-                  <p><strong>Too slow:</strong> Insufficient stellar nucleosynthesis means the universe remains dominated by hydrogen and helium forever.</p>
+                  <p><strong>What you're seeing:</strong> An interactive cosmic timeline showing how star formation rates changed throughout the universe's 13.8-billion-year history. Each era represents different cosmic conditions that drove stellar birth.</p>
+                  <p><strong>The timeline:</strong> Watch the white indicator move as you play the time-lapse, showing how formation rates evolved from the Dark Ages (no stars) through the Peak Era (maximum formation) to today's Modern Era.</p>
+                  <p><strong>Era controls:</strong> Click any cosmic era to jump to that period and see how environmental conditions - gas density, temperature, and galactic evolution - determined star formation rates.</p>
+                  <div className="p-3 bg-yellow-900/30 border border-yellow-500/50 rounded-lg mt-2">
+                    <p className="text-yellow-200"><strong>⚖️ Fine-Tuning Insight:</strong></p>
+                    <p className="text-yellow-100 mt-1">The Peak Era (11-8 Gya) was crucial - it produced most heavy elements while leaving enough gas for later generations. Too early and no heavy elements exist; too late and gas is depleted.</p>
+                  </div>
+                  <p><strong>Population III mystery:</strong> The first stars had to form without any heavy elements to cool gas clouds - a seemingly impossible bootstrap problem that somehow worked perfectly.</p>
                 </div>
               </div>
             )}
