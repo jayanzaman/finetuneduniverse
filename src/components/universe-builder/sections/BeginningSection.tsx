@@ -299,15 +299,6 @@ export default function BeginningSection({
 
   return (
     <div className="container mx-auto px-4">
-      {/* Header Section */}
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">The Beginning</h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Adjust the fundamental parameters of the early universe and witness the consequences.
-          Only precise conditions allow for the formation of structure and complexity.
-        </p>
-      </div>
-
       {/* Main Visualization - Full Width */}
       <div className="mb-12">
         {/* Visualization */}

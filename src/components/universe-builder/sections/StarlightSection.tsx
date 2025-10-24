@@ -546,16 +546,6 @@ export default function StarlightSection({
 
   return (
     <div className="container mx-auto px-4">
-      {/* Header Section */}
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6">
-          Formation of Stars
-        </h2>
-        <p className="text-lg sm:text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-          The cosmic forge that created the building blocks of planets and life
-        </p>
-      </div>
-
       {/* Primary Controls - Balanced Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Stellar Mass */}

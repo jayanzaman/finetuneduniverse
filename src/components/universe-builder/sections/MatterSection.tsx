@@ -114,15 +114,6 @@ export default function MatterSection({
 
   return (
     <div className="container mx-auto px-4">
-      {/* Header Section */}
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Formation of Matter</h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          As the universe cools, quarks combine to form the first protons and neutrons. 
-          The precise strength of fundamental forces determines whether matter can exist at all.
-        </p>
-      </div>
-
       {/* Primary Controls - Balanced Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Quark Binding Force */}

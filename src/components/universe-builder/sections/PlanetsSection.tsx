@@ -126,14 +126,6 @@ export default function PlanetsSection({
 
   return (
     <div className="container mx-auto px-4">
-      {/* Header Section */}
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Planets & Habitability</h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Rocky planets form around stars, but only those in the habitable zone with the right conditions can support liquid water and life.
-        </p>
-      </div>
-
       {/* Primary Controls - Balanced Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Orbital Distance */}

@@ -24,7 +24,7 @@ export default function UniverseBuilderApp() {
     { id: 0, title: 'The Beginning', subtitle: 'Low Entropy Start', component: BeginningSection },
     { id: 1, title: 'Formation of Matter', subtitle: 'Quarks to Atoms', component: MatterSection },
     { id: 2, title: 'Formation of Stars', subtitle: 'First Stars', component: StarlightSection },
-    { id: 3, title: 'The Galactic Heart', subtitle: 'Black Holes & Galaxy Evolution', component: GalacticHeartSection },
+    { id: 3, title: 'Formation of Galaxy', subtitle: 'Blackhole at the Heart', component: GalacticHeartSection },
     { id: 4, title: 'Planets & Habitability', subtitle: 'Goldilocks Zone', component: PlanetsSection },
     { id: 5, title: 'Abiogenesis Lab', subtitle: 'From Chemistry to Codes', component: AbiogenesisLabSection },
     { id: 6, title: 'Complexity & Consciousness', subtitle: 'The Arrow of Time', component: ComplexitySection }

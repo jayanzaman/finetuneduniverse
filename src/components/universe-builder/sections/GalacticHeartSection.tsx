@@ -3,133 +3,229 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-// Galaxy Visualization Component
-function GalaxyVisualization({ 
-  blackHoleMass, 
-  activityLevel, 
-  starFormationRate 
+// Galaxy Evolution Data
+const galaxyPhases = [
+  {
+    id: 0,
+    name: "Pre-Galactic Era",
+    age: "13.8-13.6 billion years ago",
+    image: null, // No image - empty space
+    description: "The universe before galaxies existed",
+    details: "In the earliest epochs after the Big Bang, the universe was a nearly uniform sea of hydrogen and helium gas. No stars, no galaxies, no structure - just the cosmic microwave background and tiny density fluctuations that would eventually seed galaxy formation.",
+    fineTuning: "The universe needed to cool to exactly the right temperature and achieve the perfect balance of matter density. Too hot and gas couldn't clump; too cold and nuclear processes couldn't begin when stars finally formed."
+  },
+  {
+    id: 1,
+    name: "Proto-Galaxy Formation",
+    age: "13.6 billion years ago",
+    image: "/1. Proto-Galaxy Formation.png",
+    description: "Dark matter halo collapse and first gas accretion",
+    details: "The Milky Way begins as a chaotic cloud of dark matter and gas. Gravity pulls material together, but there's no organized structure yet. This phase was crucial for gathering the raw materials needed to build our galaxy.",
+    fineTuning: "If dark matter hadn't clumped at exactly the right rate, galaxies would never have formed. Too fast and everything would collapse into black holes; too slow and matter would remain forever dispersed."
+  },
+  {
+    id: 2,
+    name: "Starburst Phase", 
+    age: "12-10 billion years ago",
+    image: "/2. Starburst Phase.png",
+    description: "Intense star formation and heavy element creation",
+    details: "Massive bursts of star formation create the first heavy elements through nuclear fusion. These early stars live fast and die young, enriching the galaxy with carbon, oxygen, and iron - elements essential for planets and life.",
+    fineTuning: "The star formation rate had to be perfectly balanced. Too intense and it would consume all gas too quickly; too weak and insufficient heavy elements would form for rocky planets."
+  },
+  {
+    id: 3,
+    name: "Quasar Phase",
+    age: "10-8 billion years ago", 
+    image: "/3. Quasar Phase.png",
+    description: "Active galactic nucleus with powerful jets",
+    details: "The central supermassive black hole becomes extremely active, shooting powerful jets of energy across the galaxy. This phase regulates star formation and prevents the galaxy from growing too large.",
+    fineTuning: "The quasar phase had to end at precisely the right time. Too long and it would sterilize the entire galaxy; too short and the galaxy would become overcrowded with stars, disrupting planetary orbits."
+  },
+  {
+    id: 4,
+    name: "Early Spiral Formation",
+    age: "8-4 billion years ago",
+    image: "/4. Early Spiral Formation.png", 
+    description: "Spiral arms begin to form and stabilize",
+    details: "The galaxy settles into a rotating disk with emerging spiral arms. Star formation becomes more organized, creating the beautiful spiral pattern we see today. The galactic ecosystem begins to stabilize.",
+    fineTuning: "Spiral arm formation required precise rotational dynamics. Without the right balance of gravity and rotation, we'd have either a chaotic irregular galaxy or a featureless elliptical - neither ideal for life."
+  },
+  {
+    id: 5,
+    name: "Modern Milky Way",
+    age: "Present day",
+    image: "/Milkyway Galaxy Formation - Nature.jpg",
+    description: "Mature spiral galaxy with stable star formation",
+    details: "Today's Milky Way represents the perfect balance - a stable spiral galaxy with the right metallicity gradients, gas reservoirs, and stellar populations to support billions of planetary systems like ours.",
+    fineTuning: "Our current galaxy provides the ideal environment for life: stable orbits, appropriate heavy element abundance, regulated star formation, and protection from cosmic hazards through our location in the galactic suburbs."
+  }
+];
+
+// Milky Way Evolution Carousel Component
+function MilkyWayEvolution({ 
+  currentAge,
+  educatorMode,
+  onAgeChange
 }: {
-  blackHoleMass: number;
-  activityLevel: 'dormant' | 'active' | 'quasar';
-  starFormationRate: number;
+  currentAge: number;
+  educatorMode: boolean;
+  onAgeChange: (age: number) => void;
 }) {
-  const massScale = Math.log10(blackHoleMass / 1e5) / 5; // 0-1 scale
-  const coreSize = 20 + (massScale * 40);
-  
-  // Activity effects
-  const getActivityEffects = () => {
-    switch (activityLevel) {
-      case 'quasar':
-        return {
-          coreBrightness: 150,
-          jetLength: 200,
-          radiationZone: 180,
-          starDensity: 0.2,
-          diskColor: 'rgba(255, 100, 100, 0.8)'
-        };
-      case 'active':
-        return {
-          coreBrightness: 120,
-          jetLength: 100,
-          radiationZone: 80,
-          starDensity: 0.6,
-          diskColor: 'rgba(255, 180, 100, 0.6)'
-        };
-      default: // dormant
-        return {
-          coreBrightness: 80,
-          jetLength: 0,
-          radiationZone: 0,
-          starDensity: 1.0,
-          diskColor: 'rgba(200, 200, 255, 0.4)'
-        };
+  // Determine galaxy phase based on age
+  const getPhaseIndex = (age: number) => {
+    if (age > 13.6) return 0;      // Pre-Galactic Era
+    if (age > 12.0) return 1;      // Proto-Galaxy Formation
+    if (age > 10.0) return 2;      // Starburst Phase  
+    if (age > 8.0) return 3;       // Quasar Phase
+    if (age > 4.0) return 4;       // Early Spiral Formation
+    return 5;                      // Modern Milky Way
+  };
+
+  // Get representative age for each phase (middle of the phase range)
+  const getPhaseAge = (phaseIndex: number) => {
+    switch (phaseIndex) {
+      case 0: return 13.7;  // Pre-Galactic Era (13.8-13.6 Gya) -> 13.7
+      case 1: return 13.0;  // Proto-Galaxy Formation (13.6-12 Gya) -> 13.0
+      case 2: return 11.0;  // Starburst Phase (12-10 Gya) -> 11.0
+      case 3: return 9.0;   // Quasar Phase (10-8 Gya) -> 9.0
+      case 4: return 6.0;   // Early Spiral Formation (8-4 Gya) -> 6.0
+      case 5: return 1.0;   // Modern Milky Way (4-0 Gya) -> 1.0
+      default: return 1.0;
     }
   };
 
-  const effects = getActivityEffects();
+  const currentPhase = getPhaseIndex(currentAge);
+
+  const nextPhase = () => {
+    const nextPhaseIndex = (currentPhase + 1) % galaxyPhases.length;
+    onAgeChange(getPhaseAge(nextPhaseIndex));
+  };
+
+  const prevPhase = () => {
+    const prevPhaseIndex = (currentPhase - 1 + galaxyPhases.length) % galaxyPhases.length;
+    onAgeChange(getPhaseAge(prevPhaseIndex));
+  };
+
+  const goToPhase = (phaseIndex: number) => {
+    onAgeChange(getPhaseAge(phaseIndex));
+  };
+
+  const currentPhaseData = galaxyPhases[currentPhase];
 
   return (
-    <div className="relative w-full h-48 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
-      <div className="galaxy-container relative w-48 h-48">
-        
-        {/* Galactic Disk */}
-        <div 
-          className="absolute inset-0 rounded-full opacity-60"
-          style={{
-            background: `radial-gradient(ellipse at center, ${effects.diskColor} 0%, transparent 70%)`,
-            animation: 'galaxy-rotation 20s linear infinite'
-          }}
-        />
-        
-        {/* Central Black Hole */}
-        <div 
-          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-full"
-          style={{
-            width: `${coreSize}px`,
-            height: `${coreSize}px`,
-            backgroundColor: '#000',
-            boxShadow: `0 0 ${coreSize * 2}px rgba(255, 255, 255, ${effects.coreBrightness / 100})`,
-            border: '2px solid rgba(255, 255, 255, 0.3)'
-          }}
-        />
-        
-        {/* Jets (if active) */}
-        {effects.jetLength > 0 && (
-          <>
-            <div 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                width: '4px',
-                height: `${effects.jetLength}px`,
-                background: 'linear-gradient(to top, rgba(0, 150, 255, 0.8), transparent)',
-                marginTop: `-${effects.jetLength/2}px`
-              }}
+    <div className="relative w-full bg-black/20 border border-white/10 rounded-lg overflow-hidden">
+      {/* Image Carousel */}
+      <div className="relative aspect-video bg-black/40">
+        {/* Image Container with proper aspect ratio */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {currentPhaseData.image ? (
+            <img 
+              src={currentPhaseData.image}
+              alt={currentPhaseData.name}
+              className="max-w-full max-h-full object-contain transition-all duration-700 ease-out transform hover:scale-105"
+              style={{ filter: 'brightness(1.1) contrast(1.1)' }}
             />
-            <div 
-              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              style={{
-                width: '4px',
-                height: `${effects.jetLength}px`,
-                background: 'linear-gradient(to bottom, rgba(0, 150, 255, 0.8), transparent)',
-                marginTop: `${effects.jetLength/2}px`
-              }}
-            />
-          </>
-        )}
+          ) : (
+            /* Empty space visualization for Pre-Galactic Era */
+            <div className="w-full h-full flex items-center justify-center bg-black/60">
+              <div className="text-center space-y-4">
+                <div className="w-32 h-32 mx-auto rounded-full bg-black/40 flex items-center justify-center border border-white/20">
+                  <div className="text-4xl text-gray-400">∅</div>
+                </div>
+                <div className="text-gray-300 text-sm font-medium">No Galaxy Structure</div>
+                <div className="text-gray-400 text-xs">Primordial gas clouds only</div>
+              </div>
+            </div>
+          )}
+        </div>
         
-        {/* Stars */}
-        {Array.from({ length: Math.floor(20 * effects.starDensity) }).map((_, i) => {
-          const angle = (i / (20 * effects.starDensity)) * 2 * Math.PI;
-          const radius = 30 + Math.random() * 60;
-          const x = 50 + Math.cos(angle) * radius;
-          const y = 50 + Math.sin(angle) * radius;
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevPhase}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300 border border-white/20"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        
+        <button
+          onClick={nextPhase}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300 border border-white/20"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+
+        {/* Phase Indicators */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
+          {galaxyPhases.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToPhase(index)}
+              className={`relative transition-all duration-300 ${
+                index === currentPhase 
+                  ? 'w-8 h-2 bg-white rounded-full' 
+                  : 'w-2 h-2 bg-white/40 hover:bg-white/60 rounded-full'
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Phase Info Card */}
+        <div className="absolute top-4 left-4 bg-black/70 rounded-lg p-3 border border-white/20 max-w-xs">
+          <h3 className="text-lg font-semibold text-white mb-1">{currentPhaseData.name}</h3>
+          <p className="text-sm text-gray-300 mb-1 font-medium">{currentPhaseData.age}</p>
+          <p className="text-sm text-gray-300 leading-relaxed">{currentPhaseData.description}</p>
+        </div>
+
+        {/* Progress Bar with Timeline Legends */}
+        <div className="absolute bottom-0 left-0 right-0">
+          {/* Progress Bar */}
+          <div className="h-1 bg-white/10">
+            <div 
+              className="h-full bg-white/60 transition-all duration-700"
+              style={{ width: `${((currentPhase + 1) / galaxyPhases.length) * 100}%` }}
+            />
+          </div>
           
-          return (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full"
-              style={{
-                left: `${x}%`,
-                top: `${y}%`,
-                opacity: 0.3 + Math.random() * 0.7,
-                animation: `twinkle ${2 + Math.random() * 3}s ease-in-out infinite`
-              }}
-            />
-          );
-        })}
+          {/* Timeline Legends */}
+          <div className="flex justify-between items-center px-4 py-2 bg-black/40 text-xs">
+            <div className="flex flex-col items-start">
+              <span className="text-white font-medium">13.8 Gya</span>
+              <span className="text-gray-400">Big Bang</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-white font-medium">10 Gya</span>
+              <span className="text-gray-400">Active Phase</span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-white font-medium">5 Gya</span>
+              <span className="text-gray-400">Stabilization</span>
+            </div>
+            <div className="flex flex-col items-end">
+              <span className="text-white font-medium">Today</span>
+              <span className="text-gray-400">Modern Era</span>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <style jsx>{`
-        @keyframes galaxy-rotation {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes twinkle {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-      `}</style>
+
+      {/* Educational Content (Educator Mode) */}
+      {educatorMode && (
+        <div className="p-4 bg-black/20 border-t border-white/10">
+          <div className="space-y-3">
+            <div>
+              <h4 className="text-lg font-semibold text-white mb-2">What's Happening</h4>
+              <p className="text-gray-300 leading-relaxed mb-3">{currentPhaseData.details}</p>
+            </div>
+            
+            <div className="bg-yellow-900/20 border border-yellow-500/30 p-3 rounded-lg">
+              <p className="text-yellow-200 font-semibold mb-1">🎯 Fine-Tuning Insight:</p>
+              <p className="text-yellow-100 leading-relaxed text-sm">{currentPhaseData.fineTuning}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -141,18 +237,12 @@ export default function GalacticHeartSection({
   educatorMode: boolean; 
   cosmicTime?: number;
 }) {
-  const [blackHoleMass, setBlackHoleMass] = useState(4e6) // Milky Way mass
-  const [activityLevel, setActivityLevel] = useState<'dormant' | 'active' | 'quasar'>('dormant')
-  const [starFormationRate, setStarFormationRate] = useState(1)
-  const [metalEnrichment, setMetalEnrichment] = useState(0.5)
+  const [currentGalacticAge, setCurrentGalacticAge] = useState(13.8) // Start at Big Bang
 
   useEffect(() => {
     const handleRandomize = () => {
-      setBlackHoleMass(Math.pow(10, 5 + Math.random() * 5)) // 10^5 to 10^10
-      const activities: ('dormant' | 'active' | 'quasar')[] = ['dormant', 'active', 'quasar']
-      setActivityLevel(activities[Math.floor(Math.random() * activities.length)])
-      setStarFormationRate(0.1 + Math.random() * 1.9)
-      setMetalEnrichment(Math.random())
+      // Reset to random point in galactic history
+      setCurrentGalacticAge(Math.random() * 13.8)
     }
 
     window.addEventListener('randomizeUniverse', handleRandomize)
@@ -161,214 +251,22 @@ export default function GalacticHeartSection({
 
   return (
     <div className="container mx-auto px-4">
-      {/* Header Section */}
-      <div className="text-center mb-8 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">The Galactic Heart</h2>
-        <p className="text-base sm:text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-          Supermassive black holes shape galactic evolution, controlling star formation and metal enrichment across cosmic time.
-        </p>
-      </div>
-
-      {/* Primary Controls - Balanced Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
-        {/* Black Hole Mass */}
-        <Card className="bg-black/20 border-white/10">
-          <CardHeader>
-            <CardTitle className="text-white">Black Hole Mass</CardTitle>
-            <CardDescription className="text-gray-300">
-              Mass of central supermassive black hole
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <GalaxyVisualization 
-              blackHoleMass={blackHoleMass}
-              activityLevel={activityLevel}
-              starFormationRate={starFormationRate}
-            />
-            <div className="relative mt-4">
-              <Slider
-                value={[Math.log10(blackHoleMass)]}
-                onValueChange={(value) => setBlackHoleMass(Math.pow(10, value[0]))}
-                min={5} // 10^5 solar masses
-                max={10} // 10^10 solar masses
-                step={0.1}
-                className="w-full"
-              />
-              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                   style={{
-                     left: `${((6.0 - 5) / (10 - 5)) * 100}%`,
-                     width: `${((7.5 - 6.0) / (10 - 5)) * 100}%`
-                   }}></div>
-            </div>
-            <div className="flex justify-between text-sm text-gray-400 mt-4">
-              <span>Dwarf</span>
-              <span className="text-green-400 font-bold">10⁶-10⁷ M☉ (optimal)</span>
-              <span className="text-white font-medium">{blackHoleMass.toExponential(1)} M☉</span>
-              <span>Giant</span>
-            </div>
-            
-            {educatorMode && (
-              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                <div className="text-xs text-blue-200 space-y-2">
-                  <p><strong>What you're seeing:</strong> Galaxy visualization showing the central black hole, stellar disk, and activity jets based on mass and activity level.</p>
-                  <p><strong>Mass matters:</strong> Black holes need 10⁶-10⁷ solar masses for optimal galaxy regulation. Too small = no feedback, too large = galaxy destruction.</p>
-                  <p><strong>The M-sigma relation:</strong> Black hole mass correlates precisely with galaxy bulge velocity - suggesting co-evolution across cosmic time.</p>
-                  <p><strong>Galactic gardeners:</strong> Black holes regulate star formation through feedback, preventing galaxies from consuming all their gas too quickly.</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Activity Level */}
-        <Card className="bg-black/20 border-white/10">
-          <CardHeader>
-            <CardTitle className="text-white">Activity Level</CardTitle>
-            <CardDescription className="text-gray-300">
-              Black hole accretion and feedback intensity
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <div className="text-2xl mb-2">
-                  {activityLevel === 'quasar' ? '💥' : activityLevel === 'active' ? '🔥' : '😴'}
-                </div>
-                <div className="text-sm text-gray-300">Activity</div>
-                <div className="text-lg font-bold text-white capitalize">{activityLevel}</div>
-              </div>
-            </div>
-            <div className="space-y-2">
-              {(['dormant', 'active', 'quasar'] as const).map((level) => (
-                <button
-                  key={level}
-                  onClick={() => setActivityLevel(level)}
-                  className={`w-full p-2 rounded text-sm font-medium transition-colors ${
-                    activityLevel === level
-                      ? 'bg-green-500/30 border border-green-500/50 text-green-200'
-                      : 'bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10'
-                  }`}
-                >
-                  {level.charAt(0).toUpperCase() + level.slice(1)}
-                </button>
-              ))}
-            </div>
-            
-            {educatorMode && (
-              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                <div className="text-xs text-blue-200 space-y-2">
-                  <p><strong>What you're seeing:</strong> Activity selector showing different black hole feeding states - from dormant to active galactic nuclei to quasars.</p>
-                  <p><strong>Dormant phase:</strong> Black hole quietly accretes material, allowing steady star formation and metal enrichment in the galaxy.</p>
-                  <p><strong>Active phase:</strong> Moderate accretion creates jets and winds that regulate star formation - the "goldilocks" state for galaxy evolution.</p>
-                  <p><strong>Quasar phase:</strong> Violent accretion creates powerful jets that can sterilize the entire galaxy, halting star formation completely.</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Star Formation Rate */}
-        <Card className="bg-black/20 border-white/10">
-          <CardHeader>
-            <CardTitle className="text-white">Star Formation Rate</CardTitle>
-            <CardDescription className="text-gray-300">
-              Rate of stellar birth in the galaxy
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <div className="text-2xl mb-2">⭐</div>
-                <div className="text-sm text-gray-300">Formation Rate</div>
-                <div className="text-lg font-bold text-white">{starFormationRate.toFixed(1)} M☉/yr</div>
-              </div>
-            </div>
-            <div className="relative">
-              <Slider
-                value={[starFormationRate]}
-                onValueChange={(value) => setStarFormationRate(value[0])}
-                max={2}
-                min={0.1}
-                step={0.1}
-                className="w-full"
-              />
-              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                   style={{
-                     left: `${((0.5 - 0.1) / (2 - 0.1)) * 100}%`,
-                     width: `${((1.5 - 0.5) / (2 - 0.1)) * 100}%`
-                   }}></div>
-            </div>
-            <div className="flex justify-between text-sm text-gray-400 mt-4">
-              <span>Quenched</span>
-              <span className="text-green-400 font-bold">0.5-1.5 M☉/yr (optimal)</span>
-              <span className="text-white font-medium">{starFormationRate.toFixed(1)}</span>
-              <span>Starburst</span>
-            </div>
-            
-            {educatorMode && (
-              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                <div className="text-xs text-blue-200 space-y-2">
-                  <p><strong>What you're seeing:</strong> Star formation rate display showing how many solar masses of stars form per year in the galaxy.</p>
-                  <p><strong>Regulated formation:</strong> Optimal rates (0.5-1.5 M☉/yr) allow steady metal enrichment while preserving gas for future generations.</p>
-                  <p><strong>Black hole feedback:</strong> Active galactic nuclei regulate star formation through jets and winds, preventing runaway gas consumption.</p>
-                  <p><strong>Cosmic balance:</strong> Too fast depletes gas reservoirs, too slow fails to enrich the interstellar medium with heavy elements.</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Metal Enrichment */}
-        <Card className="bg-black/20 border-white/10">
-          <CardHeader>
-            <CardTitle className="text-white">Metal Enrichment</CardTitle>
-            <CardDescription className="text-gray-300">
-              Heavy element distribution efficiency
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
-              <div className="text-center">
-                <div className="text-2xl mb-2">⚛️</div>
-                <div className="text-sm text-gray-300">Enrichment</div>
-                <div className="text-lg font-bold text-white">{(metalEnrichment * 100).toFixed(0)}%</div>
-              </div>
-            </div>
-            <div className="relative">
-              <Slider
-                value={[metalEnrichment]}
-                onValueChange={(value) => setMetalEnrichment(value[0])}
-                max={1}
-                min={0}
-                step={0.01}
-                className="w-full"
-              />
-              <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                   style={{
-                     left: `${((0.3 - 0) / (1 - 0)) * 100}%`,
-                     width: `${((0.8 - 0.3) / (1 - 0)) * 100}%`
-                   }}></div>
-            </div>
-            <div className="flex justify-between text-sm text-gray-400 mt-4">
-              <span>Poor</span>
-              <span className="text-green-400 font-bold">30-80% (optimal)</span>
-              <span className="text-white font-medium">{(metalEnrichment * 100).toFixed(0)}%</span>
-              <span>Uniform</span>
-            </div>
-            
-            {educatorMode && (
-              <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                <div className="text-xs text-blue-200 space-y-2">
-                  <p><strong>What you're seeing:</strong> Metal enrichment efficiency - how well supernovae and stellar winds distribute heavy elements throughout the galaxy.</p>
-                  <p><strong>Mixing matters:</strong> Optimal enrichment (30-80%) ensures heavy elements reach star-forming regions without over-enriching the galaxy.</p>
-                  <p><strong>Galactic winds:</strong> Black hole activity and supernovae drive metal-rich gas into the halo, then back into star-forming regions.</p>
-                  <p><strong>Chemical evolution:</strong> This process creates the metallicity gradients observed in spiral galaxies, enabling diverse planetary systems.</p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      {/* Single Milky Way Evolution Visualization */}
+      <Card className="bg-black/20 border-white/10 mb-8 sm:mb-12">
+        <CardHeader>
+          <CardTitle className="text-white">Milky Way Evolution</CardTitle>
+          <CardDescription className="text-gray-300">
+            Explore 13.8 billion years of galactic evolution driven by our central black hole
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <MilkyWayEvolution 
+            currentAge={currentGalacticAge}
+            educatorMode={educatorMode}
+            onAgeChange={setCurrentGalacticAge}
+          />
+        </CardContent>
+      </Card>
 
     </div>
   )
