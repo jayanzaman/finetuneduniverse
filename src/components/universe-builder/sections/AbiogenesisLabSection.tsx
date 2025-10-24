@@ -1278,29 +1278,6 @@ export default function AbiogenesisLabSection({
             </div>
           </div>
           
-          {/* Life Potential Gauge - Full Width */}
-          <div className='space-y-3 pt-4 border-t border-white/10'>
-            <div className='flex justify-between items-center'>
-              <span className='text-lg font-medium'>Life Potential</span>
-              <div className='flex items-center gap-2'>
-                <span className='text-lg text-green-400 font-mono'>{simulationState.lifePotential.toFixed(0)}%</span>
-                {simulationState.stage >= 4 && simulationState.lifePotential < 70 && (
-                  <span className='text-sm text-red-400'>⚠️ Low</span>
-                )}
-              </div>
-            </div>
-            <div className='w-full bg-gray-700 rounded-full h-4'>
-              <div 
-                className='bg-gradient-to-r from-green-600 to-green-400 h-4 rounded-full transition-all duration-500'
-                style={{ width: `${simulationState.lifePotential}%` }}
-              />
-            </div>
-            {educatorMode && (
-              <div className='text-sm text-blue-300 mt-2'>
-                <strong>Stage-dependent metric:</strong> Basic chemistry (max 40%) → Templates (max 60%) → RNA World (max 80%) → DNA (max 100%). Formula: 30% catalysis + 30% compartmentalization + 40% heredity, with stage multipliers for RNA/DNA achievements.
-              </div>
-            )}
-          </div>
         </CardContent>
       </Card>
     </div>

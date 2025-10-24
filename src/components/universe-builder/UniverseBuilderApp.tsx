@@ -27,7 +27,7 @@ export default function UniverseBuilderApp() {
     { id: 3, title: 'Formation of Galaxy', subtitle: 'Blackhole at the Heart', component: GalacticHeartSection },
     { id: 4, title: 'Planets & Habitability', subtitle: 'Goldilocks Zone', component: PlanetsSection },
     { id: 5, title: 'Abiogenesis Lab', subtitle: 'From Chemistry to Codes', component: AbiogenesisLabSection },
-    { id: 6, title: 'Complexity & Consciousness', subtitle: 'The Arrow of Time', component: ComplexitySection }
+    { id: 6, title: 'Evolution', subtitle: 'Beginning of Species', component: ComplexitySection }
   ]
 
   const CurrentSectionComponent = sections[currentSection].component
