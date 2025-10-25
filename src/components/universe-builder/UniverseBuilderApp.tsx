@@ -73,8 +73,8 @@ export default function UniverseBuilderApp() {
 
   // Swipe handlers for mobile navigation
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => handleNext(),
-    onSwipedRight: () => handlePrevious(),
+    onSwipedLeft: () => handlePrevious(),  // Swipe left = go back (like turning pages)
+    onSwipedRight: () => handleNext(),     // Swipe right = go forward (like turning pages)
     trackMouse: false, // Only track touch, not mouse
     preventScrollOnSwipe: false,
     delta: 50, // Minimum swipe distance

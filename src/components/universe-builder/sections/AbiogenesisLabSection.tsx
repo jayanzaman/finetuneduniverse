@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
-import { Button } from '../../ui/button'
-import { Play, Pause, RotateCcw, Info } from 'lucide-react'
+import { Info } from 'lucide-react'
 
 // Types and Interfaces
 interface SimulationState {
@@ -38,11 +37,15 @@ interface EnvironmentalControls {
   ph: number;
   temperature: number;
   mineralCatalysis: boolean;
-  timeScale: number;
 }
 
 // Simulation Canvas Component
-const SimulationCanvas: React.FC<{ state: SimulationState; controls: EnvironmentalControls }> = ({ state, controls }) => {
+const SimulationCanvas: React.FC<{ 
+  state: SimulationState; 
+  controls: EnvironmentalControls;
+  selectedPhase: number;
+  onPhaseClick: (phase: number) => void;
+}> = ({ state, controls, selectedPhase, onPhaseClick }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -53,11 +56,31 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     if (!ctx) return;
 
     // Draw the simulation
-    drawSimulation(ctx, state, controls);
-  }, [state, controls]);
+    drawSimulation(ctx, state, controls, selectedPhase, onPhaseClick);
+  }, [state, controls, selectedPhase, onPhaseClick]);
+
+  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const stageWidth = canvas.width / 6; // Updated for 6 stages
+    const clickedStage = Math.floor(x / stageWidth);
+    
+    if (clickedStage >= 0 && clickedStage <= 5) { // Updated for 6 stages (0-5)
+      onPhaseClick(clickedStage);
+    }
+  };
 
   return (
-    <canvas ref={canvasRef} width={800} height={600} />
+    <canvas 
+      ref={canvasRef} 
+      width={800} 
+      height={600} 
+      onClick={handleCanvasClick}
+      className="cursor-pointer"
+    />
   );
 };
 
@@ -73,7 +96,7 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     return complements[base] || base;
   };
 
-  const drawSimulation = (ctx: CanvasRenderingContext2D, state: SimulationState, controls: EnvironmentalControls) => {
+  const drawSimulation = (ctx: CanvasRenderingContext2D, state: SimulationState, controls: EnvironmentalControls, selectedPhase: number, onPhaseClick: (phase: number) => void) => {
     const canvas = ctx.canvas;
     const width = canvas.width;
     const height = canvas.height;
@@ -82,22 +105,22 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     ctx.fillStyle = '#0a0a0a';
     ctx.fillRect(0, 0, width, height);
     
-    // Draw stage progression zones
-    const stageWidth = width / 7;
+    // Draw stage progression zones (6 stages total)
+    const stageWidth = width / 6;
     const stageHeight = height - 40;
     
     // Stage labels and zones
     const stages = [
-      { name: 'Simple\nMolecules', color: '#6b7280', active: state.stage >= 0 },
-      { name: 'Amino\nAcids', color: '#10b981', active: state.stage >= 1 },
-      { name: 'Peptide\nChains', color: '#f59e0b', active: state.stage >= 2 },
-      { name: 'Proto-\ncells', color: '#8b5cf6', active: state.stage >= 3 },
-      { name: 'Simple\nTemplates', color: '#ec4899', active: state.stage >= 4 },
-      { name: 'RNA\nWorld', color: '#06b6d4', active: state.stage >= 5 },
-      { name: 'DNA\nGenomes', color: '#dc2626', active: state.stage >= 6 }
+      { name: 'Simple\nMolecules', color: '#6b7280', active: selectedPhase >= 0 },
+      { name: 'Amino\nAcids', color: '#10b981', active: selectedPhase >= 1 },
+      { name: 'Peptide\nChains', color: '#f59e0b', active: selectedPhase >= 2 },
+      { name: 'Proto-\ncells', color: '#8b5cf6', active: selectedPhase >= 3 },
+      { name: 'RNA\nWorld', color: '#06b6d4', active: selectedPhase >= 4 },
+      { name: 'First\nLife', color: '#dc2626', active: selectedPhase >= 5 }
     ];
     
     // Draw stage zones and transitions
+    
     for (let i = 0; i < stages.length; i++) {
       const x = i * stageWidth;
       const stage = stages[i];
@@ -106,10 +129,17 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
       ctx.fillStyle = stage.active ? `${stage.color}20` : '#1a1a1a';
       ctx.fillRect(x, 20, stageWidth, stageHeight);
       
-      // Draw zone border
-      ctx.strokeStyle = stage.active ? stage.color : '#333';
-      ctx.lineWidth = stage.active ? 3 : 1;
+      // Draw zone border - highlight selected phase
+      const isSelected = i === selectedPhase;
+      ctx.strokeStyle = isSelected ? '#fff' : (stage.active ? stage.color : '#333');
+      ctx.lineWidth = isSelected ? 4 : (stage.active ? 3 : 1);
       ctx.strokeRect(x, 20, stageWidth, stageHeight);
+      
+      // Add selection indicator
+      if (isSelected) {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.fillRect(x, 20, stageWidth, stageHeight);
+      }
       
       // Draw stage label
       ctx.fillStyle = stage.active ? stage.color : '#666';
@@ -126,9 +156,9 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
         const arrowY = height/2;
         ctx.fillStyle = stage.color;
         ctx.beginPath();
-        ctx.moveTo(arrowX, arrowY);
-        ctx.lineTo(arrowX + 15, arrowY - 8);
-        ctx.lineTo(arrowX + 15, arrowY + 8);
+        ctx.moveTo(arrowX, arrowY - 8);      // Start at upper back
+        ctx.lineTo(arrowX, arrowY + 8);      // Draw to lower back
+        ctx.lineTo(arrowX + 15, arrowY);     // Draw to tip (pointing right)
         ctx.closePath();
         ctx.fill();
       }
@@ -138,7 +168,7 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     ctx.textAlign = 'left';
     
     // Stage 0: Simple molecules
-    if (state.stage >= 0) {
+    if (selectedPhase >= 0) {
       const x = 0 * stageWidth + 10;
       const y = 80;
       ctx.fillStyle = '#6b7280';
@@ -155,7 +185,7 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     }
     
     // Stage 1: Amino acids
-    if (state.stage >= 1) {
+    if (selectedPhase >= 1) {
       const x = 1 * stageWidth + 10;
       const y = 80;
       ctx.fillStyle = '#10b981';
@@ -173,7 +203,7 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     }
     
     // Stage 2: Peptides
-    if (state.stage >= 2) {
+    if (selectedPhase >= 2) {
       const x = 2 * stageWidth + 10;
       const y = 80;
       
@@ -206,7 +236,7 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
     }
     
     // Stage 3: Protocells
-    if (state.stage >= 3) {
+    if (selectedPhase >= 3) {
       const x = 3 * stageWidth + 20;
       const y = 100;
       
@@ -245,54 +275,20 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
       ctx.fillText(`Encap: ${(state.encapsulationRate * 100).toFixed(0)}%`, x - 10, y + 85);
     }
     
-    // Stage 4: Simple Templates
-    if (state.stage >= 4) {
+    // Stage 4: RNA World
+    if (selectedPhase >= 4) {
       const x = 4 * stageWidth + 10;
-      const y = 80;
-      
-      // Draw simple template strands
-      const strandCount = Math.min(3, Math.floor(state.templateStrands / 5));
-      for (let i = 0; i < strandCount; i++) {
-        const strandY = y + i * 20;
-        const length = Math.min(4, Math.max(2, Math.round(state.meanStrandLength / 8)));
-        
-        // Draw simple backbone
-        ctx.strokeStyle = '#ec4899';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(x, strandY);
-        ctx.lineTo(x + length * 10, strandY);
-        ctx.stroke();
-        
-        // Draw simple bases
-        ctx.font = '8px monospace';
-        ctx.fillStyle = '#fff';
-        for (let j = 0; j < length; j++) {
-          const baseX = x + j * 10;
-          ctx.fillText('•', baseX, strandY - 3);
-        }
-      }
-      
-      ctx.fillStyle = '#ec4899';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`Templates: ${state.templateStrands.toFixed(0)}`, x, y + 70);
-      ctx.fillText(`Length: ${state.meanStrandLength.toFixed(1)} nt`, x, y + 85);
-    }
-    
-    // Stage 5: RNA World
-    if (state.stage >= 5) {
-      const x = 5 * stageWidth + 10;
       const y = 80;
       
       const rnaBases = ['A', 'U', 'C', 'G'];
       
-      // Draw RNA strands
+      // Draw RNA strands with both template and catalytic functions
       const rnaCount = Math.min(3, Math.floor(state.rnaStrands / 3));
       for (let i = 0; i < rnaCount; i++) {
         const strandY = y + i * 25;
         const length = Math.min(6, Math.max(3, Math.round(state.rnaLength / 5)));
         
-        // Draw RNA backbone (more complex)
+        // Draw RNA backbone
         ctx.strokeStyle = '#06b6d4';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -300,22 +296,29 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
         ctx.lineTo(x + length * 12, strandY);
         ctx.stroke();
         
-        // Draw RNA bases
-        ctx.font = '10px monospace';
-        ctx.fillStyle = '#fff';
+        // Draw bases with labels
         for (let j = 0; j < length; j++) {
-          const base = rnaBases[Math.floor(Math.random() * rnaBases.length)];
           const baseX = x + j * 12;
-          ctx.fillText(base, baseX, strandY - 5);
+          ctx.fillStyle = '#06b6d4';
+          ctx.fillRect(baseX, strandY - 3, 4, 6);
           
-          // Show secondary structure (folding)
-          if (Math.random() < 0.3) {
-            ctx.strokeStyle = '#06b6d4';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.arc(baseX + 3, strandY - 15, 8, 0, Math.PI);
-            ctx.stroke();
-          }
+          // Base labels
+          ctx.fillStyle = '#fff';
+          ctx.font = '8px monospace';
+          ctx.fillText(rnaBases[j % 4], baseX, strandY + 12);
+        }
+        
+        // Draw secondary structure (ribozyme active site)
+        if (length >= 4) {
+          ctx.strokeStyle = '#06b6d4';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(x + length * 6, strandY - 10, 8, 0, Math.PI);
+          ctx.stroke();
+          
+          // Active site indicator
+          ctx.fillStyle = '#ffff00';
+          ctx.fillRect(x + length * 6 - 2, strandY - 12, 4, 4);
         }
       }
       
@@ -323,61 +326,63 @@ const SimulationCanvas: React.FC<{ state: SimulationState; controls: Environment
       ctx.font = '9px sans-serif';
       ctx.fillText(`RNA: ${state.rnaStrands.toFixed(0)}`, x, y + 80);
       ctx.fillText(`Length: ${state.rnaLength.toFixed(1)} nt`, x, y + 95);
-      ctx.fillText(`Catalytic: ${state.rnaStrands > 5 ? 'Yes' : 'No'}`, x, y + 110);
+      ctx.fillText(`Ribozymes: ${state.rnaStrands > 5 ? 'Active' : 'None'}`, x, y + 110);
     }
     
-    // Stage 6: DNA Genomes
-    if (state.stage >= 6) {
-      const x = 6 * stageWidth + 10;
+    // Stage 5: First Life
+    if (selectedPhase >= 5) {
+      const x = 5 * stageWidth + 10;
       const y = 80;
       
       const dnaBases = ['A', 'T', 'C', 'G'];
       
-      // Draw DNA double helix
+      // Draw integrated DNA-RNA-Protein system
       const dnaCount = Math.min(2, Math.floor(state.dnaStrands / 2));
       for (let i = 0; i < dnaCount; i++) {
-        const strandY = y + i * 30;
+        const strandY = y + i * 35;
         const length = Math.min(8, Math.max(4, Math.round(state.dnaLength / 4)));
         
-        // Draw DNA double strand
-        ctx.strokeStyle = '#dc2626';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(x, strandY);
-        ctx.lineTo(x + length * 12, strandY);
-        ctx.stroke();
-        
-        ctx.beginPath();
-        ctx.moveTo(x, strandY + 10);
-        ctx.lineTo(x + length * 12, strandY + 10);
-        ctx.stroke();
-        
-        // Draw DNA bases with complementarity
-        ctx.font = '10px monospace';
+        // Draw DNA double helix
         for (let j = 0; j < length; j++) {
-          const base = dnaBases[Math.floor(Math.random() * dnaBases.length)];
-          const complement = getComplement(base, 'DNA');
-          const baseX = x + j * 12;
+          const baseX = x + j * 10;
+          const twist = j * 0.5;
           
-          ctx.fillStyle = '#fff';
-          ctx.fillText(base, baseX, strandY - 5);
-          ctx.fillText(complement, baseX, strandY + 20);
+          // Top strand
+          ctx.strokeStyle = '#dc2626';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(baseX, strandY + Math.sin(twist) * 3);
+          ctx.lineTo(baseX + 8, strandY + Math.sin(twist + 0.5) * 3);
+          ctx.stroke();
           
-          // Draw hydrogen bonds
-          ctx.strokeStyle = '#ffeb3b';
+          // Bottom strand
+          ctx.beginPath();
+          ctx.moveTo(baseX, strandY + 8 - Math.sin(twist) * 3);
+          ctx.lineTo(baseX + 8, strandY + 8 - Math.sin(twist + 0.5) * 3);
+          ctx.stroke();
+          
+          // Base pairs
+          ctx.strokeStyle = '#dc2626';
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.moveTo(baseX + 3, strandY + 2);
-          ctx.lineTo(baseX + 3, strandY + 8);
+          ctx.moveTo(baseX + 4, strandY + Math.sin(twist + 0.25) * 3);
+          ctx.lineTo(baseX + 4, strandY + 8 - Math.sin(twist + 0.25) * 3);
           ctx.stroke();
         }
+        
+        // Draw ribosome (protein synthesis)
+        ctx.fillStyle = '#ffa500';
+        ctx.fillRect(x + length * 5, strandY + 15, 12, 8);
+        ctx.fillStyle = '#fff';
+        ctx.font = '6px sans-serif';
+        ctx.fillText('Ribosome', x + length * 5 - 5, strandY + 30);
       }
       
       ctx.fillStyle = '#dc2626';
       ctx.font = '9px sans-serif';
-      ctx.fillText(`DNA: ${state.dnaStrands.toFixed(0)}`, x, y + 90);
-      ctx.fillText(`Length: ${state.dnaLength.toFixed(0)} bp`, x, y + 105);
-      ctx.fillText(`Stable: ${state.dnaLength > 50 ? 'Yes' : 'No'}`, x, y + 120);
+      ctx.fillText(`DNA: ${state.dnaStrands.toFixed(0)} genes`, x, y + 90);
+      ctx.fillText(`Proteins: ${Math.floor(state.dnaStrands * 1.5)}`, x, y + 105);
+      ctx.fillText(`Cell Type: ${state.dnaLength > 50 ? 'Prokaryote' : 'Proto-cell'}`, x, y + 120);
     }
   };
 
@@ -386,44 +391,159 @@ function StageInfo({ stage }: { stage: number }) {
   const stageData = [
     {
       title: 'Prebiotic Soup',
-      description: 'Simple gases and energy sources create reactive environment',
-      confidence: 'Empirically supported'
+      description: 'Simple gases and energy sources create a reactive chemical environment rich in organic precursors',
+      confidence: 'Empirically supported',
+      difficulty: 'Moderate',
+      requirements: 'Requires reducing atmosphere (CH₄, NH₃, H₂O, H₂), energy sources (UV, lightning, heat), and absence of free oxygen',
+      details: 'Formation of simple organic molecules from inorganic precursors under early Earth conditions. Foundation for all subsequent complexity.',
+      mechanisms: [
+        'Miller-Urey synthesis: electrical discharge through reducing gases produces amino acids',
+        'Formose reaction: formaldehyde polymerizes into sugars under alkaline conditions',
+        'HCN polymerization: hydrogen cyanide forms purines and other nitrogen heterocycles',
+        'Fischer-Tropsch synthesis: CO + H₂ on metal surfaces produces hydrocarbons'
+      ],
+      challenges: [
+        'Early atmosphere composition uncertain - may not have been strongly reducing',
+        'Dilution problem: organic molecules get too diluted in oceans',
+        'Destructive processes compete with synthesis (hydrolysis, photolysis)',
+        'Chirality: produces racemic mixtures, not the homochiral molecules life uses'
+      ],
+      experiments: [
+        'Miller & Urey (1953): First demonstration of amino acid synthesis from simple gases',
+        'Oró (1961): Showed adenine formation from HCN solutions',
+        'Butlerow (1861): Formose reaction producing sugars from formaldehyde'
+      ],
+      caveat: 'While organic synthesis is well-demonstrated, the exact conditions on early Earth remain debated. Recent evidence suggests the atmosphere may have been less reducing than Miller-Urey assumed, requiring alternative synthesis pathways.'
     },
     {
       title: 'Amino Acids',
-      description: 'Energy + simple molecules → building blocks of proteins',
-      confidence: 'Empirically demonstrated'
+      description: 'Energy-driven synthesis of the 20 proteinogenic amino acids essential for life',
+      confidence: 'Empirically demonstrated',
+      difficulty: 'Easy',
+      requirements: 'Requires energy inputs (UV 30-60, lightning 50-80), reducing conditions, and carbon/nitrogen sources',
+      details: 'Formation of the fundamental building blocks of proteins through various prebiotic synthesis pathways. Critical step toward catalytic molecules.',
+      mechanisms: [
+        'Strecker synthesis: aldehydes + HCN + NH₃ → amino acids via aminonitrile intermediates',
+        'Reductive amination: α-keto acids + NH₃ + reducing agents → amino acids',
+        'Spark discharge synthesis: electrical energy breaks bonds and reforms them into amino acids',
+        'Hydrothermal vent synthesis: metal sulfides catalyze amino acid formation from CO₂ + NH₃'
+      ],
+      challenges: [
+        'Racemic mixtures: equal amounts of L and D forms, but life uses only L-amino acids',
+        'Selective synthesis: getting all 20 proteinogenic amino acids in useful ratios',
+        'Stability issues: amino acids decompose under the same conditions that form them',
+        'Concentration problem: need sufficient local concentrations for further reactions'
+      ],
+      experiments: [
+        'Miller-Urey (1953): Produced 11 of the 20 proteinogenic amino acids',
+        'Wächtershäuser (1988): Iron-sulfur world hypothesis with CO₂ fixation',
+        'Huber & Wächtershäuser (1998): Amino acid synthesis on iron-nickel sulfides'
+      ],
+      caveat: 'Amino acid synthesis is robust and occurs under many conditions. However, the chirality problem remains unsolved - no known prebiotic process selectively produces only L-amino acids as life requires.'
     },
     {
       title: 'Peptides',
-      description: 'Amino acids link into short chains, some weakly catalytic',
-      confidence: 'Lab-demonstrated'
+      description: 'Amino acids polymerize into short protein chains with emerging catalytic properties',
+      confidence: 'Lab-demonstrated',
+      difficulty: 'Moderate',
+      requirements: 'Requires dry-wet cycling (60-90), hydrothermal activity (40-80), and concentrated amino acid solutions',
+      details: 'Formation of peptide bonds between amino acids to create short protein chains. First emergence of catalytic activity from organic molecules.',
+      mechanisms: [
+        'Thermal condensation: heat drives dehydration synthesis of peptide bonds',
+        'Clay catalysis: montmorillonite surfaces concentrate amino acids and catalyze polymerization',
+        'Dry-wet cycling: evaporation concentrates reactants, rewetting enables further reactions',
+        'Carbonyl sulfide activation: COS activates amino acids for peptide bond formation'
+      ],
+      challenges: [
+        'Hydrolysis competition: water breaks peptide bonds faster than they form',
+        'Sequence specificity: random polymerization rarely produces functional peptides',
+        'Length limitations: difficult to achieve peptides longer than 10-20 amino acids',
+        'Mixed chirality effects: D-amino acids disrupt peptide structure and function'
+      ],
+      experiments: [
+        'Fox (1965): Thermal proteins from amino acid mixtures at 150-180°C',
+        'Ferris et al. (1996): Montmorillonite-catalyzed peptide formation up to 55 residues',
+        'Leman et al. (2004): Carbonyl sulfide-mediated peptide synthesis under mild conditions'
+      ],
+      caveat: 'Peptide formation is achievable but produces mostly random sequences. Functional catalytic peptides are extremely rare in random sequences, and the transition to specific, functional proteins remains a major unsolved problem.'
     },
     {
       title: 'Protocells',
-      description: 'Fatty acids form vesicles, compartmentalizing reactions',
-      confidence: 'Lab-demonstrated'
-    },
-    {
-      title: 'Simple Templates',
-      description: 'Basic self-copying molecular systems with low fidelity',
-      confidence: 'Active research'
+      description: 'Self-assembling lipid vesicles create the first cellular compartments and concentrate biochemistry',
+      confidence: 'Lab-demonstrated',
+      difficulty: 'Moderate',
+      requirements: 'Requires high water activity (60-95), hydrothermal energy (60-80), and amphiphilic molecules',
+      details: 'Formation of membrane-bounded compartments that concentrate reactants and create distinct chemical environments. Essential step toward cellular organization.',
+      mechanisms: [
+        'Spontaneous self-assembly: amphiphilic molecules form bilayer membranes in water',
+        'Vesicle growth: incorporation of new lipids causes vesicles to expand',
+        'Division by shear: physical forces split large vesicles into smaller ones',
+        'Selective permeability: membranes allow some molecules through while retaining others'
+      ],
+      challenges: [
+        'Membrane stability: simple fatty acid membranes are fragile and leak',
+        'Growth-division coupling: vesicles must grow and divide in coordination',
+        'Selective permeability: need to retain useful molecules while allowing waste removal',
+        'Competition with bulk phase: reactions may be faster outside vesicles'
+      ],
+      experiments: [
+        'Deamer & Barchfeld (1982): Spontaneous vesicle formation from meteoritic organics',
+        'Szostak lab (2003): Fatty acid vesicles that grow and divide',
+        'Mansy & Szostak (2008): Template-directed RNA synthesis inside vesicles'
+      ],
+      caveat: 'Protocell formation is well-demonstrated, but achieving coordinated growth, division, and heredity remains challenging. The transition from simple vesicles to true cells with integrated metabolism and genetics is not yet understood.'
     },
     {
       title: 'RNA World',
-      description: 'Catalytic RNA molecules that can replicate and evolve',
+      description: 'Hypothetical stage where RNA molecules serve as both genes and enzymes, bridging chemistry and biology',
       confidence: 'Theoretical',
       difficulty: 'Very Difficult',
-      requirements: 'Requires high accuracy (Eigen threshold) + optimal conditions',
-      caveat: 'No lab has demonstrated prebiotic formation of replicating RNA. Chirality problem: life uses only right-handed sugars, but prebiotic chemistry produces 50/50 mixtures.'
+      requirements: 'Requires precise UV (25-45), moderate lightning (30-55), high chemistry richness (85%+), optimal temperature (298±5K), and Eigen threshold passage',
+      details: 'The proposed evolutionary stage where RNA performed both genetic storage and catalytic functions before the evolution of DNA and proteins. Represents the transition from chemistry to true biology.',
+      mechanisms: [
+        'Template-directed synthesis: simple RNA strands direct formation of complementary sequences',
+        'Ribozyme catalysis: folded RNA structures catalyze chemical reactions including self-replication',
+        'RNA evolution: replication errors create variants subject to natural selection',
+        'Compartmentalization: RNA systems develop within lipid vesicles for concentration and protection'
+      ],
+      challenges: [
+        'Eigen\'s paradox: accurate replication needs long RNAs, but long RNAs replicate inaccurately',
+        'Prebiotic RNA synthesis: no robust pathway from simple molecules to functional RNA',
+        'Homochirality problem: life requires pure D-ribose, but prebiotic chemistry gives mixtures',
+        'RNA instability: RNA degrades rapidly under conditions needed for replication'
+      ],
+      experiments: [
+        'Ferris & Ertem (1992): Clay surfaces catalyze RNA formation up to 50 nucleotides',
+        'Joyce lab (2009): Created RNA enzymes that replicate each other (with pure components)',
+        'Szostak lab (2016): RNA polymerase ribozyme that can copy RNA templates'
+      ],
+      caveat: 'The RNA World remains hypothetical. No experiment has demonstrated spontaneous emergence of self-replicating RNA from prebiotic conditions. The ribose synthesis and homochirality problems are unsolved. Many scientists now favor metabolism-first or lipid-first scenarios.'
     },
     {
-      title: 'DNA Genomes',
-      description: 'Stable double-stranded genetic storage with high fidelity',
+      title: 'First Life',
+      description: 'The first true living cells with integrated DNA-protein-RNA machinery, genetic code, and cellular reproduction',
       confidence: 'Evolutionary transition',
       difficulty: 'Extremely Difficult',
-      requirements: 'Requires 85%+ accuracy + perfect temperature control',
-      caveat: 'Prebiotic DNA synthesis pathway unknown. Homochirality problem remains unsolved for both sugars and amino acids.'
+      requirements: 'Requires all optimal conditions: minimal UV (20-35), maximum cycling (80%+), peak chemistry (85%+), precise water activity (75-90%), perfect temperature (298±3K)',
+      details: 'The emergence of the first true living cells with integrated molecular machinery: DNA for genetic storage, proteins for catalysis, RNA for information transfer, plus basic metabolism and cellular reproduction.',
+      mechanisms: [
+        'Central dogma: DNA → RNA → Proteins with genetic code translation',
+        'DNA replication: high-fidelity copying with multiple error-correction systems',
+        'Basic metabolism: essential enzyme-catalyzed reactions for energy production and biosynthesis',
+        'Cellular reproduction: coordinated replication of genome, metabolism, and cell division'
+      ],
+      challenges: [
+        'Irreducible complexity: DNA, RNA, and proteins are interdependent - none works without the others',
+        'Genetic code origin: no explanation for the specific codon assignments universally used',
+        'Ribosome assembly: 80+ proteins and RNAs must assemble in precise 3D structure',
+        'Metabolic coordination: even basic cellular metabolism requires precise regulation and integration'
+      ],
+      experiments: [
+        'No prebiotic experiments - modern life requires existing biological machinery',
+        'Synthetic biology: minimal genomes need ~250+ genes for basic cellular function',
+        'LUCA studies: Last Universal Common Ancestor already had full DNA-protein machinery'
+      ],
+      caveat: 'First Life represents the emergence of true cellular organisms, marking the end of abiogenesis and beginning of biological evolution. The transition from RNA World to integrated DNA-protein-RNA systems involves multiple chicken-and-egg problems that remain unsolved by current theories.'
     }
   ];
 
@@ -443,6 +563,9 @@ function StageInfo({ stage }: { stage: number }) {
   
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
+      case 'Easy': return 'text-green-400';
+      case 'Moderate': return 'text-yellow-400';
+      case 'Difficult': return 'text-orange-400';
       case 'Very Difficult': return 'text-red-400';
       case 'Extremely Difficult': return 'text-red-500';
       default: return 'text-gray-400';
@@ -466,9 +589,48 @@ function StageInfo({ stage }: { stage: number }) {
         )}
       </div>
       
+      {(currentStage as any).details && (
+        <div className='text-xs text-blue-300 bg-blue-900/20 p-2 rounded border border-blue-500/30 mt-2'>
+          <strong>Details:</strong> {(currentStage as any).details}
+        </div>
+      )}
+      
       {(currentStage as any).requirements && (
         <div className='text-xs text-yellow-300 bg-yellow-900/20 p-2 rounded border border-yellow-500/30 mt-2'>
           <strong>Requirements:</strong> {(currentStage as any).requirements}
+        </div>
+      )}
+      
+      {(currentStage as any).mechanisms && (
+        <div className='text-xs text-green-300 bg-green-900/20 p-2 rounded border border-green-500/30 mt-2'>
+          <strong>Key Mechanisms:</strong>
+          <ul className='list-disc list-inside mt-1 space-y-1'>
+            {(currentStage as any).mechanisms.map((mechanism: string, index: number) => (
+              <li key={index}>{mechanism}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      {(currentStage as any).challenges && (
+        <div className='text-xs text-orange-300 bg-orange-900/20 p-2 rounded border border-orange-500/30 mt-2'>
+          <strong>Major Challenges:</strong>
+          <ul className='list-disc list-inside mt-1 space-y-1'>
+            {(currentStage as any).challenges.map((challenge: string, index: number) => (
+              <li key={index}>{challenge}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+      
+      {(currentStage as any).experiments && (
+        <div className='text-xs text-purple-300 bg-purple-900/20 p-2 rounded border border-purple-500/30 mt-2'>
+          <strong>Key Experiments:</strong>
+          <ul className='list-disc list-inside mt-1 space-y-1'>
+            {(currentStage as any).experiments.map((experiment: string, index: number) => (
+              <li key={index}>{experiment}</li>
+            ))}
+          </ul>
         </div>
       )}
       
@@ -488,6 +650,9 @@ export default function AbiogenesisLabSection({
   educatorMode: boolean; 
   cosmicTime?: number;
 }) {
+  // Selected phase for navigation
+  const [selectedPhase, setSelectedPhase] = useState<number>(0);
+  
   // Simulation state
   const [simulationState, setSimulationState] = useState<SimulationState>({
     stage: 0,
@@ -511,242 +676,163 @@ export default function AbiogenesisLabSection({
   // Environmental controls
   const [controls, setControls] = useState<EnvironmentalControls>({
     energyInputs: {
-      uv: 30,
-      lightning: 20,
-      hydrothermal: 40,
-      dryWetCycling: 50
+      uv: 45,        // Center of 30-60 optimal range
+      lightning: 65, // Center of 50-80 optimal range  
+      hydrothermal: 60, // Center of 40-80 optimal range
+      dryWetCycling: 75 // Center of 60-90 optimal range
     },
-    chemistryRichness: 60,
-    waterActivity: 70,
+    chemistryRichness: 70, // Center of 50-90 optimal range
+    waterActivity: 78,     // Center of 60-95 optimal range
     ph: 7,
-    temperature: 298, // 25°C in Kelvin
-    mineralCatalysis: true,
-    timeScale: 1
+    temperature: 298, // Center of 288-308K optimal range (25°C)
+    mineralCatalysis: true
   });
 
-  const [isRunning, setIsRunning] = useState(false);
-
-  // Simulation logic
+  // Calculate simulation state based on selected phase and environmental controls
   useEffect(() => {
-    if (!isRunning) return;
+    const calculatePhaseState = (phase: number, controls: EnvironmentalControls): SimulationState => {
+      const energyFactor = Math.min(1.0, 
+        (controls.energyInputs.uv * 0.5 + controls.energyInputs.lightning + 
+         controls.energyInputs.hydrothermal + controls.energyInputs.dryWetCycling) / 400);
+      const mineralFactor = controls.mineralCatalysis ? 1.5 : 1.0;
+      const richnessFactor = Math.max(0, Math.min(1, controls.chemistryRichness / 100));
 
-    // Helper functions
-    const approach = (current: number, target: number, rate: number) => {
-      return current + rate * (target - current);
+      let newState: SimulationState = {
+        stage: phase,
+        aminoAcidYield: 0,
+        peptideCount: 0,
+        meanPeptideLength: 0,
+        vesicleCount: 0,
+        encapsulationRate: 0,
+        templateStrands: 0,
+        meanStrandLength: 0,
+        rnaStrands: 0,
+        rnaLength: 0,
+        dnaStrands: 0,
+        dnaLength: 0,
+        perBaseAccuracy: 0.7,
+        strandFidelity: 0,
+        passesEigen: false,
+        lifePotential: 0
+      };
+
+      // Calculate values based on phase and conditions
+      if (phase >= 0) {
+        newState.aminoAcidYield = energyFactor * richnessFactor * 10;
+      }
+      
+      if (phase >= 1) {
+        const stage2Ready = controls.energyInputs.dryWetCycling >= 60 && controls.energyInputs.hydrothermal >= 40;
+        if (stage2Ready) {
+          newState.peptideCount = (controls.energyInputs.dryWetCycling / 100) * mineralFactor * 100;
+          newState.meanPeptideLength = 20;
+        }
+      }
+      
+      if (phase >= 2) {
+        const stage3Ready = controls.waterActivity >= 60 && controls.energyInputs.hydrothermal >= 60;
+        if (stage3Ready) {
+          newState.vesicleCount = (controls.waterActivity / 100) * 50;
+          newState.encapsulationRate = (controls.waterActivity / 100);
+        }
+      }
+      
+      if (phase >= 3) {
+        const stage4Ready = controls.chemistryRichness >= 70 && 
+                           controls.energyInputs.hydrothermal >= 70 &&
+                           controls.energyInputs.dryWetCycling >= 70 &&
+                           Math.abs(controls.temperature - 298) <= 10;
+        
+        if (stage4Ready) {
+          newState.templateStrands = mineralFactor * richnessFactor * 20;
+          newState.meanStrandLength = 30;
+        }
+        
+        // Per-base accuracy calculation
+        const tempBoost = Math.exp(-0.5 * Math.pow((controls.temperature - 298) / 8, 2));
+        let p = 0.70
+          + (controls.mineralCatalysis ? 0.18 : 0.0)
+          + 0.12 * tempBoost
+          - 0.20 * (controls.energyInputs.uv / 100);
+        
+        p = Math.min(0.995, Math.max(0.5, p));
+        newState.perBaseAccuracy = p;
+        
+        // Calculate Eigen threshold
+        const L = Math.max(1, Math.round(newState.meanStrandLength));
+        const s = 2.0;
+        const pCrit = 1 - Math.log(s) / L;
+        newState.passesEigen = (p >= pCrit);
+        newState.strandFidelity = Math.pow(p, L);
+      }
+      
+      if (phase >= 4) {
+        // RNA World stage - combines template and catalytic functions
+        const rnaWorldReady = controls.energyInputs.uv >= 25 && controls.energyInputs.uv <= 45 &&
+                             controls.energyInputs.lightning >= 30 && controls.energyInputs.lightning <= 55 &&
+                             controls.chemistryRichness >= 85 &&
+                             controls.waterActivity >= 75 &&
+                             Math.abs(controls.temperature - 298) <= 5;
+        
+        if (rnaWorldReady && newState.passesEigen) {
+          newState.templateStrands = mineralFactor * richnessFactor * 30; // Higher template activity
+          newState.meanStrandLength = 50; // Longer functional RNAs
+          newState.rnaStrands = mineralFactor * richnessFactor * 50;
+          newState.rnaLength = 100;
+        }
+      }
+      
+      if (phase >= 5) {
+        // First Life stage - integrated DNA-protein-RNA machinery
+        const firstLifeReady = controls.energyInputs.uv >= 20 && controls.energyInputs.uv <= 35 &&
+                               controls.energyInputs.dryWetCycling >= 80 &&
+                               controls.chemistryRichness >= 85 &&
+                               controls.waterActivity >= 75 && controls.waterActivity <= 90 &&
+                               Math.abs(controls.temperature - 298) <= 3;
+        
+        if (firstLifeReady && newState.perBaseAccuracy > 0.85) {
+          newState.dnaStrands = mineralFactor * richnessFactor * 20;
+          newState.dnaLength = 200;
+          // Boost all other systems for first integrated cellular life
+          newState.rnaStrands = Math.max(newState.rnaStrands, 100);
+          newState.templateStrands = Math.max(newState.templateStrands, 50);
+        }
+      }
+      
+      // Life potential calculation
+      const L = Math.max(1, Math.round(newState.meanStrandLength));
+      const infoFactor = Math.min(1, L / 20);
+      const baseHeredityScore = 0.6 * newState.perBaseAccuracy + 0.4 * infoFactor * newState.perBaseAccuracy;
+      
+      let stageMultiplier = 1.0;
+      let maxPotential = 40;
+      
+      if (newState.stage >= 4 && newState.rnaStrands >= 5) {
+        maxPotential = 80; // RNA World unlocks 80%
+        stageMultiplier = 1.2;
+      }
+      if (newState.stage >= 5 && newState.dnaStrands >= 3) {
+        maxPotential = 100; // First Life unlocks full potential
+        stageMultiplier = 1.5;
+      }
+      
+      const rawPotential = (
+        (newState.meanPeptideLength / 20) * 0.3 +
+        (newState.encapsulationRate) * 0.3 +
+        (baseHeredityScore) * 0.4
+      ) * 100 * stageMultiplier;
+      
+      newState.lifePotential = Math.max(0, Math.min(maxPotential, rawPotential));
+      
+      return newState;
     };
 
-    const tickHz = 30; // 30 FPS for smooth animation
-    const baseDt = 0.1; // base simulation time step
-    const dt = baseDt * controls.timeScale;
-
-    const interval = setInterval(() => {
-      setSimulationState(prev => {
-        const newState = { ...prev };
-        
-        // Calculate reaction rates with UV damage tradeoff
-        const energyFactor = Math.min(1.0, 
-          (controls.energyInputs.uv * 0.5 + controls.energyInputs.lightning + 
-           controls.energyInputs.hydrothermal + controls.energyInputs.dryWetCycling) / 400);
-        const mineralFactor = controls.mineralCatalysis ? 1.5 : 1.0;
-        const richnessFactor = Math.max(0, Math.min(1, controls.chemistryRichness / 100));
-        
-        // Stage 1: Amino Acids (with smoother growth)
-        if (newState.stage >= 0) {
-          newState.aminoAcidYield = approach(
-            newState.aminoAcidYield, 
-            10, 
-            energyFactor * richnessFactor * 0.02 * dt
-          );
-          
-          // Add decay if no energy
-          if (energyFactor < 0.1) {
-            newState.aminoAcidYield = Math.max(0, newState.aminoAcidYield - 0.01 * dt);
-          }
-        }
-        
-        // Stage 2: Peptides (stronger dry-wet coupling) - requires optimal dry-wet cycling
-        if (newState.aminoAcidYield > 1.0) {
-          newState.stage = Math.max(newState.stage, 1);
-          
-          // Check if conditions are suitable for stage 2 progression
-          const stage2Ready = controls.energyInputs.dryWetCycling >= 60 && 
-                             controls.energyInputs.hydrothermal >= 40;
-          
-          if (stage2Ready) {
-            newState.peptideCount = Math.min(100, newState.peptideCount + 
-              0.3 * (controls.energyInputs.dryWetCycling / 100) * mineralFactor * dt);
-            newState.meanPeptideLength = approach(
-              newState.meanPeptideLength, 
-              20, 
-              0.01 * dt
-            );
-          }
-        }
-        
-        // Stage 3: Protocells (smoother encapsulation) - requires high water activity
-        if (newState.meanPeptideLength >= 5 && newState.peptideCount > 50) {
-          newState.stage = Math.max(newState.stage, 2);
-          
-          // Check if conditions are suitable for stage 3 progression
-          const stage3Ready = controls.waterActivity >= 60 && 
-                             controls.energyInputs.hydrothermal >= 60;
-          
-          if (stage3Ready) {
-            newState.vesicleCount = Math.min(50, newState.vesicleCount + 
-              (controls.waterActivity / 100) * 0.3 * dt);
-            newState.encapsulationRate = approach(
-              newState.encapsulationRate,
-              1.0,
-              0.03 * (controls.waterActivity / 100) * dt
-            );
-          }
-        }
-        
-        // Stage 4: Templates with improved accuracy calculations - requires optimal conditions
-        if (newState.vesicleCount > 20 && newState.encapsulationRate > 0.1) {
-          newState.stage = Math.max(newState.stage, 3);
-          
-          // Check if conditions are suitable for stage 4 progression
-          const stage4Ready = controls.chemistryRichness >= 70 && 
-                             controls.energyInputs.hydrothermal >= 70 &&
-                             controls.energyInputs.dryWetCycling >= 70 &&
-                             Math.abs(controls.temperature - 298) <= 10; // Within 10K of optimal
-          
-          if (stage4Ready) {
-            newState.templateStrands = Math.min(20, newState.templateStrands + 
-              mineralFactor * richnessFactor * 0.1 * dt);
-            newState.meanStrandLength = approach(
-              newState.meanStrandLength,
-              30,
-              0.05 * dt
-            );
-          }
-          
-          // Per-base accuracy calculation with Gaussian temperature curve (optimal ~298K/25°C)
-          const tempBoost = Math.exp(-0.5 * Math.pow((controls.temperature - 298) / 8, 2));
-          let p = 0.70
-            + (controls.mineralCatalysis ? 0.18 : 0.0)  // mineral catalysis boost
-            + 0.12 * tempBoost                          // temperature optimum ~25°C
-            - 0.20 * (controls.energyInputs.uv / 100);  // UV damage
-          
-          // Clamp per-base accuracy
-          p = Math.min(0.995, Math.max(0.5, p));
-          newState.perBaseAccuracy = p;
-          
-          // Calculate Eigen threshold
-          const L = Math.max(1, Math.round(newState.meanStrandLength));
-          const s = 2.0; // selective advantage
-          const pCrit = 1 - Math.log(s) / L;
-          newState.passesEigen = (p >= pCrit);
-          
-          // Whole-strand fidelity for display only
-          newState.strandFidelity = Math.pow(p, L);
-          
-          // Advance to stage 4 when we have basic templates AND optimal conditions
-          if (newState.templateStrands >= 5 && newState.meanStrandLength >= 5 && stage4Ready) {
-            newState.stage = Math.max(newState.stage, 4);
-          }
-        }
-        
-        // Stage 5: RNA World - requires precise conditions for RNA stability
-        if (newState.templateStrands >= 10 && newState.meanStrandLength >= 10 && newState.passesEigen) {
-          // Check if conditions are suitable for RNA World
-          const stage5Ready = controls.energyInputs.uv >= 25 && controls.energyInputs.uv <= 45 && // Moderate UV
-                             controls.energyInputs.lightning >= 30 && controls.energyInputs.lightning <= 55 && // Moderate lightning
-                             controls.chemistryRichness >= 85 && // High complexity
-                             controls.waterActivity >= 75 && // High water activity
-                             Math.abs(controls.temperature - 298) <= 5; // Very close to optimal temp
-          
-          if (stage5Ready) {
-            newState.stage = Math.max(newState.stage, 5);
-            newState.rnaStrands = Math.min(50, newState.rnaStrands + 
-              mineralFactor * richnessFactor * 0.08 * dt);
-            newState.rnaLength = approach(
-              newState.rnaLength,
-              100,
-              0.05 * dt
-            );
-          }
-        }
-        
-        // Stage 6: DNA Genomes - requires extremely precise conditions
-        if (newState.rnaStrands >= 10 && newState.rnaLength >= 25 && newState.perBaseAccuracy > 0.85) {
-          // Check if conditions are suitable for DNA formation
-          const stage6Ready = controls.energyInputs.uv >= 20 && controls.energyInputs.uv <= 35 && // Low UV for DNA protection
-                             controls.energyInputs.dryWetCycling >= 80 && // Very high cycling
-                             controls.chemistryRichness >= 85 && // Maximum complexity
-                             controls.waterActivity >= 75 && controls.waterActivity <= 90 && // Precise water balance
-                             Math.abs(controls.temperature - 298) <= 3; // Extremely precise temperature
-          
-          if (stage6Ready) {
-            newState.stage = Math.max(newState.stage, 6);
-            newState.dnaStrands = Math.min(20, newState.dnaStrands + 
-              mineralFactor * richnessFactor * 0.03 * dt);
-            newState.dnaLength = approach(
-              newState.dnaLength,
-              200,
-              0.02 * dt
-            );
-          }
-        }
-        
-        // Life potential calculation with stage-dependent scoring
-        const L = Math.max(1, Math.round(newState.meanStrandLength));
-        const infoFactor = Math.min(1, L / 20); // information content
-        const baseHeredityScore = 0.6 * newState.perBaseAccuracy + 0.4 * infoFactor * newState.perBaseAccuracy;
-        
-        // Stage multipliers - life potential is capped by actual achievements
-        let stageMultiplier = 1.0;
-        let maxPotential = 40; // Basic chemistry can only reach 40%
-        
-        if (newState.stage >= 4) {
-          maxPotential = 60; // Templates unlock 60%
-        }
-        if (newState.stage >= 5 && newState.rnaStrands >= 5) {
-          maxPotential = 80; // RNA World unlocks 80%
-          stageMultiplier = 1.2; // RNA bonus
-        }
-        if (newState.stage >= 6 && newState.dnaStrands >= 3) {
-          maxPotential = 100; // DNA unlocks full potential
-          stageMultiplier = 1.5; // DNA bonus
-        }
-        
-        const rawPotential = (
-          (newState.meanPeptideLength / 20) * 0.3 +
-          (newState.encapsulationRate) * 0.3 +
-          (baseHeredityScore) * 0.4
-        ) * 100 * stageMultiplier;
-        
-        newState.lifePotential = Math.max(0, Math.min(maxPotential, rawPotential));
-        
-        return newState;
-      });
-    }, 1000 / tickHz); // Fixed 30 FPS, time scaling handled by dt
-
-    return () => clearInterval(interval);
-  }, [isRunning, controls]);
+    setSimulationState(calculatePhaseState(selectedPhase, controls));
+  }, [selectedPhase, controls]);
 
 
-  const resetSimulation = () => {
-    setSimulationState({
-      stage: 0,
-      aminoAcidYield: 0,
-      peptideCount: 0,
-      meanPeptideLength: 0,
-      vesicleCount: 0,
-      encapsulationRate: 0,
-      templateStrands: 0,
-      meanStrandLength: 0,
-      rnaStrands: 0,
-      rnaLength: 0,
-      dnaStrands: 0,
-      dnaLength: 0,
-      perBaseAccuracy: 0.7,
-      strandFidelity: 0,
-      passesEigen: false,
-      lifePotential: 0
-    });
-    setIsRunning(false);
+  const handlePhaseClick = (phase: number) => {
+    setSelectedPhase(phase);
   };
 
   return (
@@ -765,46 +851,20 @@ export default function AbiogenesisLabSection({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <SimulationCanvas state={simulationState} controls={controls} />
+              <SimulationCanvas 
+                state={simulationState} 
+                controls={controls} 
+                selectedPhase={selectedPhase}
+                onPhaseClick={handlePhaseClick}
+              />
               
-              <div className='flex items-center justify-between mt-4'>
-                <div className='flex gap-2'>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    onClick={() => setIsRunning(!isRunning)}
-                    className='bg-white/5 border-white/20 hover:bg-white/10 text-white'
-                  >
-                    {isRunning ? <Pause className='h-4 w-4' /> : <Play className='h-4 w-4' />}
-                  </Button>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    onClick={resetSimulation}
-                    className='bg-white/5 border-white/20 hover:bg-white/10 text-white'
-                  >
-                    <RotateCcw className='h-4 w-4' />
-                  </Button>
-                </div>
-                
-                <div className='text-sm text-gray-400'>
-                  Time Scale: {
-                    controls.timeScale < 0.1 ? '1 million years/tick' :
-                    controls.timeScale < 0.5 ? '100,000 years/tick' :
-                    controls.timeScale < 1 ? '10,000 years/tick' :
-                    controls.timeScale < 5 ? '1,000 years/tick' :
-                    controls.timeScale < 10 ? '100 years/tick' :
-                    controls.timeScale < 50 ? '10 years/tick' :
-                    controls.timeScale < 100 ? '1 year/tick' :
-                    controls.timeScale < 500 ? '1 month/tick' :
-                    '1 day/tick'
-                  }
-                </div>
+              <div className='mt-4 text-center text-sm text-gray-400'>
+                Click on any phase above to explore that stage of abiogenesis
               </div>
             </CardContent>
           </Card>
           
-          <StageInfo stage={simulationState.stage} />
+          <StageInfo stage={selectedPhase} />
         </div>
 
         {/* Right Panel - Controls */}
@@ -843,7 +903,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
                            left: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '25%' : '20%',
                            width: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '20%' : '15%'
@@ -883,7 +943,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
                            left: simulationState.stage < 3 ? '50%' : simulationState.stage < 5 ? '40%' : '30%',
                            width: simulationState.stage < 3 ? '30%' : simulationState.stage < 5 ? '20%' : '25%'
@@ -923,7 +983,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
                            left: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '60%' : '70%',
                            width: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '20%' : '15%'
@@ -963,7 +1023,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
                            left: simulationState.stage < 2 ? '60%' : simulationState.stage < 4 ? '70%' : '80%',
                            width: simulationState.stage < 2 ? '30%' : simulationState.stage < 4 ? '20%' : '15%'
@@ -1012,7 +1072,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
                            left: simulationState.stage < 1 ? '50%' : simulationState.stage < 4 ? '70%' : '85%',
                            width: simulationState.stage < 1 ? '40%' : simulationState.stage < 4 ? '25%' : '15%'
@@ -1049,7 +1109,7 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
                            left: simulationState.stage < 3 ? '60%' : simulationState.stage < 5 ? '70%' : '75%',
                            width: simulationState.stage < 3 ? '35%' : simulationState.stage < 5 ? '20%' : '15%'
@@ -1087,10 +1147,10 @@ export default function AbiogenesisLabSection({
                       className='w-full'
                     />
                     {/* Dynamic optimal range indicator */}
-                    <div className='absolute top-0 h-2 bg-green-500/30 rounded' 
+                    <div className='absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none' 
                          style={{
-                           left: `${((298 - (simulationState.stage < 4 ? 10 : simulationState.stage < 5 ? 5 : 3) - 253) / (673 - 253)) * 100}%`,
-                           width: `${((simulationState.stage < 4 ? 20 : simulationState.stage < 5 ? 10 : 6) / (673 - 253)) * 100}%`
+                           left: `${((simulationState.stage < 4 ? 288 : simulationState.stage < 5 ? 293 : 295) - 253) / (673 - 253) * 100}%`,
+                           width: `${(simulationState.stage < 4 ? 20 : simulationState.stage < 5 ? 10 : 6) / (673 - 253) * 100}%`
                          }}></div>
                   </div>
                   <div className='flex justify-between text-xs text-gray-500'>
@@ -1134,45 +1194,6 @@ export default function AbiogenesisLabSection({
                 </div>
               </div>
 
-              {/* Time Scale */}
-              <div className='space-y-2'>
-                <div className='flex justify-between items-center'>
-                  <label className='text-xs'>Time Scale</label>
-                  <span className='text-xs text-gray-400'>
-                    {controls.timeScale < 0.1 ? '1 Myr/tick' :
-                     controls.timeScale < 0.5 ? '100 kyr/tick' :
-                     controls.timeScale < 1 ? '10 kyr/tick' :
-                     controls.timeScale < 5 ? '1 kyr/tick' :
-                     controls.timeScale < 10 ? '100 yr/tick' :
-                     controls.timeScale < 50 ? '10 yr/tick' :
-                     controls.timeScale < 100 ? '1 yr/tick' :
-                     controls.timeScale < 500 ? '1 mo/tick' :
-                     '1 day/tick'}
-                  </span>
-                </div>
-                <Slider
-                  value={[3 - Math.log10(controls.timeScale * 10)]}
-                  onValueChange={(value) => setControls(prev => ({ 
-                    ...prev, 
-                    timeScale: Math.pow(10, 3 - value[0]) / 10 
-                  }))}
-                  min={0}  // 1000x (fast) on left
-                  max={4}  // 0.1x (slow) on right
-                  step={0.1}
-                  className='w-full'
-                />
-                <div className='text-xs text-gray-500 mt-1 text-center'>
-                  {controls.timeScale < 0.1 ? 'Mass extinctions, continental drift' :
-                   controls.timeScale < 0.5 ? 'Ice ages, human evolution' :
-                   controls.timeScale < 1 ? 'Rise of agriculture, civilizations' :
-                   controls.timeScale < 5 ? 'Recorded history, empires' :
-                   controls.timeScale < 10 ? 'Industrial revolution era' :
-                   controls.timeScale < 50 ? 'Climate change, technology' :
-                   controls.timeScale < 100 ? 'Human lifespans, generations' :
-                   controls.timeScale < 500 ? 'Lab experiments, research' :
-                   'Chemical reactions, observations'}
-                </div>
-              </div>
             </CardContent>
           </Card>
         </div>
