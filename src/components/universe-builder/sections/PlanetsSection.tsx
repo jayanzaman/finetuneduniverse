@@ -31,7 +31,7 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure, bas
 
   return (
     <div className="relative w-full h-48 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
-      <div className="solar-system relative w-48 h-48">
+      <div className="solar-system relative w-full h-full max-w-48 max-h-48">
         {/* Habitable Zone */}
         <div 
           className="absolute border-2 border-green-500/30 rounded-full"
@@ -343,7 +343,7 @@ export default function PlanetsSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-48 bg-gradient-to-b from-blue-900/20 to-blue-950/40 rounded-lg relative overflow-hidden mb-4" key={`${orbitalDistance}-${planetMass}-${basePressure}`}>
+            <div className="h-48 bg-gradient-to-b from-blue-900/20 to-blue-950/40 rounded-lg relative overflow-hidden flex items-center justify-center" key={`${orbitalDistance}-${planetMass}-${basePressure}`}>
               {/* Water/Atmosphere Visualization - affected by orbital distance, mass, and pressure */}
               {(() => {
                 // More realistic temperature calculation (Earth = ~15°C at 1 AU)
@@ -514,12 +514,12 @@ export default function PlanetsSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-48 bg-gradient-to-b from-purple-900/20 to-black/40 rounded-lg relative overflow-hidden mb-4">
+            <div className="h-48 bg-gradient-to-b from-purple-900/20 to-black/40 rounded-lg relative overflow-hidden flex items-center justify-center">
               {/* Magnetic Field Visualization */}
               
               {/* Earth in the center - always present */}
-              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-green-400 relative">
+              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-green-400 relative">
                   {/* Earth continents */}
                   <div className="absolute inset-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
                     <div className="absolute top-1 left-1 w-2 h-1 bg-green-500/80 rounded-sm"></div>
@@ -533,7 +533,7 @@ export default function PlanetsSection({
                 // Weak/No magnetic field - solar wind stripping
                 <div className="absolute inset-0">
                   {/* Status text */}
-                  <div className="absolute top-4 left-4 text-center">
+                  <div className="absolute top-4 left-4 right-4 text-center">
                     <div className="text-sm text-red-300 font-semibold">Atmosphere Stripping</div>
                     <div className="text-xs text-gray-400">No magnetic protection</div>
                   </div>
@@ -569,7 +569,7 @@ export default function PlanetsSection({
                 // Very strong magnetic field - radiation belt hazard
                 <div className="absolute inset-0">
                   {/* Status text */}
-                  <div className="absolute top-4 left-4 text-center">
+                  <div className="absolute top-4 left-4 right-4 text-center">
                     <div className="text-sm text-purple-300 font-semibold">Dangerous Radiation Belts</div>
                     <div className="text-xs text-gray-400">Field too strong</div>
                   </div>
@@ -607,7 +607,7 @@ export default function PlanetsSection({
                 // Optimal magnetic field - protective shield
                 <div className="absolute inset-0">
                   {/* Status text */}
-                  <div className="absolute top-4 left-4 text-center">
+                  <div className="absolute top-4 left-4 right-4 text-center">
                     <div className="text-sm text-blue-300 font-semibold">Protective Magnetosphere</div>
                     <div className="text-xs text-gray-400">Optimal protection</div>
                   </div>

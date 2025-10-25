@@ -40,351 +40,241 @@ interface EnvironmentalControls {
 }
 
 // Simulation Canvas Component
-const SimulationCanvas: React.FC<{ 
+const AbiogenesisCarousel: React.FC<{ 
   state: SimulationState; 
   controls: EnvironmentalControls;
   selectedPhase: number;
   onPhaseClick: (phase: number) => void;
 }> = ({ state, controls, selectedPhase, onPhaseClick }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Draw the simulation
-    drawSimulation(ctx, state, controls, selectedPhase, onPhaseClick);
-  }, [state, controls, selectedPhase, onPhaseClick]);
-
-  const handleCanvasClick = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const stageWidth = canvas.width / 6; // Updated for 6 stages
-    const clickedStage = Math.floor(x / stageWidth);
-    
-    if (clickedStage >= 0 && clickedStage <= 5) { // Updated for 6 stages (0-5)
-      onPhaseClick(clickedStage);
+  const stages = [
+    { 
+      id: 0, 
+      name: 'Simple Molecules', 
+      color: 'from-gray-600 to-gray-800', 
+      icon: '⚛️',
+      image: '/Stage 0 - Prebiotic Soup.png',
+      description: 'Basic chemical building blocks',
+      active: selectedPhase >= 0 
+    },
+    { 
+      id: 1, 
+      name: 'Amino Acids', 
+      color: 'from-emerald-500 to-emerald-700', 
+      icon: '🧬',
+      image: '/Stage 1 - Amino Acids.png',
+      description: 'Protein building blocks',
+      active: selectedPhase >= 1 
+    },
+    { 
+      id: 2, 
+      name: 'Peptide Chains', 
+      color: 'from-amber-500 to-amber-700', 
+      icon: '🔗',
+      image: '/Stage 2 - Peptides.png',
+      description: 'First catalytic molecules',
+      active: selectedPhase >= 2 
+    },
+    { 
+      id: 3, 
+      name: 'Protocells', 
+      color: 'from-purple-500 to-purple-700', 
+      icon: '🫧',
+      image: '/Stage 3 - Protocells.png',
+      description: 'Cellular compartments',
+      active: selectedPhase >= 3 
+    },
+    { 
+      id: 4, 
+      name: 'RNA World', 
+      color: 'from-cyan-500 to-cyan-700', 
+      icon: '🧪',
+      image: '/Stage 4 - RNA World.png',
+      description: 'Genes and enzymes unite',
+      active: selectedPhase >= 4 
+    },
+    { 
+      id: 5, 
+      name: 'First Life', 
+      color: 'from-red-500 to-red-700', 
+      icon: '🦠',
+      image: '/Stage 5 - First Life.png',
+      description: 'True cellular organisms',
+      active: selectedPhase >= 5 
     }
-  };
+  ];
 
   return (
-    <canvas 
-      ref={canvasRef} 
-      width={800} 
-      height={600} 
-      onClick={handleCanvasClick}
-      className="cursor-pointer"
-    />
+    <div className="relative w-full min-h-[600px] rounded-2xl bg-gradient-to-br from-slate-900 to-slate-800 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"></div>
+        <div className="absolute inset-0" style={{
+          backgroundImage: 'radial-gradient(circle at 25% 25%, rgba(255,255,255,0.1) 1px, transparent 1px)',
+          backgroundSize: '20px 20px'
+        }}></div>
+      </div>
+
+      {/* Main Layout */}
+      <div className="relative h-full flex">
+        {/* Selected Card - Main Focus Area */}
+        <div className="flex-1 p-8">
+          {(() => {
+            const selectedStage = stages.find(s => s.id === selectedPhase);
+            if (!selectedStage) return null;
+            
+            return (
+              <div className="h-full flex flex-col">
+                {/* Main Card */}
+                <div className={`
+                  relative flex-1 rounded-2xl bg-gradient-to-br ${selectedStage.color}
+                  shadow-2xl ring-2 ring-white/30 overflow-hidden
+                  transition-all duration-700 ease-out
+                `}>
+                  {/* Enhanced Shimmer Effect */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-100%] animate-shimmer"></div>
+                  
+                  {/* Background Image */}
+                  <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                    <img 
+                      src={selectedStage.image} 
+                      alt={selectedStage.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Card Content */}
+                  <div className="relative h-full p-8 flex flex-col justify-end text-white z-10">
+                    {/* Description Only */}
+                    <div className="text-center">
+                      <p className="text-xl opacity-95 leading-relaxed max-w-2xl mx-auto drop-shadow-lg bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20">
+                        {selectedStage.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Ambient Glow */}
+                  <div className="absolute -inset-2 rounded-2xl bg-gradient-to-r from-white/10 to-white/10 blur-xl -z-10"></div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* Sidebar - Unselected Cards */}
+        <div className="w-80 p-4 flex flex-col space-y-3 bg-black/20 backdrop-blur-sm">
+          {/* Header */}
+          <div className="text-center mb-4">
+            <h3 className="text-white/90 font-semibold text-lg mb-2">Abiogenesis Stages</h3>
+            <div className="text-white/60 text-sm">
+              {selectedPhase + 1} of {stages.length}
+            </div>
+          </div>
+
+          {/* Mini Cards */}
+          <div className="flex-1 space-y-3 overflow-y-auto scrollbar-hide">
+            {stages.map((stage) => {
+              const isSelected = selectedPhase === stage.id;
+              const isActive = stage.active;
+              
+              return (
+                <div
+                  key={stage.id}
+                  onClick={() => onPhaseClick(stage.id)}
+                  className={`
+                    relative cursor-pointer transition-all duration-300 transform
+                    ${isSelected ? 'scale-105 ring-2 ring-white/50' : 'hover:scale-102'}
+                    ${isActive ? 'opacity-100' : 'opacity-50'}
+                  `}
+                >
+                  {/* Mini Card */}
+                  <div className={`
+                    relative h-20 rounded-xl bg-gradient-to-r ${stage.color}
+                    ${isSelected ? 'shadow-xl' : 'shadow-md hover:shadow-lg'}
+                    transition-all duration-300 overflow-hidden
+                  `}>
+                    {/* Mini Shimmer */}
+                    {isSelected && (
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-transparent via-white/15 to-transparent -skew-x-12 translate-x-[-100%] animate-shimmer"></div>
+                    )}
+                    
+                    {/* Mini Background Image */}
+                    <div className="absolute inset-0 rounded-xl overflow-hidden">
+                      <img 
+                        src={stage.image} 
+                        alt={stage.name}
+                        className="w-full h-full object-cover opacity-40"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-black/30"></div>
+                    </div>
+                    
+                    {/* Mini Content */}
+                    <div className="relative h-full p-3 flex items-center text-white z-10">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-semibold text-sm leading-tight truncate drop-shadow">
+                          {stage.name}
+                        </div>
+                      </div>
+                      
+                      {/* Selection Indicator */}
+                      <div className={`
+                        w-2 h-2 rounded-full transition-all duration-300 shadow-lg
+                        ${isSelected ? 'bg-white scale-150' : isActive ? 'bg-white/80' : 'bg-white/40'}
+                      `}></div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Navigation Dots */}
+          <div className="flex justify-center space-x-2 pt-4 border-t border-white/10">
+            {stages.map((stage) => (
+              <button
+                key={stage.id}
+                onClick={() => onPhaseClick(stage.id)}
+                className={`
+                  w-2 h-2 rounded-full transition-all duration-300
+                  ${selectedPhase === stage.id 
+                    ? 'bg-white scale-150' 
+                    : stage.active 
+                      ? 'bg-white/60 hover:bg-white/80' 
+                      : 'bg-white/20'
+                  }
+                `}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
+// Add shimmer animation keyframes to global styles
+const shimmerStyles = `
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) skewX(-12deg); }
+    100% { transform: translateX(200%) skewX(-12deg); }
+  }
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+`;
 
-  const getComplement = (base: string, mode: string): string => {
-    const complements: { [key: string]: string } = {
-      'A': mode === 'RNA' ? 'U' : 'T',
-      'T': 'A',
-      'U': 'A',
-      'C': 'G',
-      'G': 'C'
-    };
-    return complements[base] || base;
-  };
-
-  const drawSimulation = (ctx: CanvasRenderingContext2D, state: SimulationState, controls: EnvironmentalControls, selectedPhase: number, onPhaseClick: (phase: number) => void) => {
-    const canvas = ctx.canvas;
-    const width = canvas.width;
-    const height = canvas.height;
-    
-    // Clear canvas
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fillRect(0, 0, width, height);
-    
-    // Draw stage progression zones (6 stages total)
-    const stageWidth = width / 6;
-    const stageHeight = height - 40;
-    
-    // Stage labels and zones
-    const stages = [
-      { name: 'Simple\nMolecules', color: '#6b7280', active: selectedPhase >= 0 },
-      { name: 'Amino\nAcids', color: '#10b981', active: selectedPhase >= 1 },
-      { name: 'Peptide\nChains', color: '#f59e0b', active: selectedPhase >= 2 },
-      { name: 'Proto-\ncells', color: '#8b5cf6', active: selectedPhase >= 3 },
-      { name: 'RNA\nWorld', color: '#06b6d4', active: selectedPhase >= 4 },
-      { name: 'First\nLife', color: '#dc2626', active: selectedPhase >= 5 }
-    ];
-    
-    // Draw stage zones and transitions
-    
-    for (let i = 0; i < stages.length; i++) {
-      const x = i * stageWidth;
-      const stage = stages[i];
-      
-      // Draw zone background
-      ctx.fillStyle = stage.active ? `${stage.color}20` : '#1a1a1a';
-      ctx.fillRect(x, 20, stageWidth, stageHeight);
-      
-      // Draw zone border - highlight selected phase
-      const isSelected = i === selectedPhase;
-      ctx.strokeStyle = isSelected ? '#fff' : (stage.active ? stage.color : '#333');
-      ctx.lineWidth = isSelected ? 4 : (stage.active ? 3 : 1);
-      ctx.strokeRect(x, 20, stageWidth, stageHeight);
-      
-      // Add selection indicator
-      if (isSelected) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.fillRect(x, 20, stageWidth, stageHeight);
-      }
-      
-      // Draw stage label
-      ctx.fillStyle = stage.active ? stage.color : '#666';
-      ctx.font = 'bold 12px sans-serif';
-      ctx.textAlign = 'center';
-      const lines = stage.name.split('\n');
-      lines.forEach((line: string, lineIndex: number) => {
-        ctx.fillText(line, x + stageWidth/2, 40 + lineIndex * 15);
-      });
-      
-      // Draw transition arrows
-      if (i < stages.length - 1 && stage.active) {
-        const arrowX = x + stageWidth - 10;
-        const arrowY = height/2;
-        ctx.fillStyle = stage.color;
-        ctx.beginPath();
-        ctx.moveTo(arrowX, arrowY - 8);      // Start at upper back
-        ctx.lineTo(arrowX, arrowY + 8);      // Draw to lower back
-        ctx.lineTo(arrowX + 15, arrowY);     // Draw to tip (pointing right)
-        ctx.closePath();
-        ctx.fill();
-      }
-    }
-    
-    // Draw stage-specific content
-    ctx.textAlign = 'left';
-    
-    // Stage 0: Simple molecules
-    if (selectedPhase >= 0) {
-      const x = 0 * stageWidth + 10;
-      const y = 80;
-      ctx.fillStyle = '#6b7280';
-      ctx.font = '10px monospace';
-      const molecules = ['H₂O', 'CO₂', 'NH₃', 'CH₄', 'H₂S'];
-      molecules.forEach((mol, i) => {
-        ctx.fillText(mol, x + (i % 3) * 25, y + Math.floor(i / 3) * 20);
-      });
-      
-      // Show yield
-      ctx.fillStyle = '#888';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`Precursors: ${state.aminoAcidYield.toFixed(1)} ppm`, x, y + 60);
-    }
-    
-    // Stage 1: Amino acids
-    if (selectedPhase >= 1) {
-      const x = 1 * stageWidth + 10;
-      const y = 80;
-      ctx.fillStyle = '#10b981';
-      ctx.font = '10px monospace';
-      const aminoAcids = ['Gly', 'Ala', 'Val', 'Asp', 'Glu', 'Ser'];
-      aminoAcids.forEach((aa, i) => {
-        const opacity = Math.min(1, state.aminoAcidYield / 5);
-        ctx.fillStyle = `rgba(16, 185, 129, ${opacity})`;
-        ctx.fillText(aa, x + (i % 3) * 25, y + Math.floor(i / 3) * 20);
-      });
-      
-      ctx.fillStyle = '#10b981';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`Yield: ${state.aminoAcidYield.toFixed(1)} ppm`, x, y + 60);
-    }
-    
-    // Stage 2: Peptides
-    if (selectedPhase >= 2) {
-      const x = 2 * stageWidth + 10;
-      const y = 80;
-      
-      // Draw peptide chains
-      const chainCount = Math.min(5, Math.floor(state.peptideCount / 20));
-      for (let i = 0; i < chainCount; i++) {
-        const chainY = y + i * 15;
-        const length = Math.min(8, Math.max(2, Math.round(state.meanPeptideLength / 3)));
-        
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(x, chainY);
-        ctx.lineTo(x + length * 8, chainY);
-        ctx.stroke();
-        
-        // Draw amino acid nodes
-        ctx.fillStyle = '#f59e0b';
-        for (let j = 0; j <= length; j++) {
-          ctx.beginPath();
-          ctx.arc(x + j * 8, chainY, 2, 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-      
-      ctx.fillStyle = '#f59e0b';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`Count: ${state.peptideCount.toFixed(0)}`, x, y + 80);
-      ctx.fillText(`Length: ${state.meanPeptideLength.toFixed(1)} aa`, x, y + 95);
-    }
-    
-    // Stage 3: Protocells
-    if (selectedPhase >= 3) {
-      const x = 3 * stageWidth + 20;
-      const y = 100;
-      
-      // Draw vesicles
-      const vesicleCount = Math.min(3, Math.floor(state.vesicleCount / 15));
-      for (let i = 0; i < vesicleCount; i++) {
-        const vesX = x + (i % 2) * 40;
-        const vesY = y + Math.floor(i / 2) * 40;
-        const radius = 15 + state.encapsulationRate * 10;
-        
-        // Draw membrane
-        ctx.strokeStyle = '#8b5cf6';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([3, 3]);
-        ctx.beginPath();
-        ctx.arc(vesX, vesY, radius, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        
-        // Draw contents
-        if (state.encapsulationRate > 0.1) {
-          ctx.fillStyle = `rgba(245, 158, 11, ${state.encapsulationRate})`;
-          for (let j = 0; j < 5; j++) {
-            const contentX = vesX + (Math.random() - 0.5) * radius;
-            const contentY = vesY + (Math.random() - 0.5) * radius;
-            ctx.beginPath();
-            ctx.arc(contentX, contentY, 1, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
-      }
-      
-      ctx.fillStyle = '#8b5cf6';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`Vesicles: ${state.vesicleCount.toFixed(0)}`, x - 10, y + 70);
-      ctx.fillText(`Encap: ${(state.encapsulationRate * 100).toFixed(0)}%`, x - 10, y + 85);
-    }
-    
-    // Stage 4: RNA World
-    if (selectedPhase >= 4) {
-      const x = 4 * stageWidth + 10;
-      const y = 80;
-      
-      const rnaBases = ['A', 'U', 'C', 'G'];
-      
-      // Draw RNA strands with both template and catalytic functions
-      const rnaCount = Math.min(3, Math.floor(state.rnaStrands / 3));
-      for (let i = 0; i < rnaCount; i++) {
-        const strandY = y + i * 25;
-        const length = Math.min(6, Math.max(3, Math.round(state.rnaLength / 5)));
-        
-        // Draw RNA backbone
-        ctx.strokeStyle = '#06b6d4';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(x, strandY);
-        ctx.lineTo(x + length * 12, strandY);
-        ctx.stroke();
-        
-        // Draw bases with labels
-        for (let j = 0; j < length; j++) {
-          const baseX = x + j * 12;
-          ctx.fillStyle = '#06b6d4';
-          ctx.fillRect(baseX, strandY - 3, 4, 6);
-          
-          // Base labels
-          ctx.fillStyle = '#fff';
-          ctx.font = '8px monospace';
-          ctx.fillText(rnaBases[j % 4], baseX, strandY + 12);
-        }
-        
-        // Draw secondary structure (ribozyme active site)
-        if (length >= 4) {
-          ctx.strokeStyle = '#06b6d4';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.arc(x + length * 6, strandY - 10, 8, 0, Math.PI);
-          ctx.stroke();
-          
-          // Active site indicator
-          ctx.fillStyle = '#ffff00';
-          ctx.fillRect(x + length * 6 - 2, strandY - 12, 4, 4);
-        }
-      }
-      
-      ctx.fillStyle = '#06b6d4';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`RNA: ${state.rnaStrands.toFixed(0)}`, x, y + 80);
-      ctx.fillText(`Length: ${state.rnaLength.toFixed(1)} nt`, x, y + 95);
-      ctx.fillText(`Ribozymes: ${state.rnaStrands > 5 ? 'Active' : 'None'}`, x, y + 110);
-    }
-    
-    // Stage 5: First Life
-    if (selectedPhase >= 5) {
-      const x = 5 * stageWidth + 10;
-      const y = 80;
-      
-      const dnaBases = ['A', 'T', 'C', 'G'];
-      
-      // Draw integrated DNA-RNA-Protein system
-      const dnaCount = Math.min(2, Math.floor(state.dnaStrands / 2));
-      for (let i = 0; i < dnaCount; i++) {
-        const strandY = y + i * 35;
-        const length = Math.min(8, Math.max(4, Math.round(state.dnaLength / 4)));
-        
-        // Draw DNA double helix
-        for (let j = 0; j < length; j++) {
-          const baseX = x + j * 10;
-          const twist = j * 0.5;
-          
-          // Top strand
-          ctx.strokeStyle = '#dc2626';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(baseX, strandY + Math.sin(twist) * 3);
-          ctx.lineTo(baseX + 8, strandY + Math.sin(twist + 0.5) * 3);
-          ctx.stroke();
-          
-          // Bottom strand
-          ctx.beginPath();
-          ctx.moveTo(baseX, strandY + 8 - Math.sin(twist) * 3);
-          ctx.lineTo(baseX + 8, strandY + 8 - Math.sin(twist + 0.5) * 3);
-          ctx.stroke();
-          
-          // Base pairs
-          ctx.strokeStyle = '#dc2626';
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.moveTo(baseX + 4, strandY + Math.sin(twist + 0.25) * 3);
-          ctx.lineTo(baseX + 4, strandY + 8 - Math.sin(twist + 0.25) * 3);
-          ctx.stroke();
-        }
-        
-        // Draw ribosome (protein synthesis)
-        ctx.fillStyle = '#ffa500';
-        ctx.fillRect(x + length * 5, strandY + 15, 12, 8);
-        ctx.fillStyle = '#fff';
-        ctx.font = '6px sans-serif';
-        ctx.fillText('Ribosome', x + length * 5 - 5, strandY + 30);
-      }
-      
-      ctx.fillStyle = '#dc2626';
-      ctx.font = '9px sans-serif';
-      ctx.fillText(`DNA: ${state.dnaStrands.toFixed(0)} genes`, x, y + 90);
-      ctx.fillText(`Proteins: ${Math.floor(state.dnaStrands * 1.5)}`, x, y + 105);
-      ctx.fillText(`Cell Type: ${state.dnaLength > 50 ? 'Prokaryote' : 'Proto-cell'}`, x, y + 120);
-    }
-  };
+// Inject styles
+if (typeof document !== 'undefined') {
+  const styleSheet = document.createElement('style');
+  styleSheet.textContent = shimmerStyles;
+  document.head.appendChild(styleSheet);
+}
 
 // Stage Information Component
 function StageInfo({ stage }: { stage: number }) {
@@ -851,15 +741,16 @@ export default function AbiogenesisLabSection({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <SimulationCanvas 
+              <AbiogenesisCarousel 
                 state={simulationState} 
                 controls={controls} 
                 selectedPhase={selectedPhase}
                 onPhaseClick={handlePhaseClick}
               />
               
-              <div className='mt-4 text-center text-sm text-gray-400'>
-                Click on any phase above to explore that stage of abiogenesis
+              <div className='mt-6 text-center text-sm text-gray-400'>
+                <div className='mb-2'>Click any stage in the sidebar to explore that phase of abiogenesis</div>
+                <div className='text-xs opacity-75'>Selected stage is displayed in the main view with detailed information below</div>
               </div>
             </CardContent>
           </Card>
