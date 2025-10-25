@@ -9,33 +9,44 @@ import { SimplePenroseVisual, SimpleDarkEnergyVisual, SimpleFlatnessVisual, Simp
 
 // Entropy Visualization - Shows order vs chaos with organized vs scattered particles
 function EntropyVisual({ entropy }: { entropy: number }) {
+  const [particles, setParticles] = useState<Array<{x: number, y: number, duration: number}>>([]);
   const particleCount = 20;
   const orderLevel = Math.max(0, 2 - entropy); // Higher entropy = less order
+  
+  useEffect(() => {
+    // Generate particles only on client side to avoid hydration mismatch
+    const newParticles = Array.from({ length: particleCount }).map((_, i) => {
+      const angle = (i / particleCount) * 2 * Math.PI;
+      const radius = orderLevel > 0.5 ? 60 + (Math.random() - 0.5) * 20 * (2 - orderLevel) : Math.random() * 80;
+      const x = orderLevel > 0.5 ? Math.cos(angle) * radius : (Math.random() - 0.5) * 160;
+      const y = orderLevel > 0.5 ? Math.sin(angle) * radius : (Math.random() - 0.5) * 160;
+      
+      return {
+        x,
+        y,
+        duration: 2 + Math.random()
+      };
+    });
+    setParticles(newParticles);
+  }, [entropy, orderLevel]);
   
   return (
     <div className="relative w-full h-full bg-black/30 rounded-lg overflow-hidden">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative w-48 h-48">
-          {Array.from({ length: particleCount }).map((_, i) => {
-            const angle = (i / particleCount) * 2 * Math.PI;
-            const radius = orderLevel > 0.5 ? 60 + (Math.random() - 0.5) * 20 * (2 - orderLevel) : Math.random() * 80;
-            const x = orderLevel > 0.5 ? Math.cos(angle) * radius : (Math.random() - 0.5) * 160;
-            const y = orderLevel > 0.5 ? Math.sin(angle) * radius : (Math.random() - 0.5) * 160;
-            
-            return (
-              <div
-                key={i}
-                className="absolute w-2 h-2 bg-blue-400 rounded-full"
-                style={{
-                  left: `calc(50% + ${x}px)`,
-                  top: `calc(50% + ${y}px)`,
-                  opacity: 0.8,
-                  animation: `float ${2 + Math.random()}s ease-in-out infinite`,
-                  animationDelay: `${i * 0.1}s`
-                }}
-              />
-            );
-          })}
+          {particles.map((particle, i) => (
+            <div
+              key={i}
+              className="absolute w-2 h-2 bg-blue-400 rounded-full"
+              style={{
+                left: `calc(50% + ${particle.x}px)`,
+                top: `calc(50% + ${particle.y}px)`,
+                opacity: 0.8,
+                animation: `float ${particle.duration}s ease-in-out infinite`,
+                animationDelay: `${i * 0.1}s`
+              }}
+            />
+          ))}
         </div>
       </div>
       <div className="absolute bottom-2 left-2 text-xs text-white/70">
@@ -100,41 +111,49 @@ function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
 
 // Density Fluctuations Visualization - Shows quantum ripples in space
 function DensityFluctuationsVisual({ densityFluctuations }: { densityFluctuations: number }) {
+  const [tiles, setTiles] = useState<Array<{brightness: number, animationSpeed: number, delay: number}>>([]);
   const rippleIntensity = densityFluctuations * 100;
-  // Frequency increases with density fluctuations - more fluctuations = faster changes
-  const timeFrequency = 0.001 + (densityFluctuations * 0.005);
   // Animation speed decreases with more fluctuations - more chaotic = faster ripples
-  const animationSpeed = Math.max(0.5, 2 - (densityFluctuations * 1.5));
+  const baseAnimationSpeed = Math.max(0.5, 2 - (densityFluctuations * 1.5));
+  
+  useEffect(() => {
+    // Generate tile properties only on client side to avoid hydration mismatch
+    const newTiles = Array.from({ length: 48 }).map((_, i) => {
+      // Add deterministic randomness based on index to make each tile unique
+      const randomOffset = (i * 1.7 + Math.sin(i * 2.3) * 3);
+      const spatialPhase = randomOffset;
+      const fluctuation = (Math.sin(spatialPhase) * densityFluctuations * 0.5) + 0.5;
+      const brightness = Math.max(0.1, Math.min(1, fluctuation));
+      
+      // Add variation to animation speed for each tile
+      const tileAnimationSpeed = baseAnimationSpeed + (Math.sin(i * 1.5) * 0.3);
+      const randomDelay = (i * 0.03 + Math.sin(i * 0.7) * 0.2) % 2;
+      
+      return {
+        brightness,
+        animationSpeed: tileAnimationSpeed,
+        delay: randomDelay
+      };
+    });
+    setTiles(newTiles);
+  }, [densityFluctuations, baseAnimationSpeed]);
   
   return (
     <div className="relative w-full h-full bg-black/30 rounded-lg overflow-hidden">
       <div className="absolute inset-0">
         {/* Background grid representing space */}
         <div className="grid grid-cols-8 grid-rows-6 h-full w-full gap-1 p-2">
-          {Array.from({ length: 48 }).map((_, i) => {
-            // Add randomness to make each tile more independent
-            const randomOffset = (i * 1.7 + Math.sin(i * 2.3) * 3); // Pseudo-random based on index
-            const spatialPhase = randomOffset; // Each tile has unique phase
-            const timePhase = Date.now() * timeFrequency;
-            const fluctuation = (Math.sin(spatialPhase + timePhase) * densityFluctuations * 0.5) + 0.5;
-            const brightness = Math.max(0.1, Math.min(1, fluctuation));
-            
-            // Add random variation to animation speed for each tile
-            const tileAnimationSpeed = animationSpeed + (Math.sin(i * 1.5) * 0.3);
-            const randomDelay = (i * 0.03 + Math.sin(i * 0.7) * 0.2) % 2; // More random delays
-            
-            return (
-              <div
-                key={i}
-                className="bg-purple-400 rounded-sm"
-                style={{
-                  opacity: brightness,
-                  animation: `ripple ${tileAnimationSpeed}s ease-in-out infinite`,
-                  animationDelay: `${randomDelay}s`
-                }}
-              />
-            );
-          })}
+          {tiles.map((tile, i) => (
+            <div
+              key={i}
+              className="bg-purple-400 rounded-sm"
+              style={{
+                opacity: tile.brightness,
+                animation: `ripple ${tile.animationSpeed}s ease-in-out infinite`,
+                animationDelay: `${tile.delay}s`
+              }}
+            />
+          ))}
         </div>
       </div>
       <div className="absolute bottom-2 left-2 text-xs text-white/70">
@@ -152,46 +171,61 @@ function DensityFluctuationsVisual({ densityFluctuations }: { densityFluctuation
 
 // Temperature Uniformity Visualization - Shows CMB temperature map
 function TemperatureUniformityVisual({ uniformity }: { uniformity: number }) {
+  const [temperatureMap, setTemperatureMap] = useState<Array<{hue: number, saturation: number, lightness: number, duration: number}>>([]);
   // Calculate temperature variation - lower uniformity = more variation
   const temperatureVariation = (1 - uniformity) * 0.001; // Scale to realistic CMB variations
   const baseTemp = 2.725; // CMB temperature in Kelvin
+  
+  useEffect(() => {
+    // Generate temperature map only on client side to avoid hydration mismatch
+    const newTemperatureMap = Array.from({ length: 96 }).map((_, i) => {
+      // Create temperature variations across the "sky"
+      const x = i % 12;
+      const y = Math.floor(i / 12);
+      
+      // Generate realistic CMB-like temperature pattern
+      const spatialVariation = Math.sin(x * 0.8) * Math.cos(y * 0.6) * temperatureVariation;
+      const randomVariation = (Math.sin(i * 2.1) * Math.cos(i * 1.7)) * temperatureVariation * 0.5;
+      const totalVariation = spatialVariation + randomVariation;
+      
+      const temperature = baseTemp + totalVariation;
+      const normalizedTemp = (temperature - (baseTemp - temperatureVariation)) / (2 * temperatureVariation);
+      
+      // Color mapping: cold (blue) to hot (red) with very subtle variations
+      const hue = uniformity > 0.99999 ? 220 : 240 - (normalizedTemp * 60); // Blue to red spectrum
+      const saturation = uniformity > 0.99999 ? 20 : Math.min(80, (1 - uniformity) * 8000);
+      const lightness = 40 + (normalizedTemp * 20);
+      
+      // Use deterministic "random" duration based on index
+      const duration = 3 + (Math.sin(i * 1.3) + 1) * 1; // 3-5 seconds
+      
+      return {
+        hue,
+        saturation,
+        lightness,
+        duration
+      };
+    });
+    setTemperatureMap(newTemperatureMap);
+  }, [uniformity, temperatureVariation]);
   
   return (
     <div className="relative w-full h-full bg-black/30 rounded-lg overflow-hidden">
       <div className="absolute inset-0 p-2">
         {/* CMB Temperature Map - representing the sky */}
         <div className="grid grid-cols-12 grid-rows-8 h-full w-full gap-0.5">
-          {Array.from({ length: 96 }).map((_, i) => {
-            // Create temperature variations across the "sky"
-            const x = i % 12;
-            const y = Math.floor(i / 12);
-            
-            // Generate realistic CMB-like temperature pattern
-            const spatialVariation = Math.sin(x * 0.8) * Math.cos(y * 0.6) * temperatureVariation;
-            const randomVariation = (Math.sin(i * 2.1) * Math.cos(i * 1.7)) * temperatureVariation * 0.5;
-            const totalVariation = spatialVariation + randomVariation;
-            
-            const temperature = baseTemp + totalVariation;
-            const normalizedTemp = (temperature - (baseTemp - temperatureVariation)) / (2 * temperatureVariation);
-            
-            // Color mapping: cold (blue) to hot (red) with very subtle variations
-            const hue = uniformity > 0.99999 ? 220 : 240 - (normalizedTemp * 60); // Blue to red spectrum
-            const saturation = uniformity > 0.99999 ? 20 : Math.min(80, (1 - uniformity) * 8000);
-            const lightness = 40 + (normalizedTemp * 20);
-            
-            return (
-              <div
-                key={i}
-                className="rounded-sm"
-                style={{
-                  backgroundColor: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
-                  opacity: 0.8,
-                  animation: `tempFlicker ${3 + Math.random() * 2}s ease-in-out infinite`,
-                  animationDelay: `${i * 0.01}s`
-                }}
-              />
-            );
-          })}
+          {temperatureMap.map((temp, i) => (
+            <div
+              key={i}
+              className="rounded-sm"
+              style={{
+                backgroundColor: `hsl(${temp.hue}, ${temp.saturation}%, ${temp.lightness}%)`,
+                opacity: 0.8,
+                animation: `tempFlicker ${temp.duration}s ease-in-out infinite`,
+                animationDelay: `${i * 0.01}s`
+              }}
+            />
+          ))}
         </div>
         
         {/* Temperature scale indicator */}
@@ -200,7 +234,7 @@ function TemperatureUniformityVisual({ uniformity }: { uniformity: number }) {
           <div className="text-center font-mono">
             {uniformity > 0.99999 
               ? '2.725000 K' 
-              : `${(baseTemp + (Math.sin(Date.now() * 0.001) * temperatureVariation)).toFixed(6)} K`
+              : `${(baseTemp + (temperatureVariation * 0.5)).toFixed(6)} K`
             }
           </div>
           <div className="text-center text-xs mt-1">
