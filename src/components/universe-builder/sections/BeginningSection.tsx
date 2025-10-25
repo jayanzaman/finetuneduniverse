@@ -42,7 +42,10 @@ function EntropyVisual({ entropy }: { entropy: number }) {
                 left: `calc(50% + ${particle.x}px)`,
                 top: `calc(50% + ${particle.y}px)`,
                 opacity: 0.8,
-                animation: `float ${particle.duration}s ease-in-out infinite`,
+                animationName: 'float',
+                animationDuration: `${particle.duration}s`,
+                animationTimingFunction: 'ease-in-out',
+                animationIterationCount: 'infinite',
                 animationDelay: `${i * 0.1}s`
               }}
             />
