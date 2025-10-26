@@ -316,6 +316,213 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
   );
 }
 
+// Geological Era Details Component (modeled after Abiogenesis scientific details)
+function GeologicalEraDetails({ era, selectedEra }: { era: typeof GEOLOGICAL_ERAS[0]; selectedEra: number }) {
+  const getEraAnalysis = () => {
+    switch (selectedEra) {
+      case 0: // Hadean Earth
+        return {
+          finetuning: "Extreme conditions created the perfect 'chemical laboratory' for prebiotic synthesis",
+          mechanisms: [
+            "Asteroid bombardment delivered water and organic compounds to Earth's surface",
+            "Volcanic outgassing created dense CO₂/methane atmosphere for greenhouse warming",
+            "Lightning and UV radiation provided energy for amino acid and nucleotide synthesis",
+            "Hydrothermal vents created temperature/chemical gradients for complex chemistry"
+          ],
+          challenges: [
+            "Surface temperatures too hot (>100°C) for stable organic molecules",
+            "Intense asteroid bombardment repeatedly sterilized surface",
+            "No protective ozone layer - lethal UV radiation reached surface",
+            "Atmospheric composition hostile to life - no free oxygen"
+          ],
+          reality: "The Hadean was Earth's 'chemical boot camp' - hostile conditions that paradoxically created the building blocks of life. Without this violent phase, complex organic chemistry could never have emerged."
+        };
+      case 1: // Archean Earth
+        return {
+          finetuning: "First stable oceans and hydrothermal systems enabled the emergence of life",
+          mechanisms: [
+            "Stable liquid water oceans provided solvent for biochemical reactions",
+            "Hydrothermal vents supplied chemical energy (H₂S, Fe²⁺) for chemosynthesis",
+            "Reduced atmosphere (no O₂) allowed complex organic molecules to persist",
+            "Continental crust formation created shallow seas ideal for early life"
+          ],
+          challenges: [
+            "Anoxic atmosphere meant no protection from UV radiation",
+            "High CO₂ levels created extreme greenhouse conditions",
+            "Limited nutrient availability in early oceans",
+            "Continued asteroid impacts disrupted early ecosystems"
+          ],
+          reality: "The Archean represents life's first foothold on Earth. Prokaryotic cells emerged ~3.8 Ga, but remained simple for over a billion years. This 'boring billion' was actually crucial preparation for complexity."
+        };
+      case 2: // Great Oxygenation
+        return {
+          finetuning: "Oxygen crisis forced evolutionary innovation and enabled complex cellular machinery",
+          mechanisms: [
+            "Cyanobacteria evolved oxygenic photosynthesis, releasing O₂ as waste",
+            "Iron in oceans oxidized, creating banded iron formations and clearing water",
+            "Ozone layer formation provided UV protection for surface life",
+            "Aerobic respiration evolved, providing 16x more energy than fermentation"
+          ],
+          challenges: [
+            "Oxygen was toxic to existing anaerobic life - first mass extinction",
+            "Methane greenhouse gases oxidized, triggering Snowball Earth glaciation",
+            "Atmospheric chemistry became highly reactive and corrosive",
+            "Existing metabolic pathways had to completely reorganize"
+          ],
+          reality: "The Great Oxygenation Event was Earth's first environmental catastrophe caused by life itself. This 'oxygen holocaust' killed most existing species but enabled the energy-rich metabolism required for complex life."
+        };
+      case 3: // Proterozoic Earth
+        return {
+          finetuning: "Stable oxygen levels and supercontinent cycles enabled eukaryotic complexity",
+          mechanisms: [
+            "Endosymbiosis created eukaryotic cells with mitochondria and chloroplasts",
+            "Sexual reproduction evolved, accelerating genetic diversity and evolution",
+            "Supercontinent Rodinia formed and broke apart, driving speciation",
+            "Ocean stratification created diverse chemical environments"
+          ],
+          challenges: [
+            "Fluctuating oxygen levels created boom-bust cycles for life",
+            "Snowball Earth episodes repeatedly stressed global ecosystems",
+            "Eukaryotic cells required precise oxygen levels - too little or too much was lethal",
+            "Complex cellular machinery was fragile and energy-expensive"
+          ],
+          reality: "The Proterozoic was evolution's 'research and development' phase. For 1.5 billion years, life experimented with cellular complexity, setting the stage for the Cambrian explosion."
+        };
+      case 4: // Ediacaran-Cambrian
+        return {
+          finetuning: "Optimal oxygen levels and nutrient availability triggered the Cambrian explosion",
+          mechanisms: [
+            "Oxygen reached ~21% - optimal for large, active organisms",
+            "Phosphorus weathering from glacial runoff fertilized oceans",
+            "Predator-prey arms race drove rapid morphological innovation",
+            "Hox genes evolved, enabling complex body plan development"
+          ],
+          challenges: [
+            "High oxygen levels enabled wildfires, creating environmental instability",
+            "Rapid evolution led to many evolutionary dead ends",
+            "Competition intensified as ecological niches filled rapidly",
+            "Climate remained unstable with continued glacial-interglacial cycles"
+          ],
+          reality: "The Cambrian explosion represents evolution's greatest creative burst. In just 25 million years, all major animal phyla appeared. This required precisely tuned environmental conditions that may be rare in the universe."
+        };
+      case 5: // Paleozoic Earth
+        return {
+          finetuning: "Land colonization required precise atmospheric and climate conditions",
+          mechanisms: [
+            "Ozone layer thick enough to allow surface colonization by plants",
+            "CO₂ levels high enough to support plant photosynthesis on land",
+            "Weathering of rocks provided nutrients for terrestrial ecosystems",
+            "Tectonic activity created diverse terrestrial habitats"
+          ],
+          challenges: [
+            "Transition from water to land required new respiratory and structural systems",
+            "Pangea formation created massive deserts and climate extremes",
+            "High oxygen levels (35%) created fire-prone environments",
+            "Mass extinctions repeatedly reset evolutionary progress"
+          ],
+          reality: "The Paleozoic conquest of land was life's greatest expansion. Plants transformed the atmosphere, creating soils and enabling the evolution of terrestrial food webs. Without this phase, intelligence could never have evolved."
+        };
+      case 6: // Mesozoic Earth
+        return {
+          finetuning: "Warm, stable climate enabled the evolution of large, complex organisms",
+          mechanisms: [
+            "High CO₂ levels created warm, humid greenhouse conditions globally",
+            "Continental breakup increased coastal habitats and marine diversity",
+            "Flowering plants co-evolved with insects, creating complex ecosystems",
+            "Stable climate allowed long-term evolutionary trends toward gigantism"
+          ],
+          challenges: [
+            "High temperatures stressed many organisms near thermal limits",
+            "Lack of ice caps meant sea levels were 100+ meters higher",
+            "Asteroid impact at end-Cretaceous caused sudden mass extinction",
+            "Volcanic activity from Deccan Traps created additional environmental stress"
+          ],
+          reality: "The Mesozoic was Earth's 'golden age' of reptiles. Stable greenhouse conditions allowed evolution to explore large body sizes and complex behaviors. The asteroid impact was a cosmic accident that reset life's trajectory."
+        };
+      case 7: // Cenozoic Earth
+        return {
+          finetuning: "Climate oscillations and continental positions enabled mammalian diversification and intelligence",
+          mechanisms: [
+            "Cooling climate favored warm-blooded mammals over reptiles",
+            "Grassland expansion created new ecological niches",
+            "Ice age cycles drove rapid evolution and migration",
+            "Isolated continents allowed independent evolutionary experiments"
+          ],
+          challenges: [
+            "Rapid climate changes stressed many species to extinction",
+            "Competition from mammals drove many reptile groups extinct",
+            "Volcanic activity and asteroid impacts continued to disrupt ecosystems",
+            "Cooling temperatures reduced global productivity"
+          ],
+          reality: "The Cenozoic represents evolution's final preparation for intelligence. Mammals diversified into every available niche, and climate instability selected for behavioral flexibility and large brains."
+        };
+      case 8: // Anthropocene
+        return {
+          finetuning: "Stable Holocene climate enabled agriculture and civilization",
+          mechanisms: [
+            "Stable climate for 10,000 years allowed agriculture to develop",
+            "Predictable seasons enabled food storage and population growth",
+            "Diverse ecosystems provided resources for technological development",
+            "Moderate CO₂ levels maintained climate stability"
+          ],
+          challenges: [
+            "Human activities now dominate global environmental systems",
+            "Rapid climate change threatens ecosystem stability",
+            "Mass extinction event in progress - sixth in Earth's history",
+            "Atmospheric CO₂ levels highest in 3 million years"
+          ],
+          reality: "The Anthropocene represents a new phase of Earth's evolution where one species has become a geological force. Whether this leads to sustainable civilization or ecosystem collapse depends on choices made in the next few decades."
+        };
+      default:
+        return { finetuning: "", mechanisms: [], challenges: [], reality: "" };
+    }
+  };
+
+  const analysis = getEraAnalysis();
+
+  return (
+    <div className="space-y-4 text-sm">
+      {/* Fine-tuning Description */}
+      <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
+        <h4 className="font-semibold mb-2 text-blue-300">Fine-Tuned Conditions</h4>
+        <p className="text-blue-200 leading-relaxed">{analysis.finetuning}</p>
+      </div>
+
+      {/* Key Mechanisms */}
+      <div className="p-4 rounded-lg bg-green-900/20 border border-green-500/30">
+        <h4 className="font-semibold mb-2 text-green-300">Key Mechanisms</h4>
+        <div className="space-y-1">
+          {analysis.mechanisms.map((mechanism, index) => (
+            <div key={index} className="flex items-start gap-2 text-green-200">
+              <span className="text-green-400 mt-1">•</span>
+              <span className="text-xs leading-relaxed">{mechanism}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Major Challenges */}
+      <div className="p-4 rounded-lg bg-orange-900/20 border border-orange-500/30">
+        <h4 className="font-semibold mb-2 text-orange-300">Major Challenges</h4>
+        <div className="space-y-1">
+          {analysis.challenges.map((challenge, index) => (
+            <div key={index} className="flex items-start gap-2 text-orange-200">
+              <span className="text-orange-400 mt-1">•</span>
+              <span className="text-xs leading-relaxed">{challenge}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Scientific Reality */}
+      <div className="p-4 rounded-lg bg-purple-900/20 border border-purple-500/30">
+        <h4 className="font-semibold mb-2 text-purple-300">Scientific Reality</h4>
+        <p className="text-purple-200 text-xs leading-relaxed">{analysis.reality}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
   const [selectedEra, setSelectedEra] = useState(0)
   // Initialize with optimal values for first era (Hadean Earth) - using scientific units
@@ -656,22 +863,13 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
         {educatorMode && (
           <Card className="bg-blue-900/20 border-blue-500/30 mt-8">
             <CardHeader>
-              <CardTitle className="text-blue-300">Deep Time and Evolution</CardTitle>
+              <CardTitle className="text-blue-300">{currentEra.name} - Scientific Analysis</CardTitle>
+              <CardDescription className="text-blue-400">
+                Fine-tuned conditions that enabled the next phase of Earth's evolution
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3 text-sm text-blue-200">
-                <p><strong>Geological Time Scale:</strong> Earth's 4.6 billion year history is divided into eons, eras, and periods based on major geological and biological events. Each era represents hundreds of millions to billions of years.</p>
-                
-                <p><strong>Environmental Drivers:</strong> Life evolved in response to changing atmospheric composition, climate, and geological activity. Oxygen levels, CO₂ concentrations, and temperature fluctuations shaped evolutionary pathways.</p>
-                
-                <p><strong>Mass Extinctions:</strong> Five major extinction events reset life's trajectory, creating opportunities for new forms to evolve. The most famous killed the dinosaurs 66 million years ago.</p>
-                
-                <p><strong>Atmospheric Evolution:</strong> Early Earth had no oxygen. Cyanobacteria created the Great Oxygenation Event 2.4 billion years ago, fundamentally changing life's possibilities and causing the first mass extinction.</p>
-                
-                <p><strong>Continental Drift:</strong> Moving continents changed ocean circulation, climate patterns, and isolated populations, driving speciation and evolution of new life forms.</p>
-                
-                <p><strong>Climate Oscillations:</strong> Ice ages, greenhouse periods, and volcanic events created selective pressures that shaped intelligence, cooperation, and adaptability in species like early humans.</p>
-              </div>
+              <GeologicalEraDetails era={currentEra} selectedEra={selectedEra} />
             </CardContent>
           </Card>
         )}
