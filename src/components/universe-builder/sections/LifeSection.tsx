@@ -190,10 +190,10 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
              }} />
       </div>
       
-      {/* Main Focus Area */}
-      <div className="relative z-10 flex">
+      {/* Main Focus Area - Full Width */}
+      <div className="relative z-10">
         {/* Selected Era - Main Display */}
-        <div className="flex-1 mr-8">
+        <div className="w-full">
           <div className={`relative h-80 rounded-2xl bg-gradient-to-br ${selectedEraData.gradient} overflow-hidden`}>
             {/* Enhanced Shimmer Effect */}
             <div className="absolute inset-0 opacity-20">
@@ -209,18 +209,18 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
               
               {/* Era Title */}
               <div className="bg-black/50 px-6 py-3 rounded-2xl backdrop-blur-md border border-white/20 mb-4">
-                <h3 className="text-4xl font-bold text-white drop-shadow-2xl">
+                <h3 className="text-4xl font-bold text-white drop-shadow-2xl font-serif">
                   {selectedEraData.name}
                 </h3>
-                <p className="text-xl text-white/90 mt-1">{selectedEraData.timeRange}</p>
+                <p className="text-xl text-white/90 mt-1 font-light">{selectedEraData.timeRange}</p>
               </div>
               
               {/* Era Description */}
-              <div className="bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20 max-w-2xl">
-                <p className="text-xl text-white drop-shadow-2xl font-medium">
+              <div className="bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20 max-w-3xl">
+                <p className="text-xl text-white drop-shadow-2xl font-medium font-serif">
                   {selectedEraData.description}
                 </p>
-                <p className="text-white/90 mt-2 text-sm">
+                <p className="text-white/90 mt-2 text-sm font-light">
                   {selectedEraData.context}
                 </p>
               </div>
@@ -230,58 +230,25 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
             <div className="absolute inset-0 rounded-2xl ring-2 ring-white/30" />
           </div>
         </div>
-        
-        {/* Sidebar Navigation */}
-        <div className="w-80 bg-black/20 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
-          {/* Header */}
-          <div className="text-center mb-4 pb-3 border-b border-white/10">
-            <h4 className="text-white font-semibold">Geological Timeline</h4>
-            <p className="text-xs text-gray-400 mt-1">{selectedEra + 1} of {GEOLOGICAL_ERAS.length}</p>
-          </div>
-          
-          {/* Era Cards */}
-          <div className="space-y-2 max-h-64 overflow-y-auto">
-            {GEOLOGICAL_ERAS.map((era) => (
-              <div
-                key={era.id}
-                onClick={() => onEraSelect(era.id)}
-                className={`p-3 rounded-xl cursor-pointer transition-all duration-300 ${
-                  era.id === selectedEra
-                    ? 'bg-white/20 ring-2 ring-white/40 scale-105 shadow-lg'
-                    : 'bg-white/5 hover:bg-white/10 hover:scale-102'
-                }`}
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="text-2xl">{era.icon}</div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-white truncate">{era.name}</p>
-                    <p className="text-xs text-gray-400">{era.timeRange}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Navigation Dots */}
-          <div className="flex justify-center space-x-2 mt-4 pt-3 border-t border-white/10">
-            {GEOLOGICAL_ERAS.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => onEraSelect(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  index === selectedEra
-                    ? 'bg-white scale-125'
-                    : 'bg-white/30 hover:bg-white/50'
-                }`}
-              />
-            ))}
-          </div>
-        </div>
       </div>
       
       {/* Proportional Geological Timeline */}
       <div className="mt-8 relative">
-        <h4 className="text-white font-semibold text-center mb-4">Earth's Geological Timeline (Proportional)</h4>
+        {/* Dynamic Title - Show selection details for later periods (index >= 4) */}
+        {selectedEra >= 4 ? (
+          <div className="text-center mb-4">
+            <h4 className="text-white font-bold text-lg font-serif mb-2">
+              {selectedEraData.name} • {selectedEraData.timeRange}
+            </h4>
+            <p className="text-gray-300 text-sm font-light max-w-2xl mx-auto">
+              {selectedEraData.description} — {selectedEraData.context}
+            </p>
+          </div>
+        ) : (
+          <h4 className="text-white font-semibold text-center mb-4 font-serif">
+            Earth's Geological Timeline (Proportional)
+          </h4>
+        )}
         
         {/* Timeline Labels Above */}
         <div className="relative h-12 mb-2">
@@ -301,9 +268,8 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
               >
                 {!canFitLabel && (
                   <div className="text-center mb-1">
-                    <div className="text-xs font-medium text-white">{era.icon}</div>
-                    <div className="text-xs text-gray-300 whitespace-nowrap">{era.name}</div>
-                    <div className="text-xs text-gray-400">{era.timeRange}</div>
+                    <div className="text-xs text-gray-300 whitespace-nowrap font-medium">{era.name}</div>
+                    <div className="text-xs text-gray-400 font-light">{era.timeRange}</div>
                   </div>
                 )}
               </div>
@@ -329,11 +295,10 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                 {/* Content inside timeline section */}
                 {canFitLabel && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1">
-                    <div className="text-lg font-bold drop-shadow-lg">{era.icon}</div>
-                    <div className="text-xs font-medium text-white drop-shadow-lg truncate w-full px-1">
+                    <div className="text-xs font-medium text-white drop-shadow-lg truncate w-full px-1 font-serif">
                       {era.name}
                     </div>
-                    <div className="text-xs text-white/80 drop-shadow-lg">
+                    <div className="text-xs text-white/80 drop-shadow-lg font-light">
                       {era.timeRange}
                     </div>
                   </div>
@@ -341,7 +306,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                 
                 {/* Duration indicator */}
                 <div className="absolute bottom-0 left-0 right-0 bg-black/30 text-center">
-                  <div className="text-xs text-white/90 py-1">
+                  <div className="text-xs text-white/90 py-1 font-light">
                     {width.duration >= 1000 ? `${(width.duration/1000).toFixed(1)}Gy` : `${width.duration}Ma`}
                   </div>
                 </div>
