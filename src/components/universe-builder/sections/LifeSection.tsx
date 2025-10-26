@@ -234,29 +234,14 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 animate-shimmer" />
             </div>
             
-            {/* Content */}
-            <div className="relative z-10 h-full flex flex-col justify-center items-center text-center p-8">
-              {/* Era Icon */}
-              <div className="text-8xl mb-4 drop-shadow-2xl animate-pulse">
-                {selectedEraData.icon}
-              </div>
-              
-              {/* Era Title */}
-              <div className="bg-black/50 px-6 py-3 rounded-2xl backdrop-blur-md border border-white/20 mb-4">
-                <h3 className="text-4xl font-bold text-white drop-shadow-2xl font-serif">
+            {/* Content - Minimal overlay for better image visibility */}
+            <div className="relative z-10 h-full flex flex-col justify-end items-start p-6">
+              {/* Era Title - Compact bottom overlay */}
+              <div className="bg-black/70 px-4 py-2 rounded-lg backdrop-blur-md border border-white/20">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg font-serif">
                   {selectedEraData.name}
                 </h3>
-                <p className="text-xl text-white/90 mt-1 font-light">{selectedEraData.timeRange}</p>
-              </div>
-              
-              {/* Era Description */}
-              <div className="bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20 max-w-3xl">
-                <p className="text-xl text-white drop-shadow-2xl font-medium font-serif">
-                  {selectedEraData.description}
-                </p>
-                <p className="text-white/90 mt-2 text-sm font-light">
-                  {selectedEraData.context}
-                </p>
+                <p className="text-sm text-white/90 font-light">{selectedEraData.timeRange}</p>
               </div>
             </div>
             
