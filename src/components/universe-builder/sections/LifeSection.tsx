@@ -173,18 +173,18 @@ const calculateProportionalWidths = () => {
   }));
 };
 
-// Map era names to image filenames
+// Map era names to image filenames (URL encoded for spaces)
 const getEraImagePath = (eraName: string) => {
   const imageMap: { [key: string]: string } = {
-    "Hadean Earth": "/Hadean Earth.png",
-    "Archean Earth": "/Archean Earth.png", 
-    "Great Oxygenation": "/Great Oxygenation.png",
-    "Proterozoic Earth": "/Proterozoic Earth.png",
+    "Hadean Earth": "/Hadean%20Earth.png",
+    "Archean Earth": "/Archean%20Earth.png", 
+    "Great Oxygenation": "/Great%20Oxygenation.png",
+    "Proterozoic Earth": "/Proterozoic%20Earth.png",
     "Ediacaran-Cambrian": "/Ediacaran-Cambrian.png",
-    "Paleozoic Earth": "/Paleozoic Earth.png",
-    "Mesozoic Earth": "/Mesozoic Earth.png",
-    "Cenozoic Earth": "/Cenozoic Earth.png",
-    "Anthropocene": "/Cenozoic Earth.png" // Use Cenozoic image for Anthropocene
+    "Paleozoic Earth": "/Paleozoic%20Earth.png",
+    "Mesozoic Earth": "/Mesozoic%20Earth.png",
+    "Cenozoic Earth": "/Cenozoic%20Earth.png",
+    "Anthropocene": "/Cenozoic%20Earth.png" // Use Cenozoic image for Anthropocene
   };
   
   return imageMap[eraName] || "";
