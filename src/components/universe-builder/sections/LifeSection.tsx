@@ -318,30 +318,30 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
 
 export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
   const [selectedEra, setSelectedEra] = useState(0)
-  // Initialize with optimal values for first era (Hadean Earth)
-  const [co2Level, setCo2Level] = useState(GEOLOGICAL_ERAS[0].atmosphere.co2)
-  const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen)
-  const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature)
-  const [volcanicActivity, setVolcanicActivity] = useState(85) // High for early eras
+  // Initialize with optimal values for first era (Hadean Earth) - using scientific units
+  const [co2Level, setCo2Level] = useState(GEOLOGICAL_ERAS[0].atmosphere.co2 * 50) // Convert % to ppm (×500 for scale)
+  const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen) // Keep as % (0-25% range)
+  const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature + 15) // Convert to absolute temp (°C, 0-50°C range)
+  const [volcanicActivity, setVolcanicActivity] = useState(8.5) // Convert to eruptions per million years (0-15 range)
   const [outcome, setOutcome] = useState('')
 
   // Update sliders to optimal values when era changes
   useEffect(() => {
     const currentEra = GEOLOGICAL_ERAS[selectedEra];
-    setCo2Level(currentEra.atmosphere.co2);
-    setOxygenLevel(currentEra.atmosphere.oxygen);
-    setTemperature(currentEra.temperature);
+    setCo2Level(currentEra.atmosphere.co2 * 50); // Convert % to ppm scale
+    setOxygenLevel(currentEra.atmosphere.oxygen); // Keep as %
+    setTemperature(currentEra.temperature + 15); // Convert to absolute temp (0-50°C range)
     // Volcanic activity: high for early eras (0-2), moderate-low for later eras
-    setVolcanicActivity(selectedEra <= 2 ? 85 : 25);
+    setVolcanicActivity(selectedEra <= 2 ? 12 : 3); // Convert to eruptions per million years
   }, [selectedEra])
 
   useEffect(() => {
     const handleRandomize = () => {
       setSelectedEra(Math.floor(Math.random() * GEOLOGICAL_ERAS.length))
-      setCo2Level(Math.random() * 100)
-      setOxygenLevel(Math.random() * 60)
-      setTemperature(-20 + Math.random() * 100)
-      setVolcanicActivity(Math.random() * 100)
+      setCo2Level(Math.random() * 5000) // 0-5000 ppm
+      setOxygenLevel(Math.random() * 25) // 0-25%
+      setTemperature(Math.random() * 50) // 0-50°C
+      setVolcanicActivity(Math.random() * 15) // 0-15 eruptions/Myr
     }
 
     window.addEventListener('randomizeUniverse', handleRandomize)
@@ -354,11 +354,12 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     const idealAtmosphere = currentEra.atmosphere;
     const idealTemp = currentEra.temperature;
     
-    // Score based on how close conditions are to the era's optimal values
-    const co2Score = Math.max(0, 1 - Math.abs(co2Level - idealAtmosphere.co2) / 50);
-    const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 30);
-    const tempScore = Math.max(0, 1 - Math.abs(temperature - idealTemp) / 30);
-    const volcanicScore = selectedEra <= 2 ? volcanicActivity / 100 : Math.max(0, 1 - volcanicActivity / 100);
+    // Score based on how close conditions are to the era's optimal values (using new units)
+    const co2Score = Math.max(0, 1 - Math.abs(co2Level - (idealAtmosphere.co2 * 50)) / 750); // ppm scale
+    const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 8); // % scale
+    const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 10); // absolute temp scale
+    const idealVolcanic = selectedEra <= 2 ? 12 : 3;
+    const volcanicScore = Math.max(0, 1 - Math.abs(volcanicActivity - idealVolcanic) / 5); // eruptions/Myr scale
     
     const totalScore = (co2Score * 0.3) + (oxygenScore * 0.3) + (tempScore * 0.25) + (volcanicScore * 0.15);
     
@@ -368,13 +369,13 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       setOutcome(`🌟 Good - ${currentEra.description.toLowerCase()} thrives`)
     } else if (totalScore > 0.45) {
       setOutcome(`⚠️ Marginal - some life survives but struggles`)
-    } else if (oxygenLevel > 40 && selectedEra <= 1) {
+    } else if (oxygenLevel > 20 && selectedEra <= 1) {
       setOutcome('☠️ Oxygen toxicity - anaerobic life dies')
-    } else if (temperature > 60) {
+    } else if (temperature > 45) {
       setOutcome('🔥 Too hot - proteins denature, life cannot survive')
-    } else if (temperature < -15) {
+    } else if (temperature < 5) {
       setOutcome('❄️ Global freeze - most life goes extinct')
-    } else if (co2Level > 80 && selectedEra >= 4) {
+    } else if (co2Level > 4000 && selectedEra >= 4) {
       setOutcome('🌡️ Extreme greenhouse - runaway climate change')
     } else {
       setOutcome('❌ Poor conditions - mass extinction event')
@@ -475,9 +476,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           <div className="flex flex-col h-96 lg:h-[500px] gap-2">
             <Card className="bg-black/20 border-white/10 flex-1">
               <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">CO₂ Levels</CardTitle>
+                <CardTitle className="text-white text-sm">CO₂ Concentration</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
-                  Atmospheric carbon dioxide concentration
+                  Atmospheric carbon dioxide (parts per million)
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
@@ -486,23 +487,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <Slider
                       value={[co2Level]}
                       onValueChange={(value) => setCo2Level(value[0])}
-                      max={100}
-                      min={0}
-                      step={1}
+                      max={5000}
+                      min={100}
+                      step={50}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - ±15% around optimal value */}
+                    {/* Optimal range indicator - ±750 ppm around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, (currentEra.atmosphere.co2 - 15) / 100 * 100)}%`,
-                           width: `${Math.min(30, (currentEra.atmosphere.co2 + 15) - Math.max(0, currentEra.atmosphere.co2 - 15)) / 100 * 100}%`
+                           left: `${Math.max(0, ((currentEra.atmosphere.co2 * 50) - 750 - 100) / 4900 * 100)}%`,
+                           width: `${Math.min(1500, ((currentEra.atmosphere.co2 * 50) + 750) - Math.max(100, (currentEra.atmosphere.co2 * 50) - 750)) / 4900 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Low CO₂</span>
-                    <span className="text-green-400 font-bold">{currentEra.atmosphere.co2}% (era optimal)</span>
-                    <span className="text-white font-medium">{co2Level.toFixed(0)}%</span>
-                    <span>High CO₂</span>
+                    <span>100 ppm</span>
+                    <span className="text-green-400 font-bold">{(currentEra.atmosphere.co2 * 50).toFixed(0)} ppm (optimal)</span>
+                    <span className="text-white font-medium">{co2Level.toFixed(0)} ppm</span>
+                    <span>5000 ppm</span>
                   </div>
                 </div>
               </CardContent>
@@ -510,9 +511,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
 
             <Card className="bg-black/20 border-white/10 flex-1">
               <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">Oxygen Levels</CardTitle>
+                <CardTitle className="text-white text-sm">Oxygen Concentration</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
-                  Atmospheric oxygen concentration
+                  Atmospheric oxygen percentage
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
@@ -521,23 +522,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <Slider
                       value={[oxygenLevel]}
                       onValueChange={(value) => setOxygenLevel(value[0])}
-                      max={60}
+                      max={25}
                       min={0}
-                      step={1}
+                      step={0.5}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - ±10% around optimal value */}
+                    {/* Optimal range indicator - ±3% around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, (currentEra.atmosphere.oxygen - 10) / 60 * 100)}%`,
-                           width: `${Math.min(20, (currentEra.atmosphere.oxygen + 10) - Math.max(0, currentEra.atmosphere.oxygen - 10)) / 60 * 100}%`
+                           left: `${Math.max(0, (currentEra.atmosphere.oxygen - 3) / 25 * 100)}%`,
+                           width: `${Math.min(6, (currentEra.atmosphere.oxygen + 3) - Math.max(0, currentEra.atmosphere.oxygen - 3)) / 25 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Anoxic</span>
-                    <span className="text-green-400 font-bold">{currentEra.atmosphere.oxygen}% (era optimal)</span>
-                    <span className="text-white font-medium">{oxygenLevel.toFixed(0)}%</span>
-                    <span>High O₂</span>
+                    <span>0%</span>
+                    <span className="text-green-400 font-bold">{currentEra.atmosphere.oxygen.toFixed(1)}% (optimal)</span>
+                    <span className="text-white font-medium">{oxygenLevel.toFixed(1)}%</span>
+                    <span>25%</span>
                   </div>
                 </div>
               </CardContent>
@@ -547,7 +548,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-sm">Global Temperature</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
-                  Average global temperature relative to today
+                  Average global temperature (°C)
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
@@ -556,23 +557,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <Slider
                       value={[temperature]}
                       onValueChange={(value) => setTemperature(value[0])}
-                      max={80}
-                      min={-20}
+                      max={50}
+                      min={0}
                       step={1}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - ±15°C around optimal value */}
+                    {/* Optimal range indicator - ±5°C around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, (currentEra.temperature - 15 + 20) / 100 * 100)}%`,
-                           width: `${Math.min(30, (currentEra.temperature + 15) - Math.max(-20, currentEra.temperature - 15) + 20) / 100 * 100}%`
+                           left: `${Math.max(0, ((currentEra.temperature + 15) - 5) / 50 * 100)}%`,
+                           width: `${Math.min(10, ((currentEra.temperature + 15) + 5) - Math.max(0, (currentEra.temperature + 15) - 5)) / 50 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Ice Age</span>
-                    <span className="text-green-400 font-bold">{currentEra.temperature > 0 ? '+' : ''}{currentEra.temperature}°C (era optimal)</span>
-                    <span className="text-white font-medium">{temperature > 0 ? '+' : ''}{temperature.toFixed(0)}°C</span>
-                    <span>Hothouse</span>
+                    <span>0°C</span>
+                    <span className="text-green-400 font-bold">{(currentEra.temperature + 15).toFixed(0)}°C (optimal)</span>
+                    <span className="text-white font-medium">{temperature.toFixed(0)}°C</span>
+                    <span>50°C</span>
                   </div>
                 </div>
               </CardContent>
@@ -582,7 +583,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-sm">Volcanic Activity</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
-                  Level of volcanic and tectonic activity
+                  Major eruptions per million years
                 </CardDescription>
               </CardHeader>
               <CardContent className="pt-2">
@@ -591,23 +592,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <Slider
                       value={[volcanicActivity]}
                       onValueChange={(value) => setVolcanicActivity(value[0])}
-                      max={100}
+                      max={15}
                       min={0}
-                      step={1}
+                      step={0.5}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - high for early eras (70-100%), low for later eras (10-40%) */}
+                    {/* Optimal range indicator - ±2 eruptions around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: selectedEra <= 2 ? '70%' : '10%',
-                           width: selectedEra <= 2 ? '30%' : '30%'
+                           left: `${Math.max(0, ((selectedEra <= 2 ? 12 : 3) - 2) / 15 * 100)}%`,
+                           width: `${Math.min(4, ((selectedEra <= 2 ? 12 : 3) + 2) - Math.max(0, (selectedEra <= 2 ? 12 : 3) - 2)) / 15 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Quiet</span>
-                    <span className="text-green-400 font-bold">{selectedEra <= 2 ? 'High' : 'Low'} (era optimal)</span>
-                    <span className="text-white font-medium">{volcanicActivity.toFixed(0)}%</span>
-                    <span>Intense</span>
+                    <span>0/Myr</span>
+                    <span className="text-green-400 font-bold">{selectedEra <= 2 ? '12' : '3'}/Myr (optimal)</span>
+                    <span className="text-white font-medium">{volcanicActivity.toFixed(1)}/Myr</span>
+                    <span>15/Myr</span>
                   </div>
                 </div>
               </CardContent>
