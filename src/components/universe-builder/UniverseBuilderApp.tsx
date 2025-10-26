@@ -13,7 +13,7 @@ import StarlightSection from './sections/StarlightSection'
 import GalacticHeartSection from './sections/GalacticHeartSection'
 import PlanetsSection from './sections/PlanetsSection'
 import AbiogenesisLabSection from './sections/AbiogenesisLabSection'
-import ComplexitySection from './sections/ComplexitySection'
+import LifeSection from './sections/LifeSection'
 
 export default function UniverseBuilderApp() {
   const [currentSection, setCurrentSection] = useState(0)
@@ -27,7 +27,7 @@ export default function UniverseBuilderApp() {
     { id: 3, title: 'Formation of Galaxy', subtitle: 'Blackhole at the Heart', component: GalacticHeartSection },
     { id: 4, title: 'Planets & Habitability', subtitle: 'Goldilocks Zone', component: PlanetsSection },
     { id: 5, title: 'Abiogenesis Lab', subtitle: 'From Chemistry to Codes', component: AbiogenesisLabSection },
-    { id: 6, title: 'Evolution', subtitle: 'Beginning of Species', component: ComplexitySection }
+    { id: 6, title: 'Evolution', subtitle: 'Deep Time Timeline', component: LifeSection }
   ]
 
   const CurrentSectionComponent = sections[currentSection].component
