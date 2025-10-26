@@ -263,20 +263,39 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
               <div
                 key={era.id}
                 onClick={() => onEraSelect(era.id)}
-                className={`relative cursor-pointer transition-all duration-300 hover:brightness-110 ${
-                  era.id === selectedEra ? 'ring-2 ring-white/60 brightness-125' : ''
+                title={`${era.name} (${era.timeRange}) - ${era.description}`}
+                className={`relative cursor-pointer transition-all duration-300 hover:brightness-110 hover:scale-105 hover:z-10 ${
+                  era.id === selectedEra ? 'ring-2 ring-white/60 brightness-125 scale-105 z-10' : ''
                 } bg-gradient-to-br ${era.gradient}`}
                 style={{ width: `${width.percentage}%` }}
               >
                 {/* Content inside timeline section */}
                 {canFitLabel && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1">
-                    <div className="text-xs font-medium text-white drop-shadow-lg truncate w-full px-1 font-serif">
-                      {era.name}
-                    </div>
-                    <div className="text-xs text-white/80 drop-shadow-lg font-light">
-                      {era.timeRange}
-                    </div>
+                    {/* Adaptive text based on available width */}
+                    {width.percentage > 15 ? (
+                      // Full name for wide sections
+                      <div className="text-xs font-semibold text-white drop-shadow-2xl leading-tight px-1 font-sans">
+                        {era.name}
+                      </div>
+                    ) : width.percentage > 10 ? (
+                      // Abbreviated name for medium sections
+                      <div className="text-xs font-bold text-white drop-shadow-2xl leading-tight px-1 font-mono transform -rotate-12">
+                        {era.name.split(' ')[0]}
+                      </div>
+                    ) : (
+                      // Icon or initial for narrow sections
+                      <div className="text-lg font-bold text-white drop-shadow-2xl transform rotate-45">
+                        {era.icon || era.name.charAt(0)}
+                      </div>
+                    )}
+                    
+                    {/* Time range - only show for wider sections */}
+                    {width.percentage > 12 && (
+                      <div className="text-xs text-white/90 drop-shadow-lg font-light leading-tight">
+                        {era.timeRange}
+                      </div>
+                    )}
                   </div>
                 )}
                 
