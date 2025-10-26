@@ -632,41 +632,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Detailed Description */}
-              <div className="mb-6 p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
-                <p className="text-sm text-blue-200 leading-relaxed">
-                  {currentEra.details}
-                </p>
-              </div>
-              
-              {/* Key Features */}
-              <div className="mb-4">
-                <h4 className="font-semibold mb-2 text-white text-sm">Key Features:</h4>
-                <div className="grid grid-cols-1 gap-1">
-                  {currentEra.keyFeatures.map((feature, index) => (
-                    <div key={index} className="flex items-center gap-2 text-xs text-gray-300">
-                      <span className="text-green-400">•</span>
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Life Forms */}
-              <div className="mb-4">
-                <h4 className="font-semibold mb-2 text-white text-sm">Life Forms:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {currentEra.lifeforms.map((lifeform, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs bg-purple-900/30 text-purple-200">
-                      {lifeform}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              
-              {/* Outcome Display */}
-              <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
-                <h4 className="font-semibold mb-2 text-white">Environmental Outcome:</h4>
+              {/* Environmental Outcome - Simplified */}
+              <div className="p-4 rounded-lg bg-black/30 border border-white/10">
                 <p className={`text-sm font-medium ${
                   outcome.includes('✨') ? 'text-green-400' : 
                   outcome.includes('🌟') ? 'text-emerald-400' :
