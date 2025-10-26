@@ -321,7 +321,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
   // Initialize with optimal values for first era (Hadean Earth) - using scientific units
   const [co2Level, setCo2Level] = useState(GEOLOGICAL_ERAS[0].atmosphere.co2 * 50) // Convert % to ppm (×500 for scale)
   const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen) // Keep as % (0-100% range)
-  const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature + 15) // Convert to absolute temp (°C, -20 to +100°C range)
+  const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature + 15) // Convert to absolute temp (°C, -20 to +500°C range)
   const [volcanicActivity, setVolcanicActivity] = useState(8.5) // Convert to eruptions per million years (0-15 range)
   const [outcome, setOutcome] = useState('')
 
@@ -330,7 +330,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     const currentEra = GEOLOGICAL_ERAS[selectedEra];
     setCo2Level(currentEra.atmosphere.co2 * 50); // Convert % to ppm scale
     setOxygenLevel(currentEra.atmosphere.oxygen); // Keep as %
-    setTemperature(currentEra.temperature + 15); // Convert to absolute temp (-20 to +100°C range)
+    setTemperature(currentEra.temperature + 15); // Convert to absolute temp (-20 to +500°C range)
     // Volcanic activity: high for early eras (0-2), moderate-low for later eras
     setVolcanicActivity(selectedEra <= 2 ? 12 : 3); // Convert to eruptions per million years
   }, [selectedEra])
@@ -340,7 +340,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       setSelectedEra(Math.floor(Math.random() * GEOLOGICAL_ERAS.length))
       setCo2Level(Math.random() * 5000) // 0-5000 ppm
       setOxygenLevel(Math.random() * 100) // 0-100%
-      setTemperature(-20 + Math.random() * 120) // -20 to +100°C
+      setTemperature(-20 + Math.random() * 520) // -20 to +500°C
       setVolcanicActivity(Math.random() * 15) // 0-15 eruptions/Myr
     }
 
@@ -357,7 +357,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     // Score based on how close conditions are to the era's optimal values (using new units)
     const co2Score = Math.max(0, 1 - Math.abs(co2Level - (idealAtmosphere.co2 * 50)) / 750); // ppm scale
     const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 25); // % scale (0-100% range)
-    const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 20); // absolute temp scale (-20 to +100°C)
+    const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 50); // absolute temp scale (-20 to +500°C)
     const idealVolcanic = selectedEra <= 2 ? 12 : 3;
     const volcanicScore = Math.max(0, 1 - Math.abs(volcanicActivity - idealVolcanic) / 5); // eruptions/Myr scale
     
@@ -371,7 +371,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       setOutcome(`⚠️ Marginal - some life survives but struggles`)
     } else if (oxygenLevel > 50 && selectedEra <= 1) {
       setOutcome('☠️ Oxygen toxicity - anaerobic life dies')
-    } else if (temperature > 80) {
+    } else if (temperature > 200) {
       setOutcome('🔥 Too hot - proteins denature, life cannot survive')
     } else if (temperature < -10) {
       setOutcome('❄️ Global freeze - most life goes extinct')
@@ -557,23 +557,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <Slider
                       value={[temperature]}
                       onValueChange={(value) => setTemperature(value[0])}
-                      max={100}
+                      max={500}
                       min={-20}
-                      step={2}
+                      step={5}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - ±10°C around optimal value */}
+                    {/* Optimal range indicator - ±25°C around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, Math.min(100, ((currentEra.temperature + 15) - 10 + 20) / 120 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((currentEra.temperature + 15) - 10 + 20) / 120 * 100), (Math.min(100, (currentEra.temperature + 15) + 10) - Math.max(-20, (currentEra.temperature + 15) - 10) + 20) / 120 * 100))}%`
+                           left: `${Math.max(0, Math.min(100, ((currentEra.temperature + 15) - 25 + 20) / 520 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((currentEra.temperature + 15) - 25 + 20) / 520 * 100), (Math.min(500, (currentEra.temperature + 15) + 25) - Math.max(-20, (currentEra.temperature + 15) - 25) + 20) / 520 * 100))}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
                     <span>-20°C</span>
                     <span className="text-green-400 font-bold">{(currentEra.temperature + 15).toFixed(0)}°C (optimal)</span>
                     <span className="text-white font-medium">{temperature.toFixed(0)}°C</span>
-                    <span>100°C</span>
+                    <span>500°C</span>
                   </div>
                 </div>
               </CardContent>
