@@ -318,11 +318,22 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
 
 export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
   const [selectedEra, setSelectedEra] = useState(0)
-  const [co2Level, setCo2Level] = useState(50)
-  const [oxygenLevel, setOxygenLevel] = useState(20)
-  const [temperature, setTemperature] = useState(15)
-  const [volcanicActivity, setVolcanicActivity] = useState(70)
+  // Initialize with optimal values for first era (Hadean Earth)
+  const [co2Level, setCo2Level] = useState(GEOLOGICAL_ERAS[0].atmosphere.co2)
+  const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen)
+  const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature)
+  const [volcanicActivity, setVolcanicActivity] = useState(85) // High for early eras
   const [outcome, setOutcome] = useState('')
+
+  // Update sliders to optimal values when era changes
+  useEffect(() => {
+    const currentEra = GEOLOGICAL_ERAS[selectedEra];
+    setCo2Level(currentEra.atmosphere.co2);
+    setOxygenLevel(currentEra.atmosphere.oxygen);
+    setTemperature(currentEra.temperature);
+    // Volcanic activity: high for early eras (0-2), moderate-low for later eras
+    setVolcanicActivity(selectedEra <= 2 ? 85 : 25);
+  }, [selectedEra])
 
   useEffect(() => {
     const handleRandomize = () => {
@@ -480,11 +491,11 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       step={1}
                       className="w-full"
                     />
-                    {/* Optimal range indicator */}
+                    {/* Optimal range indicator - ±15% around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${((currentEra.atmosphere.co2 - 10) / 100) * 100}%`,
-                           width: `${(20 / 100) * 100}%`
+                           left: `${Math.max(0, (currentEra.atmosphere.co2 - 15) / 100 * 100)}%`,
+                           width: `${Math.min(30, (currentEra.atmosphere.co2 + 15) - Math.max(0, currentEra.atmosphere.co2 - 15)) / 100 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
@@ -515,11 +526,11 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       step={1}
                       className="w-full"
                     />
-                    {/* Optimal range indicator */}
+                    {/* Optimal range indicator - ±10% around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${((currentEra.atmosphere.oxygen - 5) / 60) * 100}%`,
-                           width: `${(10 / 60) * 100}%`
+                           left: `${Math.max(0, (currentEra.atmosphere.oxygen - 10) / 60 * 100)}%`,
+                           width: `${Math.min(20, (currentEra.atmosphere.oxygen + 10) - Math.max(0, currentEra.atmosphere.oxygen - 10)) / 60 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
@@ -550,11 +561,11 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       step={1}
                       className="w-full"
                     />
-                    {/* Optimal range indicator */}
+                    {/* Optimal range indicator - ±15°C around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${((currentEra.temperature - 10 + 20) / 100) * 100}%`,
-                           width: `${(20 / 100) * 100}%`
+                           left: `${Math.max(0, (currentEra.temperature - 15 + 20) / 100 * 100)}%`,
+                           width: `${Math.min(30, (currentEra.temperature + 15) - Math.max(-20, currentEra.temperature - 15) + 20) / 100 * 100}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
@@ -585,11 +596,11 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       step={1}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - high for early eras, low for later */}
+                    {/* Optimal range indicator - high for early eras (70-100%), low for later eras (10-40%) */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: selectedEra <= 2 ? '60%' : '10%',
-                           width: '30%'
+                           left: selectedEra <= 2 ? '70%' : '10%',
+                           width: selectedEra <= 2 ? '30%' : '30%'
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
