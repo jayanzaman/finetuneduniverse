@@ -234,18 +234,6 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
       
       {/* Proportional Geological Timeline */}
       <div className="mt-8 relative">
-        {/* Dynamic Title - Show era name for later periods, static title for early periods */}
-        {selectedEra >= 4 ? (
-          <h4 className="text-white font-bold text-lg font-serif text-center mb-4">
-            {selectedEraData.name} • {selectedEraData.timeRange}
-          </h4>
-        ) : (
-          <h4 className="text-white font-semibold text-center mb-4 font-serif">
-            Earth's Geological Timeline (Proportional)
-          </h4>
-        )}
-        
-        
         {/* Timeline Bar */}
         <div className="flex h-16 rounded-lg overflow-hidden border border-white/20">
           {GEOLOGICAL_ERAS.map((era, index) => {
