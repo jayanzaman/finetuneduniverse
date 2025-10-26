@@ -495,8 +495,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {/* Optimal range indicator - ±750 ppm around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, ((currentEra.atmosphere.co2 * 50) - 750 - 100) / 4900 * 100)}%`,
-                           width: `${Math.min(1500, ((currentEra.atmosphere.co2 * 50) + 750) - Math.max(100, (currentEra.atmosphere.co2 * 50) - 750)) / 4900 * 100}%`
+                           left: `${Math.max(0, Math.min(100, ((currentEra.atmosphere.co2 * 50) - 750 - 100) / 4900 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((currentEra.atmosphere.co2 * 50) - 750 - 100) / 4900 * 100), (Math.min(5000, (currentEra.atmosphere.co2 * 50) + 750) - Math.max(100, (currentEra.atmosphere.co2 * 50) - 750)) / 4900 * 100))}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
@@ -530,8 +530,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {/* Optimal range indicator - ±3% around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, (currentEra.atmosphere.oxygen - 3) / 25 * 100)}%`,
-                           width: `${Math.min(6, (currentEra.atmosphere.oxygen + 3) - Math.max(0, currentEra.atmosphere.oxygen - 3)) / 25 * 100}%`
+                           left: `${Math.max(0, Math.min(100, (currentEra.atmosphere.oxygen - 3) / 25 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, (currentEra.atmosphere.oxygen - 3) / 25 * 100), (Math.min(25, currentEra.atmosphere.oxygen + 3) - Math.max(0, currentEra.atmosphere.oxygen - 3)) / 25 * 100))}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
@@ -565,8 +565,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {/* Optimal range indicator - ±5°C around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, ((currentEra.temperature + 15) - 5) / 50 * 100)}%`,
-                           width: `${Math.min(10, ((currentEra.temperature + 15) + 5) - Math.max(0, (currentEra.temperature + 15) - 5)) / 50 * 100}%`
+                           left: `${Math.max(0, Math.min(100, ((currentEra.temperature + 15) - 5) / 50 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((currentEra.temperature + 15) - 5) / 50 * 100), (Math.min(50, (currentEra.temperature + 15) + 5) - Math.max(0, (currentEra.temperature + 15) - 5)) / 50 * 100))}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
@@ -600,8 +600,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {/* Optimal range indicator - ±2 eruptions around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, ((selectedEra <= 2 ? 12 : 3) - 2) / 15 * 100)}%`,
-                           width: `${Math.min(4, ((selectedEra <= 2 ? 12 : 3) + 2) - Math.max(0, (selectedEra <= 2 ? 12 : 3) - 2)) / 15 * 100}%`
+                           left: `${Math.max(0, Math.min(100, ((selectedEra <= 2 ? 12 : 3) - 2) / 15 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((selectedEra <= 2 ? 12 : 3) - 2) / 15 * 100), (Math.min(15, (selectedEra <= 2 ? 12 : 3) + 2) - Math.max(0, (selectedEra <= 2 ? 12 : 3) - 2)) / 15 * 100))}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
