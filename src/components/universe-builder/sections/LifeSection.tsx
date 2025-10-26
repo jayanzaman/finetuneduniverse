@@ -250,32 +250,6 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
           </h4>
         )}
         
-        {/* Timeline Labels Above */}
-        <div className="relative h-12 mb-2">
-          {GEOLOGICAL_ERAS.map((era, index) => {
-            const width = proportionalWidths[index];
-            const leftPosition = proportionalWidths.slice(0, index).reduce((sum, w) => sum + w.percentage, 0);
-            const canFitLabel = width.percentage > 8; // Only show label in section if > 8% width
-            
-            return (
-              <div
-                key={era.id}
-                className="absolute flex flex-col items-center"
-                style={{
-                  left: `${leftPosition + width.percentage / 2}%`,
-                  transform: 'translateX(-50%)'
-                }}
-              >
-                {!canFitLabel && (
-                  <div className="text-center mb-1">
-                    <div className="text-xs text-gray-300 whitespace-nowrap font-medium">{era.name}</div>
-                    <div className="text-xs text-gray-400 font-light">{era.timeRange}</div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
         
         {/* Timeline Bar */}
         <div className="flex h-16 rounded-lg overflow-hidden border border-white/20">
