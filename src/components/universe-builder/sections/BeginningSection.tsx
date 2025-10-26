@@ -647,10 +647,17 @@ export default function BeginningSection({
                 {educatorMode && (
                   <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                     <div className="text-xs text-blue-200 space-y-2">
-                      <p><strong>The flatness problem:</strong> Universe density (Ω) must equal the critical value to 1 part in 10^60 for a flat, life-permitting cosmos.</p>
-                      <p><strong>Cosmic geometry:</strong> Like a rubber sheet - too much matter curves it inward (Big Crunch), too little curves it outward (runaway expansion), just right keeps it flat.</p>
-                      <p><strong>Precision required:</strong> At the beginning of time, density had to be exactly right to 1 part in 10^60. Like hitting an atom-sized target on a North America-sized dartboard.</p>
-                      <p><strong>Why it matters:</strong> Only a flat universe expands at the perfect speed for structure formation. This fine-tuning problem remains a central mystery in cosmology.</p>
+                      <p><strong>What "Flat" Actually Means:</strong> In cosmology, "flat" means Euclidean geometry holds true at cosmic scales: parallel lines never meet, triangle angles add up to 180°, and light travels in straight lines through empty space. In Einstein's relativity, space geometry depends on energy and mass content.</p>
+                      
+                      <p><strong>Three Possible Geometries:</strong> Positively curved (closed) - like a sphere surface where you could loop back on yourself. Negatively curved (open) - like a saddle where parallel lines diverge. Flat (critical) - balanced on a razor's edge between the two.</p>
+                      
+                      <p><strong>Why This Determines Fate:</strong> A closed universe has enough matter to stop expansion and collapse in a "Big Crunch." An open universe expands forever, cooling into a thin, lonely void. A flat universe sits perfectly balanced—expanding forever but slowing to approach zero asymptotically.</p>
+                      
+                      <p><strong>CMB Evidence for Flatness:</strong> The cosmic microwave background shows afterglow photons from 380,000 years after the Big Bang. The angular size of acoustic peaks tells us geometry: in flat space, sound waves subtend about 1° on the sky. WMAP and Planck satellites measured Ωₖ ≈ 0 ± 0.001—like balancing a pencil on its tip at cosmic precision.</p>
+                      
+                      <p><strong>The Flatness Problem:</strong> For the universe to be this flat today, initial density had to equal the critical value to 50 decimal places—suspiciously precise. The leading explanation is cosmic inflation: exponential expansion in the first 10⁻³⁴ seconds stretched any initial curvature so much that our observable universe looks flat.</p>
+                      
+                      <p><strong>Alternative Scenarios:</strong> If the universe had slightly more matter-energy than critical density, it would be positively curved ("concave down"). Slightly less would make it negatively curved ("concave up"). In either case, photons would travel bent paths, shifting CMB peaks and changing cosmic expansion history.</p>
                     </div>
                   </div>
                 )}
