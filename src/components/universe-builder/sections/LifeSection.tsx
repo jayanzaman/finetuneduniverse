@@ -620,20 +620,6 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
-            {/* Era Information Panel */}
-            <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white flex items-center gap-3">
-                <span className="text-3xl">{currentEra.icon}</span>
-                {currentEra.name}
-              </CardTitle>
-              <CardDescription className="text-gray-300">
-                {currentEra.timeRange} • {currentEra.description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-            </CardContent>
-            </Card>
           </div>
 
           {/* Right Side: Environmental Controls (1/3 width) */}
