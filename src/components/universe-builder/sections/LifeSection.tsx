@@ -144,9 +144,39 @@ const GEOLOGICAL_ERAS = [
   }
 ];
 
+// Calculate era durations in millions of years for proportional timeline
+const getEraDuration = (era: typeof GEOLOGICAL_ERAS[0]) => {
+  const timeRange = era.timeRange;
+  
+  // Parse time ranges to get durations in millions of years
+  if (timeRange === "Present") return 0.01; // Anthropocene is very recent
+  if (timeRange === "66 Ma–present") return 66;
+  if (timeRange === "250–66 Ma") return 184;
+  if (timeRange === "500–250 Ma") return 250;
+  if (timeRange === "600–500 Ma") return 100;
+  if (timeRange === "2.0–0.6 Ga") return 1400; // 2000-600 = 1400 Ma
+  if (timeRange === "2.4–2.0 Ga") return 400;  // 2400-2000 = 400 Ma
+  if (timeRange === "4.0–2.5 Ga") return 1500; // 4000-2500 = 1500 Ma
+  if (timeRange === "4.6–4.0 Ga") return 600;  // 4600-4000 = 600 Ma
+  
+  return 100; // fallback
+};
+
+// Calculate proportional widths for timeline
+const calculateProportionalWidths = () => {
+  const durations = GEOLOGICAL_ERAS.map(getEraDuration);
+  const totalDuration = durations.reduce((sum, duration) => sum + duration, 0);
+  
+  return durations.map(duration => ({
+    duration,
+    percentage: (duration / totalDuration) * 100
+  }));
+};
+
 // Evolution Timeline Carousel Component
 function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; onEraSelect: (era: number) => void }) {
   const selectedEraData = GEOLOGICAL_ERAS[selectedEra];
+  const proportionalWidths = calculateProportionalWidths();
   
   return (
     <div className="relative w-full">
@@ -246,6 +276,89 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
               />
             ))}
           </div>
+        </div>
+      </div>
+      
+      {/* Proportional Geological Timeline */}
+      <div className="mt-8 relative">
+        <h4 className="text-white font-semibold text-center mb-4">Earth's Geological Timeline (Proportional)</h4>
+        
+        {/* Timeline Labels Above */}
+        <div className="relative h-12 mb-2">
+          {GEOLOGICAL_ERAS.map((era, index) => {
+            const width = proportionalWidths[index];
+            const leftPosition = proportionalWidths.slice(0, index).reduce((sum, w) => sum + w.percentage, 0);
+            const canFitLabel = width.percentage > 8; // Only show label in section if > 8% width
+            
+            return (
+              <div
+                key={era.id}
+                className="absolute flex flex-col items-center"
+                style={{
+                  left: `${leftPosition + width.percentage / 2}%`,
+                  transform: 'translateX(-50%)'
+                }}
+              >
+                {!canFitLabel && (
+                  <div className="text-center mb-1">
+                    <div className="text-xs font-medium text-white">{era.icon}</div>
+                    <div className="text-xs text-gray-300 whitespace-nowrap">{era.name}</div>
+                    <div className="text-xs text-gray-400">{era.timeRange}</div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Timeline Bar */}
+        <div className="flex h-16 rounded-lg overflow-hidden border border-white/20">
+          {GEOLOGICAL_ERAS.map((era, index) => {
+            const width = proportionalWidths[index];
+            const canFitLabel = width.percentage > 8;
+            
+            return (
+              <div
+                key={era.id}
+                onClick={() => onEraSelect(era.id)}
+                className={`relative cursor-pointer transition-all duration-300 hover:brightness-110 ${
+                  era.id === selectedEra ? 'ring-2 ring-white/60 brightness-125' : ''
+                } bg-gradient-to-br ${era.gradient}`}
+                style={{ width: `${width.percentage}%` }}
+              >
+                {/* Content inside timeline section */}
+                {canFitLabel && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-1">
+                    <div className="text-lg font-bold drop-shadow-lg">{era.icon}</div>
+                    <div className="text-xs font-medium text-white drop-shadow-lg truncate w-full px-1">
+                      {era.name}
+                    </div>
+                    <div className="text-xs text-white/80 drop-shadow-lg">
+                      {era.timeRange}
+                    </div>
+                  </div>
+                )}
+                
+                {/* Duration indicator */}
+                <div className="absolute bottom-0 left-0 right-0 bg-black/30 text-center">
+                  <div className="text-xs text-white/90 py-1">
+                    {width.duration >= 1000 ? `${(width.duration/1000).toFixed(1)}Gy` : `${width.duration}Ma`}
+                  </div>
+                </div>
+                
+                {/* Selection indicator */}
+                {era.id === selectedEra && (
+                  <div className="absolute inset-0 bg-white/20 animate-pulse" />
+                )}
+              </div>
+            );
+          })}
+        </div>
+        
+        {/* Timeline Scale */}
+        <div className="flex justify-between mt-2 text-xs text-gray-400">
+          <span>4.6 Billion Years Ago</span>
+          <span>Present</span>
         </div>
       </div>
       
