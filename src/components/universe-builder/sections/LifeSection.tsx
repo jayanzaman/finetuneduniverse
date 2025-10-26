@@ -212,7 +212,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
       <div className="relative z-10">
         {/* Selected Era - Main Display */}
         <div className="w-full">
-          <div className={`relative h-80 rounded-2xl overflow-hidden`}
+          <div className={`relative h-96 lg:h-[500px] rounded-2xl overflow-hidden`}
                style={{
                  backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
                  backgroundSize: 'cover',
