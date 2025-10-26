@@ -461,16 +461,16 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           </div>
 
           {/* Right Side: Environmental Controls (1/3 width) */}
-          <div className="space-y-6">
+          <div className="space-y-3 h-96 lg:h-[500px] overflow-y-auto">
             <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">CO₂ Levels</CardTitle>
-                <CardDescription className="text-gray-300">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-sm">CO₂ Levels</CardTitle>
+                <CardDescription className="text-gray-300 text-xs">
                   Atmospheric carbon dioxide concentration
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-2">
+                <div className="space-y-2">
                   <div className="relative">
                     <Slider
                       value={[co2Level]}
@@ -498,14 +498,14 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
             </Card>
 
             <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Oxygen Levels</CardTitle>
-                <CardDescription className="text-gray-300">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-sm">Oxygen Levels</CardTitle>
+                <CardDescription className="text-gray-300 text-xs">
                   Atmospheric oxygen concentration
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-2">
+                <div className="space-y-2">
                   <div className="relative">
                     <Slider
                       value={[oxygenLevel]}
@@ -533,14 +533,14 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
             </Card>
 
             <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Global Temperature</CardTitle>
-                <CardDescription className="text-gray-300">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-sm">Global Temperature</CardTitle>
+                <CardDescription className="text-gray-300 text-xs">
                   Average global temperature relative to today
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-2">
+                <div className="space-y-2">
                   <div className="relative">
                     <Slider
                       value={[temperature]}
@@ -568,14 +568,14 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
             </Card>
 
             <Card className="bg-black/20 border-white/10">
-              <CardHeader>
-                <CardTitle className="text-white">Volcanic Activity</CardTitle>
-                <CardDescription className="text-gray-300">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-sm">Volcanic Activity</CardTitle>
+                <CardDescription className="text-gray-300 text-xs">
                   Level of volcanic and tectonic activity
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-2">
+                <div className="space-y-2">
                   <div className="relative">
                     <Slider
                       value={[volcanicActivity]}
