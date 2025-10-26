@@ -219,8 +219,15 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                  backgroundPosition: 'center',
                  backgroundRepeat: 'no-repeat'
                }}>
-            {/* Background overlay for better text readability */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${selectedEraData.gradient} ${backgroundImage ? 'opacity-60' : 'opacity-100'}`} />
+            {/* Background overlay for better text readability - only when no image */}
+            {!backgroundImage && (
+              <div className={`absolute inset-0 bg-gradient-to-br ${selectedEraData.gradient}`} />
+            )}
+            
+            {/* Subtle dark overlay for text readability over images */}
+            {backgroundImage && (
+              <div className="absolute inset-0 bg-black/20" />
+            )}
             
             {/* Enhanced Shimmer Effect */}
             <div className="absolute inset-0 opacity-20">
