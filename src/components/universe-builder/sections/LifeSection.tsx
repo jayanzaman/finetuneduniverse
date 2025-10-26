@@ -3,133 +3,280 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
+import { Badge } from '../../ui/badge'
 
-// Molecular Evolution Visualization
-function MolecularEvolution({ chemicalComplexity, energyAvailability, timeScale }: {
-  chemicalComplexity: number;
-  energyAvailability: number;
-  timeScale: number;
-}) {
-  const moleculeCount = Math.floor(chemicalComplexity * 8);
-  const energyIntensity = energyAvailability * 100;
-  const evolutionSpeed = timeScale * 2;
+// Geological Timeline Data Structure
+const GEOLOGICAL_ERAS = [
+  {
+    id: 0,
+    name: "Hadean Earth",
+    timeRange: "4.6–4.0 Ga",
+    icon: "🌋",
+    description: "Chaos and Chemistry",
+    gradient: "from-red-600 to-orange-500",
+    context: "Hostile but energetic. The perfect cauldron for prebiotic chemistry.",
+    details: "Earth had just formed from a molten mess of colliding planetesimals. The surface was volcanic, the air was thick with CO₂, methane, and ammonia, and asteroids bombarded it constantly. No oxygen yet—just violent chemistry. Oceans condensed as the planet cooled, creating vast 'chemical laboratories.' Lightning, UV radiation, and volcanic gases fueled the reactions that produced amino acids and other organic molecules.",
+    keyFeatures: ["Molten surface", "Asteroid bombardment", "No oxygen", "Chemical laboratories", "Volcanic outgassing"],
+    lifeforms: ["None - prebiotic chemistry only"],
+    atmosphere: { co2: 95, oxygen: 0, methane: 3, nitrogen: 2 },
+    temperature: 85, // °C above current
+    active: true
+  },
+  {
+    id: 1,
+    name: "Archean Earth",
+    timeRange: "4.0–2.5 Ga",
+    icon: "🦠",
+    description: "Microbial World",
+    gradient: "from-green-600 to-teal-500",
+    context: "Stable oceans, active volcanoes, shallow seas—bacteria's paradise.",
+    details: "Oceans dominated the surface; continents were small and scattered. Atmosphere: mostly CO₂, methane, and nitrogen—still oxygen-poor. Hydrothermal vents at mid-ocean ridges spewed mineral-rich fluids, creating ideal conditions for early microbes that fed on chemical energy (chemosynthesis). Around 3.5 billion years ago, photosynthetic cyanobacteria appeared. They began releasing oxygen into the oceans—a quiet revolution.",
+    keyFeatures: ["Ocean-dominated world", "Hydrothermal vents", "First life forms", "Cyanobacteria evolution", "Oxygen production begins"],
+    lifeforms: ["Prokaryotes", "Cyanobacteria", "Chemosynthetic bacteria"],
+    atmosphere: { co2: 80, oxygen: 1, methane: 15, nitrogen: 4 },
+    temperature: 15, // °C above current
+    active: false
+  },
+  {
+    id: 2,
+    name: "Great Oxygenation",
+    timeRange: "2.4–2.0 Ga",
+    icon: "❄️",
+    description: "Snowball Earth",
+    gradient: "from-blue-600 to-cyan-500",
+    context: "Catastrophe for anaerobes, opportunity for innovation. Cells adapted to oxygen and began evolving more efficient metabolisms.",
+    details: "As cyanobacteria filled the seas with oxygen, iron in the oceans rusted—literally—creating banded iron formations still visible today. Eventually, oxygen began accumulating in the atmosphere. Methane, a greenhouse gas, was oxidized, reducing atmospheric warmth and triggering a global freeze: Snowball Earth.",
+    keyFeatures: ["Oxygen accumulation", "Banded iron formations", "Global glaciation", "Methane oxidation", "Mass extinction of anaerobes"],
+    lifeforms: ["Oxygen-tolerant bacteria", "Early eukaryotes"],
+    atmosphere: { co2: 60, oxygen: 15, methane: 5, nitrogen: 20 },
+    temperature: -10, // °C below current
+    active: false
+  },
+  {
+    id: 3,
+    name: "Proterozoic Earth",
+    timeRange: "2.0–0.6 Ga",
+    icon: "🔬",
+    description: "Eukaryotes and Cooperation",
+    gradient: "from-purple-600 to-pink-500",
+    context: "Alternating feast and famine of oxygen, driving cellular complexity and the rise of multicellularity.",
+    details: "Oxygen levels fluctuated but slowly rose. Continental drift formed supercontinents like Rodinia. Eukaryotic cells emerged—symbiotic partnerships that required oxygen. Oceans became more stratified: deep anoxic layers, surface oxygenated ones. Glaciations periodically blanketed the planet again, testing life's resilience.",
+    keyFeatures: ["Eukaryotic cells", "Endosymbiosis", "Supercontinent Rodinia", "Ocean stratification", "Periodic glaciations"],
+    lifeforms: ["Eukaryotes", "Early multicellular organisms", "Algae"],
+    atmosphere: { co2: 40, oxygen: 35, methane: 2, nitrogen: 23 },
+    temperature: -5, // °C below current
+    active: false
+  },
+  {
+    id: 4,
+    name: "Ediacaran-Cambrian",
+    timeRange: "600–500 Ma",
+    icon: "🐚",
+    description: "Oxygen and Explosion",
+    gradient: "from-emerald-600 to-green-500",
+    context: "Nutrient boom, oxygen surge, evolutionary arms race.",
+    details: "The atmosphere stabilized near modern oxygen levels. Ice melted, nutrient-rich runoff fertilized the oceans, and the first multicellular organisms appeared. During the Cambrian Explosion, rising oxygen and tectonic shifts created diverse marine habitats. Animal life experimented wildly with body plans, shells, and eyes.",
+    keyFeatures: ["Modern oxygen levels", "Cambrian explosion", "Complex body plans", "First shells and eyes", "Marine diversity boom"],
+    lifeforms: ["Ediacaran biota", "Trilobites", "Early arthropods", "First vertebrates"],
+    atmosphere: { co2: 25, oxygen: 50, methane: 1, nitrogen: 24 },
+    temperature: 5, // °C above current
+    active: false
+  },
+  {
+    id: 5,
+    name: "Paleozoic Earth",
+    timeRange: "500–250 Ma",
+    icon: "🌿",
+    description: "Life Takes Land",
+    gradient: "from-lime-600 to-green-600",
+    context: "Greener land, unstable climate, rapid evolution under stress.",
+    details: "Plants colonized land first, enriching it with oxygen and stabilizing soils. Insects followed, then amphibians crawled from water. Carbon dioxide dropped, triggering another ice age. Pangea assembled, and deserts spread. Mass extinctions periodically wiped the slate clean.",
+    keyFeatures: ["Land colonization", "First forests", "Amphibian evolution", "Pangea formation", "Mass extinctions"],
+    lifeforms: ["Land plants", "Insects", "Amphibians", "Early reptiles", "Fish diversity"],
+    atmosphere: { co2: 20, oxygen: 55, methane: 1, nitrogen: 24 },
+    temperature: -2, // °C below current
+    active: false
+  },
+  {
+    id: 6,
+    name: "Mesozoic Earth",
+    timeRange: "250–66 Ma",
+    icon: "🦕",
+    description: "Age of Dinosaurs",
+    gradient: "from-yellow-600 to-orange-600",
+    context: "Greenhouse warmth, continental drift, and sudden catastrophe.",
+    details: "After the worst mass extinction, CO₂ rose again. Warm, humid conditions nurtured giant reptiles and lush forests. Continents drifted apart; flowering plants evolved, reshaping ecosystems. Then an asteroid hit—ending the dinosaur age and reshuffling life's hierarchy.",
+    keyFeatures: ["Dinosaur dominance", "Flowering plants", "Continental breakup", "Warm climate", "K-Pg extinction"],
+    lifeforms: ["Dinosaurs", "Early mammals", "Flowering plants", "Marine reptiles", "Birds"],
+    atmosphere: { co2: 30, oxygen: 45, methane: 1, nitrogen: 24 },
+    temperature: 8, // °C above current
+    active: false
+  },
+  {
+    id: 7,
+    name: "Cenozoic Earth",
+    timeRange: "66 Ma–present",
+    icon: "🐘",
+    description: "Age of Mammals",
+    gradient: "from-amber-600 to-yellow-500",
+    context: "Volatile but moderate. Climate oscillations sculpted intelligence, cooperation, and tool use.",
+    details: "After the impact, the planet cooled. Mammals diversified into the niches dinosaurs left empty. Grasslands spread; ice ages came and went. Sea levels fluctuated as glaciers advanced and retreated. By around 3 million years ago, the genus Homo emerged in a shifting climate where adaptability became everything.",
+    keyFeatures: ["Mammal radiation", "Grassland expansion", "Ice ages", "Human evolution", "Climate oscillations"],
+    lifeforms: ["Mammals", "Birds", "Grasses", "Early humans", "Modern ecosystems"],
+    atmosphere: { co2: 15, oxygen: 60, methane: 1, nitrogen: 24 },
+    temperature: 0, // Current baseline
+    active: false
+  },
+  {
+    id: 8,
+    name: "Anthropocene",
+    timeRange: "Present",
+    icon: "🏭",
+    description: "Humans Rework the Planet",
+    gradient: "from-gray-600 to-slate-500",
+    context: "One species reshaping the evolutionary environment itself.",
+    details: "Humans altered the balance faster than any species before: agriculture, industry, urbanization, and now climate change. CO₂ levels are the highest in 3 million years; mass extinctions are accelerating; yet technology allows global awareness and potential stewardship.",
+    keyFeatures: ["Human dominance", "Industrial revolution", "Climate change", "Mass extinction", "Global awareness"],
+    lifeforms: ["Humans", "Domesticated species", "Urban ecosystems", "Engineered organisms"],
+    atmosphere: { co2: 18, oxygen: 57, methane: 1, nitrogen: 24 },
+    temperature: 1, // °C above pre-industrial
+    active: false
+  }
+];
+
+// Evolution Timeline Carousel Component
+function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; onEraSelect: (era: number) => void }) {
+  const selectedEraData = GEOLOGICAL_ERAS[selectedEra];
   
-  const getMoleculeColor = (index: number) => {
-    const complexity = (index / moleculeCount) * chemicalComplexity;
-    if (complexity < 0.3) return 'rgba(100, 200, 100, 0.8)'; // Simple molecules - green
-    if (complexity < 0.6) return 'rgba(100, 150, 255, 0.8)'; // Amino acids - blue
-    if (complexity < 0.8) return 'rgba(255, 150, 100, 0.8)'; // Proteins - orange
-    return 'rgba(255, 100, 255, 0.8)'; // DNA/RNA - magenta
-  };
-
   return (
-    <div className="relative w-full h-64 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
-      <div className="molecular-soup">
-        {/* Energy Source */}
-        <div 
-          className="energy-source"
-          style={{
-            width: '30px',
-            height: '30px',
-            backgroundColor: `rgba(255, 255, 100, ${0.5 + energyAvailability * 0.5})`,
-            borderRadius: '50%',
-            position: 'absolute',
-            left: '10%',
-            top: '20%',
-            boxShadow: `0 0 ${20 + energyIntensity / 5}px rgba(255, 255, 100, ${energyAvailability})`,
-            animation: `energy-pulse ${2 / evolutionSpeed}s ease-in-out infinite`,
-          }}
-        />
-        
-        {/* Molecules */}
-        {Array.from({ length: moleculeCount }, (_, i) => (
-          <div 
-            key={i}
-            className="molecule"
-            style={{
-              width: `${4 + (i / moleculeCount) * 8}px`,
-              height: `${4 + (i / moleculeCount) * 8}px`,
-              backgroundColor: getMoleculeColor(i),
-              borderRadius: '50%',
-              position: 'absolute',
-              left: `${20 + (i * 60 / moleculeCount)}%`,
-              top: `${30 + Math.sin(i) * 40}%`,
-              animation: `molecular-dance ${3 / evolutionSpeed + i * 0.1}s ease-in-out infinite`,
-              animationDelay: `${i * 0.1}s`,
-              boxShadow: i > moleculeCount * 0.7 ? '0 0 4px rgba(255, 255, 255, 0.5)' : 'none',
-            }}
-          />
-        ))}
-        
-        {/* Self-replicating structure (if complexity > 0.7) */}
-        {chemicalComplexity > 0.7 && (
-          <div className="replicator">
-            <div 
-              className="dna-strand"
-              style={{
-                width: '60px',
-                height: '4px',
-                backgroundColor: 'rgba(255, 100, 255, 0.8)',
-                position: 'absolute',
-                right: '15%',
-                top: '40%',
-                animation: `dna-replication ${4 / evolutionSpeed}s ease-in-out infinite`,
-                transformOrigin: 'left center',
-              }}
-            />
-            <div 
-              className="dna-strand-copy"
-              style={{
-                width: '60px',
-                height: '4px',
-                backgroundColor: 'rgba(100, 255, 255, 0.8)',
-                position: 'absolute',
-                right: '15%',
-                top: '50%',
-                animation: `dna-replication ${4 / evolutionSpeed}s ease-in-out infinite`,
-                animationDelay: '0.5s',
-                transformOrigin: 'left center',
-              }}
-            />
+    <div className="relative w-full">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="w-full h-full bg-gradient-to-br from-white/5 to-transparent" 
+             style={{
+               backgroundImage: `radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 1px, transparent 1px),
+                                radial-gradient(circle at 80% 50%, rgba(255,255,255,0.1) 1px, transparent 1px)`,
+               backgroundSize: '30px 30px'
+             }} />
+      </div>
+      
+      {/* Main Focus Area */}
+      <div className="relative z-10 flex">
+        {/* Selected Era - Main Display */}
+        <div className="flex-1 mr-8">
+          <div className={`relative h-80 rounded-2xl bg-gradient-to-br ${selectedEraData.gradient} overflow-hidden`}>
+            {/* Enhanced Shimmer Effect */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 animate-shimmer" />
+            </div>
+            
+            {/* Content */}
+            <div className="relative z-10 h-full flex flex-col justify-center items-center text-center p-8">
+              {/* Era Icon */}
+              <div className="text-8xl mb-4 drop-shadow-2xl animate-pulse">
+                {selectedEraData.icon}
+              </div>
+              
+              {/* Era Title */}
+              <div className="bg-black/50 px-6 py-3 rounded-2xl backdrop-blur-md border border-white/20 mb-4">
+                <h3 className="text-4xl font-bold text-white drop-shadow-2xl">
+                  {selectedEraData.name}
+                </h3>
+                <p className="text-xl text-white/90 mt-1">{selectedEraData.timeRange}</p>
+              </div>
+              
+              {/* Era Description */}
+              <div className="bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20 max-w-2xl">
+                <p className="text-xl text-white drop-shadow-2xl font-medium">
+                  {selectedEraData.description}
+                </p>
+                <p className="text-white/90 mt-2 text-sm">
+                  {selectedEraData.context}
+                </p>
+              </div>
+            </div>
+            
+            {/* Ring Border */}
+            <div className="absolute inset-0 rounded-2xl ring-2 ring-white/30" />
           </div>
-        )}
+        </div>
+        
+        {/* Sidebar Navigation */}
+        <div className="w-80 bg-black/20 backdrop-blur-sm rounded-2xl border border-white/10 p-4">
+          {/* Header */}
+          <div className="text-center mb-4 pb-3 border-b border-white/10">
+            <h4 className="text-white font-semibold">Geological Timeline</h4>
+            <p className="text-xs text-gray-400 mt-1">{selectedEra + 1} of {GEOLOGICAL_ERAS.length}</p>
+          </div>
+          
+          {/* Era Cards */}
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            {GEOLOGICAL_ERAS.map((era) => (
+              <div
+                key={era.id}
+                onClick={() => onEraSelect(era.id)}
+                className={`p-3 rounded-xl cursor-pointer transition-all duration-300 ${
+                  era.id === selectedEra
+                    ? 'bg-white/20 ring-2 ring-white/40 scale-105 shadow-lg'
+                    : 'bg-white/5 hover:bg-white/10 hover:scale-102'
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="text-2xl">{era.icon}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-white truncate">{era.name}</p>
+                    <p className="text-xs text-gray-400">{era.timeRange}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Navigation Dots */}
+          <div className="flex justify-center space-x-2 mt-4 pt-3 border-t border-white/10">
+            {GEOLOGICAL_ERAS.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => onEraSelect(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === selectedEra
+                    ? 'bg-white scale-125'
+                    : 'bg-white/30 hover:bg-white/50'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
       </div>
       
       <style jsx>{`
-        .molecular-soup {
-          position: relative;
-          width: 100%;
-          height: 100%;
+        @keyframes shimmer {
+          0% { transform: translateX(-100%) skewX(-12deg); }
+          100% { transform: translateX(200%) skewX(-12deg); }
         }
-        @keyframes energy-pulse {
-          0%, 100% { transform: scale(1); opacity: 0.8; }
-          50% { transform: scale(1.2); opacity: 1; }
-        }
-        @keyframes molecular-dance {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(180deg); }
-        }
-        @keyframes dna-replication {
-          0% { transform: scaleX(0); }
-          50% { transform: scaleX(1); }
-          100% { transform: scaleX(0); }
+        .animate-shimmer {
+          animation: shimmer 3s ease-in-out infinite;
         }
       `}</style>
     </div>
-  )
+  );
 }
 
 export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
-  const [chemicalComplexity, setChemicalComplexity] = useState(0.5)
-  const [energyAvailability, setEnergyAvailability] = useState(0.7)
-  const [timeScale, setTimeScale] = useState(1.0)
+  const [selectedEra, setSelectedEra] = useState(0)
+  const [co2Level, setCo2Level] = useState(50)
+  const [oxygenLevel, setOxygenLevel] = useState(20)
+  const [temperature, setTemperature] = useState(15)
+  const [volcanicActivity, setVolcanicActivity] = useState(70)
   const [outcome, setOutcome] = useState('')
 
   useEffect(() => {
     const handleRandomize = () => {
-      setChemicalComplexity(Math.random())
-      setEnergyAvailability(Math.random())
-      setTimeScale(Math.random() * 2 + 0.1)
+      setSelectedEra(Math.floor(Math.random() * GEOLOGICAL_ERAS.length))
+      setCo2Level(Math.random() * 100)
+      setOxygenLevel(Math.random() * 60)
+      setTemperature(-20 + Math.random() * 100)
+      setVolcanicActivity(Math.random() * 100)
     }
 
     window.addEventListener('randomizeUniverse', handleRandomize)
@@ -137,120 +284,159 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
   }, [])
 
   useEffect(() => {
-    // Calculate abiogenesis probability
-    const complexityScore = chemicalComplexity;
-    const energyScore = energyAvailability > 0.3 && energyAvailability < 0.9 ? 1 : Math.max(0, 1 - Math.abs(energyAvailability - 0.6) / 0.4);
-    const timeScore = timeScale > 0.5 ? Math.min(1, timeScale) : timeScale * 2;
+    // Calculate evolutionary success based on current era and environmental conditions
+    const currentEra = GEOLOGICAL_ERAS[selectedEra];
+    const idealAtmosphere = currentEra.atmosphere;
+    const idealTemp = currentEra.temperature;
     
-    const totalScore = (complexityScore * 0.4) + (energyScore * 0.35) + (timeScore * 0.25);
+    // Score based on how close conditions are to the era's optimal values
+    const co2Score = Math.max(0, 1 - Math.abs(co2Level - idealAtmosphere.co2) / 50);
+    const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 30);
+    const tempScore = Math.max(0, 1 - Math.abs(temperature - idealTemp) / 30);
+    const volcanicScore = selectedEra <= 2 ? volcanicActivity / 100 : Math.max(0, 1 - volcanicActivity / 100);
     
-    if (totalScore > 0.8 && chemicalComplexity > 0.7) {
-      setOutcome('✨ Perfect - self-replicating life emerges!')
-    } else if (totalScore > 0.6 && chemicalComplexity > 0.5) {
-      setOutcome('🌟 Good - complex organic molecules form')
-    } else if (totalScore > 0.4) {
-      setOutcome('⚠️ Marginal - simple chemistry, limited complexity')
-    } else if (energyAvailability < 0.2) {
-      setOutcome('❄️ Too little energy - no chemical reactions')
-    } else if (energyAvailability > 0.9) {
-      setOutcome('🔥 Too much energy - molecules break apart')
-    } else if (chemicalComplexity < 0.2) {
-      setOutcome('🧪 Too simple - only basic molecules exist')
-    } else if (timeScale < 0.3) {
-      setOutcome('⏰ Too fast - insufficient time for complexity')
+    const totalScore = (co2Score * 0.3) + (oxygenScore * 0.3) + (tempScore * 0.25) + (volcanicScore * 0.15);
+    
+    if (totalScore > 0.85) {
+      setOutcome(`✨ Perfect conditions for ${currentEra.name} life forms!`)
+    } else if (totalScore > 0.65) {
+      setOutcome(`🌟 Good - ${currentEra.description.toLowerCase()} thrives`)
+    } else if (totalScore > 0.45) {
+      setOutcome(`⚠️ Marginal - some life survives but struggles`)
+    } else if (oxygenLevel > 40 && selectedEra <= 1) {
+      setOutcome('☠️ Oxygen toxicity - anaerobic life dies')
+    } else if (temperature > 60) {
+      setOutcome('🔥 Too hot - proteins denature, life cannot survive')
+    } else if (temperature < -15) {
+      setOutcome('❄️ Global freeze - most life goes extinct')
+    } else if (co2Level > 80 && selectedEra >= 4) {
+      setOutcome('🌡️ Extreme greenhouse - runaway climate change')
     } else {
-      setOutcome('❌ Poor conditions - life cannot emerge')
+      setOutcome('❌ Poor conditions - mass extinction event')
     }
-  }, [chemicalComplexity, energyAvailability, timeScale])
+  }, [selectedEra, co2Level, oxygenLevel, temperature, volcanicActivity])
+
+  const currentEra = GEOLOGICAL_ERAS[selectedEra];
 
   return (
     <div className="container mx-auto px-4">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4 text-white">Emergence of Life</h2>
+          <h2 className="text-4xl font-bold mb-4 text-white">Evolution Through Deep Time</h2>
           <p className="text-xl text-gray-300">
-            From simple molecules to self-replicating cells
+            Earth's geological timeline and the evolution of life
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Molecular Evolution Visualization */}
-          <Card className="bg-black/20 border-white/10">
+        {/* Main Evolution Timeline Carousel */}
+        <div className="mb-12">
+          <Card className="bg-black/20 border-white/10 text-white">
             <CardHeader>
-              <CardTitle className="text-white">Molecular Evolution</CardTitle>
+              <CardTitle className="text-white">Geological Timeline</CardTitle>
               <CardDescription className="text-gray-300">
-                Watch molecules evolve from simple to complex
+                Explore 4.6 billion years of Earth's history and the evolution of life
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <MolecularEvolution 
-                chemicalComplexity={chemicalComplexity}
-                energyAvailability={energyAvailability}
-                timeScale={timeScale}
-              />
+              <EvolutionCarousel selectedEra={selectedEra} onEraSelect={setSelectedEra} />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Era Details and Environmental Controls */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Era Information Panel */}
+          <Card className="bg-black/20 border-white/10">
+            <CardHeader>
+              <CardTitle className="text-white flex items-center gap-3">
+                <span className="text-3xl">{currentEra.icon}</span>
+                {currentEra.name}
+              </CardTitle>
+              <CardDescription className="text-gray-300">
+                {currentEra.timeRange} • {currentEra.description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Detailed Description */}
+              <div className="mb-6 p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
+                <p className="text-sm text-blue-200 leading-relaxed">
+                  {currentEra.details}
+                </p>
+              </div>
+              
+              {/* Key Features */}
+              <div className="mb-4">
+                <h4 className="font-semibold mb-2 text-white text-sm">Key Features:</h4>
+                <div className="grid grid-cols-1 gap-1">
+                  {currentEra.keyFeatures.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-2 text-xs text-gray-300">
+                      <span className="text-green-400">•</span>
+                      {feature}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Life Forms */}
+              <div className="mb-4">
+                <h4 className="font-semibold mb-2 text-white text-sm">Life Forms:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {currentEra.lifeforms.map((lifeform, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs bg-purple-900/30 text-purple-200">
+                      {lifeform}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
               
               {/* Outcome Display */}
               <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
-                <h4 className="font-semibold mb-2 text-white">Abiogenesis Outcome:</h4>
+                <h4 className="font-semibold mb-2 text-white">Environmental Outcome:</h4>
                 <p className={`text-sm font-medium ${
                   outcome.includes('✨') ? 'text-green-400' : 
                   outcome.includes('🌟') ? 'text-emerald-400' :
                   outcome.includes('⚠️') ? 'text-yellow-400' : 
-                  outcome.includes('❌') ? 'text-orange-400' :
-                  'text-red-400'
+                  outcome.includes('☠️') || outcome.includes('❌') ? 'text-red-400' :
+                  'text-orange-400'
                 }`}>
                   {outcome}
                 </p>
               </div>
-              
-              {/* Molecular Inventory */}
-              <div className="mt-4 p-3 rounded-lg bg-black/20 border border-white/5">
-                <h4 className="font-semibold mb-3 text-white text-xs">Molecular Complexity:</h4>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-green-400">Simple Molecules:</span>
-                    <span className="text-white">{chemicalComplexity > 0.1 ? '✓' : '✗'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-blue-400">Amino Acids:</span>
-                    <span className="text-white">{chemicalComplexity > 0.3 ? '✓' : '✗'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-orange-400">Proteins:</span>
-                    <span className="text-white">{chemicalComplexity > 0.6 ? '✓' : '✗'}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-purple-400">Self-Replication:</span>
-                    <span className="text-white">{chemicalComplexity > 0.7 ? '✓' : '✗'}</span>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
 
-          {/* Controls */}
+          {/* Environmental Controls */}
           <div className="space-y-6">
             <Card className="bg-black/20 border-white/10">
               <CardHeader>
-                <CardTitle className="text-white">Chemical Complexity</CardTitle>
+                <CardTitle className="text-white">CO₂ Levels</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Diversity and sophistication of available molecules
+                  Atmospheric carbon dioxide concentration
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <Slider
-                    value={[chemicalComplexity]}
-                    onValueChange={(value) => setChemicalComplexity(value[0])}
-                    max={1}
-                    min={0}
-                    step={0.01}
-                    className="w-full"
-                  />
+                  <div className="relative">
+                    <Slider
+                      value={[co2Level]}
+                      onValueChange={(value) => setCo2Level(value[0])}
+                      max={100}
+                      min={0}
+                      step={1}
+                      className="w-full"
+                    />
+                    {/* Optimal range indicator */}
+                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                         style={{
+                           left: `${((currentEra.atmosphere.co2 - 10) / 100) * 100}%`,
+                           width: `${(20 / 100) * 100}%`
+                         }}></div>
+                  </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Simple</span>
-                    <span className="text-white font-medium">{(chemicalComplexity * 100).toFixed(0)}%</span>
-                    <span>Complex</span>
+                    <span>Low CO₂</span>
+                    <span className="text-green-400 font-bold">{currentEra.atmosphere.co2}% (era optimal)</span>
+                    <span className="text-white font-medium">{co2Level.toFixed(0)}%</span>
+                    <span>High CO₂</span>
                   </div>
                 </div>
               </CardContent>
@@ -258,25 +444,34 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
 
             <Card className="bg-black/20 border-white/10">
               <CardHeader>
-                <CardTitle className="text-white">Energy Availability</CardTitle>
+                <CardTitle className="text-white">Oxygen Levels</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Energy sources for driving chemical reactions
+                  Atmospheric oxygen concentration
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <Slider
-                    value={[energyAvailability]}
-                    onValueChange={(value) => setEnergyAvailability(value[0])}
-                    max={1}
-                    min={0}
-                    step={0.01}
-                    className="w-full"
-                  />
+                  <div className="relative">
+                    <Slider
+                      value={[oxygenLevel]}
+                      onValueChange={(value) => setOxygenLevel(value[0])}
+                      max={60}
+                      min={0}
+                      step={1}
+                      className="w-full"
+                    />
+                    {/* Optimal range indicator */}
+                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                         style={{
+                           left: `${((currentEra.atmosphere.oxygen - 5) / 60) * 100}%`,
+                           width: `${(10 / 60) * 100}%`
+                         }}></div>
+                  </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Low</span>
-                    <span className="text-white font-medium">{(energyAvailability * 100).toFixed(0)}%</span>
-                    <span>High</span>
+                    <span>Anoxic</span>
+                    <span className="text-green-400 font-bold">{currentEra.atmosphere.oxygen}% (era optimal)</span>
+                    <span className="text-white font-medium">{oxygenLevel.toFixed(0)}%</span>
+                    <span>High O₂</span>
                   </div>
                 </div>
               </CardContent>
@@ -284,25 +479,69 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
 
             <Card className="bg-black/20 border-white/10">
               <CardHeader>
-                <CardTitle className="text-white">Evolutionary Time Scale</CardTitle>
+                <CardTitle className="text-white">Global Temperature</CardTitle>
                 <CardDescription className="text-gray-300">
-                  Time available for molecular evolution
+                  Average global temperature relative to today
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <Slider
-                    value={[timeScale]}
-                    onValueChange={(value) => setTimeScale(value[0])}
-                    max={2}
-                    min={0.1}
-                    step={0.1}
-                    className="w-full"
-                  />
+                  <div className="relative">
+                    <Slider
+                      value={[temperature]}
+                      onValueChange={(value) => setTemperature(value[0])}
+                      max={80}
+                      min={-20}
+                      step={1}
+                      className="w-full"
+                    />
+                    {/* Optimal range indicator */}
+                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                         style={{
+                           left: `${((currentEra.temperature - 10 + 20) / 100) * 100}%`,
+                           width: `${(20 / 100) * 100}%`
+                         }}></div>
+                  </div>
                   <div className="flex justify-between text-sm text-gray-400">
-                    <span>Rapid</span>
-                    <span className="text-white font-medium">{timeScale.toFixed(1)}×</span>
-                    <span>Extended</span>
+                    <span>Ice Age</span>
+                    <span className="text-green-400 font-bold">{currentEra.temperature > 0 ? '+' : ''}{currentEra.temperature}°C (era optimal)</span>
+                    <span className="text-white font-medium">{temperature > 0 ? '+' : ''}{temperature.toFixed(0)}°C</span>
+                    <span>Hothouse</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-black/20 border-white/10">
+              <CardHeader>
+                <CardTitle className="text-white">Volcanic Activity</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Level of volcanic and tectonic activity
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="relative">
+                    <Slider
+                      value={[volcanicActivity]}
+                      onValueChange={(value) => setVolcanicActivity(value[0])}
+                      max={100}
+                      min={0}
+                      step={1}
+                      className="w-full"
+                    />
+                    {/* Optimal range indicator - high for early eras, low for later */}
+                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                         style={{
+                           left: selectedEra <= 2 ? '60%' : '10%',
+                           width: '30%'
+                         }}></div>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-400">
+                    <span>Quiet</span>
+                    <span className="text-green-400 font-bold">{selectedEra <= 2 ? 'High' : 'Low'} (era optimal)</span>
+                    <span className="text-white font-medium">{volcanicActivity.toFixed(0)}%</span>
+                    <span>Intense</span>
                   </div>
                 </div>
               </CardContent>
@@ -313,15 +552,21 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
         {educatorMode && (
           <Card className="bg-blue-900/20 border-blue-500/30 mt-8">
             <CardHeader>
-              <CardTitle className="text-blue-300">Educational Notes</CardTitle>
+              <CardTitle className="text-blue-300">Deep Time and Evolution</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2 text-sm text-blue-200">
-                <p>• Abiogenesis is the process by which life arises from non-living matter</p>
-                <p>• RNA World hypothesis suggests RNA was the first self-replicating molecule</p>
-                <p>• Energy sources like hydrothermal vents drive prebiotic chemistry</p>
-                <p>• Miller-Urey experiment showed amino acids can form from simple gases</p>
-                <p>• The transition from chemistry to biology required self-replication</p>
+              <div className="space-y-3 text-sm text-blue-200">
+                <p><strong>Geological Time Scale:</strong> Earth's 4.6 billion year history is divided into eons, eras, and periods based on major geological and biological events. Each era represents hundreds of millions to billions of years.</p>
+                
+                <p><strong>Environmental Drivers:</strong> Life evolved in response to changing atmospheric composition, climate, and geological activity. Oxygen levels, CO₂ concentrations, and temperature fluctuations shaped evolutionary pathways.</p>
+                
+                <p><strong>Mass Extinctions:</strong> Five major extinction events reset life's trajectory, creating opportunities for new forms to evolve. The most famous killed the dinosaurs 66 million years ago.</p>
+                
+                <p><strong>Atmospheric Evolution:</strong> Early Earth had no oxygen. Cyanobacteria created the Great Oxygenation Event 2.4 billion years ago, fundamentally changing life's possibilities and causing the first mass extinction.</p>
+                
+                <p><strong>Continental Drift:</strong> Moving continents changed ocean circulation, climate patterns, and isolated populations, driving speciation and evolution of new life forms.</p>
+                
+                <p><strong>Climate Oscillations:</strong> Ice ages, greenhouse periods, and volcanic events created selective pressures that shaped intelligence, cooperation, and adaptability in species like early humans.</p>
               </div>
             </CardContent>
           </Card>
