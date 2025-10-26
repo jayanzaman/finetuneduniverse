@@ -173,10 +173,28 @@ const calculateProportionalWidths = () => {
   }));
 };
 
+// Map era names to image filenames
+const getEraImagePath = (eraName: string) => {
+  const imageMap: { [key: string]: string } = {
+    "Hadean Earth": "/Hadean Earth.png",
+    "Archean Earth": "/Archean Earth.png", 
+    "Great Oxygenation": "/Great Oxygenation.png",
+    "Proterozoic Earth": "/Proterozoic Earth.png",
+    "Ediacaran-Cambrian": "/Ediacaran-Cambrian.png",
+    "Paleozoic Earth": "/Paleozoic Earth.png",
+    "Mesozoic Earth": "/Mesozoic Earth.png",
+    "Cenozoic Earth": "/Cenozoic Earth.png",
+    "Anthropocene": "/Cenozoic Earth.png" // Use Cenozoic image for Anthropocene
+  };
+  
+  return imageMap[eraName] || "";
+};
+
 // Evolution Timeline Carousel Component
 function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; onEraSelect: (era: number) => void }) {
   const selectedEraData = GEOLOGICAL_ERAS[selectedEra];
   const proportionalWidths = calculateProportionalWidths();
+  const backgroundImage = getEraImagePath(selectedEraData.name);
   
   return (
     <div className="relative w-full">
@@ -194,7 +212,16 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
       <div className="relative z-10">
         {/* Selected Era - Main Display */}
         <div className="w-full">
-          <div className={`relative h-80 rounded-2xl bg-gradient-to-br ${selectedEraData.gradient} overflow-hidden`}>
+          <div className={`relative h-80 rounded-2xl overflow-hidden`}
+               style={{
+                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+                 backgroundRepeat: 'no-repeat'
+               }}>
+            {/* Background overlay for better text readability */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${selectedEraData.gradient} ${backgroundImage ? 'opacity-60' : 'opacity-100'}`} />
+            
             {/* Enhanced Shimmer Effect */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 animate-shimmer" />
