@@ -395,12 +395,6 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
   return (
     <div className="container mx-auto px-4">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-4 text-white">Evolution Through Deep Time</h2>
-          <p className="text-xl text-gray-300">
-            Earth's geological timeline and the evolution of life
-          </p>
-        </div>
 
         {/* Main Layout: Carousel + Era Info on Left, Controls on Right */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
