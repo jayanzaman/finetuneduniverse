@@ -320,7 +320,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
   const [selectedEra, setSelectedEra] = useState(0)
   // Initialize with optimal values for first era (Hadean Earth) - using scientific units
   const [co2Level, setCo2Level] = useState(GEOLOGICAL_ERAS[0].atmosphere.co2 * 50) // Convert % to ppm (×500 for scale)
-  const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen) // Keep as % (0-25% range)
+  const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen) // Keep as % (0-100% range)
   const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature + 15) // Convert to absolute temp (°C, 0-50°C range)
   const [volcanicActivity, setVolcanicActivity] = useState(8.5) // Convert to eruptions per million years (0-15 range)
   const [outcome, setOutcome] = useState('')
@@ -339,7 +339,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     const handleRandomize = () => {
       setSelectedEra(Math.floor(Math.random() * GEOLOGICAL_ERAS.length))
       setCo2Level(Math.random() * 5000) // 0-5000 ppm
-      setOxygenLevel(Math.random() * 25) // 0-25%
+      setOxygenLevel(Math.random() * 100) // 0-100%
       setTemperature(Math.random() * 50) // 0-50°C
       setVolcanicActivity(Math.random() * 15) // 0-15 eruptions/Myr
     }
@@ -356,7 +356,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     
     // Score based on how close conditions are to the era's optimal values (using new units)
     const co2Score = Math.max(0, 1 - Math.abs(co2Level - (idealAtmosphere.co2 * 50)) / 750); // ppm scale
-    const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 8); // % scale
+    const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 25); // % scale (0-100% range)
     const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 10); // absolute temp scale
     const idealVolcanic = selectedEra <= 2 ? 12 : 3;
     const volcanicScore = Math.max(0, 1 - Math.abs(volcanicActivity - idealVolcanic) / 5); // eruptions/Myr scale
@@ -369,7 +369,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       setOutcome(`🌟 Good - ${currentEra.description.toLowerCase()} thrives`)
     } else if (totalScore > 0.45) {
       setOutcome(`⚠️ Marginal - some life survives but struggles`)
-    } else if (oxygenLevel > 20 && selectedEra <= 1) {
+    } else if (oxygenLevel > 50 && selectedEra <= 1) {
       setOutcome('☠️ Oxygen toxicity - anaerobic life dies')
     } else if (temperature > 45) {
       setOutcome('🔥 Too hot - proteins denature, life cannot survive')
@@ -522,23 +522,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <Slider
                       value={[oxygenLevel]}
                       onValueChange={(value) => setOxygenLevel(value[0])}
-                      max={25}
+                      max={100}
                       min={0}
-                      step={0.5}
+                      step={1}
                       className="w-full"
                     />
-                    {/* Optimal range indicator - ±3% around optimal value */}
+                    {/* Optimal range indicator - ±10% around optimal value */}
                     <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                          style={{
-                           left: `${Math.max(0, Math.min(100, (currentEra.atmosphere.oxygen - 3) / 25 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, (currentEra.atmosphere.oxygen - 3) / 25 * 100), (Math.min(25, currentEra.atmosphere.oxygen + 3) - Math.max(0, currentEra.atmosphere.oxygen - 3)) / 25 * 100))}%`
+                           left: `${Math.max(0, Math.min(100, (currentEra.atmosphere.oxygen - 10) / 100 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, (currentEra.atmosphere.oxygen - 10) / 100 * 100), (Math.min(100, currentEra.atmosphere.oxygen + 10) - Math.max(0, currentEra.atmosphere.oxygen - 10)) / 100 * 100))}%`
                          }}></div>
                   </div>
                   <div className="flex justify-between text-sm text-gray-400">
                     <span>0%</span>
                     <span className="text-green-400 font-bold">{currentEra.atmosphere.oxygen.toFixed(1)}% (optimal)</span>
                     <span className="text-white font-medium">{oxygenLevel.toFixed(1)}%</span>
-                    <span>25%</span>
+                    <span>100%</span>
                   </div>
                 </div>
               </CardContent>
