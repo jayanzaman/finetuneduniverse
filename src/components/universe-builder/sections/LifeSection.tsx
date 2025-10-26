@@ -461,8 +461,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           </div>
 
           {/* Right Side: Environmental Controls (1/3 width) */}
-          <div className="space-y-3 h-96 lg:h-[500px] overflow-y-auto">
-            <Card className="bg-black/20 border-white/10">
+          <div className="flex flex-col h-96 lg:h-[500px] gap-2">
+            <Card className="bg-black/20 border-white/10 flex-1">
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-sm">CO₂ Levels</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
@@ -497,7 +497,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
-            <Card className="bg-black/20 border-white/10">
+            <Card className="bg-black/20 border-white/10 flex-1">
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-sm">Oxygen Levels</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
@@ -532,7 +532,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
-            <Card className="bg-black/20 border-white/10">
+            <Card className="bg-black/20 border-white/10 flex-1">
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-sm">Global Temperature</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
@@ -567,7 +567,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
-            <Card className="bg-black/20 border-white/10">
+            <Card className="bg-black/20 border-white/10 flex-1">
               <CardHeader className="pb-2">
                 <CardTitle className="text-white text-sm">Volcanic Activity</CardTitle>
                 <CardDescription className="text-gray-300 text-xs">
