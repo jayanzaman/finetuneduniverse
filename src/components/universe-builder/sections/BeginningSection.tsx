@@ -431,9 +431,20 @@ export default function BeginningSection({
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                   <div className="text-xs text-blue-200 space-y-2">
                     <p><strong>What you're seeing:</strong> Blue particles show order (organized circle) vs chaos (scattered randomly). This visualizes how entropy affects cosmic structure.</p>
-                    <p><strong>The fundamental problem:</strong> The universe began in an impossibly low-entropy state - the odds were 1 in 10^(10^123). Imagine throwing a deck of cards and having them land in perfect order every time.</p>
-                    <p><strong>Why this matters for life:</strong> This initial order allowed gravity to clump matter into stars, galaxies, and eventually us. Without this precise initial state, the universe would be a uniform, lifeless soup of particles.</p>
-                    <p><strong>The fine-tuning challenge:</strong> Each parameter requires extraordinary precision for a life-permitting universe. The interactive slider demonstrates how narrow the "Goldilocks zone" really is.</p>
+                    
+                    <p><strong>The Cosmic Microwave Background Evidence:</strong> We've measured the cosmic microwave background and found it to be astonishingly smooth — only about one part in 100,000 varies in density. That smoothness means the early universe had very low entropy, or in plainer terms, very little gravitational "disorder."</p>
+                    
+                    <p><strong>Early Universe Entropy:</strong> The small amount of entropy the early universe did have came mostly from the photon gas (and neutrinos), not from clumped structures like stars or black holes. Physicists can actually estimate that entropy: S ≈ 10⁸⁸ (in units of Boltzmann's constant, k_B).</p>
+                    
+                    <p><strong>The Real Question:</strong> That's already a big number — but how special is it? What's the probability that such a low-entropy configuration could have arisen "by chance"? To find that, we need to compare it to the maximum possible entropy the universe could have — the entropy of total gravitational collapse.</p>
+                    
+                    <p><strong>Black Holes as Entropy Monsters:</strong> Black holes represent the maximum disorder possible for a given amount of mass and energy. Bekenstein and Hawking showed that a black hole's entropy is proportional to the area of its event horizon: S_BH = (Area of event horizon)/(4 × Planck area).</p>
+                    
+                    <p><strong>Maximum Universe Entropy:</strong> If you took everything in the observable universe (~10⁵³ kg, or ~5×10²² solar masses) and crammed it into one gigantic black hole, its entropy would be about 10¹²³ — that's the theoretical ceiling of gravitational disorder.</p>
+                    
+                    <p><strong>Penrose's Calculation:</strong> Compare S_early ≈ 10⁸⁸ to S_max ≈ 10¹²³. The fraction of all possible gravitational states that look as smooth as our early universe is about 1 in 10^(10¹²³) — a 1 followed by 10¹²³ zeros.</p>
+                    
+                    <p><strong>In Plain Speech:</strong> Out of all the ways the universe's mass and energy could have been arranged at the Big Bang, the configuration that produced our smooth, stable cosmos occupies one speck in a sea of 10^(10¹²³) possibilities. That's why Penrose said the Big Bang wasn't chaotic — it was "the most orderly event in the history of the universe."</p>
                   </div>
                 </div>
               )}
