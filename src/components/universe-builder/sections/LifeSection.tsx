@@ -397,25 +397,25 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           </p>
         </div>
 
-        {/* Main Evolution Timeline Carousel */}
-        <div className="mb-12">
-          <Card className="bg-black/20 border-white/10 text-white">
-            <CardHeader>
-              <CardTitle className="text-white">Geological Timeline</CardTitle>
-              <CardDescription className="text-gray-300">
-                Explore 4.6 billion years of Earth's history and the evolution of life
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <EvolutionCarousel selectedEra={selectedEra} onEraSelect={setSelectedEra} />
-            </CardContent>
-          </Card>
-        </div>
+        {/* Main Layout: Carousel + Era Info on Left, Controls on Right */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Side: Carousel and Era Information (2/3 width) */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Evolution Timeline Carousel */}
+            <Card className="bg-black/20 border-white/10 text-white">
+              <CardHeader>
+                <CardTitle className="text-white">Geological Timeline</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Explore 4.6 billion years of Earth's history and the evolution of life
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <EvolutionCarousel selectedEra={selectedEra} onEraSelect={setSelectedEra} />
+              </CardContent>
+            </Card>
 
-        {/* Era Details and Environmental Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Era Information Panel */}
-          <Card className="bg-black/20 border-white/10">
+            {/* Era Information Panel */}
+            <Card className="bg-black/20 border-white/10">
             <CardHeader>
               <CardTitle className="text-white flex items-center gap-3">
                 <span className="text-3xl">{currentEra.icon}</span>
@@ -472,9 +472,10 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                 </p>
               </div>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
 
-          {/* Environmental Controls */}
+          {/* Right Side: Environmental Controls (1/3 width) */}
           <div className="space-y-6">
             <Card className="bg-black/20 border-white/10">
               <CardHeader>
