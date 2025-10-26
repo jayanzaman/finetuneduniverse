@@ -632,18 +632,6 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Environmental Outcome - Simplified */}
-              <div className="p-4 rounded-lg bg-black/30 border border-white/10">
-                <p className={`text-sm font-medium ${
-                  outcome.includes('✨') ? 'text-green-400' : 
-                  outcome.includes('🌟') ? 'text-emerald-400' :
-                  outcome.includes('⚠️') ? 'text-yellow-400' : 
-                  outcome.includes('☠️') || outcome.includes('❌') ? 'text-red-400' :
-                  'text-orange-400'
-                }`}>
-                  {outcome}
-                </p>
-              </div>
             </CardContent>
             </Card>
           </div>
