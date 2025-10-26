@@ -323,6 +323,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
   const [oxygenLevel, setOxygenLevel] = useState(GEOLOGICAL_ERAS[0].atmosphere.oxygen) // Keep as % (0-100% range)
   const [temperature, setTemperature] = useState(GEOLOGICAL_ERAS[0].temperature + 15) // Convert to absolute temp (°C, -20 to +500°C range)
   const [volcanicActivity, setVolcanicActivity] = useState(8.5) // Convert to eruptions per million years (0-15 range)
+  const [asteroidActivity, setAsteroidActivity] = useState(10) // Impacts per million years (0-50 range)
   const [outcome, setOutcome] = useState('')
 
   // Update sliders to optimal values when era changes
@@ -333,6 +334,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     setTemperature(currentEra.temperature + 15); // Convert to absolute temp (-20 to +500°C range)
     // Volcanic activity: high for early eras (0-2), moderate-low for later eras
     setVolcanicActivity(selectedEra <= 2 ? 12 : 3); // Convert to eruptions per million years
+    // Asteroid activity: very high for Hadean (0), high for Archean (1), moderate for later eras
+    setAsteroidActivity(selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2); // Impacts per million years
   }, [selectedEra])
 
   useEffect(() => {
@@ -342,6 +345,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       setOxygenLevel(Math.random() * 100) // 0-100%
       setTemperature(-20 + Math.random() * 520) // -20 to +500°C
       setVolcanicActivity(Math.random() * 15) // 0-15 eruptions/Myr
+      setAsteroidActivity(Math.random() * 50) // 0-50 impacts/Myr
     }
 
     window.addEventListener('randomizeUniverse', handleRandomize)
@@ -360,8 +364,10 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 50); // absolute temp scale (-20 to +500°C)
     const idealVolcanic = selectedEra <= 2 ? 12 : 3;
     const volcanicScore = Math.max(0, 1 - Math.abs(volcanicActivity - idealVolcanic) / 5); // eruptions/Myr scale
+    const idealAsteroid = selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2;
+    const asteroidScore = Math.max(0, 1 - Math.abs(asteroidActivity - idealAsteroid) / 10); // impacts/Myr scale
     
-    const totalScore = (co2Score * 0.3) + (oxygenScore * 0.3) + (tempScore * 0.25) + (volcanicScore * 0.15);
+    const totalScore = (co2Score * 0.25) + (oxygenScore * 0.25) + (tempScore * 0.2) + (volcanicScore * 0.15) + (asteroidScore * 0.15);
     
     if (totalScore > 0.85) {
       setOutcome(`✨ Perfect conditions for ${currentEra.name} life forms!`)
@@ -377,10 +383,12 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       setOutcome('❄️ Global freeze - most life goes extinct')
     } else if (co2Level > 4000 && selectedEra >= 4) {
       setOutcome('🌡️ Extreme greenhouse - runaway climate change')
+    } else if (asteroidActivity > 35) {
+      setOutcome('☄️ Asteroid bombardment - surface sterilization events')
     } else {
       setOutcome('❌ Poor conditions - mass extinction event')
     }
-  }, [selectedEra, co2Level, oxygenLevel, temperature, volcanicActivity])
+  }, [selectedEra, co2Level, oxygenLevel, temperature, volcanicActivity, asteroidActivity])
 
   const currentEra = GEOLOGICAL_ERAS[selectedEra];
 
@@ -609,6 +617,41 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <span className="text-green-400 font-bold">{selectedEra <= 2 ? '12' : '3'}/Myr (optimal)</span>
                     <span className="text-white font-medium">{volcanicActivity.toFixed(1)}/Myr</span>
                     <span>15/Myr</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-black/20 border-white/10 flex-1">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-white text-sm">Asteroid Bombardment</CardTitle>
+                <CardDescription className="text-gray-300 text-xs">
+                  Major asteroid impacts per million years
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="pt-2">
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Slider
+                      value={[asteroidActivity]}
+                      onValueChange={(value) => setAsteroidActivity(value[0])}
+                      max={50}
+                      min={0}
+                      step={1}
+                      className="w-full"
+                    />
+                    {/* Optimal range indicator - very high for Hadean, high for early eras, low for later */}
+                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                         style={{
+                           left: `${Math.max(0, Math.min(100, ((selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) - 5) / 50 * 100))}%`,
+                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) - 5) / 50 * 100), (Math.min(50, (selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) + 5) - Math.max(0, (selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) - 5)) / 50 * 100))}%`
+                         }}></div>
+                  </div>
+                  <div className="flex justify-between text-sm text-gray-400">
+                    <span>0/Myr</span>
+                    <span className="text-green-400 font-bold">{selectedEra === 0 ? '40' : selectedEra <= 2 ? '15' : '2'}/Myr (optimal)</span>
+                    <span className="text-white font-medium">{asteroidActivity.toFixed(0)}/Myr</span>
+                    <span>50/Myr</span>
                   </div>
                 </div>
               </CardContent>
