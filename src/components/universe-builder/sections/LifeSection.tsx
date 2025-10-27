@@ -817,22 +817,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                 </div>
               </CardContent>
             </Card>
+
+            {/* Educator Mode - Inside Left Column */}
+            {educatorMode && (
+              <Card className="bg-blue-900/20 border-blue-500/30">
+                <CardHeader>
+                  <CardTitle className="text-blue-300">{currentEra.name} - Scientific Analysis</CardTitle>
+                  <CardDescription className="text-blue-400">
+                    Fine-tuned conditions that enabled the next phase of Earth's evolution
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <GeologicalEraDetails era={currentEra} selectedEra={selectedEra} />
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
-
-        {educatorMode && (
-          <Card className="bg-blue-900/20 border-blue-500/30 mt-8">
-            <CardHeader>
-              <CardTitle className="text-blue-300">{currentEra.name} - Scientific Analysis</CardTitle>
-              <CardDescription className="text-blue-400">
-                Fine-tuned conditions that enabled the next phase of Earth's evolution
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <GeologicalEraDetails era={currentEra} selectedEra={selectedEra} />
-            </CardContent>
-          </Card>
-        )}
       </div>
     </div>
   )
