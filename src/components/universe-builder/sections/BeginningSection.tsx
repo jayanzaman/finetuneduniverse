@@ -65,10 +65,15 @@ function EntropyVisual({ entropy }: { entropy: number }) {
   );
 }
 
-// Expansion Visualization - Shows universe expanding with redshifted galaxies moving apart
+// Expansion Visualization - Shows universe expanding/contracting with redshift/blueshift
 function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
   const galaxyCount = 8;
   const expansionSpeed = expansionRate * 0.5;
+  
+  // Determine color based on expansion rate - threshold around 0.7 (optimal expansion)
+  const isExpanding = expansionRate > 0.7;
+  const galaxyColor = isExpanding ? 'bg-red-500' : 'bg-blue-500';
+  const glowColor = isExpanding ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 100, 255, 0.5)';
   
   return (
     <div className="relative w-full h-full bg-black/30 rounded-lg overflow-hidden">
@@ -84,7 +89,7 @@ function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
             return (
               <div
                 key={i}
-                className="absolute w-3 h-3 bg-red-500 rounded-full"
+                className={`absolute w-3 h-3 ${galaxyColor} rounded-full transition-colors duration-500`}
                 style={{
                   left: `calc(50% + ${x}px)`,
                   top: `calc(50% + ${y}px)`,
@@ -93,7 +98,7 @@ function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
                   animationTimingFunction: 'ease-out',
                   animationIterationCount: 'infinite',
                   animationDelay: `${i * 0.2}s`,
-                  boxShadow: '0 0 8px rgba(255, 0, 0, 0.5)'
+                  boxShadow: `0 0 8px ${glowColor}`
                 }}
               />
             );
@@ -103,7 +108,10 @@ function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
         </div>
       </div>
       <div className="absolute bottom-2 left-2 text-xs text-white/70">
-        {expansionRate < 0.3 ? 'Slow Expansion' : expansionRate < 1 ? 'Moderate Expansion' : 'Rapid Expansion'}
+        {expansionRate < 0.3 ? 'Contraction (Blueshift)' : 
+         expansionRate < 0.7 ? 'Slow Expansion (Blueshift)' : 
+         expansionRate < 1.2 ? 'Moderate Expansion (Redshift)' : 
+         'Rapid Expansion (Redshift)'}
       </div>
       <style jsx>{`
         @keyframes expand {
@@ -531,7 +539,14 @@ export default function BeginningSection({
                     
                     <div>
                       <h4 className="font-semibold text-blue-300 mb-2">🎈 Picture This</h4>
-                      <p>Picture red dots on a balloon (representing redshifted galaxies). When you blow up the balloon, every dot sees every other dot moving away — the farther away, the faster. That "faster with distance" rule is precisely what H₀ describes. It's not dots flying through air; the surface itself expands. Same with space.</p>
+                      <p>Picture dots on a balloon. When you blow up the balloon, every dot sees every other dot moving away — the farther away, the faster. That "faster with distance" rule is precisely what H₀ describes. It's not dots flying through air; the surface itself expands. Same with space.</p>
+                    </div>
+                    
+                    <div>
+                      <h4 className="font-semibold text-blue-300 mb-2">🔴🔵 Color Coding</h4>
+                      <p><strong>Red galaxies (Redshift):</strong> Fast expansion - light waves stretch to longer (redder) wavelengths as galaxies recede rapidly.</p>
+                      <p><strong>Blue galaxies (Blueshift):</strong> Slow expansion or contraction - light waves compress to shorter (bluer) wavelengths as galaxies approach or recede slowly.</p>
+                      <p>Move the slider to see how expansion rate affects the Doppler shift of galactic light!</p>
                     </div>
                   </div>
                 </div>
