@@ -88,7 +88,10 @@ function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
                 style={{
                   left: `calc(50% + ${x}px)`,
                   top: `calc(50% + ${y}px)`,
-                  animation: `expand ${3 / (expansionRate + 0.1)}s ease-out infinite`,
+                  animationName: 'expand',
+                  animationDuration: `${3 / (expansionRate + 0.1)}s`,
+                  animationTimingFunction: 'ease-out',
+                  animationIterationCount: 'infinite',
                   animationDelay: `${i * 0.2}s`,
                   boxShadow: '0 0 8px rgba(255, 0, 0, 0.5)'
                 }}
