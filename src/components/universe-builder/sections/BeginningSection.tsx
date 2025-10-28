@@ -65,15 +65,15 @@ function EntropyVisual({ entropy }: { entropy: number }) {
   );
 }
 
-// Expansion Visualization - Shows universe expanding/contracting with redshift/blueshift
-function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
+// Expansion Visualization - Shows universe expanding with redshift, blueshift only during leftward slider movement
+function ExpansionVisual({ expansionRate, isMovingLeft }: { expansionRate: number; isMovingLeft?: boolean }) {
   const galaxyCount = 8;
   const expansionSpeed = expansionRate * 0.5;
   
-  // Determine color based on expansion rate - threshold around 0.7 (optimal expansion)
-  const isExpanding = expansionRate > 0.7;
-  const galaxyColor = isExpanding ? 'bg-red-500' : 'bg-blue-500';
-  const glowColor = isExpanding ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 100, 255, 0.5)';
+  // Red by default, blue only when actively moving slider left
+  const showBlueshift = isMovingLeft || false;
+  const galaxyColor = showBlueshift ? 'bg-blue-500' : 'bg-red-500';
+  const glowColor = showBlueshift ? 'rgba(0, 100, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)';
   
   return (
     <div className="relative w-full h-full bg-black/30 rounded-lg overflow-hidden">
@@ -108,9 +108,9 @@ function ExpansionVisual({ expansionRate }: { expansionRate: number }) {
         </div>
       </div>
       <div className="absolute bottom-2 left-2 text-xs text-white/70">
-        {expansionRate < 0.3 ? 'Contraction (Blueshift)' : 
-         expansionRate < 0.7 ? 'Slow Expansion (Blueshift)' : 
-         expansionRate < 1.2 ? 'Moderate Expansion (Redshift)' : 
+        {showBlueshift ? 'Moving Left (Blueshift)' :
+         expansionRate < 0.3 ? 'Slow Expansion (Redshift)' : 
+         expansionRate < 1 ? 'Moderate Expansion (Redshift)' : 
          'Rapid Expansion (Redshift)'}
       </div>
       <style jsx>{`
@@ -284,6 +284,25 @@ export default function BeginningSection({
   const [showPenroseInfo, setShowPenroseInfo] = useState(false)
   const [universeOutcome, setUniverseOutcome] = useState('')
   
+  // Track slider movement for blueshift effect
+  const [isMovingLeft, setIsMovingLeft] = useState(false)
+  const [lastExpansionRate, setLastExpansionRate] = useState(0.5)
+  
+  // Handle expansion rate changes with movement detection
+  const handleExpansionRateChange = (value: number[]) => {
+    const newRate = value[0];
+    const movingLeft = newRate < lastExpansionRate;
+    
+    setExpansionRate(newRate);
+    setLastExpansionRate(newRate);
+    
+    if (movingLeft) {
+      setIsMovingLeft(true);
+      // Reset to red after a short delay
+      setTimeout(() => setIsMovingLeft(false), 300);
+    }
+  }
+  
   // Additional fine-tuning parameters
   const [darkEnergyStrength, setDarkEnergyStrength] = useState(1)
   const [universeDensity, setUniverseDensity] = useState(1)
@@ -369,7 +388,7 @@ export default function BeginningSection({
                 <div className="space-y-3">
                   <h4 className="text-sm sm:text-base font-semibold text-white text-center">Expansion Rate (Redshift)</h4>
                   <div className="h-64 sm:h-48 md:h-64">
-                    <ExpansionVisual expansionRate={expansionRate} />
+                    <ExpansionVisual expansionRate={expansionRate} isMovingLeft={isMovingLeft} />
                   </div>
                 </div>
                 <div className="space-y-3">
@@ -475,7 +494,7 @@ export default function BeginningSection({
                 <div className="relative">
                   <Slider
                     value={[expansionRate]}
-                    onValueChange={(value) => setExpansionRate(value[0])}
+                    onValueChange={handleExpansionRateChange}
                     max={2}
                     min={0.1}
                     step={0.1}
@@ -544,9 +563,9 @@ export default function BeginningSection({
                     
                     <div>
                       <h4 className="font-semibold text-blue-300 mb-2">🔴🔵 Color Coding</h4>
-                      <p><strong>Red galaxies (Redshift):</strong> Fast expansion - light waves stretch to longer (redder) wavelengths as galaxies recede rapidly.</p>
-                      <p><strong>Blue galaxies (Blueshift):</strong> Slow expansion or contraction - light waves compress to shorter (bluer) wavelengths as galaxies approach or recede slowly.</p>
-                      <p>Move the slider to see how expansion rate affects the Doppler shift of galactic light!</p>
+                      <p><strong>Red galaxies (Redshift):</strong> Default state representing the expanding universe - light waves stretch to longer (redder) wavelengths as galaxies recede.</p>
+                      <p><strong>Blue galaxies (Blueshift):</strong> Temporary effect when moving slider left - simulates approaching galaxies with light waves compressed to shorter (bluer) wavelengths.</p>
+                      <p>Move the slider left to briefly see blueshift, then watch it return to redshift - representing our expanding universe!</p>
                     </div>
                   </div>
                 </div>
