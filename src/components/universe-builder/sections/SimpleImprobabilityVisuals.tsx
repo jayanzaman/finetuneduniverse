@@ -122,7 +122,7 @@ export function SimpleDarkEnergyVisual({ lambda }: { lambda: number }) {
   return <canvas ref={canvasRef} className="w-full h-full border border-white/10 rounded" />
 }
 
-// Simple Flatness Visualization
+// Advanced 3D-like Flatness Visualization showing curved spacetime geometries
 export function SimpleFlatnessVisual({ density }: { density: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   
@@ -143,56 +143,146 @@ export function SimpleFlatnessVisual({ density }: { density: number }) {
       canvas.height = 180
     }
     
-    ctx.fillStyle = '#000'
+    // Clear canvas with dark background
+    ctx.fillStyle = '#0a0a0a'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
+    const gridSize = 12
+    const gridSpacing = Math.min(canvas.width, canvas.height) / gridSize
     
-    // Draw geometry based on density
-    ctx.lineWidth = 3
+    // Determine geometry type and curvature strength
+    let geometryType = 'flat'
+    let curvatureStrength = 0
     
-    if (Math.abs(density - 1) < 0.05) {
-      // Flat geometry
-      ctx.strokeStyle = 'rgba(100, 255, 100, 0.8)'
-      ctx.beginPath()
-      ctx.moveTo(30, centerY)
-      ctx.lineTo(canvas.width - 30, centerY)
-      ctx.stroke()
-      
-      ctx.fillStyle = '#fff'
-      ctx.font = '12px sans-serif'
-      ctx.fillText('FLAT', centerX - 15, centerY - 10)
-      
+    if (Math.abs(density - 1) < 0.02) {
+      geometryType = 'flat'
+      curvatureStrength = 0
     } else if (density > 1) {
-      // Closed geometry (sphere)
-      const curvature = (density - 1) * 60
-      ctx.strokeStyle = 'rgba(255, 150, 0, 0.8)'
-      ctx.beginPath()
-      ctx.arc(centerX, centerY + curvature, 60 - curvature/3, 0, Math.PI)
-      ctx.stroke()
-      
-      ctx.fillStyle = '#fff'
-      ctx.font = '10px sans-serif'
-      ctx.fillText('CLOSED', centerX - 20, 25)
-      
+      geometryType = 'closed'
+      curvatureStrength = Math.min((density - 1) * 3, 1) // Max curvature at density = 1.33
     } else {
-      // Open geometry (hyperbolic)
-      const curvature = (1 - density) * 60
-      ctx.strokeStyle = 'rgba(255, 100, 100, 0.8)'
-      ctx.beginPath()
-      ctx.moveTo(30, centerY - curvature/2)
-      ctx.quadraticCurveTo(centerX, centerY + curvature, canvas.width - 30, centerY - curvature/2)
-      ctx.stroke()
-      
-      ctx.fillStyle = '#fff'
-      ctx.font = '10px sans-serif'
-      ctx.fillText('OPEN', centerX - 15, 25)
+      geometryType = 'open'
+      curvatureStrength = Math.min((1 - density) * 3, 1) // Max curvature at density = 0.67
     }
+    
+    // Draw 3D-like curved grid
+    ctx.lineWidth = 1.5
+    ctx.globalAlpha = 0.7
+    
+    // Horizontal grid lines with curvature
+    for (let i = -gridSize/2; i <= gridSize/2; i++) {
+      const y = centerY + i * gridSpacing * 0.6
+      
+      ctx.beginPath()
+      ctx.strokeStyle = i === 0 ? 'rgba(100, 200, 255, 0.9)' : 'rgba(100, 150, 200, 0.6)'
+      ctx.lineWidth = i === 0 ? 2 : 1
+      
+      if (geometryType === 'flat') {
+        // Straight lines for flat geometry
+        ctx.moveTo(centerX - gridSize * gridSpacing * 0.4, y)
+        ctx.lineTo(centerX + gridSize * gridSpacing * 0.4, y)
+      } else if (geometryType === 'closed') {
+        // Upward curved lines for closed/spherical geometry
+        const curve = curvatureStrength * 30 * (1 - Math.abs(i) / (gridSize/2))
+        ctx.moveTo(centerX - gridSize * gridSpacing * 0.4, y + curve)
+        ctx.quadraticCurveTo(centerX, y - curve * 0.5, centerX + gridSize * gridSpacing * 0.4, y + curve)
+      } else {
+        // Downward curved lines for open/hyperbolic geometry  
+        const curve = curvatureStrength * 25 * (1 - Math.abs(i) / (gridSize/2))
+        ctx.moveTo(centerX - gridSize * gridSpacing * 0.4, y - curve)
+        ctx.quadraticCurveTo(centerX, y + curve * 0.8, centerX + gridSize * gridSpacing * 0.4, y - curve)
+      }
+      ctx.stroke()
+    }
+    
+    // Vertical grid lines with perspective and curvature
+    for (let i = -gridSize/2; i <= gridSize/2; i++) {
+      const baseX = centerX + i * gridSpacing * 0.8
+      
+      ctx.beginPath()
+      ctx.strokeStyle = i === 0 ? 'rgba(100, 200, 255, 0.9)' : 'rgba(100, 150, 200, 0.4)'
+      ctx.lineWidth = i === 0 ? 2 : 1
+      
+      // Add perspective effect - lines converge toward horizon
+      const perspectiveFactor = 1 - Math.abs(i) / (gridSize/2) * 0.3
+      const topY = centerY - gridSize * gridSpacing * 0.3 * perspectiveFactor
+      const bottomY = centerY + gridSize * gridSpacing * 0.3 * perspectiveFactor
+      
+      if (geometryType === 'flat') {
+        // Straight vertical lines
+        ctx.moveTo(baseX, topY)
+        ctx.lineTo(baseX, bottomY)
+      } else if (geometryType === 'closed') {
+        // Slightly curved inward for closed geometry
+        const curve = curvatureStrength * 8 * perspectiveFactor
+        ctx.moveTo(baseX + curve, topY)
+        ctx.quadraticCurveTo(baseX - curve * 0.5, centerY, baseX + curve, bottomY)
+      } else {
+        // Curved outward for open geometry
+        const curve = curvatureStrength * 10 * perspectiveFactor
+        ctx.moveTo(baseX - curve, topY)
+        ctx.quadraticCurveTo(baseX + curve * 0.7, centerY, baseX - curve, bottomY)
+      }
+      ctx.stroke()
+    }
+    
+    // Add geometry label and description
+    ctx.globalAlpha = 1
+    ctx.fillStyle = '#ffffff'
+    ctx.font = 'bold 14px sans-serif'
+    ctx.textAlign = 'center'
+    
+    let label = ''
+    let description = ''
+    let color = ''
+    
+    if (geometryType === 'flat') {
+      label = 'FLAT'
+      description = 'Ω = 1.000'
+      color = 'rgba(100, 255, 100, 0.9)'
+    } else if (geometryType === 'closed') {
+      label = 'CLOSED'
+      description = `Ω = ${density.toFixed(3)}`
+      color = 'rgba(255, 150, 100, 0.9)'
+    } else {
+      label = 'OPEN'
+      description = `Ω = ${density.toFixed(3)}`
+      color = 'rgba(255, 100, 150, 0.9)'
+    }
+    
+    // Draw label background
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.7)'
+    ctx.fillRect(centerX - 40, 15, 80, 35)
+    
+    // Draw label text
+    ctx.fillStyle = color
+    ctx.fillText(label, centerX, 30)
+    ctx.font = '10px sans-serif'
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)'
+    ctx.fillText(description, centerX, 45)
+    
+    // Add subtle animation effect
+    const time = Date.now() * 0.001
+    const shimmer = Math.sin(time) * 0.1 + 0.9
+    ctx.globalAlpha = shimmer
+    
+    // Draw center reference point
+    ctx.fillStyle = color
+    ctx.beginPath()
+    ctx.arc(centerX, centerY, 3, 0, Math.PI * 2)
+    ctx.fill()
     
   }, [density])
   
-  return <canvas ref={canvasRef} className="w-full h-full border border-white/10 rounded" />
+  return (
+    <canvas 
+      ref={canvasRef}
+      className="w-full h-full"
+      style={{ imageRendering: 'auto' }}
+    />
+  )
 }
 
 // Simple Horizon Visualization
