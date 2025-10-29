@@ -122,6 +122,153 @@ export function SimpleDarkEnergyVisual({ lambda }: { lambda: number }) {
   return <canvas ref={canvasRef} className="w-full h-full border border-white/10 rounded" />
 }
 
+// Helper functions for drawing 3D surfaces
+function drawFlatSurface(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, width: number, height: number) {
+  // Draw a flat perspective grid
+  const gridLines = 12
+  const gridSpacing = Math.min(width, height) / 16
+  
+  ctx.strokeStyle = 'rgba(100, 200, 255, 0.6)'
+  ctx.lineWidth = 1
+  
+  // Horizontal lines
+  for (let i = -gridLines/2; i <= gridLines/2; i++) {
+    const y = centerY + i * gridSpacing * 0.8
+    ctx.beginPath()
+    ctx.moveTo(centerX - gridLines * gridSpacing * 0.6, y)
+    ctx.lineTo(centerX + gridLines * gridSpacing * 0.6, y)
+    ctx.stroke()
+  }
+  
+  // Vertical lines with perspective
+  for (let i = -gridLines/2; i <= gridLines/2; i++) {
+    const x = centerX + i * gridSpacing * 1.0
+    const perspectiveFactor = 1 - Math.abs(i) / (gridLines/2) * 0.2
+    const topY = centerY - gridLines * gridSpacing * 0.4 * perspectiveFactor
+    const bottomY = centerY + gridLines * gridSpacing * 0.4 * perspectiveFactor
+    
+    ctx.beginPath()
+    ctx.moveTo(x, topY)
+    ctx.lineTo(x, bottomY)
+    ctx.stroke()
+  }
+}
+
+function drawSphericalSurface(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, width: number, height: number, curvature: number) {
+  // Draw a spherical/dome surface with wireframe
+  const segments = 20
+  const radius = Math.min(width, height) * 0.35
+  
+  ctx.strokeStyle = 'rgba(255, 150, 100, 0.7)'
+  ctx.lineWidth = 1.5
+  
+  // Draw latitude lines (horizontal curves on sphere)
+  for (let lat = -segments/2; lat <= segments/2; lat += 2) {
+    const latAngle = (lat / segments) * Math.PI
+    const y = centerY + Math.sin(latAngle) * radius * 0.6 * curvature
+    const radiusAtLat = Math.cos(latAngle) * radius * curvature
+    
+    ctx.beginPath()
+    ctx.strokeStyle = lat === 0 ? 'rgba(255, 150, 100, 0.9)' : 'rgba(255, 150, 100, 0.6)'
+    
+    // Draw elliptical arc for sphere latitude
+    for (let lng = -segments; lng <= segments; lng++) {
+      const lngAngle = (lng / segments) * Math.PI
+      const x = centerX + Math.sin(lngAngle) * radiusAtLat
+      const z = Math.cos(lngAngle) * radiusAtLat
+      const projectedY = y - z * 0.3 // Add depth effect
+      
+      if (lng === -segments) {
+        ctx.moveTo(x, projectedY)
+      } else {
+        ctx.lineTo(x, projectedY)
+      }
+    }
+    ctx.stroke()
+  }
+  
+  // Draw longitude lines (vertical curves on sphere)
+  for (let lng = -segments/2; lng <= segments/2; lng += 3) {
+    const lngAngle = (lng / segments) * Math.PI
+    
+    ctx.beginPath()
+    ctx.strokeStyle = lng === 0 ? 'rgba(255, 150, 100, 0.9)' : 'rgba(255, 150, 100, 0.4)'
+    
+    for (let lat = -segments; lat <= segments; lat++) {
+      const latAngle = (lat / segments) * Math.PI
+      const x = centerX + Math.sin(lngAngle) * Math.cos(latAngle) * radius * curvature
+      const y = centerY + Math.sin(latAngle) * radius * 0.6 * curvature
+      const z = Math.cos(lngAngle) * Math.cos(latAngle) * radius * curvature
+      const projectedY = y - z * 0.3
+      
+      if (lat === -segments) {
+        ctx.moveTo(x, projectedY)
+      } else {
+        ctx.lineTo(x, projectedY)
+      }
+    }
+    ctx.stroke()
+  }
+}
+
+function drawSaddleSurface(ctx: CanvasRenderingContext2D, centerX: number, centerY: number, width: number, height: number, curvature: number) {
+  // Draw a hyperbolic/saddle surface
+  const segments = 16
+  const scale = Math.min(width, height) * 0.4
+  
+  ctx.strokeStyle = 'rgba(255, 100, 150, 0.7)'
+  ctx.lineWidth = 1.5
+  
+  // Draw U-shaped curves (one direction of saddle)
+  for (let u = -segments/2; u <= segments/2; u += 2) {
+    const uNorm = u / segments * 2 // -1 to 1
+    
+    ctx.beginPath()
+    ctx.strokeStyle = u === 0 ? 'rgba(255, 100, 150, 0.9)' : 'rgba(255, 100, 150, 0.6)'
+    
+    for (let v = -segments; v <= segments; v++) {
+      const vNorm = v / segments * 2 // -1 to 1
+      
+      // Hyperbolic paraboloid: z = x*y (saddle shape)
+      const x = centerX + uNorm * scale * 0.8
+      const y = centerY + vNorm * scale * 0.6
+      const z = uNorm * vNorm * curvature * 40 // Saddle height
+      const projectedY = y + z // Add the saddle curvature
+      
+      if (v === -segments) {
+        ctx.moveTo(x, projectedY)
+      } else {
+        ctx.lineTo(x, projectedY)
+      }
+    }
+    ctx.stroke()
+  }
+  
+  // Draw inverted U-shaped curves (other direction of saddle)
+  for (let v = -segments/2; v <= segments/2; v += 2) {
+    const vNorm = v / segments * 2
+    
+    ctx.beginPath()
+    ctx.strokeStyle = v === 0 ? 'rgba(255, 100, 150, 0.9)' : 'rgba(255, 100, 150, 0.4)'
+    
+    for (let u = -segments; u <= segments; u++) {
+      const uNorm = u / segments * 2
+      
+      const x = centerX + uNorm * scale * 0.8
+      const y = centerY + vNorm * scale * 0.6
+      const z = uNorm * vNorm * curvature * 40
+      const projectedY = y + z
+      
+      if (u === -segments) {
+        ctx.moveTo(x, projectedY)
+      } else {
+        ctx.lineTo(x, projectedY)
+      }
+    }
+    ctx.stroke()
+  }
+}
+
 // Advanced 3D-like Flatness Visualization showing curved spacetime geometries
 export function SimpleFlatnessVisual({ density }: { density: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -167,65 +314,19 @@ export function SimpleFlatnessVisual({ density }: { density: number }) {
       curvatureStrength = Math.min((1 - density) * 3, 1) // Max curvature at density = 0.67
     }
     
-    // Draw 3D-like curved grid
-    ctx.lineWidth = 1.5
-    ctx.globalAlpha = 0.7
+    // Draw 3D surface representation
+    ctx.lineWidth = 1
+    ctx.globalAlpha = 0.8
     
-    // Horizontal grid lines with curvature
-    for (let i = -gridSize/2; i <= gridSize/2; i++) {
-      const y = centerY + i * gridSpacing * 0.8
-      
-      ctx.beginPath()
-      ctx.strokeStyle = i === 0 ? 'rgba(100, 200, 255, 0.9)' : 'rgba(100, 150, 200, 0.6)'
-      ctx.lineWidth = i === 0 ? 2 : 1
-      
-      if (geometryType === 'flat') {
-        // Straight lines for flat geometry
-        ctx.moveTo(centerX - gridSize * gridSpacing * 0.6, y)
-        ctx.lineTo(centerX + gridSize * gridSpacing * 0.6, y)
-      } else if (geometryType === 'closed') {
-        // Upward curved lines for closed/spherical geometry
-        const curve = curvatureStrength * 40 * (1 - Math.abs(i) / (gridSize/2))
-        ctx.moveTo(centerX - gridSize * gridSpacing * 0.6, y + curve)
-        ctx.quadraticCurveTo(centerX, y - curve * 0.5, centerX + gridSize * gridSpacing * 0.6, y + curve)
-      } else {
-        // Downward curved lines for open/hyperbolic geometry  
-        const curve = curvatureStrength * 35 * (1 - Math.abs(i) / (gridSize/2))
-        ctx.moveTo(centerX - gridSize * gridSpacing * 0.6, y - curve)
-        ctx.quadraticCurveTo(centerX, y + curve * 0.8, centerX + gridSize * gridSpacing * 0.6, y - curve)
-      }
-      ctx.stroke()
-    }
-    
-    // Vertical grid lines with perspective and curvature
-    for (let i = -gridSize/2; i <= gridSize/2; i++) {
-      const baseX = centerX + i * gridSpacing * 1.0
-      
-      ctx.beginPath()
-      ctx.strokeStyle = i === 0 ? 'rgba(100, 200, 255, 0.9)' : 'rgba(100, 150, 200, 0.4)'
-      ctx.lineWidth = i === 0 ? 2 : 1
-      
-      // Add perspective effect - lines converge toward horizon
-      const perspectiveFactor = 1 - Math.abs(i) / (gridSize/2) * 0.2
-      const topY = centerY - gridSize * gridSpacing * 0.45 * perspectiveFactor
-      const bottomY = centerY + gridSize * gridSpacing * 0.45 * perspectiveFactor
-      
-      if (geometryType === 'flat') {
-        // Straight vertical lines
-        ctx.moveTo(baseX, topY)
-        ctx.lineTo(baseX, bottomY)
-      } else if (geometryType === 'closed') {
-        // Slightly curved inward for closed geometry
-        const curve = curvatureStrength * 12 * perspectiveFactor
-        ctx.moveTo(baseX + curve, topY)
-        ctx.quadraticCurveTo(baseX - curve * 0.5, centerY, baseX + curve, bottomY)
-      } else {
-        // Curved outward for open geometry
-        const curve = curvatureStrength * 15 * perspectiveFactor
-        ctx.moveTo(baseX - curve, topY)
-        ctx.quadraticCurveTo(baseX + curve * 0.7, centerY, baseX - curve, bottomY)
-      }
-      ctx.stroke()
+    if (geometryType === 'flat') {
+      // Draw flat plane with perspective grid
+      drawFlatSurface(ctx, centerX, centerY, canvas.width, canvas.height)
+    } else if (geometryType === 'closed') {
+      // Draw spherical/dome surface
+      drawSphericalSurface(ctx, centerX, centerY, canvas.width, canvas.height, curvatureStrength)
+    } else {
+      // Draw hyperbolic/saddle surface
+      drawSaddleSurface(ctx, centerX, centerY, canvas.width, canvas.height, curvatureStrength)
     }
     
     // Add geometry label and description
