@@ -149,8 +149,8 @@ export function SimpleFlatnessVisual({ density }: { density: number }) {
     
     const centerX = canvas.width / 2
     const centerY = canvas.height / 2
-    const gridSize = 12
-    const gridSpacing = Math.min(canvas.width, canvas.height) / gridSize
+    const gridSize = 16
+    const gridSpacing = Math.min(canvas.width, canvas.height) / (gridSize * 0.8)
     
     // Determine geometry type and curvature strength
     let geometryType = 'flat'
@@ -173,7 +173,7 @@ export function SimpleFlatnessVisual({ density }: { density: number }) {
     
     // Horizontal grid lines with curvature
     for (let i = -gridSize/2; i <= gridSize/2; i++) {
-      const y = centerY + i * gridSpacing * 0.6
+      const y = centerY + i * gridSpacing * 0.8
       
       ctx.beginPath()
       ctx.strokeStyle = i === 0 ? 'rgba(100, 200, 255, 0.9)' : 'rgba(100, 150, 200, 0.6)'
@@ -181,34 +181,34 @@ export function SimpleFlatnessVisual({ density }: { density: number }) {
       
       if (geometryType === 'flat') {
         // Straight lines for flat geometry
-        ctx.moveTo(centerX - gridSize * gridSpacing * 0.4, y)
-        ctx.lineTo(centerX + gridSize * gridSpacing * 0.4, y)
+        ctx.moveTo(centerX - gridSize * gridSpacing * 0.6, y)
+        ctx.lineTo(centerX + gridSize * gridSpacing * 0.6, y)
       } else if (geometryType === 'closed') {
         // Upward curved lines for closed/spherical geometry
-        const curve = curvatureStrength * 30 * (1 - Math.abs(i) / (gridSize/2))
-        ctx.moveTo(centerX - gridSize * gridSpacing * 0.4, y + curve)
-        ctx.quadraticCurveTo(centerX, y - curve * 0.5, centerX + gridSize * gridSpacing * 0.4, y + curve)
+        const curve = curvatureStrength * 40 * (1 - Math.abs(i) / (gridSize/2))
+        ctx.moveTo(centerX - gridSize * gridSpacing * 0.6, y + curve)
+        ctx.quadraticCurveTo(centerX, y - curve * 0.5, centerX + gridSize * gridSpacing * 0.6, y + curve)
       } else {
         // Downward curved lines for open/hyperbolic geometry  
-        const curve = curvatureStrength * 25 * (1 - Math.abs(i) / (gridSize/2))
-        ctx.moveTo(centerX - gridSize * gridSpacing * 0.4, y - curve)
-        ctx.quadraticCurveTo(centerX, y + curve * 0.8, centerX + gridSize * gridSpacing * 0.4, y - curve)
+        const curve = curvatureStrength * 35 * (1 - Math.abs(i) / (gridSize/2))
+        ctx.moveTo(centerX - gridSize * gridSpacing * 0.6, y - curve)
+        ctx.quadraticCurveTo(centerX, y + curve * 0.8, centerX + gridSize * gridSpacing * 0.6, y - curve)
       }
       ctx.stroke()
     }
     
     // Vertical grid lines with perspective and curvature
     for (let i = -gridSize/2; i <= gridSize/2; i++) {
-      const baseX = centerX + i * gridSpacing * 0.8
+      const baseX = centerX + i * gridSpacing * 1.0
       
       ctx.beginPath()
       ctx.strokeStyle = i === 0 ? 'rgba(100, 200, 255, 0.9)' : 'rgba(100, 150, 200, 0.4)'
       ctx.lineWidth = i === 0 ? 2 : 1
       
       // Add perspective effect - lines converge toward horizon
-      const perspectiveFactor = 1 - Math.abs(i) / (gridSize/2) * 0.3
-      const topY = centerY - gridSize * gridSpacing * 0.3 * perspectiveFactor
-      const bottomY = centerY + gridSize * gridSpacing * 0.3 * perspectiveFactor
+      const perspectiveFactor = 1 - Math.abs(i) / (gridSize/2) * 0.2
+      const topY = centerY - gridSize * gridSpacing * 0.45 * perspectiveFactor
+      const bottomY = centerY + gridSize * gridSpacing * 0.45 * perspectiveFactor
       
       if (geometryType === 'flat') {
         // Straight vertical lines
@@ -216,12 +216,12 @@ export function SimpleFlatnessVisual({ density }: { density: number }) {
         ctx.lineTo(baseX, bottomY)
       } else if (geometryType === 'closed') {
         // Slightly curved inward for closed geometry
-        const curve = curvatureStrength * 8 * perspectiveFactor
+        const curve = curvatureStrength * 12 * perspectiveFactor
         ctx.moveTo(baseX + curve, topY)
         ctx.quadraticCurveTo(baseX - curve * 0.5, centerY, baseX + curve, bottomY)
       } else {
         // Curved outward for open geometry
-        const curve = curvatureStrength * 10 * perspectiveFactor
+        const curve = curvatureStrength * 15 * perspectiveFactor
         ctx.moveTo(baseX - curve, topY)
         ctx.quadraticCurveTo(baseX + curve * 0.7, centerY, baseX - curve, bottomY)
       }
