@@ -171,12 +171,6 @@ function MilkyWayEvolution({
           ))}
         </div>
 
-        {/* Phase Info Card */}
-        <div className="absolute top-4 left-4 bg-black/70 rounded-lg p-3 border border-white/20 max-w-xs">
-          <h3 className="text-lg font-semibold text-white mb-1">{currentPhaseData.name}</h3>
-          <p className="text-sm text-gray-300 mb-1 font-medium">{currentPhaseData.age}</p>
-          <p className="text-sm text-gray-300 leading-relaxed">{currentPhaseData.description}</p>
-        </div>
 
         {/* Progress Bar with Timeline Legends */}
         <div className="absolute bottom-0 left-0 right-0">
@@ -206,6 +200,17 @@ function MilkyWayEvolution({
               <span className="text-white font-medium">Today</span>
               <span className="text-gray-400">Modern Era</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Phase Information - Now below the image */}
+      <div className="p-4 bg-black/30 border-t border-white/10">
+        <div className="text-center space-y-3">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-1">{currentPhaseData.name}</h3>
+            <p className="text-sm text-blue-300 font-semibold mb-2">{currentPhaseData.age}</p>
+            <p className="text-gray-300 leading-relaxed">{currentPhaseData.description}</p>
           </div>
         </div>
       </div>
