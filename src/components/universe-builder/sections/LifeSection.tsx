@@ -335,208 +335,76 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
   );
 }
 
-// Geological Era Details Component (modeled after Abiogenesis scientific details)
-function GeologicalEraDetails({ era, selectedEra }: { era: typeof GEOLOGICAL_ERAS[0]; selectedEra: number }) {
-  const getEraAnalysis = () => {
-    switch (selectedEra) {
-      case 0: // Hadean Earth
-        return {
-          finetuning: "Extreme conditions created the perfect 'chemical laboratory' for prebiotic synthesis",
-          mechanisms: [
-            "Asteroid bombardment delivered water and organic compounds to Earth's surface",
-            "Volcanic outgassing created dense CO₂/methane atmosphere for greenhouse warming",
-            "Lightning and UV radiation provided energy for amino acid and nucleotide synthesis",
-            "Hydrothermal vents created temperature/chemical gradients for complex chemistry"
-          ],
-          challenges: [
-            "Surface temperatures too hot (>100°C) for stable organic molecules",
-            "Intense asteroid bombardment repeatedly sterilized surface",
-            "No protective ozone layer - lethal UV radiation reached surface",
-            "Atmospheric composition hostile to life - no free oxygen"
-          ],
-          reality: "The Hadean was Earth's 'chemical boot camp' - hostile conditions that paradoxically created the building blocks of life. Without this violent phase, complex organic chemistry could never have emerged."
-        };
-      case 1: // Archean Earth
-        return {
-          finetuning: "First stable oceans and hydrothermal systems enabled the emergence of life",
-          mechanisms: [
-            "Stable liquid water oceans provided solvent for biochemical reactions",
-            "Hydrothermal vents supplied chemical energy (H₂S, Fe²⁺) for chemosynthesis",
-            "Reduced atmosphere (no O₂) allowed complex organic molecules to persist",
-            "Continental crust formation created shallow seas ideal for early life"
-          ],
-          challenges: [
-            "Anoxic atmosphere meant no protection from UV radiation",
-            "High CO₂ levels created extreme greenhouse conditions",
-            "Limited nutrient availability in early oceans",
-            "Continued asteroid impacts disrupted early ecosystems"
-          ],
-          reality: "The Archean represents life's first foothold on Earth. Prokaryotic cells emerged ~3.8 Ga, but remained simple for over a billion years. This 'boring billion' was actually crucial preparation for complexity."
-        };
-      case 2: // Great Oxygenation
-        return {
-          finetuning: "Oxygen crisis forced evolutionary innovation and enabled complex cellular machinery",
-          mechanisms: [
-            "Cyanobacteria evolved oxygenic photosynthesis, releasing O₂ as waste",
-            "Iron in oceans oxidized, creating banded iron formations and clearing water",
-            "Ozone layer formation provided UV protection for surface life",
-            "Aerobic respiration evolved, providing 16x more energy than fermentation"
-          ],
-          challenges: [
-            "Oxygen was toxic to existing anaerobic life - first mass extinction",
-            "Methane greenhouse gases oxidized, triggering Snowball Earth glaciation",
-            "Atmospheric chemistry became highly reactive and corrosive",
-            "Existing metabolic pathways had to completely reorganize"
-          ],
-          reality: "The Great Oxygenation Event was Earth's first environmental catastrophe caused by life itself. This 'oxygen holocaust' killed most existing species but enabled the energy-rich metabolism required for complex life."
-        };
-      case 3: // Proterozoic Earth
-        return {
-          finetuning: "Stable oxygen levels and supercontinent cycles enabled eukaryotic complexity",
-          mechanisms: [
-            "Endosymbiosis created eukaryotic cells with mitochondria and chloroplasts",
-            "Sexual reproduction evolved, accelerating genetic diversity and evolution",
-            "Supercontinent Rodinia formed and broke apart, driving speciation",
-            "Ocean stratification created diverse chemical environments"
-          ],
-          challenges: [
-            "Fluctuating oxygen levels created boom-bust cycles for life",
-            "Snowball Earth episodes repeatedly stressed global ecosystems",
-            "Eukaryotic cells required precise oxygen levels - too little or too much was lethal",
-            "Complex cellular machinery was fragile and energy-expensive"
-          ],
-          reality: "The Proterozoic was evolution's 'research and development' phase. For 1.5 billion years, life experimented with cellular complexity, setting the stage for the Cambrian explosion."
-        };
-      case 4: // Ediacaran-Cambrian
-        return {
-          finetuning: "Optimal oxygen levels and nutrient availability triggered the Cambrian explosion",
-          mechanisms: [
-            "Oxygen reached ~21% - optimal for large, active organisms",
-            "Phosphorus weathering from glacial runoff fertilized oceans",
-            "Predator-prey arms race drove rapid morphological innovation",
-            "Hox genes evolved, enabling complex body plan development"
-          ],
-          challenges: [
-            "High oxygen levels enabled wildfires, creating environmental instability",
-            "Rapid evolution led to many evolutionary dead ends",
-            "Competition intensified as ecological niches filled rapidly",
-            "Climate remained unstable with continued glacial-interglacial cycles"
-          ],
-          reality: "The Cambrian explosion represents evolution's greatest creative burst. In just 25 million years, all major animal phyla appeared. This required precisely tuned environmental conditions that may be rare in the universe."
-        };
-      case 5: // Paleozoic Earth
-        return {
-          finetuning: "Land colonization required precise atmospheric and climate conditions",
-          mechanisms: [
-            "Ozone layer thick enough to allow surface colonization by plants",
-            "CO₂ levels high enough to support plant photosynthesis on land",
-            "Weathering of rocks provided nutrients for terrestrial ecosystems",
-            "Tectonic activity created diverse terrestrial habitats"
-          ],
-          challenges: [
-            "Transition from water to land required new respiratory and structural systems",
-            "Pangea formation created massive deserts and climate extremes",
-            "High oxygen levels (35%) created fire-prone environments",
-            "Mass extinctions repeatedly reset evolutionary progress"
-          ],
-          reality: "The Paleozoic conquest of land was life's greatest expansion. Plants transformed the atmosphere, creating soils and enabling the evolution of terrestrial food webs. Without this phase, intelligence could never have evolved."
-        };
-      case 6: // Mesozoic Earth
-        return {
-          finetuning: "Warm, stable climate enabled the evolution of large, complex organisms",
-          mechanisms: [
-            "High CO₂ levels created warm, humid greenhouse conditions globally",
-            "Continental breakup increased coastal habitats and marine diversity",
-            "Flowering plants co-evolved with insects, creating complex ecosystems",
-            "Stable climate allowed long-term evolutionary trends toward gigantism"
-          ],
-          challenges: [
-            "High temperatures stressed many organisms near thermal limits",
-            "Lack of ice caps meant sea levels were 100+ meters higher",
-            "Asteroid impact at end-Cretaceous caused sudden mass extinction",
-            "Volcanic activity from Deccan Traps created additional environmental stress"
-          ],
-          reality: "The Mesozoic was Earth's 'golden age' of reptiles. Stable greenhouse conditions allowed evolution to explore large body sizes and complex behaviors. The asteroid impact was a cosmic accident that reset life's trajectory."
-        };
-      case 7: // Cenozoic Earth
-        return {
-          finetuning: "Climate oscillations and continental positions enabled mammalian diversification and intelligence",
-          mechanisms: [
-            "Cooling climate favored warm-blooded mammals over reptiles",
-            "Grassland expansion created new ecological niches",
-            "Ice age cycles drove rapid evolution and migration",
-            "Isolated continents allowed independent evolutionary experiments"
-          ],
-          challenges: [
-            "Rapid climate changes stressed many species to extinction",
-            "Competition from mammals drove many reptile groups extinct",
-            "Volcanic activity and asteroid impacts continued to disrupt ecosystems",
-            "Cooling temperatures reduced global productivity"
-          ],
-          reality: "The Cenozoic represents evolution's final preparation for intelligence. Mammals diversified into every available niche, and climate instability selected for behavioral flexibility and large brains."
-        };
-      case 8: // Anthropocene
-        return {
-          finetuning: "Stable Holocene climate enabled agriculture and civilization",
-          mechanisms: [
-            "Stable climate for 10,000 years allowed agriculture to develop",
-            "Predictable seasons enabled food storage and population growth",
-            "Diverse ecosystems provided resources for technological development",
-            "Moderate CO₂ levels maintained climate stability"
-          ],
-          challenges: [
-            "Human activities now dominate global environmental systems",
-            "Rapid climate change threatens ecosystem stability",
-            "Mass extinction event in progress - sixth in Earth's history",
-            "Atmospheric CO₂ levels highest in 3 million years"
-          ],
-          reality: "The Anthropocene represents a new phase of Earth's evolution where one species has become a geological force. Whether this leads to sustainable civilization or ecosystem collapse depends on choices made in the next few decades."
-        };
-      default:
-        return { finetuning: "", mechanisms: [], challenges: [], reality: "" };
-    }
-  };
-
-  const analysis = getEraAnalysis();
-
+// Simple Insight Mode Content for Evolution Section
+function EvolutionInsightContent({ selectedEra }: { selectedEra: number }) {
+  const era = GEOLOGICAL_ERAS[selectedEra];
+  
   return (
-    <div className="space-y-4 text-sm">
-      {/* Fine-tuning Description */}
+    <div className="space-y-4">
+      {/* Era Overview */}
       <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
-        <h4 className="font-semibold mb-2 text-blue-300">Fine-Tuned Conditions</h4>
-        <p className="text-blue-200 leading-relaxed">{analysis.finetuning}</p>
+        <h4 className="font-semibold mb-2 text-blue-300">Era Overview</h4>
+        <p className="text-blue-200 text-sm leading-relaxed mb-3">{era.details}</p>
+        <p className="text-blue-100 text-xs italic">{era.context}</p>
       </div>
 
-      {/* Key Mechanisms */}
+      {/* Key Features */}
       <div className="p-4 rounded-lg bg-green-900/20 border border-green-500/30">
-        <h4 className="font-semibold mb-2 text-green-300">Key Mechanisms</h4>
-        <div className="space-y-1">
-          {analysis.mechanisms.map((mechanism, index) => (
-            <div key={index} className="flex items-start gap-2 text-green-200">
-              <span className="text-green-400 mt-1">•</span>
-              <span className="text-xs leading-relaxed">{mechanism}</span>
+        <h4 className="font-semibold mb-3 text-green-300">Key Features</h4>
+        <div className="grid grid-cols-1 gap-2">
+          {era.keyFeatures.map((feature, index) => (
+            <div key={index} className="flex items-start gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
+              <span className="text-green-100 text-sm">{feature}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Major Challenges */}
-      <div className="p-4 rounded-lg bg-orange-900/20 border border-orange-500/30">
-        <h4 className="font-semibold mb-2 text-orange-300">Major Challenges</h4>
-        <div className="space-y-1">
-          {analysis.challenges.map((challenge, index) => (
-            <div key={index} className="flex items-start gap-2 text-orange-200">
-              <span className="text-orange-400 mt-1">•</span>
-              <span className="text-xs leading-relaxed">{challenge}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Scientific Reality */}
+      {/* Life Forms */}
       <div className="p-4 rounded-lg bg-purple-900/20 border border-purple-500/30">
-        <h4 className="font-semibold mb-2 text-purple-300">Scientific Reality</h4>
-        <p className="text-purple-200 text-xs leading-relaxed">{analysis.reality}</p>
+        <h4 className="font-semibold mb-3 text-purple-300">Dominant Life Forms</h4>
+        <div className="flex flex-wrap gap-2">
+          {era.lifeforms.map((lifeform, index) => (
+            <span key={index} className="px-2 py-1 bg-purple-800/30 text-purple-200 text-xs rounded-full border border-purple-600/30">
+              {lifeform}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Atmospheric Composition */}
+      <div className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/30">
+        <h4 className="font-semibold mb-3 text-amber-300">Atmospheric Composition</h4>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="text-center">
+            <div className="text-lg font-bold text-amber-200">{era.atmosphere.co2}%</div>
+            <div className="text-xs text-amber-300">CO₂</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-amber-200">{era.atmosphere.oxygen}%</div>
+            <div className="text-xs text-amber-300">O₂</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-amber-200">{era.atmosphere.methane}%</div>
+            <div className="text-xs text-amber-300">CH₄</div>
+          </div>
+          <div className="text-center">
+            <div className="text-lg font-bold text-amber-200">{era.atmosphere.nitrogen}%</div>
+            <div className="text-xs text-amber-300">N₂</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Temperature */}
+      <div className="p-4 rounded-lg bg-red-900/20 border border-red-500/30">
+        <h4 className="font-semibold mb-2 text-red-300">Global Temperature</h4>
+        <div className="text-center">
+          <div className="text-2xl font-bold text-red-200">
+            {era.temperature > 0 ? '+' : ''}{era.temperature}°C
+          </div>
+          <div className="text-xs text-red-300">relative to present day</div>
+        </div>
       </div>
     </div>
   );
@@ -822,7 +690,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
             <Card className="bg-blue-900/20 border-blue-500/30">
               <CardHeader>
                 <CardTitle className="text-blue-300">
-                  {currentEra.name} - Scientific Analysis {educatorMode ? '(ENABLED)' : '(DISABLED)'}
+                  {currentEra.name} - Scientific Analysis {educatorMode ? '(INSIGHT MODE)' : '(PLAY MODE)'}
                 </CardTitle>
                 <CardDescription className="text-blue-400">
                   Fine-tuned conditions that enabled the next phase of Earth's evolution
@@ -830,10 +698,10 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardHeader>
               <CardContent>
                 {educatorMode ? (
-                  <GeologicalEraDetails era={currentEra} selectedEra={selectedEra} />
+                  <EvolutionInsightContent selectedEra={selectedEra} />
                 ) : (
                   <div className="p-4 text-center text-gray-400">
-                    <p>Enable Educator Mode to see detailed scientific analysis</p>
+                    <p>Enable Insight Mode to see detailed scientific analysis</p>
                   </div>
                 )}
               </CardContent>
