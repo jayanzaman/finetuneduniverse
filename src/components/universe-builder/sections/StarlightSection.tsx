@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 import { MetallicitySpectrumVisual } from './MetallicitySpectrumVisual'
+import { StarFormationRateVisual } from './StarFormationRateVisual'
 
 // Enhanced Star Visualization Component with Death/Explosion States
 function StarField({ stellarMass, metallicity, starFormationRate }: {
@@ -571,7 +572,7 @@ export default function StarlightSection({
       title: 'Star Formation Rate',
       subtitle: 'Stellar Birth Rate',
       description: 'Rate of stellar birth in early galaxies',
-      visual: <StarField stellarMass={stellarMass} metallicity={metallicity} starFormationRate={starFormationRate} />,
+      visual: <StarFormationRateVisual starFormationRate={starFormationRate} />,
       value: starFormationRate,
       onChange: (value: number[]) => setStarFormationRate(value[0]),
       min: 0.1,
