@@ -509,15 +509,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
 
             {/* Insight Mode Content - Moved to Left Column for Better Visibility */}
             <Card className="bg-blue-900/20 border-blue-500/30">
-              <CardHeader>
-                <CardTitle className="text-blue-300">
-                  {currentEra.name} - Scientific Analysis {educatorMode ? '(INSIGHT MODE)' : '(PLAY MODE)'}
-                </CardTitle>
-                <CardDescription className="text-blue-400">
-                  Fine-tuned conditions that enabled the next phase of Earth's evolution
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 {educatorMode ? (
                   <div className="space-y-4">
                     {/* Era Overview */}
