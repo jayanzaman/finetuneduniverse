@@ -546,11 +546,11 @@ export default function PlanetsSection({
                 </div>
               </div>
 
-              {/* Always visible sliders */}
-              <div className="space-y-4 mt-4">
+              {/* Compact sliders - all visible without scrolling */}
+              <div className="space-y-2 mt-3">
                 {/* Orbital Distance Slider */}
                 <div>
-                  <div className="text-sm text-gray-300 mb-2">Orbital Distance</div>
+                  <div className="text-xs text-gray-300 mb-1">Orbital Distance</div>
                   <div className="relative">
                     <Slider
                       value={[orbitalDistance]}
@@ -558,15 +558,15 @@ export default function PlanetsSection({
                       max={5}
                       min={0.1}
                       step={0.05}
-                      className="w-full"
+                      className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3"
                     />
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
                          style={{
                            left: `${((0.9 - 0.1) / (5 - 0.1)) * 100}%`,
                            width: `${((1.1 - 0.9) / (5 - 0.1)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <div className="flex justify-between text-xs text-gray-400">
                     <span>Hot</span>
                     <span className="text-white font-medium">{orbitalDistance.toFixed(1)} AU</span>
                     <span>Cold</span>
@@ -575,7 +575,7 @@ export default function PlanetsSection({
 
                 {/* Planet Mass Slider */}
                 <div>
-                  <div className="text-sm text-gray-300 mb-2">Planet Mass</div>
+                  <div className="text-xs text-gray-300 mb-1">Planet Mass</div>
                   <div className="relative">
                     <Slider
                       value={[planetMass]}
@@ -583,15 +583,15 @@ export default function PlanetsSection({
                       max={10}
                       min={0.01}
                       step={0.05}
-                      className="w-full"
+                      className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3"
                     />
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
                          style={{
                            left: `${((0.8 - 0.01) / (10 - 0.01)) * 100}%`,
                            width: `${((1.3 - 0.8) / (10 - 0.01)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <div className="flex justify-between text-xs text-gray-400">
                     <span>Small</span>
                     <span className="text-white font-medium">{planetMass.toFixed(1)} M⊕</span>
                     <span>Large</span>
@@ -600,7 +600,7 @@ export default function PlanetsSection({
 
                 {/* Atmospheric Pressure Slider */}
                 <div>
-                  <div className="text-sm text-gray-300 mb-2">Atmospheric Pressure</div>
+                  <div className="text-xs text-gray-300 mb-1">Atmospheric Pressure</div>
                   <div className="relative">
                     <Slider
                       value={[basePressure]}
@@ -608,15 +608,15 @@ export default function PlanetsSection({
                       max={10}
                       min={0}
                       step={0.02}
-                      className="w-full"
+                      className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3"
                     />
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
                          style={{
                            left: `${((0.8 - 0) / (10 - 0)) * 100}%`,
                            width: `${((1.2 - 0.8) / (10 - 0)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <div className="flex justify-between text-xs text-gray-400">
                     <span>Vapor</span>
                     <span className="text-white font-medium">{basePressure.toFixed(2)} atm</span>
                     <span>Crush</span>
@@ -625,7 +625,7 @@ export default function PlanetsSection({
 
                 {/* Magnetic Field Slider */}
                 <div>
-                  <div className="text-sm text-gray-300 mb-2">Magnetic Field</div>
+                  <div className="text-xs text-gray-300 mb-1">Magnetic Field</div>
                   <div className="relative">
                     <Slider
                       value={[magneticField]}
@@ -633,15 +633,15 @@ export default function PlanetsSection({
                       max={5}
                       min={0}
                       step={0.05}
-                      className="w-full"
+                      className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3"
                     />
-                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                    <div className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
                          style={{
                            left: `${((0.8 - 0) / (5 - 0)) * 100}%`,
                            width: `${((1.2 - 0.8) / (5 - 0)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <div className="flex justify-between text-xs text-gray-400">
                     <span>None</span>
                     <span className="text-white font-medium">{(magneticField * 50).toFixed(0)} μT</span>
                     <span>Strong</span>
