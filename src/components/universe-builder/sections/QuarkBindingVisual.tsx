@@ -8,7 +8,6 @@ interface QuarkBindingVisualProps {
 }
 
 export function QuarkBindingVisual({ strongForce }: QuarkBindingVisualProps) {
-  const [showDetails, setShowDetails] = useState<string | null>(null)
   const [cosmicScale, setCosmicScale] = useState(1)
 
   // Calculate regime based on strong force value
@@ -222,39 +221,7 @@ export function QuarkBindingVisual({ strongForce }: QuarkBindingVisualProps) {
         </motion.div>
       </div>
 
-      {/* Information panels */}
-      <div className="absolute top-4 left-4 space-y-2">
-        <button
-          className="px-3 py-1 bg-blue-600/80 text-white text-xs rounded hover:bg-blue-500/80 transition-colors"
-          onClick={() => setShowDetails(showDetails === 'proton' ? null : 'proton')}
-        >
-          Inside the Proton
-        </button>
-        <button
-          className="px-3 py-1 bg-green-600/80 text-white text-xs rounded hover:bg-green-500/80 transition-colors"
-          onClick={() => setShowDetails(showDetails === 'fusion' ? null : 'fusion')}
-        >
-          Star Formation
-        </button>
-        <button
-          className="px-3 py-1 bg-purple-600/80 text-white text-xs rounded hover:bg-purple-500/80 transition-colors"
-          onClick={() => setShowDetails(showDetails === 'window' ? null : 'window')}
-        >
-          Life-Permitting Window
-        </button>
-      </div>
 
-      {/* Real-time values sidebar */}
-      <div className="absolute top-4 right-4 bg-black/80 text-white p-3 rounded text-xs space-y-1 min-w-48">
-        <div className="font-semibold text-blue-300">αs = {strongForce.toFixed(3)}</div>
-        <div>Binding Energy: {bindingEnergy.toFixed(1)} MeV/nucleon</div>
-        <div className={`font-medium ${isOptimal ? 'text-green-400' : isTooWeak ? 'text-blue-400' : 'text-red-400'}`}>
-          {isOptimal ? 'Stable Matter' : isTooWeak ? 'No Matter' : 'Instant Fusion'}
-        </div>
-        <div className="text-gray-300">
-          Proton Stability: {(protonStability * 100).toFixed(1)}%
-        </div>
-      </div>
 
       {/* Dynamic caption */}
       <div className="absolute bottom-4 left-4 right-4 text-center">
@@ -269,45 +236,6 @@ export function QuarkBindingVisual({ strongForce }: QuarkBindingVisualProps) {
         </motion.div>
       </div>
 
-      {/* Detail overlays */}
-      <AnimatePresence>
-        {showDetails && (
-          <motion.div
-            className="absolute inset-0 bg-black/90 flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setShowDetails(null)}
-          >
-            <div className="bg-gray-900 p-6 rounded-lg max-w-md text-white text-sm space-y-3">
-              {showDetails === 'proton' && (
-                <>
-                  <h3 className="text-lg font-semibold text-blue-300">Inside the Proton</h3>
-                  <p>Three quarks (two up, one down) bound by the strong force via gluon exchange.</p>
-                  <p>Current binding strength: <span className="text-yellow-300">{(strongForce * 100).toFixed(1)}%</span> of optimal</p>
-                  <p>The flux tubes represent the gluon field - they get stronger as αs increases.</p>
-                </>
-              )}
-              {showDetails === 'fusion' && (
-                <>
-                  <h3 className="text-lg font-semibold text-green-300">Star Formation</h3>
-                  <p>Hydrogen fusion requires precise balance: strong enough to bind nuclei, weak enough to allow gradual burning.</p>
-                  <p>Current fusion rate: <span className="text-yellow-300">{fusionRate.toFixed(1)}x</span> normal</p>
-                  <p>Too strong → instant helium formation, no long-lived stars</p>
-                </>
-              )}
-              {showDetails === 'window' && (
-                <>
-                  <h3 className="text-lg font-semibold text-purple-300">Life-Permitting Window</h3>
-                  <p>Viable range: αs = 0.98 to 1.02 (just 4% tolerance!)</p>
-                  <p>Outside this window: no stable atoms or runaway fusion</p>
-                  <p>Our universe: αs ≈ 1.000 ± 0.001</p>
-                </>
-              )}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }
