@@ -496,6 +496,86 @@ export default function StarlightSection({
   const [isTimeLapseActive, setIsTimeLapseActive] = useState(false)
   const [currentCosmicAge, setCurrentCosmicAge] = useState(13.8) // Start at Big Bang
 
+  // Mobile navigation state
+  const [currentStep, setCurrentStep] = useState(0)
+  
+  // Define the steps in optimal order for Formation of Stars
+  const steps = [
+    {
+      id: 'stellar-mass',
+      title: 'Stellar Mass',
+      subtitle: 'First Generation Stars',
+      description: 'Mass of first-generation stars (in solar masses)',
+      visual: <StarField stellarMass={stellarMass} metallicity={metallicity} starFormationRate={starFormationRate} />,
+      value: stellarMass,
+      onChange: (value: number[]) => setStellarMass(value[0]),
+      min: 0.1,
+      max: 2,
+      step: 0.1,
+      unit: 'M☉',
+      optimal: '0.8-1.4 M☉ (optimal)',
+      optimalRange: { left: ((0.8 - 0.1) / (2 - 0.1)) * 100, width: ((1.4 - 0.8) / (2 - 0.1)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> StarField shows stellar evolution - optimal stars pulse steadily, too small stars flicker and dim, too massive stars grow unstable and approach explosion.</p>
+          <p><strong>Critical mass range:</strong> Stars need 0.8-1.4 solar masses for stable hydrogen fusion lasting billions of years. This narrow window enables planetary systems and life.</p>
+          <p><strong>Too small = stellar death:</strong> Below 0.8 M☉, stars can't sustain fusion and become dim red dwarfs or brown dwarfs. No energy for complex chemistry.</p>
+          <p><strong>Too massive = stellar explosion:</strong> Above 1.4 M☉, stars burn too fast and explode as supernovae within millions of years. No time for life to evolve.</p>
+        </div>
+      )
+    },
+    {
+      id: 'metallicity',
+      title: 'Metallicity',
+      subtitle: 'Heavy Element Content',
+      description: 'Fraction of heavy elements in stellar composition',
+      visual: <StarField stellarMass={stellarMass} metallicity={metallicity} starFormationRate={starFormationRate} />,
+      value: metallicity,
+      onChange: (value: string) => setSelectedStar(value),
+      isSelector: true,
+      options: [
+        { value: 'popiii', label: 'Population III (0.00001)', description: 'First Stars - No Heavy Elements' },
+        { value: 'hd140283', label: 'HD 140283 (0.0004)', description: 'Methuselah Star - Ancient' },
+        { value: 'tauceti', label: 'Tau Ceti (0.008)', description: 'Metal-Poor Neighbor' },
+        { value: 'sun', label: 'Sun (0.02)', description: 'Solar Standard - Optimal' },
+        { value: 'muleo', label: 'μ Leonis (0.04)', description: 'Metal-Rich Giant' },
+        { value: 'galcenter', label: 'Galactic Core (0.08)', description: 'Super Metal-Rich' }
+      ],
+      optimal: 'Sun (0.02) - Solar Standard',
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Star color and properties change with metallicity - metal-rich stars burn differently and can form rocky planets.</p>
+          <p><strong>Heavy elements required:</strong> Stars need ~2% heavy elements (metals) to form rocky planets. First stars had zero metals - only hydrogen and helium.</p>
+          <p><strong>Stellar nucleosynthesis:</strong> Stars forge heavy elements in their cores and scatter them when they die. Each generation enriches the galaxy with more metals.</p>
+          <p><strong>Planet formation threshold:</strong> Below 1% metallicity, rocky planets can't form. Above 4%, gas giants migrate inward and destroy terrestrial worlds.</p>
+        </div>
+      )
+    },
+    {
+      id: 'formation-rate',
+      title: 'Star Formation Rate',
+      subtitle: 'Stellar Birth Rate',
+      description: 'Rate of stellar birth in early galaxies',
+      visual: <StarField stellarMass={stellarMass} metallicity={metallicity} starFormationRate={starFormationRate} />,
+      value: starFormationRate,
+      onChange: (value: number[]) => setStarFormationRate(value[0]),
+      min: 0.1,
+      max: 2,
+      step: 0.1,
+      unit: 'M☉/yr',
+      optimal: '0.8-1.5 M☉/yr (optimal)',
+      optimalRange: { left: ((0.8 - 0.1) / (2 - 0.1)) * 100, width: ((1.5 - 0.8) / (2 - 0.1)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Formation rate affects stellar density and interactions - optimal rates create stable stellar neighborhoods for planetary systems.</p>
+          <p><strong>Goldilocks star formation:</strong> Need 0.8-1.5 solar masses per year in local regions. Too slow = not enough heavy elements, too fast = destructive stellar interactions.</p>
+          <p><strong>Cosmic evolution:</strong> Star formation peaked 10 billion years ago, then declined. We live in the optimal era for complex chemistry and stable systems.</p>
+          <p><strong>Stellar feedback:</strong> High formation rates create stellar winds and supernovae that disrupt planet formation. Low rates provide insufficient heavy elements for rocky worlds.</p>
+        </div>
+      )
+    }
+  ]
+
   // Time-lapse animation effect
   useEffect(() => {
     if (!isTimeLapseActive) return
@@ -545,9 +625,133 @@ export default function StarlightSection({
   }, [])
 
   return (
-    <div className="container mx-auto px-4">
-      {/* Primary Controls - Balanced Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+    <div className="container mx-auto px-4 md:px-4">
+      {/* Mobile: Optimized full-screen layout */}
+      <div className="md:hidden mb-6">
+        <Card className="bg-black/20 border-white/10 text-white">
+          <CardContent>
+            <div className="space-y-2">
+              {/* Compact header with progress */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1">
+                  <h4 className="text-base font-semibold text-white">{steps[currentStep].title}</h4>
+                  <p className="text-xs text-gray-300">{steps[currentStep].subtitle}</p>
+                </div>
+                <div className="flex items-center space-x-1">
+                  {steps.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        index === currentStep 
+                          ? 'bg-blue-400 scale-125' 
+                          : 'bg-gray-500/60'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+              
+              {/* Full-height visualization */}
+              <div className="bg-black/30 rounded-lg p-3">
+                <div className="h-80 mb-3">
+                  {steps[currentStep].visual}
+                </div>
+                
+                {/* Compact control */}
+                <div className="space-y-1">
+                  {steps[currentStep].isSelector ? (
+                    /* Selector for metallicity */
+                    <div className="space-y-2">
+                      <select
+                        value={selectedStar}
+                        onChange={(e) => setSelectedStar(e.target.value)}
+                        className="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 text-sm"
+                      >
+                        {steps[currentStep].options?.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="text-xs text-gray-400 text-center">
+                        {steps[currentStep].options?.find(opt => opt.value === selectedStar)?.description}
+                      </div>
+                    </div>
+                  ) : (
+                    /* Slider for other parameters */
+                    <div className="relative">
+                      <Slider
+                        value={[steps[currentStep].value as number]}
+                        onValueChange={steps[currentStep].onChange as (value: number[]) => void}
+                        max={steps[currentStep].max}
+                        min={steps[currentStep].min}
+                        step={steps[currentStep].step}
+                        className="w-full"
+                      />
+                      {steps[currentStep].optimalRange && (
+                        <div 
+                          className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                          style={{
+                            left: `${steps[currentStep].optimalRange.left}%`,
+                            width: `${steps[currentStep].optimalRange.width}%`
+                          }}
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>Low</span>
+                    <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
+                    <span className="text-white font-medium">
+                      {steps[currentStep].isSelector 
+                        ? currentStar.name 
+                        : `${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`
+                      }
+                    </span>
+                    <span>High</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Compact navigation */}
+              <div className="flex justify-between items-center">
+                <button
+                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                  disabled={currentStep === 0}
+                  className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                >
+                  Previous
+                </button>
+                
+                <div className="text-center px-4">
+                  <span className="text-sm font-medium text-blue-400">
+                    {currentStep + 1} / {steps.length}
+                  </span>
+                  <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
+                </div>
+                
+                <button
+                  onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+                  disabled={currentStep === steps.length - 1}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+                >
+                  Next
+                </button>
+              </div>
+
+              {/* Educator Mode Content */}
+              {educatorMode && (
+                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  {steps[currentStep].educatorContent}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Primary Controls - Desktop only */}
+      <div className="hidden md:grid md:grid-cols-1 sm:md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Stellar Mass */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
