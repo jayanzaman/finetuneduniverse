@@ -507,6 +507,38 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
+            {/* Insight Mode Content - Moved to Left Column for Better Visibility */}
+            <Card className="bg-blue-900/20 border-blue-500/30">
+              <CardHeader>
+                <CardTitle className="text-blue-300">
+                  {currentEra.name} - Scientific Analysis {educatorMode ? '(INSIGHT MODE)' : '(PLAY MODE)'}
+                </CardTitle>
+                <CardDescription className="text-blue-400">
+                  Fine-tuned conditions that enabled the next phase of Earth's evolution
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {educatorMode ? (
+                  <div className="p-4 bg-green-500/20 border-2 border-green-500 rounded-lg">
+                    <h3 className="text-green-300 font-bold text-lg mb-2">🔬 INSIGHT MODE TEST - THIS SHOULD BE VISIBLE!</h3>
+                    <p className="text-green-200 mb-2">If you can see this green box, Insight Mode is working!</p>
+                    <p className="text-green-100 text-sm">Selected Era: {GEOLOGICAL_ERAS[selectedEra].name}</p>
+                    <p className="text-green-100 text-sm">Era ID: {selectedEra}</p>
+                    <p className="text-green-100 text-sm">Educator Mode State: {educatorMode ? 'TRUE' : 'FALSE'}</p>
+                    <div className="mt-3 p-2 bg-green-600/30 rounded">
+                      <p className="text-xs text-green-200">This is a simple test component to verify Insight Mode rendering.</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="p-4 bg-red-500/20 border-2 border-red-500 rounded-lg text-center">
+                    <h3 className="text-red-300 font-bold mb-2">🎮 PLAY MODE ACTIVE</h3>
+                    <p className="text-red-200">Enable Insight Mode to see detailed scientific analysis</p>
+                    <p className="text-red-100 text-sm mt-2">Educator Mode State: {educatorMode ? 'TRUE' : 'FALSE'}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
           </div>
 
           {/* Right Side: Environmental Controls (1/3 width) */}
@@ -686,37 +718,6 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
-            {/* Educator Mode - Inside Left Column */}
-            <Card className="bg-blue-900/20 border-blue-500/30">
-              <CardHeader>
-                <CardTitle className="text-blue-300">
-                  {currentEra.name} - Scientific Analysis {educatorMode ? '(INSIGHT MODE)' : '(PLAY MODE)'}
-                </CardTitle>
-                <CardDescription className="text-blue-400">
-                  Fine-tuned conditions that enabled the next phase of Earth's evolution
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                {educatorMode ? (
-                  <div className="p-4 bg-green-500/20 border-2 border-green-500 rounded-lg">
-                    <h3 className="text-green-300 font-bold text-lg mb-2">🔬 INSIGHT MODE TEST - THIS SHOULD BE VISIBLE!</h3>
-                    <p className="text-green-200 mb-2">If you can see this green box, Insight Mode is working!</p>
-                    <p className="text-green-100 text-sm">Selected Era: {GEOLOGICAL_ERAS[selectedEra].name}</p>
-                    <p className="text-green-100 text-sm">Era ID: {selectedEra}</p>
-                    <p className="text-green-100 text-sm">Educator Mode State: {educatorMode ? 'TRUE' : 'FALSE'}</p>
-                    <div className="mt-3 p-2 bg-green-600/30 rounded">
-                      <p className="text-xs text-green-200">This is a simple test component to verify Insight Mode rendering.</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-4 bg-red-500/20 border-2 border-red-500 rounded-lg text-center">
-                    <h3 className="text-red-300 font-bold mb-2">🎮 PLAY MODE ACTIVE</h3>
-                    <p className="text-red-200">Enable Insight Mode to see detailed scientific analysis</p>
-                    <p className="text-red-100 text-sm mt-2">Educator Mode State: {educatorMode ? 'TRUE' : 'FALSE'}</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
