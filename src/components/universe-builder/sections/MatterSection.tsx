@@ -55,8 +55,12 @@ function ParticleField({ strongForce }: { strongForce: number }) {
               left: `${50 + Math.cos(i * 2.1) * 60}%`,
               top: `${50 + Math.sin(i * 2.1) * 60}%`,
               transform: 'translate(-50%, -50%)',
-              animation: `orbit ${3 / (strongForce + 0.1)}s linear infinite`,
+              animationName: 'orbit',
+              animationDuration: `${3 / (strongForce + 0.1)}s`,
+              animationTimingFunction: 'linear',
+              animationIterationCount: 'infinite',
               animationDelay: `${i * 0.3}s`,
+              animationFillMode: 'both',
             }}
           />
         ))}
