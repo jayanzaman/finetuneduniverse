@@ -438,7 +438,15 @@ export default function PlanetsSection({
         atmosphericPressure={atmosphericPressure}
         basePressure={basePressure}
         magneticField={magneticField}
-      />
+      />,
+      educatorContent: (
+        <div className="space-y-2">
+          <p><strong>What you're seeing:</strong> Planetary system showing orbital distance, habitable zone (green rings), and resulting surface temperature.</p>
+          <p><strong>Goldilocks zone:</strong> The region around a star where liquid water can exist - not too hot, not too cold, but just right!</p>
+          <p><strong>Temperature calculation:</strong> Uses inverse square law - planets closer to star receive more energy and get hotter. Earth at 1 AU = ~15°C average.</p>
+          <p><strong>Interactive learning:</strong> Move the orbital distance slider to see how planet temperature changes. Watch the planet move in and out of the habitable zone!</p>
+        </div>
+      )
     },
     {
       id: 'water-state',
@@ -451,14 +459,30 @@ export default function PlanetsSection({
         atmosphericPressure={atmosphericPressure}
         basePressure={basePressure}
         magneticField={magneticField}
-      />
+      />,
+      educatorContent: (
+        <div className="space-y-2">
+          <p><strong>What you're seeing:</strong> Water state affected by orbital distance (temperature), planet mass (atmosphere retention), and atmospheric pressure.</p>
+          <p><strong>Mass-atmosphere correlation:</strong> Watch how changing planet mass automatically affects atmospheric pressure - low mass planets can't retain thick atmospheres!</p>
+          <p><strong>Water phase diagram:</strong> Liquid water requires specific temperature and pressure conditions. Too hot = steam, too cold = ice, too low pressure = boiling.</p>
+          <p><strong>Habitability factors:</strong> Life as we know it requires liquid water, so this visualization shows the complex interplay of factors needed for habitability.</p>
+        </div>
+      )
     },
     {
       id: 'magnetic-field',
       title: 'Magnetic Field',
       subtitle: 'Atmospheric Protection',
       description: 'Magnetic shield protects atmosphere from solar wind',
-      visual: <MagneticFieldVisual magneticField={magneticField} />
+      visual: <MagneticFieldVisual magneticField={magneticField} />,
+      educatorContent: (
+        <div className="space-y-2">
+          <p><strong>What you're seeing:</strong> Magnetic field visualization showing how planetary magnetism protects against solar radiation.</p>
+          <p><strong>Solar wind protection:</strong> Charged particles from the sun can strip away planetary atmospheres. A magnetic field deflects these particles around the planet.</p>
+          <p><strong>Field strength matters:</strong> Too weak = atmosphere loss (Mars), too strong = radiation hazard (Jupiter). Earth's ~50 μT field is just right!</p>
+          <p><strong>Dynamic visualization:</strong> Watch field lines change color and intensity as you adjust magnetic strength. See solar wind particles being deflected or hitting the planet directly.</p>
+        </div>
+      )
     }
   ]
 
@@ -624,6 +648,15 @@ export default function PlanetsSection({
                   </div>
                 </div>
               </div>
+
+              {/* Educator Mode Content */}
+              {educatorMode && (
+                <div className="mt-6 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 leading-relaxed">
+                    {steps[currentStep].educatorContent}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
