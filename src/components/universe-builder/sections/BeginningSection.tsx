@@ -874,13 +874,6 @@ export default function BeginningSection({
 
       {/* Fine-Tuning Parameters Section - Desktop only since mobile has carousel */}
       <div className="hidden md:block mb-12">
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold mb-3 text-white">Cosmic Fine-Tuning Parameters</h3>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            These fundamental constants must be precisely calibrated for a universe capable of complexity and life.
-          </p>
-        </div>
-        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
 
