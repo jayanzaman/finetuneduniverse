@@ -60,13 +60,13 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
 
   const currentEraData = eras[currentEra]
 
-  // Get factory status based on rate
+  // Get factory status based on rate - using consistent short names
   const getFactoryStatus = () => {
     if (starFormationRate <= 0.2) return { status: 'Shutdown', color: 'text-red-400' }
-    if (starFormationRate <= 0.6) return { status: 'Maintenance Mode', color: 'text-blue-400' }
-    if (starFormationRate <= 1.1) return { status: 'Standard Operation', color: 'text-green-400' }
+    if (starFormationRate <= 0.6) return { status: 'Maintenance', color: 'text-blue-400' }
+    if (starFormationRate <= 1.1) return { status: 'Standard', color: 'text-green-400' }
     if (starFormationRate <= 1.6) return { status: 'High Demand', color: 'text-yellow-400' }
-    return { status: 'Emergency Production', color: 'text-red-400' }
+    return { status: 'Emergency', color: 'text-red-400' }
   }
 
   const factoryStatus = getFactoryStatus()
@@ -86,7 +86,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             />
-            <span className={`text-xs font-medium ${factoryStatus.color}`}>
+            <span className={`text-xs font-medium ${factoryStatus.color} w-20 text-center`}>
               {factoryStatus.status}
             </span>
           </div>

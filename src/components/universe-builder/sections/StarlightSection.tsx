@@ -695,43 +695,43 @@ export default function StarlightSection({
               
               {/* Full-height visualization */}
               <div className="bg-black/30 rounded-lg p-3">
-                <div className={`mb-3 ${steps[currentStep].isSelector ? '' : 'h-80'}`}>
+                <div className={`${steps[currentStep].isSelector ? '' : 'h-80'}`}>
                   {steps[currentStep].visual}
                 </div>
-                
-                {/* Compact control - only for non-selector steps */}
-                {!steps[currentStep].isSelector && (
-                  <div className="space-y-1">
-                    <div className="relative">
-                      <Slider
-                        value={[steps[currentStep].value as number]}
-                        onValueChange={steps[currentStep].onChange as (value: number[]) => void}
-                        max={steps[currentStep].max}
-                        min={steps[currentStep].min}
-                        step={steps[currentStep].step}
-                        className="w-full"
-                      />
-                      {steps[currentStep].optimalRange && (
-                        <div 
-                          className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
-                          style={{
-                            left: `${steps[currentStep].optimalRange.left}%`,
-                            width: `${steps[currentStep].optimalRange.width}%`
-                          }}
-                        />
-                      )}
-                    </div>
-                    <div className="flex justify-between text-xs text-gray-400">
-                      <span>Low</span>
-                      <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
-                      <span className="text-white font-medium">
-                        {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
-                      </span>
-                      <span>High</span>
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {/* Compact control - moved below visualization for non-selector steps */}
+              {!steps[currentStep].isSelector && (
+                <div className="space-y-1 mt-3">
+                  <div className="relative">
+                    <Slider
+                      value={[steps[currentStep].value as number]}
+                      onValueChange={steps[currentStep].onChange as (value: number[]) => void}
+                      max={steps[currentStep].max}
+                      min={steps[currentStep].min}
+                      step={steps[currentStep].step}
+                      className="w-full"
+                    />
+                    {steps[currentStep].optimalRange && (
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                        style={{
+                          left: `${steps[currentStep].optimalRange.left}%`,
+                          width: `${steps[currentStep].optimalRange.width}%`
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>Low</span>
+                    <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
+                    <span className="text-white font-medium">
+                      {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
+                    </span>
+                    <span>High</span>
+                  </div>
+                </div>
+              )}
 
 
               {/* Educator Mode Content */}
