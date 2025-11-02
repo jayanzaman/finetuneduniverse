@@ -17,7 +17,7 @@ import LifeSection from './sections/LifeSection'
 
 export default function UniverseBuilderApp() {
   const [currentSection, setCurrentSection] = useState(0)
-  const [educatorMode, setEducatorMode] = useState(false)
+  const [insightMode, setInsightMode] = useState(false)
   const [cosmicTime, setCosmicTime] = useState(0)
 
   const sections = [
@@ -94,11 +94,11 @@ export default function UniverseBuilderApp() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setEducatorMode(!educatorMode)}
+                onClick={() => setInsightMode(!insightMode)}
                 className="bg-white/5 border-white/20 hover:bg-white/10 text-white min-h-[44px] px-3 sm:px-4 text-xs sm:text-sm"
               >
-                <span className="hidden sm:inline">{educatorMode ? 'Student Mode' : 'Educator Mode'}</span>
-                <span className="sm:hidden">{educatorMode ? 'Student' : 'Educator'}</span>
+                <span className="hidden sm:inline">{insightMode ? 'Play Mode' : 'Insight Mode'}</span>
+                <span className="sm:hidden">{insightMode ? 'Play' : 'Insight'}</span>
               </Button>
               <Button
                 variant="outline"
@@ -197,7 +197,7 @@ export default function UniverseBuilderApp() {
             transition={{ duration: 0.5 }}
           >
             <CurrentSectionComponent 
-              educatorMode={educatorMode} 
+              educatorMode={insightMode} 
               cosmicTime={cosmicTime}
             />
           </motion.div>
