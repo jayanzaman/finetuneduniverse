@@ -17,18 +17,18 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
     return () => clearInterval(interval)
   }, [])
 
-  // Define probability ranges and their cosmic consequences
-  const probabilityRanges = [
-    { value: 20, label: '10²⁰', probability: 0.1, consequence: 'Immediate collapse', timelineWidth: 1, color: 'from-red-600 to-red-800' },
-    { value: 25, label: '10²⁵', probability: 0.2, consequence: 'No complex atoms', timelineWidth: 8, color: 'from-red-500 to-red-600' },
-    { value: 30, label: '10³⁰', probability: 0.4, consequence: 'Stars die early', timelineWidth: 25, color: 'from-orange-500 to-red-500' },
-    { value: 34, label: '10³⁴', probability: 0.8, consequence: 'Universe viable for life', timelineWidth: 60, color: 'from-green-500 to-emerald-600' },
-    { value: 35, label: '10³⁵', probability: 0.9, consequence: 'Optimal stability', timelineWidth: 80, color: 'from-green-400 to-green-500' },
-    { value: 40, label: '10⁴⁰', probability: 0.95, consequence: 'Universe lasts forever', timelineWidth: 100, color: 'from-blue-500 to-green-400' }
+  // Define stability ranges - showing threshold nature, not false precision
+  const stabilityRanges = [
+    { value: 20, label: '10²⁰', consequence: 'Immediate collapse', timelineWidth: 1, color: 'from-red-600 to-red-800', category: 'failure' },
+    { value: 25, label: '10²⁵', consequence: 'No complex atoms', timelineWidth: 8, color: 'from-red-500 to-red-600', category: 'failure' },
+    { value: 30, label: '10³⁰', consequence: 'Stars die early', timelineWidth: 25, color: 'from-orange-500 to-red-500', category: 'failure' },
+    { value: 34, label: '10³⁴', consequence: 'Threshold reached', timelineWidth: 100, color: 'from-green-500 to-emerald-600', category: 'threshold' },
+    { value: 35, label: '10³⁵', consequence: 'Equally good', timelineWidth: 100, color: 'from-green-400 to-green-500', category: 'sufficient' },
+    { value: 40, label: '10⁴⁰', consequence: 'Equally good', timelineWidth: 100, color: 'from-blue-500 to-green-400', category: 'sufficient' }
   ]
 
   // Find current range
-  const currentRange = probabilityRanges.find(range => Math.abs(range.value - lifetime) < 2.5) || probabilityRanges[3]
+  const currentRange = stabilityRanges.find(range => Math.abs(range.value - lifetime) < 2.5) || stabilityRanges[3]
   const isLifeViable = lifetime >= 34
   const universeAge = 13.8 // billion years
 
@@ -36,21 +36,21 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
     <div className="w-full h-full bg-gradient-to-br from-slate-900 to-black p-4 rounded-lg overflow-hidden">
       {/* Title */}
       <div className="text-center mb-4">
-        <h3 className="text-white font-semibold text-sm mb-1">Proton Lifetime vs Universe Viability</h3>
-        <div className="text-gray-400 text-xs">Fine-tuning the foundation of matter</div>
+        <h3 className="text-white font-semibold text-sm mb-1">Proton Stability: Threshold vs Fine-Tuning</h3>
+        <div className="text-gray-400 text-xs">Minimum requirement, not precise tuning</div>
       </div>
 
-      {/* Probability Landscape */}
+      {/* Threshold Visualization */}
       <div className="mb-4">
-        <div className="text-xs text-gray-400 mb-2">Probability Landscape:</div>
+        <div className="text-xs text-gray-400 mb-2">Stability Threshold (Not Fine-Tuning):</div>
         <div className="flex items-end justify-between h-16 bg-black/30 rounded p-2">
-          {probabilityRanges.map((range, index) => {
+          {stabilityRanges.map((range, index) => {
             const isActive = Math.abs(range.value - lifetime) < 2.5
-            const height = range.probability * 100
+            const height = range.category === 'failure' ? 30 : range.category === 'threshold' ? 80 : 100
 
             return (
               <div key={range.value} className="flex flex-col items-center flex-1">
-                {/* Probability Bar */}
+                {/* Stability Bar */}
                 <motion.div
                   className={`w-full max-w-8 rounded-t bg-gradient-to-t ${range.color} ${
                     isActive ? 'ring-2 ring-white/50' : ''
@@ -67,6 +67,11 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
                 <div className={`text-xs mt-1 ${isActive ? 'text-white font-semibold' : 'text-gray-500'}`}>
                   {range.label}
                 </div>
+                
+                {/* Threshold indicator */}
+                {range.category === 'threshold' && (
+                  <div className="text-green-400 text-xs font-semibold mt-1">Threshold</div>
+                )}
                 
                 {/* Current indicator */}
                 {isActive && (
@@ -86,9 +91,9 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
 
       {/* Timeline Impact */}
       <div className="mb-4">
-        <div className="text-xs text-gray-400 mb-2">Timeline Impact:</div>
+        <div className="text-xs text-gray-400 mb-2">Cosmic Consequences:</div>
         <div className="space-y-2">
-          {probabilityRanges.map((range, index) => {
+          {stabilityRanges.map((range, index) => {
             const isActive = Math.abs(range.value - lifetime) < 2.5
             
             return (
@@ -115,9 +120,9 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
                   {range.label}: {range.consequence}
                 </div>
                 
-                {/* Sweet spot indicator */}
+                {/* Threshold indicator */}
                 {range.value === 34 && (
-                  <div className="text-green-400 text-xs font-semibold">← Sweet Spot</div>
+                  <div className="text-green-400 text-xs font-semibold">← Threshold</div>
                 )}
               </div>
             )
@@ -140,6 +145,12 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
           <strong>Universe Age:</strong> {universeAge} billion years
         </div>
         
+        {/* Scientific honesty */}
+        <div className="mt-2 p-2 bg-blue-900/20 border border-blue-500/30 rounded text-xs text-blue-200">
+          <strong>Scientific Reality:</strong> Protons may be absolutely stable (∞ lifetime). 
+          This is a <em>threshold</em> parameter, not fine-tuning - any value above ~10³⁰ years works equally well.
+        </div>
+        
         {/* Viability indicator */}
         <div className="mt-2 flex items-center gap-2">
           <div className={`w-3 h-3 rounded-full ${
@@ -148,7 +159,7 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
           <div className={`text-xs font-semibold ${
             isLifeViable ? 'text-green-300' : 'text-red-300'
           }`}>
-            {isLifeViable ? '✅ Life Possible' : '❌ Life Impossible'}
+            {isLifeViable ? '✅ Above Threshold' : '❌ Below Threshold'}
           </div>
         </div>
       </div>
@@ -165,31 +176,32 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
 
 // Mobile-optimized version
 export function TimelineProbabilityVisualMobile({ lifetime }: TimelineProbabilityVisualProps) {
-  const probabilityRanges = [
-    { value: 20, label: '10²⁰', consequence: 'Immediate collapse', color: 'from-red-600 to-red-800' },
-    { value: 25, label: '10²⁵', consequence: 'No atoms', color: 'from-red-500 to-red-600' },
-    { value: 30, label: '10³⁰', consequence: 'Stars die early', color: 'from-orange-500 to-red-500' },
-    { value: 34, label: '10³⁴', consequence: 'Life viable', color: 'from-green-500 to-emerald-600' },
-    { value: 35, label: '10³⁵', consequence: 'Optimal', color: 'from-green-400 to-green-500' },
-    { value: 40, label: '10⁴⁰', consequence: 'Forever', color: 'from-blue-500 to-green-400' }
+  const stabilityRanges = [
+    { value: 20, label: '10²⁰', consequence: 'Collapse', color: 'from-red-600 to-red-800', category: 'failure' },
+    { value: 25, label: '10²⁵', consequence: 'No atoms', color: 'from-red-500 to-red-600', category: 'failure' },
+    { value: 30, label: '10³⁰', consequence: 'Stars die', color: 'from-orange-500 to-red-500', category: 'failure' },
+    { value: 34, label: '10³⁴', consequence: 'Threshold', color: 'from-green-500 to-emerald-600', category: 'threshold' },
+    { value: 35, label: '10³⁵', consequence: 'Good', color: 'from-green-400 to-green-500', category: 'sufficient' },
+    { value: 40, label: '10⁴⁰', consequence: 'Good', color: 'from-blue-500 to-green-400', category: 'sufficient' }
   ]
 
-  const currentRange = probabilityRanges.find(range => Math.abs(range.value - lifetime) < 2.5) || probabilityRanges[3]
+  const currentRange = stabilityRanges.find(range => Math.abs(range.value - lifetime) < 2.5) || stabilityRanges[3]
   const isLifeViable = lifetime >= 34
 
   return (
     <div className="w-full h-full bg-gradient-to-br from-slate-900 to-black p-3 rounded-lg">
-      {/* Compact probability bars */}
+      {/* Compact threshold bars */}
       <div className="mb-3">
-        <div className="text-xs text-gray-400 mb-2">Proton Lifetime Fine-Tuning:</div>
+        <div className="text-xs text-gray-400 mb-2">Stability Threshold (Not Fine-Tuning):</div>
         <div className="grid grid-cols-6 gap-1">
-          {probabilityRanges.map((range) => {
+          {stabilityRanges.map((range) => {
             const isActive = Math.abs(range.value - lifetime) < 2.5
+            const height = range.category === 'failure' ? 'h-4' : range.category === 'threshold' ? 'h-6' : 'h-8'
             
             return (
               <div key={range.value} className="text-center">
                 <motion.div
-                  className={`h-8 rounded bg-gradient-to-t ${range.color} ${
+                  className={`${height} rounded bg-gradient-to-t ${range.color} ${
                     isActive ? 'ring-2 ring-white/50' : ''
                   }`}
                   animate={{ 
@@ -203,6 +215,9 @@ export function TimelineProbabilityVisualMobile({ lifetime }: TimelineProbabilit
                 <div className="text-xs text-gray-400">
                   {range.consequence}
                 </div>
+                {range.category === 'threshold' && (
+                  <div className="text-green-400 text-xs">Threshold</div>
+                )}
                 {isActive && (
                   <div className="text-yellow-400 text-sm">🎯</div>
                 )}
@@ -220,7 +235,10 @@ export function TimelineProbabilityVisualMobile({ lifetime }: TimelineProbabilit
             {currentRange.consequence}
           </div>
           <div className={`text-xs mt-1 ${isLifeViable ? 'text-green-400' : 'text-red-400'}`}>
-            {isLifeViable ? '✅ Life Possible' : '❌ Life Impossible'}
+            {isLifeViable ? '✅ Above Threshold' : '❌ Below Threshold'}
+          </div>
+          <div className="text-xs text-blue-200 mt-2 italic">
+            Threshold parameter - longer is equally good
           </div>
         </div>
       </div>

@@ -198,10 +198,11 @@ export default function MatterSection({
       optimalRange: { left: ((34 - 30) / (40 - 30)) * 100, width: ((36 - 34) / (40 - 30)) * 100 },
       educatorContent: (
         <div className="text-xs text-blue-200 space-y-2">
-          <p><strong>What you're seeing:</strong> Decay timeline shows proton lifetime scenarios - building blocks must last longer than stellar evolution.</p>
-          <p><strong>Stability requirement:</strong> Protons must exceed 10^34 years lifetime - trillion trillion times the universe's age. They're the cores of every atom.</p>
-          <p><strong>The stability mystery:</strong> Our theories predict protons should decay, but we've never observed it. They appear incredibly stable against all expectations.</p>
-          <p><strong>Life's foundation:</strong> If protons decayed too quickly, atoms would fall apart and nothing stable could exist. This stability enables chemistry, biology, and consciousness.</p>
+          <p><strong>What you're seeing:</strong> Threshold visualization showing minimum proton stability needed for cosmic complexity - this is NOT traditional fine-tuning.</p>
+          <p><strong>Threshold vs Fine-Tuning:</strong> Unlike other parameters (strong force: 0.98-1.02), proton stability just needs to exceed ~10³⁰ years. Longer lifetimes (10³⁴, 10⁴⁰, ∞) work equally well.</p>
+          <p><strong>Scientific reality:</strong> Protons have never been observed to decay despite decades of experiments. They may be absolutely stable (infinite lifetime), making this parameter irrelevant to fine-tuning.</p>
+          <p><strong>Honest assessment:</strong> This demonstrates a threshold requirement, not precise tuning. Any value above the minimum works - there's no narrow "optimal" window like true fine-tuned parameters.</p>
+          <p><strong>Educational point:</strong> Not all cosmic parameters are fine-tuned. Some are thresholds (minimum requirements), others are ranges, and only some require precise values.</p>
         </div>
       )
     }
@@ -497,10 +498,11 @@ export default function MatterSection({
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                   <div className="text-xs text-blue-200 space-y-2">
-                    <p><strong>What you're seeing:</strong> Decay timeline shows proton lifetime scenarios - building blocks must last longer than stellar evolution.</p>
-                    <p><strong>Stability requirement:</strong> Protons must exceed 10^34 years lifetime - trillion trillion times the universe's age. They're the cores of every atom.</p>
-                    <p><strong>The stability mystery:</strong> Our theories predict protons should decay, but we've never observed it. They appear incredibly stable against all expectations.</p>
-                    <p><strong>Life's foundation:</strong> If protons decayed too quickly, atoms would fall apart and nothing stable could exist. This stability enables chemistry, biology, and consciousness.</p>
+                    <p><strong>What you're seeing:</strong> Threshold visualization showing minimum proton stability needed for cosmic complexity - this is NOT traditional fine-tuning.</p>
+                    <p><strong>Threshold vs Fine-Tuning:</strong> Unlike other parameters (strong force: 0.98-1.02), proton stability just needs to exceed ~10³⁰ years. Longer lifetimes (10³⁴, 10⁴⁰, ∞) work equally well.</p>
+                    <p><strong>Scientific reality:</strong> Protons have never been observed to decay despite decades of experiments. They may be absolutely stable (infinite lifetime), making this parameter irrelevant to fine-tuning.</p>
+                    <p><strong>Honest assessment:</strong> This demonstrates a threshold requirement, not precise tuning. Any value above the minimum works - there's no narrow "optimal" window like true fine-tuned parameters.</p>
+                    <p><strong>Educational point:</strong> Not all cosmic parameters are fine-tuned. Some are thresholds (minimum requirements), others are ranges, and only some require precise values.</p>
                   </div>
                 </div>
               )}
