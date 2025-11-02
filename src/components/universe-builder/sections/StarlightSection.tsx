@@ -693,16 +693,16 @@ export default function StarlightSection({
                 </button>
               </div>
               
-              {/* Compact visualization for better mobile layout */}
-              <div className="bg-black/30 rounded-lg p-3">
-                <div className={`${steps[currentStep].isSelector ? '' : 'h-64'}`}>
+              {/* Much more compact visualization for mobile */}
+              <div className="bg-black/30 rounded-lg p-2">
+                <div className={`${steps[currentStep].isSelector ? '' : 'h-48'}`}>
                   {steps[currentStep].visual}
                 </div>
               </div>
 
               {/* Compact control - moved below visualization for non-selector steps */}
               {!steps[currentStep].isSelector && (
-                <div className="space-y-3 mt-6">
+                <div className="space-y-2 mt-4">
                   <div className="relative">
                     <Slider
                       value={[steps[currentStep].value as number]}
@@ -710,11 +710,11 @@ export default function StarlightSection({
                       max={steps[currentStep].max}
                       min={steps[currentStep].min}
                       step={steps[currentStep].step}
-                      className="w-full [&>span[role=slider]]:h-4 [&>span[role=slider]]:w-4 [&>span[role=slider]]:bg-blue-500"
+                      className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3 [&>span[role=slider]]:bg-blue-500"
                     />
                     {steps[currentStep].optimalRange && (
                       <div 
-                        className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                        className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
                         style={{
                           left: `${steps[currentStep].optimalRange.left}%`,
                           width: `${steps[currentStep].optimalRange.width}%`
@@ -722,32 +722,30 @@ export default function StarlightSection({
                       />
                     )}
                   </div>
-                  <div className="flex justify-between text-xs text-gray-300 mt-3">
-                    <span>Low</span>
-                    <span className="text-green-400 font-medium text-center flex-1">{steps[currentStep].optimal}</span>
-                    <span className="text-white font-medium">
+                  <div className="flex justify-between text-xs text-gray-300 mt-2">
+                    <span className="text-xs">Low</span>
+                    <span className="text-green-400 font-medium text-center flex-1 text-xs">{steps[currentStep].optimal}</span>
+                    <span className="text-white font-medium text-xs">
                       {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
                     </span>
-                    <span>High</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Educator Mode Content - collapsible with much more spacing */}
-              {educatorMode && (
-                <div className="mt-16 mb-8">
-                  <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg overflow-hidden">
-                    <div className="p-4 max-h-48 overflow-y-auto">
-                      <div className="text-xs text-blue-200 leading-relaxed">
-                        {steps[currentStep].educatorContent}
-                      </div>
-                    </div>
+                    <span className="text-xs">High</span>
                   </div>
                 </div>
               )}
             </div>
           </CardContent>
         </Card>
+        
+        {/* Separate Educator Content Card - completely isolated */}
+        {educatorMode && (
+          <Card className="bg-black/20 border-white/10 text-white mt-6">
+            <CardContent className="p-4">
+              <div className="text-xs text-blue-200 leading-relaxed max-h-32 overflow-y-auto">
+                {steps[currentStep].educatorContent}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Primary Controls - Desktop only */}
