@@ -702,7 +702,7 @@ export default function StarlightSection({
 
               {/* Compact control - moved below visualization for non-selector steps */}
               {!steps[currentStep].isSelector && (
-                <div className="space-y-1 mt-3">
+                <div className="space-y-2 mt-4">
                   <div className="relative">
                     <Slider
                       value={[steps[currentStep].value as number]}
@@ -714,7 +714,7 @@ export default function StarlightSection({
                     />
                     {steps[currentStep].optimalRange && (
                       <div 
-                        className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                        className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
                         style={{
                           left: `${steps[currentStep].optimalRange.left}%`,
                           width: `${steps[currentStep].optimalRange.width}%`
@@ -722,7 +722,7 @@ export default function StarlightSection({
                       />
                     )}
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-gray-400 mt-2">
                     <span>Low</span>
                     <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
                     <span className="text-white font-medium">
@@ -733,10 +733,9 @@ export default function StarlightSection({
                 </div>
               )}
 
-
-              {/* Educator Mode Content */}
+              {/* Educator Mode Content - positioned well below other elements */}
               {educatorMode && (
-                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                   {steps[currentStep].educatorContent}
                 </div>
               )}
