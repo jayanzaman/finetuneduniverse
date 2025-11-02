@@ -136,22 +136,61 @@ export default function UniverseBuilderApp() {
         />
       </div>
 
-      {/* Section Navigation */}
-      <nav className="fixed top-[73px] sm:top-[81px] left-0 right-0 z-40 bg-black/70 backdrop-blur-sm border-b border-white/10">
+      {/* Section Navigation - Enhanced for mobile */}
+      <nav className="fixed top-[73px] sm:top-[81px] left-0 right-0 z-40 bg-black/80 backdrop-blur-md border-b border-white/20">
         <div className="container mx-auto px-2 sm:px-4 py-2">
-          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+          {/* Mobile: Show current section with left/right arrows */}
+          <div className="md:hidden flex items-center justify-between">
+            <button
+              onClick={handlePrevious}
+              disabled={currentSection === 0}
+              className="p-2 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div className="text-center flex-1">
+              <div className="text-orange-400 font-semibold text-sm">{sections[currentSection].title}</div>
+              <div className="text-xs text-gray-400">{sections[currentSection].subtitle}</div>
+              <div className="flex justify-center mt-1 space-x-1">
+                {sections.map((_, idx) => (
+                  <div
+                    key={idx}
+                    className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                      currentSection === idx ? 'bg-orange-400' : 'bg-gray-600'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            <button
+              onClick={handleNext}
+              disabled={currentSection === sections.length - 1}
+              className="p-2 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Desktop: Show all tabs */}
+          <div className="hidden md:flex items-center gap-1 sm:gap-2 overflow-x-auto scrollbar-hide">
             {sections.map((section, idx) => (
               <button
                 key={section.id}
                 onClick={() => setCurrentSection(idx)}
-                className={`flex-shrink-0 snap-start px-3 sm:px-4 py-3 sm:py-4 text-xs sm:text-sm transition-all min-w-[100px] sm:min-w-[120px] min-h-[44px] rounded-lg mx-1 ${
+                className={`flex-shrink-0 px-4 py-3 text-sm transition-all min-w-[140px] rounded-lg ${
                   currentSection === idx
                     ? 'text-orange-400 bg-orange-400/10 border border-orange-400/30'
-                    : 'text-gray-500 hover:text-gray-300 hover:bg-white/5'
+                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
                 }`}
               >
-                <div className="font-semibold text-xs sm:text-sm leading-tight">{section.title}</div>
-                <div className="text-xs opacity-70 hidden sm:block">{section.subtitle}</div>
+                <div className="font-semibold leading-tight">{section.title}</div>
+                <div className="text-xs opacity-70">{section.subtitle}</div>
               </button>
             ))}
           </div>
@@ -177,8 +216,8 @@ export default function UniverseBuilderApp() {
       </main>
 
 
-      {/* Navigation Controls */}
-      <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-4">
+      {/* Navigation Controls - Hidden on mobile for Beginning section to avoid confusion */}
+      <div className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-4 ${currentSection === 0 ? 'hidden md:flex' : 'flex'}`}>
         <Button
           onClick={handlePrevious}
           disabled={currentSection === 0}
