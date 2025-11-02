@@ -216,8 +216,8 @@ export default function UniverseBuilderApp() {
       </main>
 
 
-      {/* Navigation Controls - Hidden on mobile for sections with mobile-first UX to avoid confusion */}
-      <div className={`fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 flex items-center gap-4 ${(currentSection === 0 || currentSection === 1) ? 'hidden md:flex' : 'flex'}`}>
+      {/* Navigation Controls - Hidden on mobile since top navigation provides section control */}
+      <div className="hidden md:flex fixed bottom-8 left-1/2 transform -translate-x-1/2 z-50 items-center gap-4">
         <Button
           onClick={handlePrevious}
           disabled={currentSection === 0}
