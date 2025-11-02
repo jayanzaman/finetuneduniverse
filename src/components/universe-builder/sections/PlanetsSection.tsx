@@ -4,6 +4,246 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 
+// Water State Visualization Component
+function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, basePressure, magneticField }: {
+  orbitalDistance: number;
+  planetMass: number;
+  atmosphericPressure: number;
+  basePressure: number;
+  magneticField: number;
+}) {
+  // More realistic temperature calculation (Earth = ~15°C at 1 AU)
+  const baseTemp = 278 / Math.sqrt(orbitalDistance);
+  const temperature = baseTemp - 273;
+  
+  // Use the already calculated effective atmospheric pressure
+  const effectivePressure = atmosphericPressure;
+  
+  return (
+    <div className="h-full bg-gradient-to-b from-blue-900/20 to-blue-950/40 rounded-lg relative overflow-hidden flex items-center justify-center">
+      {/* Water/Atmosphere Visualization - affected by orbital distance, mass, and pressure */}
+      {(() => {
+        // Determine water state based on conditions
+        if (temperature > 100) {
+          // Too hot - water boils
+          return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-center space-y-2">
+                <div className="text-3xl">💨</div>
+                <div className="text-sm text-red-300">Water Vapor Escaping</div>
+                <div className="text-xs text-gray-400">Too hot ({temperature.toFixed(0)}°C)</div>
+              </div>
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-red-300/60 rounded-full animate-pulse"
+                  style={{
+                    left: `${15 + i * 10}%`,
+                    top: `${25 + (i % 4) * 12}%`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+          );
+        } else if (planetMass < 0.3) {
+          // Mass too low - can't retain atmosphere
+          return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-center space-y-2">
+                <div className="text-3xl">💨</div>
+                <div className="text-sm text-red-300">Atmosphere Lost</div>
+                <div className="text-xs text-gray-400">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
+              </div>
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-red-300/60 rounded-full animate-pulse"
+                  style={{
+                    left: `${15 + i * 10}%`,
+                    top: `${25 + (i % 4) * 12}%`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+          );
+        } else if (effectivePressure < 0.8) {
+          // Pressure too low - water boils
+          return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-center space-y-2">
+                <div className="text-3xl">💨</div>
+                <div className="text-sm text-red-300">Water Boiling Away</div>
+                <div className="text-xs text-gray-400">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
+              </div>
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1 h-1 bg-red-300/60 rounded-full animate-pulse"
+                  style={{
+                    left: `${15 + i * 10}%`,
+                    top: `${25 + (i % 4) * 12}%`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+          );
+        } else if (temperature < -10) {
+          // Too cold - water freezes
+          return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-center space-y-2">
+                <div className="text-3xl">🧊</div>
+                <div className="text-sm text-cyan-300">Water Frozen</div>
+                <div className="text-xs text-gray-400">Too cold ({temperature.toFixed(0)}°C)</div>
+              </div>
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-2 h-2 bg-cyan-300/60 rounded-sm rotate-45"
+                  style={{
+                    left: `${20 + i * 15}%`,
+                    top: `${40 + (i % 2) * 20}%`,
+                  }}
+                />
+              ))}
+            </div>
+          );
+        } else if (effectivePressure > 1.2) {
+          // Pressure too high - crushing
+          return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-blue-800/30 to-blue-950/60">
+              <div className="text-center space-y-2">
+                <div className="text-3xl">🌊</div>
+                <div className="text-sm text-blue-300">Crushing Pressure</div>
+                <div className="text-xs text-gray-400">Too dense ({effectivePressure.toFixed(2)} atm)</div>
+              </div>
+            </div>
+          );
+        } else {
+          // Liquid water - habitable!
+          return (
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <div className="text-center space-y-2">
+                <div className="text-3xl">💧</div>
+                <div className="text-sm text-blue-300">Liquid Water</div>
+                <div className="text-xs text-gray-400">{temperature.toFixed(0)}°C, {effectivePressure.toFixed(2)} atm</div>
+              </div>
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute w-1.5 h-1.5 bg-blue-400/60 rounded-full animate-bounce"
+                  style={{
+                    left: `${20 + i * 12}%`,
+                    top: `${50 + Math.sin(i) * 15}%`,
+                    animationDelay: `${i * 0.3}s`,
+                    animationDuration: '2s'
+                  }}
+                />
+              ))}
+            </div>
+          );
+        }
+      })()}
+    </div>
+  );
+}
+
+// Magnetic Field Visualization Component
+function MagneticFieldVisual({ magneticField }: { magneticField: number }) {
+  return (
+    <div className="h-full bg-gradient-to-b from-purple-900/20 to-black/40 rounded-lg relative overflow-hidden">
+      {/* Planet in center */}
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-green-400 relative">
+          <div className="absolute inset-1 rounded-full bg-gradient-to-br from-blue-400 to-blue-600">
+            <div className="absolute top-1 left-1 w-2 h-1 bg-green-500/80 rounded-sm"></div>
+            <div className="absolute bottom-1 right-1 w-1.5 h-1.5 bg-green-500/80 rounded-sm"></div>
+          </div>
+        </div>
+      </div>
+
+      {magneticField < 0.3 ? (
+        // Weak/No magnetic field - solar wind stripping
+        <div className="absolute inset-0">
+          {/* Status text */}
+          <div className="absolute top-4 left-4 right-4 text-center">
+            <div className="text-sm text-red-300 font-semibold">Atmosphere Stripping</div>
+            <div className="text-xs text-gray-400">No magnetic protection</div>
+          </div>
+          
+          {/* Solar wind particles hitting planet directly */}
+          {[...Array(12)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-yellow-400/80 rounded-full animate-pulse"
+              style={{
+                left: `${5 + i * 7}%`,
+                top: `${30 + (i % 3) * 15}%`,
+                animationDelay: `${i * 0.1}s`
+              }}
+            />
+          ))}
+        </div>
+      ) : magneticField > 1.5 ? (
+        // Very strong magnetic field - radiation belt hazard
+        <div className="absolute inset-0">
+          {/* Status text */}
+          <div className="absolute top-4 left-4 right-4 text-center">
+            <div className="text-sm text-orange-300 font-semibold">Radiation Hazard</div>
+            <div className="text-xs text-gray-400">Field too strong</div>
+          </div>
+          
+          {/* Intense magnetic field lines */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-px h-12 bg-gradient-to-b from-purple-400 to-transparent animate-pulse"
+              style={{
+                left: `${20 + i * 8}%`,
+                top: `${20 + (i % 2) * 10}%`,
+                transform: `rotate(${i * 15}deg)`,
+                animationDelay: `${i * 0.2}s`
+              }}
+            />
+          ))}
+        </div>
+      ) : (
+        // Optimal magnetic field - protective shield
+        <div className="absolute inset-0">
+          {/* Status text */}
+          <div className="absolute top-4 left-4 right-4 text-center">
+            <div className="text-sm text-green-300 font-semibold">Protected</div>
+            <div className="text-xs text-gray-400">Optimal magnetic shield</div>
+          </div>
+          
+          {/* Protective magnetic field lines */}
+          {[...Array(6)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute border border-green-400/40 rounded-full"
+              style={{
+                width: `${60 + i * 15}px`,
+                height: `${40 + i * 10}px`,
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
+          ))}
+        </div>
+      )}
+      
+      {/* Field strength reading */}
+      <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded">
+        {(magneticField * 50).toFixed(0)} μT
+      </div>
+    </div>
+  );
+}
+
 // Planetary System Visualization
 function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure, basePressure, magneticField }: {
   orbitalDistance: number;
@@ -157,10 +397,215 @@ export default function PlanetsSection({
   }, [])
 
 
+  // Mobile carousel state
+  const [currentStep, setCurrentStep] = useState(0)
+  
+  // Define the steps for mobile carousel
+  const steps = [
+    {
+      id: 'orbital-distance',
+      title: 'Orbital Distance',
+      subtitle: 'Goldilocks Zone',
+      description: 'Distance from star affects temperature',
+      visual: <PlanetarySystem 
+        orbitalDistance={orbitalDistance}
+        planetMass={planetMass}
+        atmosphericPressure={atmosphericPressure}
+        basePressure={basePressure}
+        magneticField={magneticField}
+      />
+    },
+    {
+      id: 'water-state',
+      title: 'Water State',
+      subtitle: 'Liquid Water Zone',
+      description: 'Temperature and pressure determine water phase',
+      visual: <WaterStateVisual 
+        orbitalDistance={orbitalDistance}
+        planetMass={planetMass}
+        atmosphericPressure={atmosphericPressure}
+        basePressure={basePressure}
+        magneticField={magneticField}
+      />
+    },
+    {
+      id: 'magnetic-field',
+      title: 'Magnetic Field',
+      subtitle: 'Atmospheric Protection',
+      description: 'Magnetic shield protects atmosphere from solar wind',
+      visual: <MagneticFieldVisual magneticField={magneticField} />
+    }
+  ]
+
   return (
     <div className="container mx-auto px-4">
-      {/* Four Sections Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      {/* Mobile: Carousel Layout */}
+      <div className="md:hidden mb-6">
+        <Card className="bg-black/20 border-white/10 text-white">
+          <CardContent>
+            <div className="space-y-4">
+              {/* Header with progress */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1">
+                  <h4 className="text-base font-semibold text-white">{steps[currentStep].title}</h4>
+                  <p className="text-xs text-gray-300">{steps[currentStep].subtitle}</p>
+                </div>
+                <div className="flex items-center space-x-1">
+                  {steps.map((_, index) => (
+                    <div
+                      key={index}
+                      className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                        index === currentStep 
+                          ? 'bg-blue-400 scale-125' 
+                          : 'bg-gray-500/60'
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex justify-between items-center mb-3">
+                <button
+                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                  disabled={currentStep === 0}
+                  className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                >
+                  Previous
+                </button>
+                
+                <div className="text-center px-4">
+                  <span className="text-sm font-medium text-blue-400">
+                    {currentStep + 1} / {steps.length}
+                  </span>
+                  <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
+                </div>
+                
+                <button
+                  onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+                  disabled={currentStep === steps.length - 1}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+                >
+                  Next
+                </button>
+              </div>
+              
+              {/* Visualization */}
+              <div className="bg-black/30 rounded-lg p-3">
+                <div className="h-64">
+                  {steps[currentStep].visual}
+                </div>
+              </div>
+
+              {/* Always visible sliders */}
+              <div className="space-y-4 mt-4">
+                {/* Orbital Distance Slider */}
+                <div>
+                  <div className="text-sm text-gray-300 mb-2">Orbital Distance</div>
+                  <div className="relative">
+                    <Slider
+                      value={[orbitalDistance]}
+                      onValueChange={(value) => setOrbitalDistance(value[0])}
+                      max={5}
+                      min={0.1}
+                      step={0.05}
+                      className="w-full"
+                    />
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                         style={{
+                           left: `${((0.9 - 0.1) / (5 - 0.1)) * 100}%`,
+                           width: `${((1.1 - 0.9) / (5 - 0.1)) * 100}%`
+                         }}></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>Hot</span>
+                    <span className="text-white font-medium">{orbitalDistance.toFixed(1)} AU</span>
+                    <span>Cold</span>
+                  </div>
+                </div>
+
+                {/* Planet Mass Slider */}
+                <div>
+                  <div className="text-sm text-gray-300 mb-2">Planet Mass</div>
+                  <div className="relative">
+                    <Slider
+                      value={[planetMass]}
+                      onValueChange={(value) => setPlanetMass(value[0])}
+                      max={10}
+                      min={0.01}
+                      step={0.05}
+                      className="w-full"
+                    />
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                         style={{
+                           left: `${((0.8 - 0.01) / (10 - 0.01)) * 100}%`,
+                           width: `${((1.3 - 0.8) / (10 - 0.01)) * 100}%`
+                         }}></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>Small</span>
+                    <span className="text-white font-medium">{planetMass.toFixed(1)} M⊕</span>
+                    <span>Large</span>
+                  </div>
+                </div>
+
+                {/* Atmospheric Pressure Slider */}
+                <div>
+                  <div className="text-sm text-gray-300 mb-2">Atmospheric Pressure</div>
+                  <div className="relative">
+                    <Slider
+                      value={[basePressure]}
+                      onValueChange={(value) => setBasePressure(value[0])}
+                      max={10}
+                      min={0}
+                      step={0.02}
+                      className="w-full"
+                    />
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                         style={{
+                           left: `${((0.8 - 0) / (10 - 0)) * 100}%`,
+                           width: `${((1.2 - 0.8) / (10 - 0)) * 100}%`
+                         }}></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>Vapor</span>
+                    <span className="text-white font-medium">{basePressure.toFixed(2)} atm</span>
+                    <span>Crush</span>
+                  </div>
+                </div>
+
+                {/* Magnetic Field Slider */}
+                <div>
+                  <div className="text-sm text-gray-300 mb-2">Magnetic Field</div>
+                  <div className="relative">
+                    <Slider
+                      value={[magneticField]}
+                      onValueChange={(value) => setMagneticField(value[0])}
+                      max={5}
+                      min={0}
+                      step={0.05}
+                      className="w-full"
+                    />
+                    <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                         style={{
+                           left: `${((0.8 - 0) / (5 - 0)) * 100}%`,
+                           width: `${((1.2 - 0.8) / (5 - 0)) * 100}%`
+                         }}></div>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-400 mt-1">
+                    <span>None</span>
+                    <span className="text-white font-medium">{(magneticField * 50).toFixed(0)} μT</span>
+                    <span>Strong</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Desktop: Four Sections Layout */}
+      <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         
         {/* Control Panel: All Parameter Sliders */}
         <Card className="bg-black/20 border-white/10">
