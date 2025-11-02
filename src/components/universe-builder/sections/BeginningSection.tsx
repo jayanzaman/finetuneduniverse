@@ -358,16 +358,53 @@ export default function BeginningSection({
       educatorContent: (
         <div className="text-xs text-blue-200 space-y-3">
           <div>
-            <p><strong>What you're seeing:</strong> Galaxies moving away from us, with redshift showing their recession velocity. The temporary blue shift (left movement) represents the brief moment when expansion slows before accelerating again.</p>
+            <h4 className="font-semibold text-blue-300 mb-2">🍞 The Big Idea</h4>
+            <p>Imagine the universe as a loaf of raisin bread dough rising in the oven. As the dough expands, the raisins (galaxies) move away from each other — not because they're traveling through space, but because space itself is stretching. The Hubble Constant (H₀) tells us how fast that stretching happens right now.</p>
           </div>
+          
           <div>
-            <p><strong>The expansion fine-tuning:</strong> If expansion were 1 part in 10^55 faster, galaxies couldn't form. If 1 part in 10^55 slower, the universe would collapse before stars could ignite. This is precision beyond human comprehension.</p>
+            <h4 className="font-semibold text-blue-300 mb-2">📏 What It Actually Measures</h4>
+            <p>It's a rate — the rate at which galaxies move away from us per unit of distance. H₀ ≈ 70 km/s per megaparsec means:</p>
+            <ul className="ml-4 mt-1 space-y-1">
+              <li>• A galaxy 1 Mpc away: ~70 km/s</li>
+              <li>• A galaxy 10 Mpc away: ~700 km/s</li>
+              <li>• A galaxy 100 Mpc away: ~7000 km/s</li>
+            </ul>
+            <p className="mt-1">That's Hubble's law: <strong>v = H₀ × d</strong></p>
           </div>
+          
           <div>
-            <p><strong>The flatness problem:</strong> Our universe sits precisely on the knife-edge between eternal expansion and gravitational collapse. This "critical density" requires initial conditions fine-tuned to 1 part in 10^60.</p>
+            <h4 className="font-semibold text-blue-300 mb-2">🔄 Why It's Called a "Constant"</h4>
+            <p>It's constant in space at a given moment — every region expands the same way. But it changes over time — billions of years ago, expansion was faster or slower. So calling it a "constant" is historical mischief. It's more like the current expansion rate.</p>
           </div>
+          
           <div>
-            <p><strong>Modern mystery:</strong> Dark energy now dominates expansion, but we don't understand what it is. The cosmological constant problem represents the worst prediction in physics - off by 120 orders of magnitude.</p>
+            <h4 className="font-semibold text-blue-300 mb-2">⚔️ Why Astronomers Fight About It</h4>
+            <p>Two major measurement methods give different answers:</p>
+            <ul className="ml-4 mt-1 space-y-1">
+              <li>• <strong>Distance ladder</strong> (Cepheids + supernovae): ~73 km/s/Mpc</li>
+              <li>• <strong>CMB</strong> (early universe physics): ~67 km/s/Mpc</li>
+            </ul>
+            <p className="mt-1">That 10% gap is the "Hubble tension" — one of cosmology's big mysteries.</p>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold text-blue-300 mb-2">🔬 How We Measure It</h4>
+            <p><strong>Step 1 - Redshift:</strong> Light from distant galaxies shifts red (z = Δλ/λ₀). For small z, velocity ≈ z × c.</p>
+            <p><strong>Step 2 - Distance:</strong> Use "standard candles" like Cepheid variables and Type Ia supernovae whose true brightness we know.</p>
+            <p><strong>Step 3 - Plot:</strong> Graph velocity vs distance for many galaxies. The slope is H₀.</p>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold text-blue-300 mb-2">🎈 Picture This</h4>
+            <p>Picture dots on a balloon. When you blow up the balloon, every dot sees every other dot moving away — the farther away, the faster. That "faster with distance" rule is precisely what H₀ describes. It's not dots flying through air; the surface itself expands. Same with space.</p>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold text-blue-300 mb-2">🔴🔵 Color Coding</h4>
+            <p><strong>Red galaxies (Redshift):</strong> Default state representing the expanding universe - light waves stretch to longer (redder) wavelengths as galaxies recede.</p>
+            <p><strong>Blue galaxies (Blueshift):</strong> Temporary effect when moving slider left - simulates approaching galaxies with light waves compressed to shorter (bluer) wavelengths.</p>
+            <p>Move the slider left to briefly see blueshift, then watch it return to redshift - representing our expanding universe!</p>
           </div>
         </div>
       )
