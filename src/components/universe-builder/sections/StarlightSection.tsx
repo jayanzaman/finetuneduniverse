@@ -693,16 +693,16 @@ export default function StarlightSection({
                 </button>
               </div>
               
-              {/* Full-height visualization */}
+              {/* Compact visualization for better mobile layout */}
               <div className="bg-black/30 rounded-lg p-3">
-                <div className={`${steps[currentStep].isSelector ? '' : 'h-80'}`}>
+                <div className={`${steps[currentStep].isSelector ? '' : 'h-64'}`}>
                   {steps[currentStep].visual}
                 </div>
               </div>
 
               {/* Compact control - moved below visualization for non-selector steps */}
               {!steps[currentStep].isSelector && (
-                <div className="space-y-2 mt-4">
+                <div className="space-y-3 mt-6">
                   <div className="relative">
                     <Slider
                       value={[steps[currentStep].value as number]}
@@ -710,7 +710,7 @@ export default function StarlightSection({
                       max={steps[currentStep].max}
                       min={steps[currentStep].min}
                       step={steps[currentStep].step}
-                      className="w-full"
+                      className="w-full [&>span[role=slider]]:h-4 [&>span[role=slider]]:w-4 [&>span[role=slider]]:bg-blue-500"
                     />
                     {steps[currentStep].optimalRange && (
                       <div 
@@ -722,9 +722,9 @@ export default function StarlightSection({
                       />
                     )}
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400 mt-2">
+                  <div className="flex justify-between text-xs text-gray-300 mt-3">
                     <span>Low</span>
-                    <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
+                    <span className="text-green-400 font-medium text-center flex-1">{steps[currentStep].optimal}</span>
                     <span className="text-white font-medium">
                       {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
                     </span>
@@ -733,10 +733,16 @@ export default function StarlightSection({
                 </div>
               )}
 
-              {/* Educator Mode Content - positioned well below other elements */}
+              {/* Educator Mode Content - collapsible with much more spacing */}
               {educatorMode && (
-                <div className="mt-8 p-4 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                  {steps[currentStep].educatorContent}
+                <div className="mt-16 mb-8">
+                  <div className="bg-blue-900/20 border border-blue-500/30 rounded-lg overflow-hidden">
+                    <div className="p-4 max-h-48 overflow-y-auto">
+                      <div className="text-xs text-blue-200 leading-relaxed">
+                        {steps[currentStep].educatorContent}
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
