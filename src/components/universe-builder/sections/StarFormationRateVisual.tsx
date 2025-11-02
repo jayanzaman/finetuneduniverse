@@ -72,9 +72,9 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
   const factoryStatus = getFactoryStatus()
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-6">
       {/* Factory Status Header */}
-      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
+      <div className="bg-black/40 rounded-lg p-4 border border-white/10">
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-semibold text-white">Universe Factory Settings</div>
           <div className="flex items-center gap-2">
@@ -103,7 +103,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
       </div>
 
       {/* Cosmic Timeline */}
-      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
+      <div className="bg-black/40 rounded-lg p-4 border border-white/10">
         <div className="text-sm font-semibold text-white mb-3 text-center">
           Cosmic Star Formation History
         </div>
@@ -127,7 +127,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
           />
         </div>
         
-        <div className="text-xs text-gray-400 text-center">
+        <div className="text-xs text-gray-400 text-center mt-2">
           <strong className="text-white">{(13.8 - starFormationRate * 5).toFixed(1)} Gya</strong> - 
           {starFormationRate < 1 ? ' Post-Peak Era' : ' Peak Era'}
         </div>
@@ -141,7 +141,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-3 mb-3">
           <span className="text-2xl">{currentEraData.icon}</span>
           <div>
             <div className="text-white font-semibold text-sm">{currentEraData.name}</div>
@@ -149,7 +149,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
           </div>
         </div>
         
-        <div className="text-white/90 text-xs mb-2">
+        <div className="text-white/90 text-xs mb-3">
           {currentEraData.description}
         </div>
         
@@ -160,24 +160,24 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
       </motion.div>
 
       {/* Era Cards Grid */}
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3 mt-4">
         {eras.map((era, index) => (
           <motion.div
             key={index}
-            className={`p-2 rounded border transition-all duration-300 ${
+            className={`p-3 rounded border transition-all duration-300 ${
               index === currentEra
                 ? 'bg-white/10 border-white/30 scale-105'
                 : 'bg-black/20 border-white/10 hover:bg-white/5'
             }`}
             whileHover={{ scale: index === currentEra ? 1.05 : 1.02 }}
           >
-            <div className="flex items-center gap-2 mb-1">
+            <div className="flex items-center gap-2 mb-2">
               <span className="text-sm">{era.icon}</span>
               <div className="text-xs font-semibold text-white truncate">
                 {era.name.replace(' Era', '')}
               </div>
             </div>
-            <div className="text-xs text-gray-300">{era.rate}</div>
+            <div className="text-xs text-gray-300 mb-1">{era.rate}</div>
             <div className="text-xs text-gray-400">{era.status}</div>
           </motion.div>
         ))}
