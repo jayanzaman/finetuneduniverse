@@ -665,6 +665,32 @@ export default function StarlightSection({
                   ))}
                 </div>
               </div>
+
+              {/* Navigation - moved above visualization */}
+              <div className="flex justify-between items-center mb-3">
+                <button
+                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                  disabled={currentStep === 0}
+                  className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                >
+                  Previous
+                </button>
+                
+                <div className="text-center px-4">
+                  <span className="text-sm font-medium text-blue-400">
+                    {currentStep + 1} / {steps.length}
+                  </span>
+                  <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
+                </div>
+                
+                <button
+                  onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+                  disabled={currentStep === steps.length - 1}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+                >
+                  Next
+                </button>
+              </div>
               
               {/* Full-height visualization */}
               <div className="bg-black/30 rounded-lg p-3">
@@ -706,31 +732,6 @@ export default function StarlightSection({
                 )}
               </div>
 
-              {/* Compact navigation */}
-              <div className="flex justify-between items-center">
-                <button
-                  onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-                  disabled={currentStep === 0}
-                  className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
-                >
-                  Previous
-                </button>
-                
-                <div className="text-center px-4">
-                  <span className="text-sm font-medium text-blue-400">
-                    {currentStep + 1} / {steps.length}
-                  </span>
-                  <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
-                </div>
-                
-                <button
-                  onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
-                  disabled={currentStep === steps.length - 1}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
-                >
-                  Next
-                </button>
-              </div>
 
               {/* Educator Mode Content */}
               {educatorMode && (
