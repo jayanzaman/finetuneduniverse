@@ -114,8 +114,126 @@ const AbiogenesisCarousel: React.FC<{
         }}></div>
       </div>
 
-      {/* Main Layout */}
-      <div className="relative h-full flex">
+      {/* Mobile Layout */}
+      <div className="md:hidden relative h-full flex flex-col">
+        {/* Mobile Navigation Header */}
+        <div className="flex justify-between items-center p-4 bg-black/20 backdrop-blur-sm border-b border-white/10">
+          <button
+            onClick={() => onPhaseClick(Math.max(0, selectedPhase - 1))}
+            disabled={selectedPhase === 0}
+            className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+          >
+            ← Previous
+          </button>
+          
+          <div className="text-center">
+            <div className="text-white font-semibold text-sm">
+              {stages.find(s => s.id === selectedPhase)?.name || 'Unknown Stage'}
+            </div>
+            <div className="text-white/60 text-xs">
+              Stage {selectedPhase + 1} of {stages.length}
+            </div>
+          </div>
+          
+          <button
+            onClick={() => onPhaseClick(Math.min(stages.length - 1, selectedPhase + 1))}
+            disabled={selectedPhase === stages.length - 1}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+          >
+            Next →
+          </button>
+        </div>
+
+        {/* Mobile Stage Visual */}
+        <div className="flex-1 p-4">
+          {(() => {
+            const selectedStage = stages.find(s => s.id === selectedPhase);
+            if (!selectedStage) return null;
+            
+            return (
+              <div className="h-full flex flex-col">
+                {/* Compact Visual */}
+                <div className={`
+                  relative h-64 rounded-2xl bg-gradient-to-br ${selectedStage.color}
+                  shadow-2xl ring-2 ring-white/30 overflow-hidden
+                  transition-all duration-700 ease-out mb-4
+                `}>
+                  {/* Enhanced Shimmer Effect */}
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 translate-x-[-100%] animate-shimmer"></div>
+                  
+                  {/* Background Image */}
+                  <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                    <img 
+                      src={selectedStage.image} 
+                      alt={selectedStage.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* Stage Icon */}
+                  <div className="absolute top-4 left-4 text-3xl drop-shadow-lg">
+                    {selectedStage.icon}
+                  </div>
+
+                  {/* Ambient Glow */}
+                  <div className="absolute -inset-2 rounded-2xl bg-gradient-to-r from-white/10 to-white/10 blur-xl -z-10"></div>
+                </div>
+
+                {/* Stage Information */}
+                <div className="bg-black/30 rounded-lg p-4 border border-white/20">
+                  <h3 className="text-white font-semibold text-lg mb-2">{selectedStage.name}</h3>
+                  <p className="text-white/80 text-sm mb-3">{selectedStage.description}</p>
+                  
+                  {/* Difficulty and Status Indicators */}
+                  <div className="flex gap-2 mb-3">
+                    <span className="px-2 py-1 bg-yellow-600/30 text-yellow-300 text-xs rounded border border-yellow-500/30">
+                      Difficulty: {selectedPhase < 2 ? 'Easy' : selectedPhase < 4 ? 'Moderate' : 'Very Hard'}
+                    </span>
+                    <span className="px-2 py-1 bg-blue-600/30 text-blue-300 text-xs rounded border border-blue-500/30">
+                      {selectedPhase < 2 ? 'Lab Proven' : selectedPhase < 4 ? 'Research Active' : 'Theoretical'}
+                    </span>
+                  </div>
+
+                  {/* Key Challenge */}
+                  <div className="text-xs text-gray-300">
+                    <strong>Key Challenge:</strong> {
+                      selectedPhase === 0 ? 'Creating organic molecules from inorganic precursors' :
+                      selectedPhase === 1 ? 'Forming complex amino acids under prebiotic conditions' :
+                      selectedPhase === 2 ? 'Linking amino acids into functional peptide chains' :
+                      selectedPhase === 3 ? 'Creating stable membrane compartments' :
+                      selectedPhase === 4 ? 'Achieving self-replicating RNA systems' :
+                      'Transitioning from RNA to DNA-based life'
+                    }
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* Mobile Progress Indicators */}
+        <div className="p-4 bg-black/20 backdrop-blur-sm border-t border-white/10">
+          <div className="flex justify-center gap-2 mb-2">
+            {stages.map((stage, index) => (
+              <button
+                key={stage.id}
+                onClick={() => onPhaseClick(stage.id)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === selectedPhase 
+                    ? 'bg-blue-400 scale-125' 
+                    : 'bg-gray-600 hover:bg-gray-500'
+                }`}
+              />
+            ))}
+          </div>
+          <div className="text-center text-xs text-white/60">
+            Tap dots to jump to any stage
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:flex relative h-full">
         {/* Selected Card - Main Focus Area */}
         <div className="flex-1 p-8">
           {(() => {
