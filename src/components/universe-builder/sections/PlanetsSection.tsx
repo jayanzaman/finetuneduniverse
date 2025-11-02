@@ -153,6 +153,24 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
 
 // Magnetic Field Visualization Component
 function MagneticFieldVisual({ magneticField }: { magneticField: number }) {
+  // Calculate dynamic properties based on magnetic field strength
+  const fieldStrength = magneticField * 50; // Convert to μT
+  const fieldLines = Math.max(3, Math.min(10, Math.floor(magneticField * 4))); // 3-10 field lines
+  const fieldOpacity = Math.max(0.2, Math.min(1, magneticField / 2)); // Dynamic opacity
+  const fieldColor = magneticField < 0.5 ? 'red' : magneticField > 2 ? 'purple' : 'green';
+  
+  // Determine status and color based on more granular thresholds
+  const getStatus = () => {
+    if (magneticField < 0.2) return { text: 'No Protection', subtext: 'Atmosphere lost', color: 'text-red-400' };
+    if (magneticField < 0.5) return { text: 'Weak Field', subtext: 'Partial stripping', color: 'text-orange-400' };
+    if (magneticField < 0.8) return { text: 'Developing', subtext: 'Building protection', color: 'text-yellow-400' };
+    if (magneticField <= 1.2) return { text: 'Protected', subtext: 'Optimal shield', color: 'text-green-400' };
+    if (magneticField <= 2.0) return { text: 'Strong Field', subtext: 'Good protection', color: 'text-blue-400' };
+    return { text: 'Radiation Hazard', subtext: 'Field too intense', color: 'text-purple-400' };
+  };
+
+  const status = getStatus();
+
   return (
     <div className="h-full bg-gradient-to-b from-purple-900/20 to-black/40 rounded-lg relative overflow-hidden">
       {/* Planet in center */}
@@ -165,80 +183,87 @@ function MagneticFieldVisual({ magneticField }: { magneticField: number }) {
         </div>
       </div>
 
-      {magneticField < 0.3 ? (
-        // Weak/No magnetic field - solar wind stripping
-        <div className="absolute inset-0">
-          {/* Status text */}
-          <div className="absolute top-4 left-4 right-4 text-center">
-            <div className="text-sm text-red-300 font-semibold">Atmosphere Stripping</div>
-            <div className="text-xs text-gray-400">No magnetic protection</div>
-          </div>
-          
-          {/* Solar wind particles hitting planet directly */}
-          {[...Array(12)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-1 h-1 bg-yellow-400/80 rounded-full animate-pulse"
-              style={{
-                left: `${5 + i * 7}%`,
-                top: `${30 + (i % 3) * 15}%`,
-                animationDelay: `${i * 0.1}s`
-              }}
-            />
-          ))}
+      {/* Dynamic magnetic field visualization */}
+      <div className="absolute inset-0">
+        {/* Status text */}
+        <div className="absolute top-4 left-4 right-4 text-center">
+          <div className={`text-sm font-semibold ${status.color}`}>{status.text}</div>
+          <div className="text-xs text-gray-400">{status.subtext}</div>
         </div>
-      ) : magneticField > 1.5 ? (
-        // Very strong magnetic field - radiation belt hazard
-        <div className="absolute inset-0">
-          {/* Status text */}
-          <div className="absolute top-4 left-4 right-4 text-center">
-            <div className="text-sm text-orange-300 font-semibold">Radiation Hazard</div>
-            <div className="text-xs text-gray-400">Field too strong</div>
-          </div>
-          
-          {/* Intense magnetic field lines */}
-          {[...Array(8)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-px h-12 bg-gradient-to-b from-purple-400 to-transparent animate-pulse"
-              style={{
-                left: `${20 + i * 8}%`,
-                top: `${20 + (i % 2) * 10}%`,
-                transform: `rotate(${i * 15}deg)`,
-                animationDelay: `${i * 0.2}s`
-              }}
-            />
-          ))}
-        </div>
-      ) : (
-        // Optimal magnetic field - protective shield
-        <div className="absolute inset-0">
-          {/* Status text */}
-          <div className="absolute top-4 left-4 right-4 text-center">
-            <div className="text-sm text-green-300 font-semibold">Protected</div>
-            <div className="text-xs text-gray-400">Optimal magnetic shield</div>
-          </div>
-          
-          {/* Protective magnetic field lines */}
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute border border-green-400/40 rounded-full"
-              style={{
-                width: `${60 + i * 15}px`,
-                height: `${40 + i * 10}px`,
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-              }}
-            />
-          ))}
-        </div>
-      )}
+        
+        {magneticField < 0.2 ? (
+          // No magnetic field - direct solar wind impact
+          <>
+            {[...Array(15)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-red-400/80 rounded-full animate-pulse"
+                style={{
+                  left: `${5 + i * 6}%`,
+                  top: `${25 + (i % 4) * 12}%`,
+                  animationDelay: `${i * 0.1}s`
+                }}
+              />
+            ))}
+          </>
+        ) : magneticField > 2.5 ? (
+          // Extremely strong field - radiation hazard
+          <>
+            {[...Array(12)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-px h-16 bg-gradient-to-b from-purple-400 to-transparent animate-pulse"
+                style={{
+                  left: `${15 + i * 6}%`,
+                  top: `${15 + (i % 3) * 8}%`,
+                  transform: `rotate(${i * 12}deg)`,
+                  animationDelay: `${i * 0.15}s`
+                }}
+              />
+            ))}
+          </>
+        ) : (
+          // Dynamic magnetic field lines based on strength
+          <>
+            {[...Array(fieldLines)].map((_, i) => (
+              <div
+                key={i}
+                className={`absolute border rounded-full ${
+                  fieldColor === 'red' ? 'border-red-400/60' :
+                  fieldColor === 'purple' ? 'border-purple-400/60' :
+                  'border-green-400/60'
+                }`}
+                style={{
+                  width: `${50 + i * (10 + magneticField * 5)}px`,
+                  height: `${35 + i * (7 + magneticField * 3)}px`,
+                  left: '50%',
+                  top: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  opacity: fieldOpacity - (i * 0.1),
+                  borderWidth: `${Math.max(1, magneticField)}px`
+                }}
+              />
+            ))}
+            
+            {/* Solar wind deflection particles */}
+            {magneticField > 0.5 && [...Array(8)].map((_, i) => (
+              <div
+                key={`deflect-${i}`}
+                className="absolute w-0.5 h-0.5 bg-yellow-300/60 rounded-full animate-pulse"
+                style={{
+                  left: `${20 + i * 8}%`,
+                  top: `${20 + (i % 2) * 40}%`,
+                  animationDelay: `${i * 0.2}s`
+                }}
+              />
+            ))}
+          </>
+        )}
+      </div>
       
-      {/* Field strength reading */}
-      <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded">
-        {(magneticField * 50).toFixed(0)} μT
+      {/* Field strength reading with dynamic color */}
+      <div className={`absolute bottom-2 right-2 text-xs bg-black/50 px-2 py-1 rounded ${status.color}`}>
+        {fieldStrength.toFixed(0)} μT
       </div>
     </div>
   );
