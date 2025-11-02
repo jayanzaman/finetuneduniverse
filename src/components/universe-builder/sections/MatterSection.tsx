@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
-import { SimpleStrongForceVisual, SimpleHierarchyVisual, SimpleMatterAntimatterVisual, SimpleProtonStabilityVisual } from './SimpleMatterVisuals'
+import { SimpleStrongForceVisual, SimpleHierarchyVisual, SimpleMatterAntimatterVisual } from './SimpleMatterVisuals'
+import { TimelineProbabilityVisual, TimelineProbabilityVisualMobile } from './TimelineProbabilityVisual'
 import { QuarkBindingVisual } from './QuarkBindingVisual'
 import { EnhancedStrongForceSlider } from './EnhancedStrongForceSlider'
 
@@ -186,7 +187,7 @@ export default function MatterSection({
       title: 'Proton Stability',
       subtitle: 'Atomic Longevity',
       description: 'How long do the building blocks of atoms last?',
-      visual: <SimpleProtonStabilityVisual lifetime={protonLifetime} />,
+      visual: <TimelineProbabilityVisualMobile lifetime={protonLifetime} />,
       value: protonLifetime,
       onChange: (value: number[]) => setProtonLifetime(value[0]),
       min: 30,
@@ -468,7 +469,7 @@ export default function MatterSection({
           <CardContent>
               <div className="space-y-4">
                 <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
-                  <SimpleProtonStabilityVisual lifetime={protonLifetime} />
+                  <TimelineProbabilityVisual lifetime={protonLifetime} />
                 </div>
                 <div className="relative">
                   <Slider
