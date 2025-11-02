@@ -693,9 +693,9 @@ export default function StarlightSection({
                 </button>
               </div>
               
-              {/* Much more compact visualization for mobile */}
+              {/* Ultra-compact visualization without scrollbars */}
               <div className="bg-black/30 rounded-lg p-2">
-                <div className={`${steps[currentStep].isSelector ? '' : 'h-56 overflow-y-auto'}`}>
+                <div className={`${steps[currentStep].isSelector ? '' : 'h-52'}`}>
                   {steps[currentStep].visual}
                 </div>
               </div>

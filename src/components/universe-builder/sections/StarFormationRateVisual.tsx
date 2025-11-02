@@ -72,10 +72,10 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
   const factoryStatus = getFactoryStatus()
 
   return (
-    <div className="w-full space-y-3">
-      {/* Factory Status Header */}
-      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
-        <div className="flex justify-between items-center mb-2">
+    <div className="w-full space-y-2">
+      {/* Factory Status Header - Ultra Compact */}
+      <div className="bg-black/40 rounded-lg p-2 border border-white/10">
+        <div className="flex justify-between items-center mb-1">
           <div className="text-sm font-semibold text-white">Universe Factory Settings</div>
           <div className="flex items-center gap-2">
             <motion.div
@@ -86,7 +86,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             />
-            <span className={`text-xs font-medium ${factoryStatus.color} w-20 text-center`}>
+            <span className={`text-xs font-medium ${factoryStatus.color} w-16 text-center`}>
               {factoryStatus.status}
             </span>
           </div>
@@ -102,18 +102,18 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
         </div>
       </div>
 
-      {/* Cosmic Timeline */}
-      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
-        <div className="text-sm font-semibold text-white mb-2 text-center">
+      {/* Cosmic Timeline - Ultra Compact */}
+      <div className="bg-black/40 rounded-lg p-2 border border-white/10">
+        <div className="text-sm font-semibold text-white mb-1 text-center">
           Cosmic Star Formation History
         </div>
         
         {/* Timeline bar */}
-        <div className="relative h-4 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded mb-2">
-          <div className="absolute inset-0 flex items-center justify-between px-2 text-xs text-white font-bold">
-            <span>13.8 Gya</span>
-            <span>Peak</span>
-            <span>Today</span>
+        <div className="relative h-3 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded mb-1">
+          <div className="absolute inset-0 flex items-center justify-between px-1 text-xs text-white font-bold">
+            <span className="text-xs">13.8 Gya</span>
+            <span className="text-xs">Peak</span>
+            <span className="text-xs">Today</span>
           </div>
           
           {/* Current position indicator */}
@@ -133,12 +133,12 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
         </div>
       </div>
 
-      {/* Era Cards Grid - Compact 4-column layout */}
-      <div className="grid grid-cols-4 gap-2">
+      {/* Era Cards Grid - Ultra Compact 4-column layout */}
+      <div className="grid grid-cols-4 gap-1">
         {eras.map((era, index) => (
           <motion.div
             key={index}
-            className={`p-2 rounded border transition-all duration-300 ${
+            className={`p-1.5 rounded border transition-all duration-300 ${
               index === currentEra
                 ? 'bg-white/10 border-white/30 scale-105'
                 : 'bg-black/20 border-white/10 hover:bg-white/5'
@@ -146,12 +146,12 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
             whileHover={{ scale: index === currentEra ? 1.05 : 1.02 }}
           >
             <div className="flex flex-col items-center text-center">
-              <span className="text-lg mb-1">{era.icon}</span>
-              <div className="text-xs font-semibold text-white mb-1">
+              <span className="text-sm mb-0.5">{era.icon}</span>
+              <div className="text-xs font-semibold text-white mb-0.5 leading-tight">
                 {era.name.replace(' Era', '')}
               </div>
-              <div className="text-xs text-gray-300 mb-1">{era.rate}</div>
-              <div className="text-xs text-gray-400">{era.status}</div>
+              <div className="text-xs text-gray-300 mb-0.5">{era.rate}</div>
+              <div className="text-xs text-gray-400 leading-tight">{era.status}</div>
             </div>
           </motion.div>
         ))}
