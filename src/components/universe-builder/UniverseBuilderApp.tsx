@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '../ui/button'
-import { RotateCcw, Shuffle } from 'lucide-react'
+import { RotateCcw } from 'lucide-react'
 import { useSwipeable } from 'react-swipeable'
 
 // Section Components
@@ -49,9 +49,6 @@ export default function UniverseBuilderApp() {
     window.location.reload()
   }
 
-  const handleRandomize = () => {
-    window.dispatchEvent(new CustomEvent('randomizeUniverse'))
-  }
 
 
   useEffect(() => {
@@ -102,15 +99,6 @@ export default function UniverseBuilderApp() {
               >
                 <span className="hidden sm:inline">{educatorMode ? 'Student Mode' : 'Educator Mode'}</span>
                 <span className="sm:hidden">{educatorMode ? 'Student' : 'Educator'}</span>
-              </Button>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleRandomize}
-                className="bg-white/5 border-white/20 hover:bg-white/10 text-white min-h-[44px] min-w-[44px]"
-                title="Randomize Parameters"
-              >
-                <Shuffle className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
               <Button
                 variant="outline"
