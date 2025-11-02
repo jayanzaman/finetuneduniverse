@@ -331,7 +331,15 @@ export default function BeginningSection({
       step: 0.1,
       unit: 'S/k',
       optimal: '0.5-1.5 S/k (optimal)',
-      optimalRange: { left: ((0.5 - 0.1) / (10 - 0.1)) * 100, width: ((1.5 - 0.5) / (10 - 0.1)) * 100 }
+      optimalRange: { left: ((0.5 - 0.1) / (10 - 0.1)) * 100, width: ((1.5 - 0.5) / (10 - 0.1)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Blue particles show order (organized circle) vs chaos (scattered randomly). This visualizes how entropy affects cosmic structure.</p>
+          <p><strong>The Penrose calculation:</strong> Sir Roger Penrose calculated the odds of our low-entropy start at 1 in 10^10^123 - a number so large it defies comprehension. Writing it out would require more digits than there are particles in the observable universe.</p>
+          <p><strong>Why this matters:</strong> Without this incredibly special low-entropy beginning, gravity couldn't have formed stars, galaxies, or any complex structures. The universe would remain a uniform, lifeless soup forever.</p>
+          <p><strong>The mystery:</strong> We have no accepted scientific explanation for why the universe began in such an improbable, highly ordered state. This remains one of cosmology's deepest puzzles.</p>
+        </div>
+      )
     },
     {
       id: 'expansion',
@@ -346,7 +354,23 @@ export default function BeginningSection({
       step: 0.1,
       unit: 'H₀',
       optimal: '0.5-0.9 H₀ (optimal)',
-      optimalRange: { left: ((0.5 - 0.1) / (2 - 0.1)) * 100, width: ((0.9 - 0.5) / (2 - 0.1)) * 100 }
+      optimalRange: { left: ((0.5 - 0.1) / (2 - 0.1)) * 100, width: ((0.9 - 0.5) / (2 - 0.1)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-3">
+          <div>
+            <p><strong>What you're seeing:</strong> Galaxies moving away from us, with redshift showing their recession velocity. The temporary blue shift (left movement) represents the brief moment when expansion slows before accelerating again.</p>
+          </div>
+          <div>
+            <p><strong>The expansion fine-tuning:</strong> If expansion were 1 part in 10^55 faster, galaxies couldn't form. If 1 part in 10^55 slower, the universe would collapse before stars could ignite. This is precision beyond human comprehension.</p>
+          </div>
+          <div>
+            <p><strong>The flatness problem:</strong> Our universe sits precisely on the knife-edge between eternal expansion and gravitational collapse. This "critical density" requires initial conditions fine-tuned to 1 part in 10^60.</p>
+          </div>
+          <div>
+            <p><strong>Modern mystery:</strong> Dark energy now dominates expansion, but we don't understand what it is. The cosmological constant problem represents the worst prediction in physics - off by 120 orders of magnitude.</p>
+          </div>
+        </div>
+      )
     },
     {
       id: 'fluctuations',
@@ -361,7 +385,14 @@ export default function BeginningSection({
       step: 0.01,
       unit: 'δρ/ρ',
       optimal: '10⁻⁵-10⁻⁴ δρ/ρ (optimal)',
-      optimalRange: { left: ((0.1 - 0) / (1 - 0)) * 100, width: ((0.3 - 0.1) / (1 - 0)) * 100 }
+      optimalRange: { left: ((0.1 - 0) / (1 - 0)) * 100, width: ((0.3 - 0.1) / (1 - 0)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Purple grid cells pulse to show quantum ripples in spacetime - the tiny density variations that seeded all cosmic structures.</p>
+          <p><strong>Critical for everything:</strong> Without these quantum fluctuations, the universe would remain perfectly uniform forever - no stars, galaxies, planets, or life. Gravity needs something to grab onto.</p>
+          <p><strong>Goldilocks precision:</strong> Too small = gravity never overcomes expansion. Too large = universe collapses into black holes before stars form. The working range is extraordinarily narrow.</p>
+        </div>
+      )
     },
     {
       id: 'shape',
@@ -376,7 +407,15 @@ export default function BeginningSection({
       step: 0.001,
       unit: 'Ω',
       optimal: '0.98-1.02 Ω (optimal)',
-      optimalRange: { left: ((0.98 - 0.5) / (1.5 - 0.5)) * 100, width: ((1.02 - 0.98) / (1.5 - 0.5)) * 100 }
+      optimalRange: { left: ((0.98 - 0.5) / (1.5 - 0.5)) * 100, width: ((1.02 - 0.98) / (1.5 - 0.5)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What "Flat" Actually Means:</strong> In cosmology, "flat" means Euclidean geometry holds true at cosmic scales: parallel lines never meet, triangle angles add up to 180°, and light travels in straight lines through empty space. In Einstein's relativity, space geometry depends on energy and mass content.</p>
+          <p><strong>The three possibilities:</strong> Open (saddle-shaped, infinite expansion), Closed (spherical, eventual collapse), or Flat (perfectly balanced, critical density). Our universe appears remarkably flat.</p>
+          <p><strong>Fine-tuning problem:</strong> For the universe to be flat today, the initial density had to be tuned to the critical value with precision of 1 part in 10^60. Even tiny deviations would have led to immediate collapse or runaway expansion.</p>
+          <p><strong>Inflation theory:</strong> Cosmic inflation in the first fraction of a second could explain this flatness, but inflation itself requires fine-tuning to work properly.</p>
+        </div>
+      )
     },
     {
       id: 'darkenergy',
@@ -391,7 +430,15 @@ export default function BeginningSection({
       step: 0.01,
       unit: 'Λ',
       optimal: '0.8-1.2 Λ (optimal)',
-      optimalRange: { left: ((0.8 - 0) / (2 - 0)) * 100, width: ((1.2 - 0.8) / (2 - 0)) * 100 }
+      optimalRange: { left: ((0.8 - 0) / (2 - 0)) * 100, width: ((1.2 - 0.8) / (2 - 0)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>The cosmological constant problem:</strong> Dark energy (Λ) is off by 120 orders of magnitude from quantum theory predictions - the worst prediction in physics history.</p>
+          <p><strong>What we observe:</strong> The universe's expansion is accelerating, driven by mysterious dark energy that makes up 68% of everything. This acceleration began about 5 billion years ago.</p>
+          <p><strong>Fine-tuning crisis:</strong> If dark energy were slightly stronger, galaxies couldn't form. If weaker, the universe would have collapsed before stars ignited. The value appears precisely calibrated for complexity.</p>
+          <p><strong>The mystery deepens:</strong> We don't know what dark energy is - vacuum energy, a new field, or something else entirely. It's one of physics' greatest unsolved problems.</p>
+        </div>
+      )
     },
     {
       id: 'temperature',
@@ -406,7 +453,15 @@ export default function BeginningSection({
       step: 0.00001,
       unit: 'K',
       optimal: '2.725±0.00005 K (optimal)',
-      optimalRange: { left: ((0.99998 - 0.9) / (1 - 0.9)) * 100, width: ((1 - 0.99998) / (1 - 0.9)) * 100 }
+      optimalRange: { left: ((0.99998 - 0.9) / (1 - 0.9)) * 100, width: ((1 - 0.99998) / (1 - 0.9)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>CMB temperature map:</strong> Shows variations from the perfect 2.725K uniformity - tiny fluctuations that reveal the universe's quantum origins.</p>
+          <p><strong>Incredible precision:</strong> The cosmic microwave background is uniform to 1 part in 100,000 across the entire sky. This uniformity is so precise it creates a major cosmological puzzle.</p>
+          <p><strong>The horizon problem:</strong> Regions of sky that could never have communicated (beyond each other's light horizons) show identical temperatures. How did they "know" to be the same temperature?</p>
+          <p><strong>Inflation solution:</strong> Cosmic inflation theory suggests these regions were once in contact before rapid expansion separated them. But this requires incredibly specific initial conditions.</p>
+        </div>
+      )
     }
   ]
 
@@ -580,6 +635,13 @@ export default function BeginningSection({
                       Next
                     </button>
                   </div>
+
+                  {/* Educator Mode Content */}
+                  {educatorMode && (
+                    <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                      {steps[currentStep].educatorContent}
+                    </div>
+                  )}
                 </div>
               </div>
             </CardContent>
