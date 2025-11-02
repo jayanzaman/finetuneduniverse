@@ -180,9 +180,9 @@ export default function MatterSection({
   }, [])
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 md:px-4">
       {/* Main Visualization - Full Width */}
-      <div className="mb-12">
+      <div className="mb-6 md:mb-12">
         <div className="relative">
           <Card className="bg-black/20 border-white/10 text-white">
             <CardHeader>
@@ -220,94 +220,91 @@ export default function MatterSection({
                 </div>
               </div>
 
-              {/* Mobile: Show one step at a time with navigation */}
+              {/* Mobile: Optimized full-screen layout */}
               <div className="md:hidden">
-                <div className="space-y-4">
-                  {/* Parameter progress indicator - prominent and distinct */}
-                  <div className="flex justify-center items-center space-x-2 mb-6">
-                    {steps.map((_, index) => (
-                      <div
-                        key={index}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                          index === currentStep 
-                            ? 'bg-blue-400 shadow-lg shadow-blue-400/50 scale-110' 
-                            : 'bg-gray-500/60 hover:bg-gray-400/80'
-                        }`}
-                      />
-                    ))}
+                <div className="space-y-2">
+                  {/* Compact header with progress */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex-1">
+                      <h4 className="text-base font-semibold text-white">{steps[currentStep].title}</h4>
+                      <p className="text-xs text-gray-300">{steps[currentStep].subtitle}</p>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      {steps.map((_, index) => (
+                        <div
+                          key={index}
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                            index === currentStep 
+                              ? 'bg-blue-400 scale-125' 
+                              : 'bg-gray-500/60'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
-
-                  {/* Current step with integrated slider */}
-                  <div className="space-y-3">
-                    <div className="text-center space-y-1">
-                      <h4 className="text-lg font-semibold text-white">{steps[currentStep].title}</h4>
-                      <p className="text-sm text-gray-300">{steps[currentStep].subtitle}</p>
-                      <p className="text-xs text-gray-400 leading-relaxed">{steps[currentStep].description}</p>
+                  
+                  {/* Full-height visualization */}
+                  <div className="bg-black/30 rounded-lg p-3">
+                    <div className="h-80 mb-3">
+                      {steps[currentStep].visual}
                     </div>
                     
-                    {/* Visualization with integrated slider */}
-                    <div className="bg-black/30 rounded-lg p-4 space-y-4">
-                      <div className="h-48">
-                        {steps[currentStep].visual}
+                    {/* Compact slider */}
+                    <div className="space-y-1">
+                      <div className="relative">
+                        <Slider
+                          value={[steps[currentStep].value]}
+                          onValueChange={steps[currentStep].onChange}
+                          max={steps[currentStep].max}
+                          min={steps[currentStep].min}
+                          step={steps[currentStep].step}
+                          className="w-full"
+                        />
+                        <div 
+                          className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                          style={{
+                            left: `${steps[currentStep].optimalRange.left}%`,
+                            width: `${steps[currentStep].optimalRange.width}%`
+                          }}
+                        />
                       </div>
-                      
-                      {/* Integrated slider */}
-                      <div className="space-y-2">
-                        <div className="relative">
-                          <Slider
-                            value={[steps[currentStep].value]}
-                            onValueChange={steps[currentStep].onChange}
-                            max={steps[currentStep].max}
-                            min={steps[currentStep].min}
-                            step={steps[currentStep].step}
-                            className="w-full"
-                          />
-                          {/* Optimal range indicator */}
-                          <div 
-                            className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                            style={{
-                              left: `${steps[currentStep].optimalRange.left}%`,
-                              width: `${steps[currentStep].optimalRange.width}%`
-                            }}
-                          />
-                        </div>
-                        <div className="flex justify-between text-xs text-gray-400">
-                          <span>Low</span>
-                          <span className="text-green-400 font-bold">{steps[currentStep].optimal}</span>
-                          <span className="text-white font-medium">
-                            {steps[currentStep].id === 'matter-antimatter' 
-                              ? `${(steps[currentStep].value * 100).toFixed(1)}${steps[currentStep].unit}`
-                              : steps[currentStep].id === 'proton-stability'
-                              ? `10^${steps[currentStep].value.toFixed(0)}${steps[currentStep].unit}`
-                              : `${steps[currentStep].value.toFixed(2)} ${steps[currentStep].unit}`
-                            }
-                          </span>
-                          <span>High</span>
-                        </div>
+                      <div className="flex justify-between text-xs text-gray-400">
+                        <span>Low</span>
+                        <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
+                        <span className="text-white font-medium">
+                          {steps[currentStep].id === 'matter-antimatter' 
+                            ? `${(steps[currentStep].value * 100).toFixed(1)}${steps[currentStep].unit}`
+                            : steps[currentStep].id === 'proton-stability'
+                            ? `10^${steps[currentStep].value.toFixed(0)}${steps[currentStep].unit}`
+                            : `${steps[currentStep].value.toFixed(2)} ${steps[currentStep].unit}`
+                          }
+                        </span>
+                        <span>High</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Navigation buttons - improved touch targets */}
-                  <div className="flex justify-between items-center pt-2">
+                  {/* Compact navigation */}
+                  <div className="flex justify-between items-center">
                     <button
                       onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                       disabled={currentStep === 0}
-                      className="px-6 py-3 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 min-h-[44px]"
+                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
                     >
                       Previous
                     </button>
                     
-                    <div className="text-center">
+                    <div className="text-center px-4">
                       <span className="text-sm font-medium text-blue-400">
                         {currentStep + 1} / {steps.length}
                       </span>
+                      <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
                     </div>
                     
                     <button
                       onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 min-h-[44px]"
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
                     >
                       Next
                     </button>
