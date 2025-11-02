@@ -3,13 +3,31 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 
+interface StarOption {
+  value: string;
+  label: string;
+  description: string;
+  metallicity: number;
+  nickname: string;
+}
+
 interface MetallicitySpectrumVisualProps {
   metallicity: number;
   starName: string;
   starType: string;
+  selectedStar: string;
+  onStarChange: (starValue: string) => void;
+  starOptions: StarOption[];
 }
 
-export function MetallicitySpectrumVisual({ metallicity, starName, starType }: MetallicitySpectrumVisualProps) {
+export function MetallicitySpectrumVisual({ 
+  metallicity, 
+  starName, 
+  starType, 
+  selectedStar, 
+  onStarChange, 
+  starOptions 
+}: MetallicitySpectrumVisualProps) {
   const [animationPhase, setAnimationPhase] = useState(0)
 
   useEffect(() => {
@@ -70,170 +88,189 @@ export function MetallicitySpectrumVisual({ metallicity, starName, starType }: M
   const absorptionLines = getAbsorptionLines()
 
   return (
-    <div className="relative w-full h-80 bg-black rounded-lg overflow-hidden">
-      {/* Background starfield */}
-      <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-30"
+    <div className="w-full space-y-4">
+      {/* Star Visualization - Clean and unobstructed */}
+      <div className="relative w-full h-48 bg-black rounded-lg overflow-hidden">
+        {/* Background starfield */}
+        <div className="absolute inset-0">
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={i}
+              className="absolute w-1 h-1 bg-white rounded-full opacity-30"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 2}s`
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Central star */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <motion.div
+            className={`w-20 h-20 rounded-full bg-gradient-to-br ${getSpectrumColor()}`}
+            animate={{
+              scale: [1, 1.1, 1],
+              opacity: [0.8, 1, 0.8]
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 2}s`
+              boxShadow: `0 0 40px rgba(255, 255, 255, ${0.3 + metallicity * 5})`
             }}
           />
-        ))}
-      </div>
+        </div>
 
-      {/* Central star */}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2">
-        <motion.div
-          className={`w-16 h-16 rounded-full bg-gradient-to-br ${getSpectrumColor()}`}
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.8, 1, 0.8]
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          style={{
-            boxShadow: `0 0 30px rgba(255, 255, 255, ${0.3 + metallicity * 5})`
-          }}
-        />
-        
-        {/* Star info */}
-        <div className="text-center mt-2">
+        {/* Star info overlay - minimal */}
+        <div className="absolute top-4 left-4">
           <div className="text-white text-sm font-semibold">{starName}</div>
-          <div className="text-gray-300 text-xs">{starType}</div>
           <div className="text-blue-300 text-xs">{getStarTemperature()}</div>
         </div>
-      </div>
 
-      {/* Spectrum analysis section */}
-      <div className="absolute bottom-4 left-4 right-4">
-        <div className="bg-black/80 rounded-lg p-3 border border-white/20">
-          <div className="text-white text-sm font-semibold mb-2 text-center">
-            Stellar Spectrum Analysis
-          </div>
-          
-          {/* Spectrum bar */}
-          <div className="relative h-12 mb-3">
-            {/* Continuous spectrum background */}
-            <div 
-              className={`absolute inset-0 bg-gradient-to-r ${getSpectrumColor()} rounded opacity-80`}
-            />
-            
-            {/* Wavelength labels */}
-            <div className="absolute -top-4 left-0 text-xs text-gray-400">400nm</div>
-            <div className="absolute -top-4 left-1/4 text-xs text-gray-400">500nm</div>
-            <div className="absolute -top-4 left-1/2 text-xs text-gray-400">600nm</div>
-            <div className="absolute -top-4 right-1/4 text-xs text-gray-400">700nm</div>
-            <div className="absolute -top-4 right-0 text-xs text-gray-400">800nm</div>
-            
-            {/* Absorption lines */}
-            {absorptionLines.map((line, index) => (
+        {/* Planet formation indicator */}
+        <div className="absolute top-4 right-4 text-center">
+          {metallicity > 0.01 ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
               <motion.div
-                key={index}
-                className="absolute top-0 bottom-0 bg-black"
-                style={{
-                  left: `${line.position}%`,
-                  width: '2px',
-                  opacity: line.strength
-                }}
-                animate={{
-                  opacity: [line.strength * 0.7, line.strength, line.strength * 0.7]
-                }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: index * 0.1
-                }}
+                className="w-6 h-6 rounded-full bg-gradient-to-br from-brown-600 to-orange-700 mx-auto mb-1"
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
               />
-            ))}
-          </div>
-          
-          {/* Element indicators */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            {absorptionLines.map((line, index) => (
-              <motion.div
-                key={index}
-                className="px-2 py-1 rounded text-xs font-medium"
-                style={{
-                  backgroundColor: `${line.color}40`,
-                  color: line.color,
-                  border: `1px solid ${line.color}60`
-                }}
-                animate={{
-                  opacity: [0.6, 1, 0.6]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: index * 0.2
-                }}
-              >
-                {line.element}
-              </motion.div>
-            ))}
-          </div>
-          
-          {/* Metallicity indicator */}
-          <div className="mt-3 text-center">
-            <div className="text-xs text-gray-300">
-              Metallicity [Fe/H]: <span className="text-yellow-300 font-mono">{metallicity.toFixed(4)}</span>
+              <div className="text-xs text-green-400 font-semibold">Rocky Planets</div>
+            </motion.div>
+          ) : (
+            <div>
+              <div className="w-6 h-6 rounded-full border-2 border-red-500 border-dashed mx-auto mb-1 flex items-center justify-center">
+                <span className="text-red-500 text-sm">×</span>
+              </div>
+              <div className="text-xs text-red-400 font-semibold">No Planets</div>
             </div>
-            <div className="text-xs text-gray-400 mt-1">
-              {metallicity < 0.001 ? 'Primordial gas clouds only' :
-               metallicity < 0.005 ? 'Ancient, metal-poor' :
-               metallicity < 0.015 ? 'Moderate heavy elements' :
-               metallicity < 0.03 ? 'Solar-like composition' :
-               'Super metal-rich'}
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Planet formation indicator */}
-      {metallicity > 0.01 && (
-        <motion.div
-          className="absolute top-1/2 right-8 transform -translate-y-1/2"
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="text-center">
+      {/* Modern Star Selector */}
+      <div className="space-y-3">
+        <div className="text-white text-sm font-semibold text-center">Select Target Star</div>
+        <div className="grid grid-cols-1 gap-2">
+          {starOptions.map((star) => (
+            <motion.button
+              key={star.value}
+              onClick={() => onStarChange(star.value)}
+              className={`p-3 rounded-lg border transition-all duration-200 text-left ${
+                selectedStar === star.value
+                  ? 'bg-blue-600/30 border-blue-400 text-white'
+                  : 'bg-black/20 border-white/10 text-gray-300 hover:bg-white/5 hover:border-white/20'
+              }`}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <div className="font-semibold text-sm">{star.label.split(' (')[0]}</div>
+                  <div className="text-xs opacity-80">{star.description}</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs font-mono text-yellow-300">{(star.metallicity * 100).toFixed(3)}%</div>
+                  <div className="text-xs opacity-60">[Fe/H]</div>
+                </div>
+              </div>
+            </motion.button>
+          ))}
+        </div>
+      </div>
+
+      {/* Spectrum Analysis - Below the visual */}
+      <div className="bg-black/30 rounded-lg p-4 border border-white/10">
+        <div className="text-white text-sm font-semibold mb-3 text-center">
+          Stellar Spectrum Analysis
+        </div>
+        
+        {/* Spectrum bar */}
+        <div className="relative h-12 mb-3">
+          {/* Continuous spectrum background */}
+          <div 
+            className={`absolute inset-0 bg-gradient-to-r ${getSpectrumColor()} rounded opacity-80`}
+          />
+          
+          {/* Wavelength labels */}
+          <div className="absolute -top-4 left-0 text-xs text-gray-400">400nm</div>
+          <div className="absolute -top-4 left-1/4 text-xs text-gray-400">500nm</div>
+          <div className="absolute -top-4 left-1/2 text-xs text-gray-400">600nm</div>
+          <div className="absolute -top-4 right-1/4 text-xs text-gray-400">700nm</div>
+          <div className="absolute -top-4 right-0 text-xs text-gray-400">800nm</div>
+          
+          {/* Absorption lines */}
+          {absorptionLines.map((line, index) => (
             <motion.div
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-brown-600 to-orange-700 mx-auto mb-1"
+              key={index}
+              className="absolute top-0 bottom-0 bg-black"
+              style={{
+                left: `${line.position}%`,
+                width: '2px',
+                opacity: line.strength
+              }}
               animate={{
-                rotate: [0, 360]
+                opacity: [line.strength * 0.7, line.strength, line.strength * 0.7]
               }}
               transition={{
-                duration: 4,
+                duration: 1.5,
                 repeat: Infinity,
-                ease: "linear"
+                ease: "easeInOut",
+                delay: index * 0.1
               }}
             />
-            <div className="text-xs text-green-400 font-semibold">Rocky Planets</div>
-            <div className="text-xs text-green-300">Possible</div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* No planets indicator */}
-      {metallicity <= 0.01 && (
-        <div className="absolute top-1/2 right-8 transform -translate-y-1/2 text-center">
-          <div className="w-8 h-8 rounded-full border-2 border-red-500 border-dashed mx-auto mb-1 flex items-center justify-center">
-            <span className="text-red-500 text-lg">×</span>
-          </div>
-          <div className="text-xs text-red-400 font-semibold">No Rocky</div>
-          <div className="text-xs text-red-300">Planets</div>
+          ))}
         </div>
-      )}
+        
+        {/* Element indicators */}
+        <div className="flex flex-wrap gap-2 justify-center mb-3">
+          {absorptionLines.map((line, index) => (
+            <motion.div
+              key={index}
+              className="px-2 py-1 rounded text-xs font-medium"
+              style={{
+                backgroundColor: `${line.color}40`,
+                color: line.color,
+                border: `1px solid ${line.color}60`
+              }}
+              animate={{
+                opacity: [0.6, 1, 0.6]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: index * 0.2
+              }}
+            >
+              {line.element}
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* Metallicity info */}
+        <div className="text-center">
+          <div className="text-xs text-gray-300">
+            Metallicity [Fe/H]: <span className="text-yellow-300 font-mono">{metallicity.toFixed(4)}</span>
+          </div>
+          <div className="text-xs text-gray-400 mt-1">
+            {metallicity < 0.001 ? 'Primordial gas clouds only' :
+             metallicity < 0.005 ? 'Ancient, metal-poor' :
+             metallicity < 0.015 ? 'Moderate heavy elements' :
+             metallicity < 0.03 ? 'Solar-like composition' :
+             'Super metal-rich'}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

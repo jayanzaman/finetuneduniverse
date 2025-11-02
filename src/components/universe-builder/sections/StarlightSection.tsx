@@ -530,7 +530,21 @@ export default function StarlightSection({
       title: 'Metallicity',
       subtitle: 'Heavy Element Content',
       description: 'Fraction of heavy elements in stellar composition',
-      visual: <MetallicitySpectrumVisual metallicity={metallicity} starName={currentStar.name} starType={currentStar.type} />,
+      visual: <MetallicitySpectrumVisual 
+        metallicity={metallicity} 
+        starName={currentStar.name} 
+        starType={currentStar.type}
+        selectedStar={selectedStar}
+        onStarChange={setSelectedStar}
+        starOptions={[
+          { value: 'popiii', label: 'Population III (0.00001)', description: 'First Stars - No Heavy Elements', metallicity: 0.00001, nickname: 'First Stars (Theoretical)' },
+          { value: 'hd140283', label: 'HD 140283 (0.0004)', description: 'Methuselah Star - Ancient', metallicity: 0.0004, nickname: '"Methuselah Star"' },
+          { value: 'tauceti', label: 'Tau Ceti (0.008)', description: 'Metal-Poor Neighbor', metallicity: 0.008, nickname: 'Metal-Poor Neighbor' },
+          { value: 'sun', label: 'Sun (0.02)', description: 'Solar Standard - Optimal', metallicity: 0.02, nickname: 'Solar Standard' },
+          { value: 'muleo', label: 'μ Leonis (0.04)', description: 'Metal-Rich Giant', metallicity: 0.04, nickname: 'Metal-Rich Giant' },
+          { value: 'galcenter', label: 'Galactic Core (0.08)', description: 'Super Metal-Rich', metallicity: 0.08, nickname: 'Galactic Core Stars' }
+        ]}
+      />,
       value: metallicity,
       onChange: (value: string) => setSelectedStar(value),
       isSelector: true,
@@ -658,28 +672,9 @@ export default function StarlightSection({
                   {steps[currentStep].visual}
                 </div>
                 
-                {/* Compact control */}
-                <div className="space-y-1">
-                  {steps[currentStep].isSelector ? (
-                    /* Selector for metallicity */
-                    <div className="space-y-2">
-                      <select
-                        value={selectedStar}
-                        onChange={(e) => setSelectedStar(e.target.value)}
-                        className="w-full bg-gray-800 text-white border border-gray-600 rounded px-3 py-2 text-sm"
-                      >
-                        {steps[currentStep].options?.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="text-xs text-gray-400 text-center">
-                        {steps[currentStep].options?.find(opt => opt.value === selectedStar)?.description}
-                      </div>
-                    </div>
-                  ) : (
-                    /* Slider for other parameters */
+                {/* Compact control - only for non-selector steps */}
+                {!steps[currentStep].isSelector && (
+                  <div className="space-y-1">
                     <div className="relative">
                       <Slider
                         value={[steps[currentStep].value as number]}
@@ -699,19 +694,16 @@ export default function StarlightSection({
                         />
                       )}
                     </div>
-                  )}
-                  <div className="flex justify-between text-xs text-gray-400">
-                    <span>Low</span>
-                    <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
-                    <span className="text-white font-medium">
-                      {steps[currentStep].isSelector 
-                        ? currentStar.name 
-                        : `${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`
-                      }
-                    </span>
-                    <span>High</span>
+                    <div className="flex justify-between text-xs text-gray-400">
+                      <span>Low</span>
+                      <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
+                      <span className="text-white font-medium">
+                        {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
+                      </span>
+                      <span>High</span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Compact navigation */}
