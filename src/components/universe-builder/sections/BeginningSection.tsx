@@ -164,7 +164,10 @@ function DensityFluctuationsVisual({ densityFluctuations }: { densityFluctuation
               className="bg-purple-400 rounded-sm"
               style={{
                 opacity: tile.brightness,
-                animation: `ripple ${tile.animationSpeed}s ease-in-out infinite`,
+                animationName: 'ripple',
+                animationDuration: `${tile.animationSpeed}s`,
+                animationTimingFunction: 'ease-in-out',
+                animationIterationCount: 'infinite',
                 animationDelay: `${tile.delay}s`
               }}
             />
