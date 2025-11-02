@@ -473,12 +473,6 @@ export default function BeginningSection({
         {/* Visualization */}
         <div className="relative">
           <Card className="bg-black/20 border-white/10 text-white">
-            <CardHeader>
-              <CardTitle className="text-white">The Primordial Universe</CardTitle>
-              <CardDescription className="text-gray-300">
-                Three fundamental aspects that determined the fate of our universe
-              </CardDescription>
-            </CardHeader>
             <CardContent>
               {/* Desktop: Show all three visualizations */}
               <div className="hidden md:grid md:grid-cols-3 gap-4 sm:gap-6">
