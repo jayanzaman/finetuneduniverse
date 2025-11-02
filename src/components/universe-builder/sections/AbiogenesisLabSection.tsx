@@ -45,7 +45,8 @@ const AbiogenesisCarousel: React.FC<{
   controls: EnvironmentalControls;
   selectedPhase: number;
   onPhaseClick: (phase: number) => void;
-}> = ({ state, controls, selectedPhase, onPhaseClick }) => {
+  educatorMode: boolean;
+}> = ({ state, controls, selectedPhase, onPhaseClick, educatorMode }) => {
   const stages = [
     { 
       id: 0, 
@@ -205,6 +206,56 @@ const AbiogenesisCarousel: React.FC<{
                       'Transitioning from RNA to DNA-based life'
                     }
                   </div>
+
+                  {/* Educator Mode Content */}
+                  {educatorMode && (
+                    <div className="mt-3 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                      <div className="text-xs text-blue-200 space-y-2">
+                        {selectedPhase === 0 && (
+                          <>
+                            <p><strong>Miller-Urey Experiment (1953):</strong> Electric sparks through methane, ammonia, water vapor, and hydrogen produced amino acids, proving organic molecules can form from inorganic precursors.</p>
+                            <p><strong>Modern Understanding:</strong> Early Earth's atmosphere was likely CO₂-rich, not methane-rich. Alternative pathways include hydrothermal vents and meteorite delivery.</p>
+                            <p><strong>Current Challenge:</strong> Achieving sufficient concentrations and preventing degradation in realistic prebiotic conditions.</p>
+                          </>
+                        )}
+                        {selectedPhase === 1 && (
+                          <>
+                            <p><strong>Laboratory Success:</strong> Over 20 amino acids have been produced in prebiotic simulations, including all 20 used by life.</p>
+                            <p><strong>Chirality Problem:</strong> Lab experiments produce equal mixtures of left and right-handed amino acids, but life uses only left-handed forms.</p>
+                            <p><strong>Concentration Issue:</strong> Natural concentrations are typically very low (parts per million). Life requires much higher concentrations.</p>
+                          </>
+                        )}
+                        {selectedPhase === 2 && (
+                          <>
+                            <p><strong>Fox's Thermal Proteins:</strong> Heating amino acid mixtures creates peptide chains 3-18 residues long with some catalytic activity.</p>
+                            <p><strong>Clay Catalysis:</strong> Montmorillonite clay can catalyze peptide bond formation, concentrating amino acids on mineral surfaces.</p>
+                            <p><strong>Major Challenge:</strong> Random sequences rarely have useful function. Specific sequences needed for catalysis are astronomically rare.</p>
+                          </>
+                        )}
+                        {selectedPhase === 3 && (
+                          <>
+                            <p><strong>Szostak Lab Success:</strong> Fatty acid vesicles can grow, divide, and encapsulate RNA, demonstrating basic cellular compartmentalization.</p>
+                            <p><strong>Membrane Composition:</strong> Simple fatty acids (8-12 carbons) form more stable vesicles than complex phospholipids used by modern cells.</p>
+                            <p><strong>Integration Challenge:</strong> Coordinating membrane growth, division, and hereditary material replication remains unsolved.</p>
+                          </>
+                        )}
+                        {selectedPhase === 4 && (
+                          <>
+                            <p><strong>RNA World Hypothesis:</strong> RNA can both store information (like DNA) and catalyze reactions (like proteins), potentially bridging chemistry and biology.</p>
+                            <p><strong>Ribozyme Discovery:</strong> Natural ribozymes like the ribosome prove RNA can catalyze complex reactions, including protein synthesis.</p>
+                            <p><strong>Critical Problems:</strong> No prebiotic pathway to complex ribozymes. RNA requires homochiral sugars not found in prebiotic chemistry. Eigen's paradox: need long RNA for function, but long RNA can't replicate accurately.</p>
+                          </>
+                        )}
+                        {selectedPhase === 5 && (
+                          <>
+                            <p><strong>The Transition:</strong> Moving from RNA-based life to DNA-protein systems requires sophisticated molecular machinery that couldn't exist without prior evolution.</p>
+                            <p><strong>Genetic Code Origin:</strong> The universal genetic code appears optimized for error minimization, suggesting extensive evolution before DNA-based life.</p>
+                            <p><strong>Unsolved Mystery:</strong> No laboratory has demonstrated the spontaneous emergence of self-replicating, evolving systems from prebiotic chemistry. This remains one of science's greatest unsolved problems.</p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             );
@@ -864,6 +915,7 @@ export default function AbiogenesisLabSection({
                 controls={controls} 
                 selectedPhase={selectedPhase}
                 onPhaseClick={handlePhaseClick}
+                educatorMode={educatorMode}
               />
               
               <div className='mt-6 text-center text-sm text-gray-400'>
