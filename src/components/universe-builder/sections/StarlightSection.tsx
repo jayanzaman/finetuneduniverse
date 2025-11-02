@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
+import { MetallicitySpectrumVisual } from './MetallicitySpectrumVisual'
 
 // Enhanced Star Visualization Component with Death/Explosion States
 function StarField({ stellarMass, metallicity, starFormationRate }: {
@@ -529,7 +530,7 @@ export default function StarlightSection({
       title: 'Metallicity',
       subtitle: 'Heavy Element Content',
       description: 'Fraction of heavy elements in stellar composition',
-      visual: <StarField stellarMass={stellarMass} metallicity={metallicity} starFormationRate={starFormationRate} />,
+      visual: <MetallicitySpectrumVisual metallicity={metallicity} starName={currentStar.name} starType={currentStar.type} />,
       value: metallicity,
       onChange: (value: string) => setSelectedStar(value),
       isSelector: true,
