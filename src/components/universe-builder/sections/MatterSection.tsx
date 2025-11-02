@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 import { SimpleStrongForceVisual, SimpleHierarchyVisual, SimpleMatterAntimatterVisual, SimpleProtonStabilityVisual } from './SimpleMatterVisuals'
+import { QuarkBindingVisual } from './QuarkBindingVisual'
+import { EnhancedStrongForceSlider } from './EnhancedStrongForceSlider'
 
 // Particle Visualization Component
 function ParticleField({ strongForce }: { strongForce: number }) {
@@ -110,25 +112,26 @@ export default function MatterSection({
   // Define the steps in optimal order for Formation of Matter
   const steps = [
     {
-      id: 'quark-binding',
+      id: 'strong-force',
       title: 'Quark Binding Force',
       subtitle: 'Strong Nuclear Force',
       description: 'How tightly are the pieces of protons held together?',
-      visual: <ParticleField strongForce={strongForce} />,
+      visual: <QuarkBindingVisual strongForce={strongForce} />,
       value: strongForce,
       onChange: (value: number[]) => setStrongForce(value[0]),
-      min: 0.1,
-      max: 2,
-      step: 0.1,
+      min: 0.8,
+      max: 1.2,
+      step: 0.001,
       unit: 'αs',
-      optimal: '0.8-1.2 αs (optimal)',
-      optimalRange: { left: ((0.8 - 0.1) / (2 - 0.1)) * 100, width: ((1.2 - 0.8) / (2 - 0.1)) * 100 },
+      optimal: '0.98-1.02 αs (optimal)',
+      optimalRange: { left: ((0.98 - 0.8) / (1.2 - 0.8)) * 100, width: ((1.02 - 0.98) / (1.2 - 0.8)) * 100 },
       educatorContent: (
         <div className="text-xs text-blue-200 space-y-2">
-          <p><strong>What you're seeing:</strong> ParticleField shows proton formation with orbiting neutrons - visualizing how the strong force binds quarks together.</p>
-          <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.8-1.2 range - just 2% precision for stable protons. This is extraordinary fine-tuning.</p>
-          <p><strong>2% weaker = no protons:</strong> Quarks would fly apart instantly. No atoms, no chemistry, no life - just a soup of loose quarks.</p>
-          <p><strong>2% stronger = no hydrogen:</strong> Protons would stick so tightly that all matter fuses immediately into heavy elements. No stars could form or shine.</p>
+          <p><strong>What you're seeing:</strong> Three quarks bound by flux tubes (gluon field) inside a proton. The visualization transitions from chaos to creation to collapse as you adjust αs.</p>
+          <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.98-1.02 range - just 4% tolerance for stable matter. This represents extraordinary fine-tuning.</p>
+          <p><strong>Too weak (&lt; 0.98):</strong> Flux tubes weaken, quarks drift apart. No protons can form - just scattered energy in an empty void.</p>
+          <p><strong>Too strong (&gt; 1.02):</strong> Violent fusion reactions. All hydrogen burns instantly into heavier elements. No long-lived stars possible.</p>
+          <p><strong>Just right (0.98-1.02):</strong> Stable protons form atoms, enabling hydrogen fusion in stars and the chemistry of life.</p>
         </div>
       )
     },
@@ -331,36 +334,25 @@ export default function MatterSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ParticleField strongForce={strongForce} />
-            <div className="relative mt-4">
-                <Slider
-                  value={[strongForce]}
-                  onValueChange={(value) => setStrongForce(value[0])}
-                  max={2}
-                  min={0.1}
-                  step={0.1}
-                  className="w-full"
-                />
-                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                     style={{
-                       left: `${((0.8 - 0.1) / (2 - 0.1)) * 100}%`,
-                       width: `${((1.2 - 0.8) / (2 - 0.1)) * 100}%`
-                     }}></div>
-              </div>
-              <div className="flex justify-between text-sm text-gray-400 mt-4">
-                <span>Too Weak</span>
-                <span className="text-green-400 font-bold">0.8-1.2 αs (optimal)</span>
-                <span className="text-white font-medium">{strongForce.toFixed(2)} αs</span>
-                <span>Too Strong</span>
-              </div>
+            <QuarkBindingVisual strongForce={strongForce} />
+            <div className="mt-4">
+              <EnhancedStrongForceSlider
+                value={strongForce}
+                onChange={setStrongForce}
+                min={0.8}
+                max={1.2}
+                step={0.001}
+              />
+            </div>
               
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                   <div className="text-xs text-blue-200 space-y-2">
-                    <p><strong>What you're seeing:</strong> ParticleField shows proton formation with orbiting neutrons - visualizing how the strong force binds quarks together.</p>
-                    <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.8-1.2 range - just 2% precision for stable protons. This is extraordinary fine-tuning.</p>
-                    <p><strong>2% weaker = no protons:</strong> Quarks would fly apart instantly. No atoms, no chemistry, no life - just a soup of loose quarks.</p>
-                    <p><strong>2% stronger = no hydrogen:</strong> Protons would stick so tightly that all matter fuses immediately into heavy elements. No stars could form or shine.</p>
+                    <p><strong>What you're seeing:</strong> Three quarks bound by flux tubes (gluon field) inside a proton. The visualization transitions from chaos to creation to collapse as you adjust αs.</p>
+                    <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.98-1.02 range - just 4% tolerance for stable matter. This represents extraordinary fine-tuning.</p>
+                    <p><strong>Too weak (&lt; 0.98):</strong> Flux tubes weaken, quarks drift apart. No protons can form - just scattered energy in an empty void.</p>
+                    <p><strong>Too strong (&gt; 1.02):</strong> Violent fusion reactions. All hydrogen burns instantly into heavier elements. No long-lived stars possible.</p>
+                    <p><strong>Just right (0.98-1.02):</strong> Stable protons form atoms, enabling hydrogen fusion in stars and the chemistry of life.</p>
                   </div>
                 </div>
               )}
