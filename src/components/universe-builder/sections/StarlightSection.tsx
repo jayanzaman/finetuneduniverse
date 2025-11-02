@@ -694,8 +694,8 @@ export default function StarlightSection({
               </div>
               
               {/* Much more compact visualization for mobile */}
-              <div className="bg-black/30 rounded-lg p-2">
-                <div className={`${steps[currentStep].isSelector ? '' : 'h-48'}`}>
+              <div className="bg-black/30 rounded-lg p-2 overflow-hidden">
+                <div className={`${steps[currentStep].isSelector ? '' : 'h-40 overflow-hidden'}`}>
                   {steps[currentStep].visual}
                 </div>
               </div>
@@ -732,20 +732,18 @@ export default function StarlightSection({
                   </div>
                 </div>
               )}
+
+              {/* Educator Mode Content - positioned below slider */}
+              {educatorMode && (
+                <div className="mt-6 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                  <div className="text-xs text-blue-200 leading-relaxed max-h-24 overflow-y-auto">
+                    {steps[currentStep].educatorContent}
+                  </div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
-        
-        {/* Separate Educator Content Card - completely isolated */}
-        {educatorMode && (
-          <Card className="bg-black/20 border-white/10 text-white mt-6">
-            <CardContent className="p-4">
-              <div className="text-xs text-blue-200 leading-relaxed max-h-32 overflow-y-auto">
-                {steps[currentStep].educatorContent}
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
 
       {/* Primary Controls - Desktop only */}

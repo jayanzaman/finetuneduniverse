@@ -72,9 +72,9 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
   const factoryStatus = getFactoryStatus()
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-3">
       {/* Factory Status Header */}
-      <div className="bg-black/40 rounded-lg p-4 border border-white/10">
+      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-semibold text-white">Universe Factory Settings</div>
           <div className="flex items-center gap-2">
@@ -103,13 +103,13 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
       </div>
 
       {/* Cosmic Timeline */}
-      <div className="bg-black/40 rounded-lg p-4 border border-white/10">
-        <div className="text-sm font-semibold text-white mb-3 text-center">
+      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
+        <div className="text-sm font-semibold text-white mb-2 text-center">
           Cosmic Star Formation History
         </div>
         
         {/* Timeline bar */}
-        <div className="relative h-6 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded mb-3">
+        <div className="relative h-4 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded mb-2">
           <div className="absolute inset-0 flex items-center justify-between px-2 text-xs text-white font-bold">
             <span>13.8 Gya</span>
             <span>Peak</span>
@@ -127,58 +127,32 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
           />
         </div>
         
-        <div className="text-xs text-gray-400 text-center mt-2">
+        <div className="text-xs text-gray-400 text-center">
           <strong className="text-white">{(13.8 - starFormationRate * 5).toFixed(1)} Gya</strong> - 
           {starFormationRate < 1 ? ' Post-Peak Era' : ' Peak Era'}
         </div>
       </div>
 
-      {/* Current Era Display */}
-      <motion.div
-        key={currentEra}
-        className={`bg-gradient-to-br ${currentEraData.color} rounded-lg p-4 border border-white/20`}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <span className="text-2xl">{currentEraData.icon}</span>
-          <div>
-            <div className="text-white font-semibold text-sm">{currentEraData.name}</div>
-            <div className="text-white/80 text-xs">{currentEraData.period}</div>
-          </div>
-        </div>
-        
-        <div className="text-white/90 text-xs mb-3">
-          {currentEraData.description}
-        </div>
-        
-        <div className="flex justify-between items-center text-xs">
-          <span className="text-white/80">Formation Rate:</span>
-          <span className="text-white font-semibold">{currentEraData.rate}</span>
-        </div>
-      </motion.div>
-
-      {/* Era Cards Grid */}
-      <div className="grid grid-cols-2 gap-3 mt-4">
+      {/* Era Cards Grid - Compact 4-column layout */}
+      <div className="grid grid-cols-4 gap-2">
         {eras.map((era, index) => (
           <motion.div
             key={index}
-            className={`p-3 rounded border transition-all duration-300 ${
+            className={`p-2 rounded border transition-all duration-300 ${
               index === currentEra
                 ? 'bg-white/10 border-white/30 scale-105'
                 : 'bg-black/20 border-white/10 hover:bg-white/5'
             }`}
             whileHover={{ scale: index === currentEra ? 1.05 : 1.02 }}
           >
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm">{era.icon}</span>
-              <div className="text-xs font-semibold text-white truncate">
+            <div className="flex flex-col items-center text-center">
+              <span className="text-lg mb-1">{era.icon}</span>
+              <div className="text-xs font-semibold text-white mb-1">
                 {era.name.replace(' Era', '')}
               </div>
+              <div className="text-xs text-gray-300 mb-1">{era.rate}</div>
+              <div className="text-xs text-gray-400">{era.status}</div>
             </div>
-            <div className="text-xs text-gray-300 mb-1">{era.rate}</div>
-            <div className="text-xs text-gray-400">{era.status}</div>
           </motion.div>
         ))}
       </div>
