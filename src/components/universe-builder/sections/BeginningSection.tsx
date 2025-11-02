@@ -160,7 +160,7 @@ function DensityFluctuationsVisual({ densityFluctuations }: { densityFluctuation
         <div className="grid grid-cols-8 grid-rows-6 h-full w-full gap-1 p-2">
           {tiles.map((tile, i) => (
             <div
-              key={i}
+              key={`tile-${i}`}
               className="bg-purple-400 rounded-sm"
               style={{
                 opacity: tile.brightness,
@@ -168,7 +168,8 @@ function DensityFluctuationsVisual({ densityFluctuations }: { densityFluctuation
                 animationDuration: `${tile.animationSpeed}s`,
                 animationTimingFunction: 'ease-in-out',
                 animationIterationCount: 'infinite',
-                animationDelay: `${tile.delay}s`
+                animationDelay: `${tile.delay}s`,
+                animationFillMode: 'both'
               }}
             />
           ))}
