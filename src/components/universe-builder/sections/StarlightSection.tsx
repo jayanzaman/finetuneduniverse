@@ -668,7 +668,7 @@ export default function StarlightSection({
               
               {/* Full-height visualization */}
               <div className="bg-black/30 rounded-lg p-3">
-                <div className="h-80 mb-3">
+                <div className={`mb-3 ${steps[currentStep].isSelector ? '' : 'h-80'}`}>
                   {steps[currentStep].visual}
                 </div>
                 
