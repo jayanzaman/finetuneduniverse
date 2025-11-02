@@ -5,7 +5,8 @@ import { Slider } from '../../ui/slider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Badge } from '../../ui/badge'
 import { Info } from 'lucide-react'
-import { SimplePenroseVisual, SimpleDarkEnergyVisual, SimpleFlatnessVisual, SimpleHorizonVisual } from './SimpleImprobabilityVisuals'
+import { SimplePenroseVisual, SimpleDarkEnergyVisual, SimpleHorizonVisual } from './SimpleImprobabilityVisuals'
+import { UniverseGeometry3D } from './UniverseGeometry3D'
 
 // Entropy Visualization - Shows order vs chaos with organized vs scattered particles
 function EntropyVisual({ entropy }: { entropy: number }) {
@@ -694,7 +695,7 @@ export default function BeginningSection({
               <CardContent>
                 <div className="space-y-4">
                   <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
-                    <SimpleFlatnessVisual density={universeDensity} />
+                    <UniverseGeometry3D density={universeDensity} />
                   </div>
                   <div className="relative">
                     <Slider
