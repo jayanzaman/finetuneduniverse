@@ -122,7 +122,15 @@ export default function MatterSection({
       step: 0.1,
       unit: 'αs',
       optimal: '0.8-1.2 αs (optimal)',
-      optimalRange: { left: ((0.8 - 0.1) / (2 - 0.1)) * 100, width: ((1.2 - 0.8) / (2 - 0.1)) * 100 }
+      optimalRange: { left: ((0.8 - 0.1) / (2 - 0.1)) * 100, width: ((1.2 - 0.8) / (2 - 0.1)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> ParticleField shows proton formation with orbiting neutrons - visualizing how the strong force binds quarks together.</p>
+          <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.8-1.2 range - just 2% precision for stable protons. This is extraordinary fine-tuning.</p>
+          <p><strong>2% weaker = no protons:</strong> Quarks would fly apart instantly. No atoms, no chemistry, no life - just a soup of loose quarks.</p>
+          <p><strong>2% stronger = no hydrogen:</strong> Protons would stick so tightly that all matter fuses immediately into heavy elements. No stars could form or shine.</p>
+        </div>
+      )
     },
     {
       id: 'mass-hierarchy',
@@ -137,7 +145,15 @@ export default function MatterSection({
       step: 0.01,
       unit: '',
       optimal: '0.9-1.1 (optimal)',
-      optimalRange: { left: ((0.9 - 0.5) / (2 - 0.5)) * 100, width: ((1.1 - 0.9) / (2 - 0.5)) * 100 }
+      optimalRange: { left: ((0.9 - 0.5) / (2 - 0.5)) * 100, width: ((1.1 - 0.9) / (2 - 0.5)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Bar chart displays relative strengths of fundamental forces - gravity is 10^40 times weaker than the others.</p>
+          <p><strong>The hierarchy mystery:</strong> Forces differ by 10^40 - requires 1 part in 10^34 fine-tuning. Why is gravity so incredibly weak compared to everything else?</p>
+          <p><strong>Quantum puzzle:</strong> Our theories predict all forces should be roughly equal strength, like identical cakes from the same recipe. Instead, one is crumb-sized while others are normal.</p>
+          <p><strong>Precision required:</strong> Like balancing the entire Earth on a needle tip and having it stay perfectly stable. This remains one of physics' greatest unsolved problems.</p>
+        </div>
+      )
     },
     {
       id: 'matter-antimatter',
@@ -152,7 +168,15 @@ export default function MatterSection({
       step: 0.001,
       unit: '%',
       optimal: '8-12% excess (optimal)',
-      optimalRange: { left: ((0.08 - 0) / (0.2 - 0)) * 100, width: ((0.12 - 0.08) / (0.2 - 0)) * 100 }
+      optimalRange: { left: ((0.08 - 0) / (0.2 - 0)) * 100, width: ((0.12 - 0.08) / (0.2 - 0)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Particle visualization shows matter/antimatter distribution - the tiny excess that became everything we see.</p>
+          <p><strong>The existence puzzle:</strong> Need 8-12% matter excess, but theory is off by factor of 100 million. Why does anything exist instead of nothing?</p>
+          <p><strong>What should have happened:</strong> Big Bang creates equal matter/antimatter (like equal left/right shoes). They annihilate completely, leaving only energy.</p>
+          <p><strong>Miraculous leftover:</strong> Somehow 1 extra matter particle per billion pairs survived annihilation. This tiny excess became stars, planets, and us - but we don't know why.</p>
+        </div>
+      )
     },
     {
       id: 'proton-stability',
@@ -167,7 +191,15 @@ export default function MatterSection({
       step: 0.1,
       unit: ' years',
       optimal: '10³⁴-10³⁶ years (optimal)',
-      optimalRange: { left: ((34 - 30) / (40 - 30)) * 100, width: ((36 - 34) / (40 - 30)) * 100 }
+      optimalRange: { left: ((34 - 30) / (40 - 30)) * 100, width: ((36 - 34) / (40 - 30)) * 100 },
+      educatorContent: (
+        <div className="text-xs text-blue-200 space-y-2">
+          <p><strong>What you're seeing:</strong> Decay timeline shows proton lifetime scenarios - building blocks must last longer than stellar evolution.</p>
+          <p><strong>Stability requirement:</strong> Protons must exceed 10^34 years lifetime - trillion trillion times the universe's age. They're the cores of every atom.</p>
+          <p><strong>The stability mystery:</strong> Our theories predict protons should decay, but we've never observed it. They appear incredibly stable against all expectations.</p>
+          <p><strong>Life's foundation:</strong> If protons decayed too quickly, atoms would fall apart and nothing stable could exist. This stability enables chemistry, biology, and consciousness.</p>
+        </div>
+      )
     }
   ]
 
@@ -185,47 +217,10 @@ export default function MatterSection({
 
   return (
     <div className="container mx-auto px-4 md:px-4">
-      {/* Main Visualization - Full Width */}
-      <div className="mb-6 md:mb-12">
-        <div className="relative">
-          <Card className="bg-black/20 border-white/10 text-white">
-            <CardHeader>
-              <CardTitle className="text-white">Formation of Matter</CardTitle>
-              <CardDescription className="text-gray-300">
-                Four fundamental parameters that determine how particles form atoms
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {/* Desktop: Show all four visualizations */}
-              <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                <div className="space-y-3">
-                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Quark Binding Force</h4>
-                  <div className="h-64 sm:h-48 md:h-64">
-                    <ParticleField strongForce={strongForce} />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Mass Hierarchy</h4>
-                  <div className="h-64 sm:h-48 md:h-64">
-                    <SimpleHierarchyVisual massScale={hierarchyScale} />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Matter vs Antimatter</h4>
-                  <div className="h-64 sm:h-48 md:h-64">
-                    <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Proton Stability</h4>
-                  <div className="h-64 sm:h-48 md:h-64">
-                    <SimpleProtonStabilityVisual lifetime={protonLifetime} />
-                  </div>
-                </div>
-              </div>
-
-              {/* Mobile: Optimized full-screen layout */}
-              <div className="md:hidden">
+      {/* Mobile: Optimized full-screen layout */}
+      <div className="md:hidden mb-6">
+        <Card className="bg-black/20 border-white/10 text-white">
+          <CardContent>
                 <div className="space-y-2">
                   {/* Compact header with progress */}
                   <div className="flex items-center justify-between mb-2">
@@ -313,8 +308,14 @@ export default function MatterSection({
                       Next
                     </button>
                   </div>
+
+                  {/* Educator Mode Content */}
+                  {educatorMode && (
+                    <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                      {steps[currentStep].educatorContent}
+                    </div>
+                  )}
                 </div>
-              </div>
             </CardContent>
           </Card>
         </div>
@@ -514,7 +515,6 @@ export default function MatterSection({
         </Card>
       </div>
 
-      </div>
     </div>
   )
 }
