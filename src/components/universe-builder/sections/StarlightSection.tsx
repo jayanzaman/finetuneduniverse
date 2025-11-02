@@ -693,54 +693,57 @@ export default function StarlightSection({
                 </button>
               </div>
               
-              {/* Ultra-compact visualization without scrollbars */}
-              <div className="bg-black/30 rounded-lg p-2">
-                <div className={`${steps[currentStep].isSelector ? '' : 'h-52'}`}>
-                  {steps[currentStep].visual}
+              {/* Dynamic layout container */}
+              <div className="flex flex-col space-y-3">
+                {/* Visualization - compact but not constrained */}
+                <div className="bg-black/30 rounded-lg p-2">
+                  <div className={`${steps[currentStep].isSelector ? '' : ''}`}>
+                    {steps[currentStep].visual}
+                  </div>
                 </div>
-              </div>
 
-              {/* Compact control - moved below visualization for non-selector steps */}
-              {!steps[currentStep].isSelector && (
-                <div className="space-y-2 mt-4">
-                  <div className="relative">
-                    <Slider
-                      value={[steps[currentStep].value as number]}
-                      onValueChange={steps[currentStep].onChange as (value: number[]) => void}
-                      max={steps[currentStep].max}
-                      min={steps[currentStep].min}
-                      step={steps[currentStep].step}
-                      className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3 [&>span[role=slider]]:bg-blue-500"
-                    />
-                    {steps[currentStep].optimalRange && (
-                      <div 
-                        className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
-                        style={{
-                          left: `${steps[currentStep].optimalRange.left}%`,
-                          width: `${steps[currentStep].optimalRange.width}%`
-                        }}
+                {/* Slider control - properly positioned below visualization */}
+                {!steps[currentStep].isSelector && (
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Slider
+                        value={[steps[currentStep].value as number]}
+                        onValueChange={steps[currentStep].onChange as (value: number[]) => void}
+                        max={steps[currentStep].max}
+                        min={steps[currentStep].min}
+                        step={steps[currentStep].step}
+                        className="w-full [&>span[role=slider]]:h-3 [&>span[role=slider]]:w-3 [&>span[role=slider]]:bg-blue-500"
                       />
-                    )}
+                      {steps[currentStep].optimalRange && (
+                        <div 
+                          className="absolute top-2 h-1.5 bg-green-500/30 rounded pointer-events-none" 
+                          style={{
+                            left: `${steps[currentStep].optimalRange.left}%`,
+                            width: `${steps[currentStep].optimalRange.width}%`
+                          }}
+                        />
+                      )}
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-300">
+                      <span className="text-xs">Low</span>
+                      <span className="text-green-400 font-medium text-center flex-1 text-xs">{steps[currentStep].optimal}</span>
+                      <span className="text-white font-medium text-xs">
+                        {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
+                      </span>
+                      <span className="text-xs">High</span>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-300 mt-2">
-                    <span className="text-xs">Low</span>
-                    <span className="text-green-400 font-medium text-center flex-1 text-xs">{steps[currentStep].optimal}</span>
-                    <span className="text-white font-medium text-xs">
-                      {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
-                    </span>
-                    <span className="text-xs">High</span>
-                  </div>
-                </div>
-              )}
+                )}
 
-              {/* Educator Mode Content - positioned below slider */}
-              {educatorMode && (
-                <div className="mt-6 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                  <div className="text-xs text-blue-200 leading-relaxed max-h-24 overflow-y-auto">
-                    {steps[currentStep].educatorContent}
+                {/* Educator Mode Content - dynamic height, no scrollbar */}
+                {educatorMode && (
+                  <div className="p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                    <div className="text-xs text-blue-200 leading-relaxed">
+                      {steps[currentStep].educatorContent}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

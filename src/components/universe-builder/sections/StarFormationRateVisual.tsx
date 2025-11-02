@@ -86,7 +86,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1, repeat: Infinity }}
             />
-            <span className={`text-xs font-medium ${factoryStatus.color} w-16 text-center`}>
+            <span className={`text-xs font-medium ${factoryStatus.color} w-20 text-center leading-tight`}>
               {factoryStatus.status}
             </span>
           </div>
