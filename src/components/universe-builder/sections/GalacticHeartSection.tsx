@@ -172,8 +172,8 @@ function MilkyWayEvolution({
         </div>
 
 
-        {/* Progress Bar with Timeline Legends */}
-        <div className="absolute bottom-0 left-0 right-0">
+        {/* Progress Bar with Timeline Legends - Desktop only */}
+        <div className="absolute bottom-0 left-0 right-0 hidden md:block">
           {/* Progress Bar */}
           <div className="h-1 bg-white/10">
             <div 
@@ -200,6 +200,37 @@ function MilkyWayEvolution({
               <span className="text-white font-medium">Today</span>
               <span className="text-gray-400">Modern Era</span>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Timeline - Mobile only, below image */}
+      <div className="md:hidden bg-black/20 border-t border-white/10">
+        {/* Progress Bar */}
+        <div className="h-1 bg-white/10">
+          <div 
+            className="h-full bg-white/60 transition-all duration-700"
+            style={{ width: `${((currentPhase + 1) / galaxyPhases.length) * 100}%` }}
+          />
+        </div>
+        
+        {/* Timeline Legends */}
+        <div className="flex justify-between items-center px-4 py-2 text-xs">
+          <div className="flex flex-col items-start">
+            <span className="text-white font-medium">13.8 Gya</span>
+            <span className="text-gray-400">Big Bang</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-white font-medium">10 Gya</span>
+            <span className="text-gray-400">Active Phase</span>
+          </div>
+          <div className="flex flex-col items-center">
+            <span className="text-white font-medium">5 Gya</span>
+            <span className="text-gray-400">Stabilization</span>
+          </div>
+          <div className="flex flex-col items-end">
+            <span className="text-white font-medium">Today</span>
+            <span className="text-gray-400">Modern Era</span>
           </div>
         </div>
       </div>
