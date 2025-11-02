@@ -292,6 +292,11 @@ export default function BeginningSection({
   // Mobile navigation state
   const [currentStep, setCurrentStep] = useState(0)
   
+  // Additional fine-tuning parameters
+  const [darkEnergyStrength, setDarkEnergyStrength] = useState(1)
+  const [universeDensity, setUniverseDensity] = useState(1)
+  const [temperatureUniformity, setTemperatureUniformity] = useState(0.99999)
+  
   // Handle expansion rate changes with movement detection
   const handleExpansionRateChange = (value: number[]) => {
     const newRate = value[0];
@@ -307,7 +312,7 @@ export default function BeginningSection({
     }
   }
   
-  // Define the steps in optimal order
+  // Define all 6 steps in optimal order
   const steps = [
     {
       id: 'entropy',
@@ -321,12 +326,13 @@ export default function BeginningSection({
       max: 10,
       step: 0.1,
       unit: 'S/k',
-      optimal: '0.5-1.5 S/k (optimal)'
+      optimal: '0.5-1.5 S/k (optimal)',
+      optimalRange: { left: ((0.5 - 0.1) / (10 - 0.1)) * 100, width: ((1.5 - 0.5) / (10 - 0.1)) * 100 }
     },
     {
       id: 'expansion',
       title: 'Expansion Rate',
-      subtitle: 'Redshift',
+      subtitle: 'Hubble Constant',
       description: 'How fast the universe expands after the Big Bang',
       visual: <ExpansionVisual expansionRate={expansionRate} isMovingLeft={isMovingLeft} />,
       value: expansionRate,
@@ -335,7 +341,8 @@ export default function BeginningSection({
       max: 2,
       step: 0.1,
       unit: 'H₀',
-      optimal: '0.5-0.9 H₀ (optimal)'
+      optimal: '0.5-0.9 H₀ (optimal)',
+      optimalRange: { left: ((0.5 - 0.1) / (2 - 0.1)) * 100, width: ((0.9 - 0.5) / (2 - 0.1)) * 100 }
     },
     {
       id: 'fluctuations',
@@ -349,14 +356,55 @@ export default function BeginningSection({
       max: 1,
       step: 0.01,
       unit: 'δρ/ρ',
-      optimal: '10⁻⁵-10⁻⁴ δρ/ρ (optimal)'
+      optimal: '10⁻⁵-10⁻⁴ δρ/ρ (optimal)',
+      optimalRange: { left: ((0.1 - 0) / (1 - 0)) * 100, width: ((0.3 - 0.1) / (1 - 0)) * 100 }
+    },
+    {
+      id: 'shape',
+      title: 'Universe Shape',
+      subtitle: 'Spacetime Geometry',
+      description: 'How matter density determines the geometry of space',
+      visual: <UniverseGeometry3D density={universeDensity} />,
+      value: universeDensity,
+      onChange: (value: number[]) => setUniverseDensity(value[0]),
+      min: 0.5,
+      max: 1.5,
+      step: 0.001,
+      unit: 'Ω',
+      optimal: '0.98-1.02 Ω (optimal)',
+      optimalRange: { left: ((0.98 - 0.5) / (1.5 - 0.5)) * 100, width: ((1.02 - 0.98) / (1.5 - 0.5)) * 100 }
+    },
+    {
+      id: 'darkenergy',
+      title: 'Dark Energy Strength',
+      subtitle: 'Cosmic Acceleration',
+      description: 'How strong is the force pushing the universe apart?',
+      visual: <SimpleDarkEnergyVisual lambda={darkEnergyStrength} />,
+      value: darkEnergyStrength,
+      onChange: (value: number[]) => setDarkEnergyStrength(value[0]),
+      min: 0,
+      max: 2,
+      step: 0.01,
+      unit: 'Λ',
+      optimal: '0.8-1.2 Λ (optimal)',
+      optimalRange: { left: ((0.8 - 0) / (2 - 0)) * 100, width: ((1.2 - 0.8) / (2 - 0)) * 100 }
+    },
+    {
+      id: 'temperature',
+      title: 'Temperature Uniformity',
+      subtitle: 'CMB Precision',
+      description: 'How uniform is the cosmic background temperature?',
+      visual: <TemperatureUniformityVisual uniformity={temperatureUniformity} />,
+      value: temperatureUniformity,
+      onChange: (value: number[]) => setTemperatureUniformity(value[0]),
+      min: 0.9,
+      max: 1,
+      step: 0.00001,
+      unit: 'K',
+      optimal: '2.725±0.00005 K (optimal)',
+      optimalRange: { left: ((0.99998 - 0.9) / (1 - 0.9)) * 100, width: ((1 - 0.99998) / (1 - 0.9)) * 100 }
     }
   ]
-  
-  // Additional fine-tuning parameters
-  const [darkEnergyStrength, setDarkEnergyStrength] = useState(1)
-  const [universeDensity, setUniverseDensity] = useState(1)
-  const [temperatureUniformity, setTemperatureUniformity] = useState(0.99999)
 
   useEffect(() => {
     const handleRandomize = () => {
@@ -466,13 +514,48 @@ export default function BeginningSection({
                   </div>
 
                   {/* Current step */}
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     <div className="text-center">
                       <h4 className="text-lg font-semibold text-white">{steps[currentStep].title}</h4>
                       <p className="text-sm text-gray-300">{steps[currentStep].subtitle}</p>
+                      <p className="text-xs text-gray-400">{steps[currentStep].description}</p>
                     </div>
-                    <div className="h-64">
-                      {steps[currentStep].visual}
+                    
+                    {/* Visualization with integrated slider */}
+                    <div className="bg-black/30 rounded-lg p-4 space-y-4">
+                      <div className="h-48">
+                        {steps[currentStep].visual}
+                      </div>
+                      
+                      {/* Integrated slider */}
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <Slider
+                            value={[steps[currentStep].value]}
+                            onValueChange={steps[currentStep].onChange}
+                            max={steps[currentStep].max}
+                            min={steps[currentStep].min}
+                            step={steps[currentStep].step}
+                            className="w-full"
+                          />
+                          {/* Optimal range indicator */}
+                          <div 
+                            className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                            style={{
+                              left: `${steps[currentStep].optimalRange.left}%`,
+                              width: `${steps[currentStep].optimalRange.width}%`
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-400">
+                          <span>Low</span>
+                          <span className="text-green-400 font-bold">{steps[currentStep].optimal}</span>
+                          <span className="text-white font-medium">
+                            {steps[currentStep].value.toFixed(steps[currentStep].step < 0.01 ? 5 : 2)} {steps[currentStep].unit}
+                          </span>
+                          <span>High</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -724,38 +807,6 @@ export default function BeginningSection({
             </CardContent>
           </Card>
 
-        </div>
-
-        {/* Mobile: Show only current step's control */}
-        <div className="md:hidden">
-          <Card className="bg-black/20 border-white/10">
-            <CardHeader>
-              <CardTitle className="text-white">{steps[currentStep].title}</CardTitle>
-              <CardDescription className="text-gray-300">
-                {steps[currentStep].description}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="relative">
-                  <Slider
-                    value={[steps[currentStep].value]}
-                    onValueChange={steps[currentStep].onChange}
-                    max={steps[currentStep].max}
-                    min={steps[currentStep].min}
-                    step={steps[currentStep].step}
-                    className="w-full"
-                  />
-                </div>
-                <div className="flex justify-between text-sm text-gray-400">
-                  <span>Low</span>
-                  <span className="text-green-400 font-bold">{steps[currentStep].optimal}</span>
-                  <span className="text-white font-medium">{steps[currentStep].value.toFixed(2)} {steps[currentStep].unit}</span>
-                  <span>High</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
       </div>
