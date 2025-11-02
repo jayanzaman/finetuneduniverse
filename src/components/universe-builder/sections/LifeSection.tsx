@@ -519,21 +519,106 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardHeader>
               <CardContent>
                 {educatorMode ? (
-                  <div className="p-4 bg-green-500/20 border-2 border-green-500 rounded-lg">
-                    <h3 className="text-green-300 font-bold text-lg mb-2">🔬 INSIGHT MODE TEST - THIS SHOULD BE VISIBLE!</h3>
-                    <p className="text-green-200 mb-2">If you can see this green box, Insight Mode is working!</p>
-                    <p className="text-green-100 text-sm">Selected Era: {GEOLOGICAL_ERAS[selectedEra].name}</p>
-                    <p className="text-green-100 text-sm">Era ID: {selectedEra}</p>
-                    <p className="text-green-100 text-sm">Educator Mode State: {educatorMode ? 'TRUE' : 'FALSE'}</p>
-                    <div className="mt-3 p-2 bg-green-600/30 rounded">
-                      <p className="text-xs text-green-200">This is a simple test component to verify Insight Mode rendering.</p>
+                  <div className="space-y-4">
+                    {/* Era Overview */}
+                    <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
+                      <h4 className="font-semibold mb-2 text-blue-300 flex items-center gap-2">
+                        <span className="text-lg">{currentEra.icon}</span>
+                        Era Overview
+                      </h4>
+                      <p className="text-blue-200 text-sm leading-relaxed mb-3">{currentEra.details}</p>
+                      <p className="text-blue-100 text-xs italic">"{currentEra.context}"</p>
+                    </div>
+
+                    {/* Key Features */}
+                    <div className="p-4 rounded-lg bg-green-900/20 border border-green-500/30">
+                      <h4 className="font-semibold mb-3 text-green-300">Key Features</h4>
+                      <div className="grid grid-cols-1 gap-2">
+                        {currentEra.keyFeatures.map((feature, index) => (
+                          <div key={index} className="flex items-start gap-2">
+                            <div className="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 flex-shrink-0" />
+                            <span className="text-green-100 text-sm">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Life Forms */}
+                    <div className="p-4 rounded-lg bg-purple-900/20 border border-purple-500/30">
+                      <h4 className="font-semibold mb-3 text-purple-300">Dominant Life Forms</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {currentEra.lifeforms.map((lifeform, index) => (
+                          <span key={index} className="px-3 py-1 bg-purple-800/30 text-purple-200 text-sm rounded-full border border-purple-600/30">
+                            {lifeform}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Environmental Conditions */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Atmospheric Composition */}
+                      <div className="p-4 rounded-lg bg-amber-900/20 border border-amber-500/30">
+                        <h4 className="font-semibold mb-3 text-amber-300">Atmospheric Composition</h4>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="text-center">
+                            <div className="text-lg font-bold text-amber-200">{currentEra.atmosphere.co2}%</div>
+                            <div className="text-xs text-amber-300">CO₂</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-lg font-bold text-amber-200">{currentEra.atmosphere.oxygen}%</div>
+                            <div className="text-xs text-amber-300">O₂</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-lg font-bold text-amber-200">{currentEra.atmosphere.methane}%</div>
+                            <div className="text-xs text-amber-300">CH₄</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-lg font-bold text-amber-200">{currentEra.atmosphere.nitrogen}%</div>
+                            <div className="text-xs text-amber-300">N₂</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Temperature */}
+                      <div className="p-4 rounded-lg bg-red-900/20 border border-red-500/30">
+                        <h4 className="font-semibold mb-2 text-red-300">Global Temperature</h4>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-red-200">
+                            {currentEra.temperature > 0 ? '+' : ''}{currentEra.temperature}°C
+                          </div>
+                          <div className="text-xs text-red-300">relative to present day</div>
+                          <div className="text-xs text-red-400 mt-1">
+                            ({currentEra.temperature === 0 ? '15°C average' : `${15 + currentEra.temperature}°C average`})
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Time Period */}
+                    <div className="p-3 rounded-lg bg-gray-900/20 border border-gray-500/30">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <h4 className="font-semibold text-gray-300">Time Period</h4>
+                          <p className="text-gray-400 text-sm">{currentEra.timeRange}</p>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-gray-200">{currentEra.description}</div>
+                          <div className="text-xs text-gray-400">Era Classification</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="p-4 bg-red-500/20 border-2 border-red-500 rounded-lg text-center">
-                    <h3 className="text-red-300 font-bold mb-2">🎮 PLAY MODE ACTIVE</h3>
-                    <p className="text-red-200">Enable Insight Mode to see detailed scientific analysis</p>
-                    <p className="text-red-100 text-sm mt-2">Educator Mode State: {educatorMode ? 'TRUE' : 'FALSE'}</p>
+                  <div className="p-6 text-center text-gray-400">
+                    <div className="mb-4">
+                      <span className="text-4xl">{currentEra.icon}</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-300 mb-2">
+                      {currentEra.name}
+                    </h3>
+                    <p className="text-sm mb-4">{currentEra.description}</p>
+                    <p className="text-xs">Enable Insight Mode to see detailed scientific analysis</p>
                   </div>
                 )}
               </CardContent>
