@@ -610,15 +610,244 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     </div>
                   </div>
                 ) : (
-                  <div className="p-6 text-center text-gray-400">
-                    <div className="mb-4">
-                      <span className="text-4xl">{currentEra.icon}</span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-300 mb-2">
-                      {currentEra.name}
-                    </h3>
-                    <p className="text-sm mb-4">{currentEra.description}</p>
-                    <p className="text-xs">Enable Insight Mode to see detailed scientific analysis</p>
+                  <div className="space-y-4">
+                    {/* Play Mode Content - Era-specific detailed descriptions */}
+                    {selectedEra === 0 && ( // Hadean Earth
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🌋</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-orange-300">Hadean Earth</h3>
+                            <p className="text-orange-400 text-sm">4.6–4.0 billion years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-orange-200 mb-2">Role: Foundation of habitability</h4>
+                          <p className="text-orange-100 text-sm leading-relaxed mb-3">
+                            The Hadean was less an "era of life" and more an era that built the stage. Earth was still accreting, battered by impacts, its crust repeatedly melting. But during these violent cycles, a stable crust, oceans, and a magnetic field began forming.
+                          </p>
+                          <p className="text-orange-100 text-sm leading-relaxed">
+                            Without these, no later biochemistry could survive: DNA would have been fried by radiation and boiled away by heat.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-orange-200 mb-2">Tempo: Chemical, not biological</h4>
+                          <p className="text-orange-100 text-sm leading-relaxed">
+                            Even though there were no cells yet, the ingredients—amino acids, nucleotides, phospholipids—were being forged in the crucible of heat, lightning, and meteor chemistry. This took hundreds of millions of years, setting a lower bound for prebiotic complexity. Skip this, and you lose the raw materials and the protective environment necessary for even a single strand of RNA to persist.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 1 && ( // Archean Earth
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-teal-900/30 to-green-900/30 border border-teal-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🦠</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-teal-300">Archean Earth</h3>
+                            <p className="text-teal-400 text-sm">4.0–2.5 billion years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-teal-200 mb-2">Role: Birth of life and the first metabolism</h4>
+                          <p className="text-teal-100 text-sm leading-relaxed">
+                            By now, the planet had cooled enough for liquid water oceans and stable continental crusts. Microbial life arose—probably thermophiles feeding on hydrogen and sulfur. The key invention: photosynthesis (first anoxygenic, then oxygenic cyanobacteria).
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-teal-200 mb-2">Tempo: Molecular experimentation</h4>
+                          <p className="text-teal-100 text-sm leading-relaxed">
+                            Mutations in primitive genomes (maybe only a few thousand base pairs long) drove exploration of metabolic pathways. Over 1.5 billion years, countless micro-steps—energy coupling, ATP synthesis, lipid membranes—were refined. If this window had been shorter, the statistical odds of evolving such complex systems from random chemistry drop to nearly zero. Skip the Archean, and you skip life's root—no prokaryotes, no genetic code, no photosynthesis.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 2 && ( // Great Oxygenation
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-cyan-900/30 to-blue-900/30 border border-cyan-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">❄️</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-cyan-300">Great Oxygenation Event</h3>
+                            <p className="text-cyan-400 text-sm">2.5–2.0 billion years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-cyan-200 mb-2">Role: Planetary transformation by life</h4>
+                          <p className="text-cyan-100 text-sm leading-relaxed">
+                            Cyanobacteria's waste product—oxygen—accumulated in the atmosphere, poisoning anaerobes but enabling new metabolisms: respiration (far more energy-efficient than fermentation). Iron in oceans oxidized, forming the red banded iron formations that mark this cataclysmic shift.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-cyan-200 mb-2">Tempo: Atmospheric-scale mutation</h4>
+                          <p className="text-cyan-100 text-sm leading-relaxed">
+                            This wasn't a biological invention so much as a planetary feedback loop triggered by biological persistence. It took hundreds of millions of years for oxygen sinks to fill and atmospheric O₂ to rise. Skip this, and no eukaryotes: the jump in available energy per cell was the prerequisite for complex multicellularity.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 3 && ( // Proterozoic Earth
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🔬</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-purple-300">Proterozoic Earth</h3>
+                            <p className="text-purple-400 text-sm">2.0–541 million years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-purple-200 mb-2">Role: Complexity incubator</h4>
+                          <p className="text-purple-100 text-sm leading-relaxed">
+                            This is when eukaryotic cells—those with nuclei and mitochondria—arose via endosymbiosis, a once-in-history fusion between archaea and bacteria. Genetic recombination, compartmentalization, and sexual reproduction emerged. The Earth's climate cycled between snowball states and greenhouse phases, pressuring life to innovate.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-purple-200 mb-2">Tempo: Slow genetic architecture building</h4>
+                          <p className="text-purple-100 text-sm leading-relaxed">
+                            It took roughly 1.5 billion years for single-celled eukaryotes to evolve multicellularity, tissue specialization, and signaling genes. That's the genomic patience required to assemble bodies. Skip the Proterozoic, and you jump straight from bacteria to bodies—impossible without the intermediate eukaryotic toolkit.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 4 && ( // Ediacaran-Cambrian
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-emerald-900/30 to-green-900/30 border border-emerald-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🐚</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-emerald-300">Ediacaran–Cambrian</h3>
+                            <p className="text-emerald-400 text-sm">635–485 million years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-emerald-200 mb-2">Role: Explosion of animal body plans</h4>
+                          <p className="text-emerald-100 text-sm leading-relaxed">
+                            Ediacaran seas hosted soft-bodied multicellular life; the Cambrian saw the evolutionary arms race that produced all major phyla—arthropods, mollusks, chordates. Oxygen levels, genetic prerequisites (Hox genes), and ecological competition converged.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-emerald-200 mb-2">Tempo: Genetic acceleration after a billion-year incubation</h4>
+                          <p className="text-emerald-100 text-sm leading-relaxed">
+                            The apparent "explosion" spanned ~25 million years—short geologically, long biologically. Mutational rates plus developmental gene networks hit a critical threshold: enough regulatory complexity for morphogenesis to diversify rapidly. Skip this, and you have microbial mats forever—no animals, no eyes, no predation, no nervous systems.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 5 && ( // Paleozoic Earth
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-lime-900/30 to-green-900/30 border border-lime-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🌿</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-lime-300">Paleozoic Earth</h3>
+                            <p className="text-lime-400 text-sm">485–252 million years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-lime-200 mb-2">Role: Colonization of land and the invention of diversity</h4>
+                          <p className="text-lime-100 text-sm leading-relaxed">
+                            Plants, fungi, arthropods, and vertebrates moved ashore. Forests oxygenated the air. Complex food webs formed. The DNA-based instructions for skeletons, circulatory systems, and limbs were refined.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-lime-200 mb-2">Tempo: Steady genetic branching under stable conditions</h4>
+                          <p className="text-lime-100 text-sm leading-relaxed">
+                            Hundreds of millions of years of gradual selection were needed to tune the transition from water to air—lungs, keratin, seeds. If this interval were compressed, mutation and selection could not have supplied the adaptive diversity. Skip it, and you have only marine ecosystems.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 6 && ( // Mesozoic Earth
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-yellow-900/30 to-orange-900/30 border border-yellow-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🦕</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-yellow-300">Mesozoic Earth</h3>
+                            <p className="text-yellow-400 text-sm">252–66 million years ago</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-yellow-200 mb-2">Role: Age of reptiles—and ecosystems testing large-scale design</h4>
+                          <p className="text-yellow-100 text-sm leading-relaxed">
+                            Following the Permian extinction, reptiles, dinosaurs, and early mammals radiated. Continental drift rearranged habitats; flowering plants evolved, enabling complex pollination systems.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-yellow-200 mb-2">Tempo: Evolutionary dynamism punctuated by catastrophe</h4>
+                          <p className="text-yellow-100 text-sm leading-relaxed">
+                            The slow refinement of warm-blooded metabolism, feathers, and live birth required tens of millions of generations. Mass extinctions pruned the tree, letting adaptive bursts reshape it. Skip the Mesozoic, and mammals never gain the ecological foothold needed for intelligence to evolve later.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 7 && ( // Cenozoic Earth
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-amber-900/30 to-yellow-900/30 border border-amber-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🐘</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-amber-300">Cenozoic Earth</h3>
+                            <p className="text-amber-400 text-sm">66 million years ago–today</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-amber-200 mb-2">Role: Mammalian ascendance and the evolution of cognition</h4>
+                          <p className="text-amber-100 text-sm leading-relaxed">
+                            After the asteroid impact cleared the dinosaurs, niches opened for small, warm-blooded generalists. Climate oscillations selected for adaptability and social behavior. Eventually, primates evolved high-energy brains—cognitive organisms able to model the world and, ironically, reconstruct this very timeline.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-amber-200 mb-2">Tempo: Fast by geological standards, slow by genetic ones</h4>
+                          <p className="text-amber-100 text-sm leading-relaxed">
+                            Even here, major innovations—bipedalism, language, tool use—took millions of years and countless generations. Compress time further, and random mutations can't traverse the necessary fitness landscapes.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {selectedEra === 8 && ( // Anthropocene
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/30 to-slate-900/30 border border-gray-500/30">
+                        <div className="flex items-center gap-3 mb-4">
+                          <span className="text-3xl">🏭</span>
+                          <div>
+                            <h3 className="text-xl font-bold text-gray-300">Anthropocene</h3>
+                            <p className="text-gray-400 text-sm">Present day</p>
+                          </div>
+                        </div>
+                        
+                        <div className="mb-4">
+                          <h4 className="font-semibold text-gray-200 mb-2">Role: Human transformation of Earth systems</h4>
+                          <p className="text-gray-100 text-sm leading-relaxed">
+                            Humans have become a geological force, reshaping the planet's climate, chemistry, and biology faster than natural processes. This represents the first time in Earth's history that a single species has gained conscious control over planetary systems.
+                          </p>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-gray-200 mb-2">Tempo: Technological acceleration</h4>
+                          <p className="text-gray-100 text-sm leading-relaxed">
+                            The pace of change has accelerated beyond biological timescales. What once took millions of years now happens in decades. This creates both unprecedented opportunities and existential risks for life on Earth.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </CardContent>
