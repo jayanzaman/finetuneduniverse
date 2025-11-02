@@ -99,6 +99,73 @@ export default function MatterSection({
   const [hierarchyScale, setHierarchyScale] = useState(1)
   const [matterAsymmetry, setMatterAsymmetry] = useState(0.1)
   const [protonLifetime, setProtonLifetime] = useState(35)
+  
+  // Mobile navigation state
+  const [currentStep, setCurrentStep] = useState(0)
+  
+  // Define the steps in optimal order for Formation of Matter
+  const steps = [
+    {
+      id: 'quark-binding',
+      title: 'Quark Binding Force',
+      subtitle: 'Strong Nuclear Force',
+      description: 'How tightly are the pieces of protons held together?',
+      visual: <ParticleField strongForce={strongForce} />,
+      value: strongForce,
+      onChange: (value: number[]) => setStrongForce(value[0]),
+      min: 0.1,
+      max: 2,
+      step: 0.1,
+      unit: 'αs',
+      optimal: '0.8-1.2 αs (optimal)',
+      optimalRange: { left: ((0.8 - 0.1) / (2 - 0.1)) * 100, width: ((1.2 - 0.8) / (2 - 0.1)) * 100 }
+    },
+    {
+      id: 'mass-hierarchy',
+      title: 'Mass Hierarchy',
+      subtitle: 'Force Strength Ratios',
+      description: 'Why are fundamental forces so different in strength?',
+      visual: <SimpleHierarchyVisual massScale={hierarchyScale} />,
+      value: hierarchyScale,
+      onChange: (value: number[]) => setHierarchyScale(value[0]),
+      min: 0.5,
+      max: 2,
+      step: 0.01,
+      unit: '',
+      optimal: '0.9-1.1 (optimal)',
+      optimalRange: { left: ((0.9 - 0.5) / (2 - 0.5)) * 100, width: ((1.1 - 0.9) / (2 - 0.5)) * 100 }
+    },
+    {
+      id: 'matter-antimatter',
+      title: 'Matter vs Antimatter',
+      subtitle: 'Cosmic Asymmetry',
+      description: 'Why does matter exist instead of nothing?',
+      visual: <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />,
+      value: matterAsymmetry,
+      onChange: (value: number[]) => setMatterAsymmetry(value[0]),
+      min: 0,
+      max: 0.2,
+      step: 0.001,
+      unit: '%',
+      optimal: '8-12% excess (optimal)',
+      optimalRange: { left: ((0.08 - 0) / (0.2 - 0)) * 100, width: ((0.12 - 0.08) / (0.2 - 0)) * 100 }
+    },
+    {
+      id: 'proton-stability',
+      title: 'Proton Stability',
+      subtitle: 'Atomic Longevity',
+      description: 'How long do the building blocks of atoms last?',
+      visual: <SimpleProtonStabilityVisual lifetime={protonLifetime} />,
+      value: protonLifetime,
+      onChange: (value: number[]) => setProtonLifetime(value[0]),
+      min: 30,
+      max: 40,
+      step: 0.1,
+      unit: ' years',
+      optimal: '10³⁴-10³⁶ years (optimal)',
+      optimalRange: { left: ((34 - 30) / (40 - 30)) * 100, width: ((36 - 34) / (40 - 30)) * 100 }
+    }
+  ]
 
   useEffect(() => {
     const handleRandomize = () => {
@@ -114,8 +181,141 @@ export default function MatterSection({
 
   return (
     <div className="container mx-auto px-4">
-      {/* Primary Controls - Balanced Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+      {/* Main Visualization - Full Width */}
+      <div className="mb-12">
+        <div className="relative">
+          <Card className="bg-black/20 border-white/10 text-white">
+            <CardHeader>
+              <CardTitle className="text-white">Formation of Matter</CardTitle>
+              <CardDescription className="text-gray-300">
+                Four fundamental parameters that determine how particles form atoms
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Desktop: Show all four visualizations */}
+              <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Quark Binding Force</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
+                    <ParticleField strongForce={strongForce} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Mass Hierarchy</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
+                    <SimpleHierarchyVisual massScale={hierarchyScale} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Matter vs Antimatter</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
+                    <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-sm sm:text-base font-semibold text-white text-center">Proton Stability</h4>
+                  <div className="h-64 sm:h-48 md:h-64">
+                    <SimpleProtonStabilityVisual lifetime={protonLifetime} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Mobile: Show one step at a time with navigation */}
+              <div className="md:hidden">
+                <div className="space-y-4">
+                  {/* Progress indicator */}
+                  <div className="flex justify-center items-center space-x-2 mb-4">
+                    {steps.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentStep ? 'bg-blue-400' : 'bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Current step with integrated slider */}
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <h4 className="text-lg font-semibold text-white">{steps[currentStep].title}</h4>
+                      <p className="text-sm text-gray-300">{steps[currentStep].subtitle}</p>
+                      <p className="text-xs text-gray-400">{steps[currentStep].description}</p>
+                    </div>
+                    
+                    {/* Visualization with integrated slider */}
+                    <div className="bg-black/30 rounded-lg p-4 space-y-4">
+                      <div className="h-48">
+                        {steps[currentStep].visual}
+                      </div>
+                      
+                      {/* Integrated slider */}
+                      <div className="space-y-2">
+                        <div className="relative">
+                          <Slider
+                            value={[steps[currentStep].value]}
+                            onValueChange={steps[currentStep].onChange}
+                            max={steps[currentStep].max}
+                            min={steps[currentStep].min}
+                            step={steps[currentStep].step}
+                            className="w-full"
+                          />
+                          {/* Optimal range indicator */}
+                          <div 
+                            className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
+                            style={{
+                              left: `${steps[currentStep].optimalRange.left}%`,
+                              width: `${steps[currentStep].optimalRange.width}%`
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-400">
+                          <span>Low</span>
+                          <span className="text-green-400 font-bold">{steps[currentStep].optimal}</span>
+                          <span className="text-white font-medium">
+                            {steps[currentStep].id === 'matter-antimatter' 
+                              ? `${(steps[currentStep].value * 100).toFixed(1)}${steps[currentStep].unit}`
+                              : steps[currentStep].id === 'proton-stability'
+                              ? `10^${steps[currentStep].value.toFixed(0)}${steps[currentStep].unit}`
+                              : `${steps[currentStep].value.toFixed(2)} ${steps[currentStep].unit}`
+                            }
+                          </span>
+                          <span>High</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Navigation buttons */}
+                  <div className="flex justify-between items-center">
+                    <button
+                      onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                      disabled={currentStep === 0}
+                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    
+                    <span className="text-sm text-gray-400">
+                      {currentStep + 1} / {steps.length}
+                    </span>
+                    
+                    <button
+                      onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+                      disabled={currentStep === steps.length - 1}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+      {/* Primary Controls - Desktop only */}
+      <div className="hidden md:grid md:grid-cols-1 sm:md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Quark Binding Force */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
@@ -309,6 +509,7 @@ export default function MatterSection({
         </Card>
       </div>
 
+      </div>
     </div>
   )
 }
