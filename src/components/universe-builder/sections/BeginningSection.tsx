@@ -289,6 +289,9 @@ export default function BeginningSection({
   const [isMovingLeft, setIsMovingLeft] = useState(false)
   const [lastExpansionRate, setLastExpansionRate] = useState(0.5)
   
+  // Mobile navigation state
+  const [currentStep, setCurrentStep] = useState(0)
+  
   // Handle expansion rate changes with movement detection
   const handleExpansionRateChange = (value: number[]) => {
     const newRate = value[0];
@@ -303,6 +306,52 @@ export default function BeginningSection({
       setTimeout(() => setIsMovingLeft(false), 300);
     }
   }
+  
+  // Define the steps in optimal order
+  const steps = [
+    {
+      id: 'entropy',
+      title: 'Initial Entropy',
+      subtitle: 'Order vs Chaos',
+      description: 'How organized was the universe at the beginning?',
+      visual: <EntropyVisual entropy={entropy} />,
+      value: entropy,
+      onChange: (value: number[]) => setEntropy(value[0]),
+      min: 0.1,
+      max: 10,
+      step: 0.1,
+      unit: 'S/k',
+      optimal: '0.5-1.5 S/k (optimal)'
+    },
+    {
+      id: 'expansion',
+      title: 'Expansion Rate',
+      subtitle: 'Redshift',
+      description: 'How fast the universe expands after the Big Bang',
+      visual: <ExpansionVisual expansionRate={expansionRate} isMovingLeft={isMovingLeft} />,
+      value: expansionRate,
+      onChange: handleExpansionRateChange,
+      min: 0.1,
+      max: 2,
+      step: 0.1,
+      unit: 'H₀',
+      optimal: '0.5-0.9 H₀ (optimal)'
+    },
+    {
+      id: 'fluctuations',
+      title: 'Density Fluctuations',
+      subtitle: 'Quantum Seeds',
+      description: 'Tiny variations that seeded all cosmic structures',
+      visual: <DensityFluctuationsVisual densityFluctuations={densityFluctuations} />,
+      value: densityFluctuations,
+      onChange: (value: number[]) => setDensityFluctuations(value[0]),
+      min: 0,
+      max: 1,
+      step: 0.01,
+      unit: 'δρ/ρ',
+      optimal: '10⁻⁵-10⁻⁴ δρ/ρ (optimal)'
+    }
+  ]
   
   // Additional fine-tuning parameters
   const [darkEnergyStrength, setDarkEnergyStrength] = useState(1)
@@ -379,7 +428,8 @@ export default function BeginningSection({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              {/* Desktop: Show all three visualizations */}
+              <div className="hidden md:grid md:grid-cols-3 gap-4 sm:gap-6">
                 <div className="space-y-3">
                   <h4 className="text-sm sm:text-base font-semibold text-white text-center">Initial Entropy</h4>
                   <div className="h-64 sm:h-48 md:h-64">
@@ -399,12 +449,65 @@ export default function BeginningSection({
                   </div>
                 </div>
               </div>
+
+              {/* Mobile: Show one step at a time with navigation */}
+              <div className="md:hidden">
+                <div className="space-y-4">
+                  {/* Progress indicator */}
+                  <div className="flex justify-center items-center space-x-2 mb-4">
+                    {steps.map((_, index) => (
+                      <div
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-colors ${
+                          index === currentStep ? 'bg-blue-400' : 'bg-gray-600'
+                        }`}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Current step */}
+                  <div className="space-y-3">
+                    <div className="text-center">
+                      <h4 className="text-lg font-semibold text-white">{steps[currentStep].title}</h4>
+                      <p className="text-sm text-gray-300">{steps[currentStep].subtitle}</p>
+                    </div>
+                    <div className="h-64">
+                      {steps[currentStep].visual}
+                    </div>
+                  </div>
+
+                  {/* Navigation buttons */}
+                  <div className="flex justify-between items-center">
+                    <button
+                      onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+                      disabled={currentStep === 0}
+                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Previous
+                    </button>
+                    
+                    <span className="text-sm text-gray-400">
+                      {currentStep + 1} / {steps.length}
+                    </span>
+                    
+                    <button
+                      onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
+                      disabled={currentStep === steps.length - 1}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
 
       {/* Primary Controls - Balanced Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
+      <div className="mb-8 sm:mb-12">
+        {/* Desktop: Show all controls */}
+        <div className="hidden md:grid md:grid-cols-1 sm:md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 
           {/* Initial Entropy Control */}
           <Card className="bg-black/20 border-white/10">
@@ -620,6 +723,40 @@ export default function BeginningSection({
               )}
             </CardContent>
           </Card>
+
+        </div>
+
+        {/* Mobile: Show only current step's control */}
+        <div className="md:hidden">
+          <Card className="bg-black/20 border-white/10">
+            <CardHeader>
+              <CardTitle className="text-white">{steps[currentStep].title}</CardTitle>
+              <CardDescription className="text-gray-300">
+                {steps[currentStep].description}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="relative">
+                  <Slider
+                    value={[steps[currentStep].value]}
+                    onValueChange={steps[currentStep].onChange}
+                    max={steps[currentStep].max}
+                    min={steps[currentStep].min}
+                    step={steps[currentStep].step}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex justify-between text-sm text-gray-400">
+                  <span>Low</span>
+                  <span className="text-green-400 font-bold">{steps[currentStep].optimal}</span>
+                  <span className="text-white font-medium">{steps[currentStep].value.toFixed(2)} {steps[currentStep].unit}</span>
+                  <span>High</span>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
       </div>
 
