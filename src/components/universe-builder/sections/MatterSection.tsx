@@ -223,24 +223,26 @@ export default function MatterSection({
               {/* Mobile: Show one step at a time with navigation */}
               <div className="md:hidden">
                 <div className="space-y-4">
-                  {/* Progress indicator */}
-                  <div className="flex justify-center items-center space-x-2 mb-4">
+                  {/* Parameter progress indicator - prominent and distinct */}
+                  <div className="flex justify-center items-center space-x-2 mb-6">
                     {steps.map((_, index) => (
                       <div
                         key={index}
-                        className={`w-2 h-2 rounded-full transition-colors ${
-                          index === currentStep ? 'bg-blue-400' : 'bg-gray-600'
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          index === currentStep 
+                            ? 'bg-blue-400 shadow-lg shadow-blue-400/50 scale-110' 
+                            : 'bg-gray-500/60 hover:bg-gray-400/80'
                         }`}
                       />
                     ))}
                   </div>
 
                   {/* Current step with integrated slider */}
-                  <div className="space-y-4">
-                    <div className="text-center">
+                  <div className="space-y-3">
+                    <div className="text-center space-y-1">
                       <h4 className="text-lg font-semibold text-white">{steps[currentStep].title}</h4>
                       <p className="text-sm text-gray-300">{steps[currentStep].subtitle}</p>
-                      <p className="text-xs text-gray-400">{steps[currentStep].description}</p>
+                      <p className="text-xs text-gray-400 leading-relaxed">{steps[currentStep].description}</p>
                     </div>
                     
                     {/* Visualization with integrated slider */}
@@ -286,24 +288,26 @@ export default function MatterSection({
                     </div>
                   </div>
 
-                  {/* Navigation buttons */}
-                  <div className="flex justify-between items-center">
+                  {/* Navigation buttons - improved touch targets */}
+                  <div className="flex justify-between items-center pt-2">
                     <button
                       onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                       disabled={currentStep === 0}
-                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-3 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 min-h-[44px]"
                     >
                       Previous
                     </button>
                     
-                    <span className="text-sm text-gray-400">
-                      {currentStep + 1} / {steps.length}
-                    </span>
+                    <div className="text-center">
+                      <span className="text-sm font-medium text-blue-400">
+                        {currentStep + 1} / {steps.length}
+                      </span>
+                    </div>
                     
                     <button
                       onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 min-h-[44px]"
                     >
                       Next
                     </button>

@@ -154,12 +154,13 @@ export default function UniverseBuilderApp() {
             <div className="text-center flex-1">
               <div className="text-orange-400 font-semibold text-sm">{sections[currentSection].title}</div>
               <div className="text-xs text-gray-400">{sections[currentSection].subtitle}</div>
+              {/* Subtle section progress - smaller and less prominent */}
               <div className="flex justify-center mt-1 space-x-1">
                 {sections.map((_, idx) => (
                   <div
                     key={idx}
-                    className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                      currentSection === idx ? 'bg-orange-400' : 'bg-gray-600'
+                    className={`w-1 h-1 rounded-full transition-colors ${
+                      currentSection === idx ? 'bg-orange-400/80' : 'bg-gray-600/50'
                     }`}
                   />
                 ))}
