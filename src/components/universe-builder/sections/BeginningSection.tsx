@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { Slider } from '../../ui/slider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Badge } from '../../ui/badge'
-import { Info } from 'lucide-react'
+import { Info, X, Maximize2 } from 'lucide-react'
 import { SimplePenroseVisual, SimpleDarkEnergyVisual, SimpleHorizonVisual } from './SimpleImprobabilityVisuals'
 import { UniverseGeometry3D } from './UniverseGeometry3D'
 
@@ -295,6 +295,9 @@ export default function BeginningSection({
   
   // Mobile navigation state
   const [currentStep, setCurrentStep] = useState(0)
+  
+  // Desktop focused view state
+  const [focusedConcept, setFocusedConcept] = useState<string | null>(null)
   
   // Additional fine-tuning parameters
   const [darkEnergyStrength, setDarkEnergyStrength] = useState(1)
@@ -647,6 +650,89 @@ export default function BeginningSection({
 
   return (
     <div className="container mx-auto px-4 md:px-4">
+      {/* Desktop Focused View Modal */}
+      {focusedConcept && (
+        <div className="hidden md:block fixed inset-0 z-50 bg-black/90 backdrop-blur-sm">
+          <div className="h-full w-full p-8 overflow-auto">
+            <div className="max-w-6xl mx-auto">
+              {/* Close Button */}
+              <button
+                onClick={() => setFocusedConcept(null)}
+                className="fixed top-4 right-4 p-3 bg-red-600 hover:bg-red-700 text-white rounded-full transition-all duration-200 shadow-lg z-50 group"
+                aria-label="Close focused view"
+              >
+                <X className="h-6 w-6" />
+                <span className="absolute right-full mr-2 top-1/2 -translate-y-1/2 bg-black/80 text-white text-sm px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  Back to Overview
+                </span>
+              </button>
+
+              {/* Focused Content */}
+              {steps.find(s => s.id === focusedConcept) && (() => {
+                const step = steps.find(s => s.id === focusedConcept)!;
+                return (
+                  <Card className="bg-black/40 border-white/20">
+                    <CardHeader>
+                      <CardTitle className="text-white text-3xl">{step.title}</CardTitle>
+                      <CardDescription className="text-gray-300 text-lg">
+                        {step.subtitle} • {step.description}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-6">
+                        {/* Large Visualization */}
+                        <div className="h-96 bg-black/30 rounded-lg overflow-hidden">
+                          {step.visual}
+                        </div>
+
+                        {/* Current Value Display */}
+                        <div className="text-center py-4">
+                          <div className="text-5xl font-bold text-yellow-400 font-mono">
+                            {step.value.toFixed(step.step < 0.01 ? 5 : 2)} {step.unit}
+                          </div>
+                        </div>
+
+                        {/* Slider */}
+                        <div className="space-y-3">
+                          <div className="relative px-2">
+                            <Slider
+                              value={[step.value]}
+                              onValueChange={step.onChange}
+                              max={step.max}
+                              min={step.min}
+                              step={step.step}
+                              className="w-full"
+                            />
+                            <div 
+                              className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                              style={{
+                                left: `${step.optimalRange.left}%`,
+                                width: `${step.optimalRange.width}%`
+                              }}
+                            />
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-400 px-2">
+                            <span>Low</span>
+                            <span className="text-green-400 font-medium">{step.optimal}</span>
+                            <span>High</span>
+                          </div>
+                        </div>
+
+                        {/* Educator Content */}
+                        {educatorMode && (
+                          <div className="mt-6 p-6 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                            {step.educatorContent}
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
       {/* Main Visualization - Full Width */}
       <div className="mb-6 md:mb-12">
         {/* Visualization */}
@@ -778,12 +864,18 @@ export default function BeginningSection({
         <div className="hidden md:grid md:grid-cols-1 sm:md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 
           {/* Initial Entropy Control */}
-          <Card className="bg-black/20 border-white/10">
+          <Card className="bg-black/20 border-white/10 hover:border-white/30 transition-all cursor-pointer group" onClick={() => setFocusedConcept('entropy')}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-white">Initial Entropy (Order vs Chaos)</CardTitle>
+                <CardTitle className="text-white flex items-center gap-2">
+                  Initial Entropy (Order vs Chaos)
+                  <Maximize2 className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </CardTitle>
                 <button
-                  onClick={() => setShowPenroseInfo(!showPenroseInfo)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowPenroseInfo(!showPenroseInfo);
+                  }}
                   className="text-orange-400 hover:text-orange-300"
                 >
                   <Info className="h-4 w-4" />
@@ -854,9 +946,12 @@ export default function BeginningSection({
           </Card>
 
           {/* Expansion Rate Control */}
-          <Card className="bg-black/20 border-white/10">
+          <Card className="bg-black/20 border-white/10 hover:border-white/30 transition-all cursor-pointer group" onClick={() => setFocusedConcept('expansion')}>
             <CardHeader>
-              <CardTitle className="text-white">Expansion Rate (Hubble Constant)</CardTitle>
+              <CardTitle className="text-white flex items-center gap-2">
+                Expansion Rate (Hubble Constant)
+                <Maximize2 className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </CardTitle>
               <CardDescription className="text-gray-300">
                 How fast the universe expands after the Big Bang
               </CardDescription>
@@ -946,9 +1041,12 @@ export default function BeginningSection({
           </Card>
 
           {/* Density Fluctuations Control */}
-          <Card className="bg-black/20 border-white/10">
+          <Card className="bg-black/20 border-white/10 hover:border-white/30 transition-all cursor-pointer group" onClick={() => setFocusedConcept('fluctuations')}>
             <CardHeader>
-              <CardTitle className="text-white">Density Fluctuations</CardTitle>
+              <CardTitle className="text-white flex items-center gap-2">
+                Density Fluctuations
+                <Maximize2 className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </CardTitle>
               <CardDescription className="text-gray-300">
                 Quantum ripples that seed all future structures
               </CardDescription>
@@ -1002,9 +1100,12 @@ export default function BeginningSection({
             
 
             {/* Dark Energy Strength */}
-            <Card className="bg-black/20 border-white/10">
+            <Card className="bg-black/20 border-white/10 hover:border-white/30 transition-all cursor-pointer group" onClick={() => setFocusedConcept('darkenergy')}>
               <CardHeader>
-                <CardTitle className="text-white">Dark Energy Strength</CardTitle>
+                <CardTitle className="text-white flex items-center gap-2">
+                  Dark Energy Strength
+                  <Maximize2 className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </CardTitle>
                 <CardDescription className="text-gray-300">
                   How strong is the force pushing the universe apart?
                 </CardDescription>
@@ -1051,9 +1152,12 @@ export default function BeginningSection({
             </Card>
 
             {/* Universe Shape */}
-            <Card className="bg-black/20 border-white/10">
+            <Card className="bg-black/20 border-white/10 hover:border-white/30 transition-all cursor-pointer group" onClick={() => setFocusedConcept('shape')}>
               <CardHeader>
-                <CardTitle className="text-white">Universe Shape</CardTitle>
+                <CardTitle className="text-white flex items-center gap-2">
+                  Universe Shape
+                  <Maximize2 className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </CardTitle>
                 <CardDescription className="text-gray-300">
                   How much matter determines the geometry of space
                 </CardDescription>
@@ -1107,9 +1211,12 @@ export default function BeginningSection({
             </Card>
 
             {/* Temperature Uniformity */}
-            <Card className="bg-black/20 border-white/10">
+            <Card className="bg-black/20 border-white/10 hover:border-white/30 transition-all cursor-pointer group" onClick={() => setFocusedConcept('temperature')}>
               <CardHeader>
-                <CardTitle className="text-white">Temperature Uniformity</CardTitle>
+                <CardTitle className="text-white flex items-center gap-2">
+                  Temperature Uniformity
+                  <Maximize2 className="h-4 w-4 text-blue-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </CardTitle>
                 <CardDescription className="text-gray-300">
                   How uniform is the cosmic background temperature?
                 </CardDescription>
