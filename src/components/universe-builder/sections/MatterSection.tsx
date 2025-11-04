@@ -6,7 +6,6 @@ import { Slider } from '../../ui/slider'
 import { SimpleStrongForceVisual, SimpleHierarchyVisual, SimpleMatterAntimatterVisual } from './SimpleMatterVisuals'
 import { TimelineProbabilityVisual, TimelineProbabilityVisualMobile } from './TimelineProbabilityVisual'
 import { QuarkBindingVisual } from './QuarkBindingVisual'
-import { EnhancedStrongForceSlider } from './EnhancedStrongForceSlider'
 
 // Particle Visualization Component
 function ParticleField({ strongForce }: { strongForce: number }) {
@@ -336,28 +335,60 @@ export default function MatterSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <QuarkBindingVisual strongForce={strongForce} />
-            <div className="mt-4">
-              <EnhancedStrongForceSlider
-                value={strongForce}
-                onChange={setStrongForce}
-                min={0.8}
-                max={1.2}
-                step={0.001}
-              />
-            </div>
+            <div className="space-y-4">
+              {/* Visualization - Fixed Height */}
+              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+                <QuarkBindingVisual strongForce={strongForce} />
+              </div>
+              
+              {/* Current Value */}
+              <div className="text-center py-2">
+                <div className="text-3xl font-bold text-yellow-400 font-mono">{strongForce.toFixed(3)}</div>
+                <div className={`text-xs mt-1 font-medium ${
+                  strongForce >= 0.98 && strongForce <= 1.02 
+                    ? 'text-green-400' 
+                    : 'text-red-400'
+                }`}>
+                  {strongForce >= 0.98 && strongForce <= 1.02 ? '✅ Stable Matter' : '❌ Unstable'}
+                </div>
+              </div>
+
+              {/* Slider with Optimal Range */}
+              <div className="relative px-1">
+                <Slider
+                  value={[strongForce]}
+                  onValueChange={(value) => setStrongForce(value[0])}
+                  max={1.2}
+                  min={0.8}
+                  step={0.001}
+                  className="w-full"
+                />
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                     style={{
+                       left: `${((0.98 - 0.8) / (1.2 - 0.8)) * 100}%`,
+                       width: `${((1.02 - 0.98) / (1.2 - 0.8)) * 100}%`
+                     }}></div>
+              </div>
+
+              {/* Range Labels */}
+              <div className="flex justify-between text-xs text-gray-400 px-1">
+                <span>0.8</span>
+                <span className="text-green-400 font-medium">0.98-1.02</span>
+                <span>1.2</span>
+              </div>
               
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
                   <div className="text-xs text-blue-200 space-y-2">
-                    <p><strong>What you're seeing:</strong> Three quarks bound by flux tubes (gluon field) inside a proton. The visualization transitions from chaos to creation to collapse as you adjust αs.</p>
-                    <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.98-1.02 range - just 4% tolerance for stable matter. This represents extraordinary fine-tuning.</p>
+                    <p><strong>What you're seeing:</strong> Three quarks bound by flux tubes (gluon field) inside a proton. The visualization transitions from chaos to creation to collapse as you adjust αₛ.</p>
+                    <p><strong>Critical precision:</strong> Strong force (αₛ) must be within 0.98-1.02 range - just 4% tolerance for stable matter. This represents extraordinary fine-tuning.</p>
                     <p><strong>Too weak (&lt; 0.98):</strong> Flux tubes weaken, quarks drift apart. No protons can form - just scattered energy in an empty void.</p>
                     <p><strong>Too strong (&gt; 1.02):</strong> Violent fusion reactions. All hydrogen burns instantly into heavier elements. No long-lived stars possible.</p>
                     <p><strong>Just right (0.98-1.02):</strong> Stable protons form atoms, enabling hydrogen fusion in stars and the chemistry of life.</p>
                   </div>
                 </div>
               )}
+            </div>
           </CardContent>
         </Card>
 
@@ -370,32 +401,48 @@ export default function MatterSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-              <div className="space-y-4">
-                <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
-                  <SimpleHierarchyVisual massScale={hierarchyScale} />
-                </div>
-                <div className="relative">
-                  <Slider
-                    value={[hierarchyScale]}
-                    onValueChange={(value) => setHierarchyScale(value[0])}
-                    max={2}
-                    min={0.5}
-                    step={0.01}
-                    className="w-full"
-                  />
-                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                       style={{
-                         left: `${((0.9 - 0.5) / (2 - 0.5)) * 100}%`,
-                         width: `${((1.1 - 0.9) / (2 - 0.5)) * 100}%`
-                       }}></div>
-                </div>
-                <div className="flex justify-between text-sm text-gray-400">
-                  <span>Collapsed</span>
-                  <span className="text-green-400 font-bold">0.9-1.1 (optimal)</span>
-                  <span className="text-white font-medium">{hierarchyScale.toFixed(2)}</span>
-                  <span>Runaway</span>
+            <div className="space-y-4">
+              {/* Visualization - Fixed Height */}
+              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+                <SimpleHierarchyVisual massScale={hierarchyScale} />
+              </div>
+              
+              {/* Current Value */}
+              <div className="text-center py-2">
+                <div className="text-3xl font-bold text-yellow-400 font-mono">{hierarchyScale.toFixed(2)}</div>
+                <div className={`text-xs mt-1 font-medium ${
+                  hierarchyScale >= 0.9 && hierarchyScale <= 1.1 
+                    ? 'text-green-400' 
+                    : 'text-red-400'
+                }`}>
+                  {hierarchyScale >= 0.9 && hierarchyScale <= 1.1 ? '✅ Balanced Forces' : '❌ Imbalanced'}
                 </div>
               </div>
+
+              {/* Slider with Optimal Range */}
+              <div className="relative px-1">
+                <Slider
+                  value={[hierarchyScale]}
+                  onValueChange={(value) => setHierarchyScale(value[0])}
+                  max={2}
+                  min={0.5}
+                  step={0.01}
+                  className="w-full"
+                />
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                     style={{
+                       left: `${((0.9 - 0.5) / (2 - 0.5)) * 100}%`,
+                       width: `${((1.1 - 0.9) / (2 - 0.5)) * 100}%`
+                     }}></div>
+              </div>
+
+              {/* Range Labels */}
+              <div className="flex justify-between text-xs text-gray-400 px-1">
+                <span>0.5</span>
+                <span className="text-green-400 font-medium">0.9-1.1</span>
+                <span>2.0</span>
+              </div>
+            </div>
               
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
@@ -419,32 +466,48 @@ export default function MatterSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-              <div className="space-y-4">
-                <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
-                  <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />
-                </div>
-                <div className="relative">
-                  <Slider
-                    value={[matterAsymmetry]}
-                    onValueChange={(value) => setMatterAsymmetry(value[0])}
-                    max={0.2}
-                    min={0}
-                    step={0.001}
-                    className="w-full"
-                  />
-                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                       style={{
-                         left: `${((0.08 - 0) / (0.2 - 0)) * 100}%`,
-                         width: `${((0.12 - 0.08) / (0.2 - 0)) * 100}%`
-                       }}></div>
-                </div>
-                <div className="flex justify-between text-sm text-gray-400">
-                  <span>Equal (Nothing)</span>
-                  <span className="text-green-400 font-bold">8-12% excess (optimal)</span>
-                  <span className="text-white font-medium">{(matterAsymmetry * 100).toFixed(1)}%</span>
-                  <span>Too Much</span>
+            <div className="space-y-4">
+              {/* Visualization - Fixed Height */}
+              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+                <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />
+              </div>
+              
+              {/* Current Value */}
+              <div className="text-center py-2">
+                <div className="text-3xl font-bold text-yellow-400 font-mono">{(matterAsymmetry * 100).toFixed(1)}%</div>
+                <div className={`text-xs mt-1 font-medium ${
+                  matterAsymmetry >= 0.08 && matterAsymmetry <= 0.12 
+                    ? 'text-green-400' 
+                    : 'text-red-400'
+                }`}>
+                  {matterAsymmetry >= 0.08 && matterAsymmetry <= 0.12 ? '✅ Matter Exists' : '❌ No Matter'}
                 </div>
               </div>
+
+              {/* Slider with Optimal Range */}
+              <div className="relative px-1">
+                <Slider
+                  value={[matterAsymmetry]}
+                  onValueChange={(value) => setMatterAsymmetry(value[0])}
+                  max={0.2}
+                  min={0}
+                  step={0.001}
+                  className="w-full"
+                />
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                     style={{
+                       left: `${((0.08 - 0) / (0.2 - 0)) * 100}%`,
+                       width: `${((0.12 - 0.08) / (0.2 - 0)) * 100}%`
+                     }}></div>
+              </div>
+
+              {/* Range Labels */}
+              <div className="flex justify-between text-xs text-gray-400 px-1">
+                <span>0%</span>
+                <span className="text-green-400 font-medium">8-12%</span>
+                <span>20%</span>
+              </div>
+            </div>
               
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
@@ -468,32 +531,48 @@ export default function MatterSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-              <div className="space-y-4">
-                <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
-                  <TimelineProbabilityVisual lifetime={protonLifetime} />
-                </div>
-                <div className="relative">
-                  <Slider
-                    value={[protonLifetime]}
-                    onValueChange={(value) => setProtonLifetime(value[0])}
-                    max={40}
-                    min={30}
-                    step={0.1}
-                    className="w-full"
-                  />
-                  <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded" 
-                       style={{
-                         left: `${((34 - 30) / (40 - 30)) * 100}%`,
-                         width: `${((36 - 34) / (40 - 30)) * 100}%`
-                       }}></div>
-                </div>
-                <div className="flex justify-between text-sm text-gray-400">
-                  <span>Unstable</span>
-                  <span className="text-green-400 font-bold">10^34-10^36 years (optimal)</span>
-                  <span className="text-white font-medium">10^{protonLifetime.toFixed(0)} years</span>
-                  <span>Too Stable</span>
+            <div className="space-y-4">
+              {/* Visualization - Fixed Height */}
+              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+                <TimelineProbabilityVisual lifetime={protonLifetime} />
+              </div>
+              
+              {/* Current Value */}
+              <div className="text-center py-2">
+                <div className="text-3xl font-bold text-yellow-400 font-mono">10^{protonLifetime.toFixed(0)}</div>
+                <div className={`text-xs mt-1 font-medium ${
+                  protonLifetime >= 34 
+                    ? 'text-green-400' 
+                    : 'text-red-400'
+                }`}>
+                  {protonLifetime >= 34 ? '✅ Stable Protons' : '❌ Decay Too Fast'}
                 </div>
               </div>
+
+              {/* Slider with Optimal Range */}
+              <div className="relative px-1">
+                <Slider
+                  value={[protonLifetime]}
+                  onValueChange={(value) => setProtonLifetime(value[0])}
+                  max={40}
+                  min={30}
+                  step={0.1}
+                  className="w-full"
+                />
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                     style={{
+                       left: `${((34 - 30) / (40 - 30)) * 100}%`,
+                       width: `${((36 - 34) / (40 - 30)) * 100}%`
+                     }}></div>
+              </div>
+
+              {/* Range Labels */}
+              <div className="flex justify-between text-xs text-gray-400 px-1">
+                <span>10^30</span>
+                <span className="text-green-400 font-medium">10^34+</span>
+                <span>10^40</span>
+              </div>
+            </div>
               
               {educatorMode && (
                 <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">

@@ -1,7 +1,7 @@
 'use client'
 
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Grid } from '@react-three/drei'
+import { OrbitControls } from '@react-three/drei'
 import { useMemo } from 'react'
 import * as THREE from 'three'
 
@@ -35,17 +35,28 @@ function SaddleSurface({ curvature }: { curvature: number }) {
   )
 }
 
-// Spherical Surface Component
+// Spherical Surface Component - Gradually curves from flat to dome
 function SphericalSurface({ curvature }: { curvature: number }) {
   const geometry = useMemo(() => {
-    const geometry = new THREE.SphereGeometry(2, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2)
+    const geometry = new THREE.PlaneGeometry(4, 4, 32, 32)
     const positions = geometry.attributes.position.array as Float32Array
     
-    // Scale the sphere based on curvature
+    // Apply spherical curvature: z = -k * sqrt(R^2 - x^2 - y^2) + R
+    // This creates a dome that gradually increases in curvature
+    const radius = 4 // Base radius for sphere calculation
+    
     for (let i = 0; i < positions.length; i += 3) {
-      positions[i] *= curvature
-      positions[i + 1] *= curvature
-      positions[i + 2] *= curvature
+      const x = positions[i]
+      const y = positions[i + 1]
+      const distanceSquared = x * x + y * y
+      
+      // Only apply curvature within the radius
+      if (distanceSquared < radius * radius) {
+        // Calculate height on sphere surface: z = sqrt(R^2 - x^2 - y^2)
+        const sphereHeight = Math.sqrt(radius * radius - distanceSquared)
+        // Apply curvature strength - multiply by curvature factor
+        positions[i + 2] = curvature * (sphereHeight - radius) * 0.5
+      }
     }
     
     geometry.attributes.position.needsUpdate = true
@@ -82,11 +93,15 @@ function FlatSurface() {
 
 // Main 3D Universe Geometry Component
 export function UniverseGeometry3D({ density }: { density: number }) {
-  // Determine geometry type and curvature strength
-  const geometryType = Math.abs(density - 1) < 0.02 ? 'flat' : density > 1 ? 'closed' : 'open'
+  // Determine geometry type and curvature strength with smaller flat threshold
+  const geometryType = Math.abs(density - 1) < 0.005 ? 'flat' : density > 1 ? 'closed' : 'open'
+  
+  // Calculate curvature strength with higher sensitivity
+  // For closed: smooth transition from 0 to 1 as density goes from 1.0 to 1.5
+  // For open: smooth transition from 0 to 1 as density goes from 1.0 to 0.5
   const curvatureStrength = geometryType === 'closed' 
-    ? Math.min((density - 1) * 2, 1)
-    : Math.min((1 - density) * 2, 1)
+    ? Math.min((density - 1) * 3, 1.5) // Increased multiplier for more visible curvature
+    : Math.min((1 - density) * 3, 1.5)
 
   const getLabel = () => {
     if (geometryType === 'flat') return { label: 'FLAT', desc: 'Ω = 1.000', color: '#74b9ff' }
@@ -111,21 +126,6 @@ export function UniverseGeometry3D({ density }: { density: number }) {
         {geometryType === 'flat' && <FlatSurface />}
         {geometryType === 'closed' && <SphericalSurface curvature={curvatureStrength} />}
         {geometryType === 'open' && <SaddleSurface curvature={curvatureStrength} />}
-
-        {/* Grid for reference */}
-        <Grid 
-          args={[10, 10]} 
-          cellSize={0.5} 
-          cellThickness={0.5} 
-          cellColor="#ffffff" 
-          sectionSize={2} 
-          sectionThickness={1} 
-          sectionColor="#ffffff"
-          fadeDistance={25}
-          fadeStrength={1}
-          followCamera={false}
-          infiniteGrid={true}
-        />
 
         {/* Camera controls */}
         <OrbitControls 

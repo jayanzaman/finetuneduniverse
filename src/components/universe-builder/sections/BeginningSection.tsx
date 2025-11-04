@@ -446,11 +446,98 @@ export default function BeginningSection({
       optimal: '0.98-1.02 Ω (optimal)',
       optimalRange: { left: ((0.98 - 0.5) / (1.5 - 0.5)) * 100, width: ((1.02 - 0.98) / (1.5 - 0.5)) * 100 },
       educatorContent: (
-        <div className="text-xs text-blue-200 space-y-2">
-          <p><strong>What "Flat" Actually Means:</strong> In cosmology, "flat" means Euclidean geometry holds true at cosmic scales: parallel lines never meet, triangle angles add up to 180°, and light travels in straight lines through empty space. In Einstein's relativity, space geometry depends on energy and mass content.</p>
-          <p><strong>The three possibilities:</strong> Open (saddle-shaped, infinite expansion), Closed (spherical, eventual collapse), or Flat (perfectly balanced, critical density). Our universe appears remarkably flat.</p>
-          <p><strong>Fine-tuning problem:</strong> For the universe to be flat today, the initial density had to be tuned to the critical value with precision of 1 part in 10^60. Even tiny deviations would have led to immediate collapse or runaway expansion.</p>
-          <p><strong>Inflation theory:</strong> Cosmic inflation in the first fraction of a second could explain this flatness, but inflation itself requires fine-tuning to work properly.</p>
+        <div className="text-xs text-blue-200 space-y-3">
+          <div>
+            <p className="font-bold text-blue-100 mb-1">Step 1. The Big Equation</p>
+            <p>The universe's shape is ruled by one key relationship called the Friedmann equation:</p>
+            <p className="font-mono text-center my-2 text-blue-100">H² = (8πG/3)ρ - kc²/a²</p>
+            <p>Here's what those symbols mean:</p>
+            <ul className="list-disc list-inside ml-2 space-y-1">
+              <li><strong>H</strong> is how fast the universe is expanding (like the slope in distance–time graphs)</li>
+              <li><strong>ρ (rho)</strong> is the density of everything in the universe — matter, radiation, dark energy</li>
+              <li><strong>k</strong> tells us the geometry: +1 for sphere, 0 for flat, −1 for saddle</li>
+              <li><strong>a</strong> is the scale factor — how much space has stretched</li>
+            </ul>
+            <p className="mt-1">When we divide both sides by H², we get dimensionless quantities called density parameters.</p>
+          </div>
+
+          <div>
+            <p className="font-bold text-blue-100 mb-1">Step 2. Defining Ω (Omega)</p>
+            <p>For each type of stuff in the universe we define: <span className="font-mono">Ωᵢ = ρᵢ/ρc</span></p>
+            <p>where <span className="font-mono">ρc = 3H²/(8πG)</span> is the critical density — the exact amount needed for space to be flat.</p>
+            <p className="mt-1">If the total density equals the critical density, the universe is flat:</p>
+            <p className="font-mono text-center my-1">Ωₜₒₜ = Ωₘ + Ωᵣ + ΩΛ = 1 ⇒ k = 0</p>
+          </div>
+
+          <div>
+            <p className="font-bold text-blue-100 mb-1">Step 3. Geometry from Everyday Intuition</p>
+            <p>Think of three possible worlds:</p>
+            <ul className="list-disc list-inside ml-2 space-y-1">
+              <li><strong>Spherical (Ωₜₒₜ &gt; 1):</strong> Like the surface of a ball. If you draw a big triangle, its angles add up to more than 180°.</li>
+              <li><strong>Flat (Ωₜₒₜ = 1):</strong> Like paper. Angles in a triangle add up to exactly 180°.</li>
+              <li><strong>Hyperbolic (Ωₜₒₜ &lt; 1):</strong> Like a saddle. Angles in a triangle add up to less than 180°.</li>
+            </ul>
+            <p className="mt-1">These differences are what you see in the diagram: sphere → saddle → plane.</p>
+          </div>
+
+          <div>
+            <p className="font-bold text-blue-100 mb-1">Step 4. Why It Matters</p>
+            <p>The density of the universe determines the tug of gravity compared to the push of expansion:</p>
+            <ul className="list-disc list-inside ml-2 space-y-1">
+              <li><strong>Too much mass-energy (Ωₜₒₜ &gt; 1):</strong> gravity wins, space curves inward</li>
+              <li><strong>Too little (Ωₜₒₜ &lt; 1):</strong> expansion wins, space curves outward</li>
+              <li><strong>Just right (Ωₜₒₜ = 1):</strong> the two balance perfectly — flat space</li>
+            </ul>
+            <p className="mt-1">Our measurements show: <span className="font-mono">Ωₘ ≈ 0.3, ΩΛ ≈ 0.7, Ωᵣ ≈ 0.00009</span></p>
+            <p>Add them up → about 1.00009, meaning our universe is astonishingly flat.</p>
+          </div>
+
+          <div>
+            <p className="font-bold text-blue-100 mb-1">Step 5. How You Can Picture It</p>
+            <p>Use the slider above:</p>
+            <ul className="list-disc list-inside ml-2 space-y-1">
+              <li>Set Ω = 1.0 — the readout will show Ωₖ ≈ 0 and the grid will look perfectly flat</li>
+              <li>Raise the slider so total density &gt; 1 — you'll see the surface curve upward (spherical)</li>
+              <li>Lower the slider so total density &lt; 1 — you'll see the surface curve into a saddle (hyperbolic)</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="font-bold text-blue-100 mb-1">Step 6. The Easy Summary</p>
+            <div className="overflow-x-auto">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-blue-400/30">
+                    <th className="text-left py-1 px-2">Shape</th>
+                    <th className="text-left py-1 px-2">Total Density Ωₜₒₜ</th>
+                    <th className="text-left py-1 px-2">Triangle Angles</th>
+                    <th className="text-left py-1 px-2">Universe Fate</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-blue-400/20">
+                    <td className="py-1 px-2">Sphere</td>
+                    <td className="py-1 px-2">&gt; 1</td>
+                    <td className="py-1 px-2">&gt; 180°</td>
+                    <td className="py-1 px-2">Could collapse someday</td>
+                  </tr>
+                  <tr className="border-b border-blue-400/20">
+                    <td className="py-1 px-2">Flat</td>
+                    <td className="py-1 px-2">= 1</td>
+                    <td className="py-1 px-2">= 180°</td>
+                    <td className="py-1 px-2">Expands forever, balanced</td>
+                  </tr>
+                  <tr>
+                    <td className="py-1 px-2">Saddle</td>
+                    <td className="py-1 px-2">&lt; 1</td>
+                    <td className="py-1 px-2">&lt; 180°</td>
+                    <td className="py-1 px-2">Expands faster, open forever</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-2"><strong>So, a flat universe is the Goldilocks case</strong> — not too dense, not too empty, perfectly balanced between gravity's pull and expansion's push.</p>
+          </div>
         </div>
       )
     },

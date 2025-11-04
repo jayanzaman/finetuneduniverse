@@ -2,22 +2,20 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { Info } from 'lucide-react'
 
 interface TimelineProbabilityVisualProps {
   lifetime: number; // Proton lifetime in powers of 10 (30-40)
 }
 
+function formatHumanReadable(lifetime: number) {
+  // Returns a string like "1e34 years"
+  return `~${Number(10 ** (lifetime - Math.floor(lifetime))).toFixed(1)}e${Math.floor(lifetime)} years`
+}
+
 export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisualProps) {
-  const [animationPhase, setAnimationPhase] = useState(0)
+  // Remove animationPhase and setInterval, use CSS pulse for indicator
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setAnimationPhase(prev => (prev + 1) % 100)
-    }, 100)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Define stability ranges - showing threshold nature, not false precision
   const stabilityRanges = [
     { value: 20, label: '10²⁰', consequence: 'Immediate collapse', timelineWidth: 1, color: 'from-red-600 to-red-800', category: 'failure' },
     { value: 25, label: '10²⁵', consequence: 'No complex atoms', timelineWidth: 8, color: 'from-red-500 to-red-600', category: 'failure' },
@@ -27,147 +25,56 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
     { value: 40, label: '10⁴⁰', consequence: 'Equally good', timelineWidth: 100, color: 'from-blue-500 to-green-400', category: 'sufficient' }
   ]
 
-  // Find current range
-  const currentRange = stabilityRanges.find(range => Math.abs(range.value - lifetime) < 2.5) || stabilityRanges[3]
+  // Bin logic: find the closest range
+  const currentRange = stabilityRanges.reduce((prev, curr) => Math.abs(curr.value - lifetime) < Math.abs(prev.value - lifetime) ? curr : prev, stabilityRanges[0]);
   const isLifeViable = lifetime >= 34
   const universeAge = 13.8 // billion years
 
+  // Tooltip for exponent
+  const [showTooltip, setShowTooltip] = useState(false)
+
   return (
-    <div className="w-full h-full bg-gradient-to-br from-slate-900 to-black p-4 rounded-lg overflow-hidden">
-      {/* Title */}
-      <div className="text-center mb-4">
-        <h3 className="text-white font-semibold text-sm mb-1">Proton Stability: Threshold vs Fine-Tuning</h3>
-        <div className="text-gray-400 text-xs">Minimum requirement, not precise tuning</div>
-      </div>
-
+    <div className="w-full h-full bg-gradient-to-br from-slate-900 to-black p-4 rounded-lg flex flex-col justify-center">
       {/* Threshold Visualization */}
-      <div className="mb-4">
-        <div className="text-xs text-gray-400 mb-2">Stability Threshold (Not Fine-Tuning):</div>
-        <div className="flex items-end justify-between h-16 bg-black/30 rounded p-2">
-          {stabilityRanges.map((range, index) => {
-            const isActive = Math.abs(range.value - lifetime) < 2.5
-            const height = range.category === 'failure' ? 30 : range.category === 'threshold' ? 80 : 100
-
-            return (
-              <div key={range.value} className="flex flex-col items-center flex-1">
-                {/* Stability Bar */}
-                <motion.div
-                  className={`w-full max-w-8 rounded-t bg-gradient-to-t ${range.color} ${
-                    isActive ? 'ring-2 ring-white/50' : ''
-                  }`}
-                  style={{ height: `${height}%` }}
-                  animate={{ 
-                    opacity: isActive ? 1 : 0.6,
-                    scale: isActive ? 1.1 : 1
-                  }}
-                  transition={{ duration: 0.3 }}
-                />
-                
-                {/* Label */}
-                <div className={`text-xs mt-1 ${isActive ? 'text-white font-semibold' : 'text-gray-500'}`}>
-                  {range.label}
-                </div>
-                
-                {/* Threshold indicator */}
-                {range.category === 'threshold' && (
-                  <div className="text-green-400 text-xs font-semibold mt-1">Threshold</div>
-                )}
-                
-                {/* Current indicator */}
-                {isActive && (
-                  <motion.div
-                    className="text-yellow-400 text-lg mt-1"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  >
-                    🎯
-                  </motion.div>
-                )}
+      <div className="flex items-end justify-between h-32 bg-black/30 rounded-lg p-2">
+        {stabilityRanges.map((range, index) => {
+          const isActive = currentRange.value === range.value
+          const height = range.category === 'failure' ? 30 : range.category === 'threshold' ? 80 : 100
+          return (
+            <div key={range.value} className="flex flex-col items-center flex-1">
+              {/* Stability Bar */}
+              <motion.div
+                className={`w-full max-w-10 rounded-t bg-gradient-to-t ${range.color} ${isActive ? 'ring-2 ring-yellow-400/70 shadow-lg shadow-yellow-500/50' : ''}`}
+                style={{ height: `${height}%` }}
+                animate={{ opacity: isActive ? 1 : 0.5, scale: isActive ? 1.05 : 1 }}
+                transition={{ duration: 0.3 }}
+              />
+              {/* Label */}
+              <div className={`text-xs mt-1 ${isActive ? 'text-white font-bold' : 'text-gray-400'}`}>
+                {range.label}
               </div>
-            )
-          })}
-        </div>
+              {/* Current indicator */}
+              {isActive && (
+                <div className="text-yellow-400 text-lg mt-0.5">🎯</div>
+              )}
+            </div>
+          )
+        })}
       </div>
-
-      {/* Timeline Impact */}
-      <div className="mb-4">
-        <div className="text-xs text-gray-400 mb-2">Cosmic Consequences:</div>
-        <div className="space-y-2">
-          {stabilityRanges.map((range, index) => {
-            const isActive = Math.abs(range.value - lifetime) < 2.5
-            
-            return (
-              <div key={range.value} className="flex items-center gap-2">
-                {/* Timeline bar */}
-                <div className="flex-1 h-3 bg-black/40 rounded overflow-hidden">
-                  <motion.div
-                    className={`h-full bg-gradient-to-r ${range.color} ${
-                      isActive ? 'ring-1 ring-white/30' : ''
-                    }`}
-                    style={{ width: `${range.timelineWidth}%` }}
-                    animate={{ 
-                      opacity: isActive ? 1 : 0.4,
-                      boxShadow: isActive ? '0 0 10px rgba(255,255,255,0.3)' : 'none'
-                    }}
-                    transition={{ duration: 0.3 }}
-                  />
-                </div>
-                
-                {/* Consequence label */}
-                <div className={`text-xs w-32 ${
-                  isActive ? 'text-white font-semibold' : 'text-gray-500'
-                }`}>
-                  {range.label}: {range.consequence}
-                </div>
-                
-                {/* Threshold indicator */}
-                {range.value === 34 && (
-                  <div className="text-green-400 text-xs font-semibold">← Threshold</div>
-                )}
-              </div>
-            )
-          })}
+      
+      {/* Compact Legend */}
+      <div className="flex justify-center gap-4 mt-3 text-xs">
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gradient-to-t from-red-600 to-red-500"></div>
+          <span className="text-red-300">Fail</span>
         </div>
-      </div>
-
-      {/* Current Status */}
-      <div className="bg-black/40 rounded-lg p-3 border border-white/10">
-        <div className="flex justify-between items-center mb-2">
-          <div className="text-sm font-semibold text-white">Current Setting:</div>
-          <div className="text-lg font-mono text-yellow-400">10^{lifetime.toFixed(0)} years</div>
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gradient-to-t from-green-500 to-emerald-500"></div>
+          <span className="text-green-300">Threshold</span>
         </div>
-        
-        <div className={`text-xs ${isLifeViable ? 'text-green-300' : 'text-red-300'}`}>
-          <strong>Status:</strong> {currentRange.consequence}
-        </div>
-        
-        <div className="text-xs text-gray-400 mt-1">
-          <strong>Universe Age:</strong> {universeAge} billion years
-        </div>
-        
-        {/* Scientific honesty */}
-        <div className="mt-2 p-2 bg-blue-900/20 border border-blue-500/30 rounded text-xs text-blue-200">
-          <strong>Scientific Reality:</strong> Protons may be absolutely stable (∞ lifetime). 
-          This is a <em>threshold</em> parameter, not fine-tuning - any value above ~10³⁰ years works equally well.
-        </div>
-        
-        {/* Viability indicator */}
-        <div className="mt-2 flex items-center gap-2">
-          <div className={`w-3 h-3 rounded-full ${
-            isLifeViable ? 'bg-green-400 animate-pulse' : 'bg-red-400'
-          }`} />
-          <div className={`text-xs font-semibold ${
-            isLifeViable ? 'text-green-300' : 'text-red-300'
-          }`}>
-            {isLifeViable ? '✅ Above Threshold' : '❌ Below Threshold'}
-          </div>
-        </div>
-      </div>
-
-      {/* Time scale reference */}
-      <div className="mt-3 text-center">
-        <div className="text-xs text-gray-500">
-          Timeline: 0 → 5B → 10B → <span className="text-yellow-400 font-semibold">13.8B</span> → 20B → 30B → ∞ years
+        <div className="flex items-center gap-1">
+          <div className="w-3 h-3 rounded bg-gradient-to-t from-blue-500 to-green-400"></div>
+          <span className="text-blue-300">Sufficient</span>
         </div>
       </div>
     </div>

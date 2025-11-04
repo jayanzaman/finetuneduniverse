@@ -215,7 +215,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
           <div className={`relative h-96 lg:h-[500px] rounded-2xl overflow-hidden`}
                style={{
                  backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-                 backgroundSize: 'cover',
+                 backgroundSize: 'contain',
                  backgroundPosition: 'center',
                  backgroundRepeat: 'no-repeat'
                }}>
@@ -235,13 +235,13 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
             </div>
             
             {/* Content - Minimal overlay for better image visibility */}
-            <div className="relative z-10 h-full flex flex-col justify-end items-start p-6">
+            <div className="relative z-10 h-full flex flex-col justify-end items-end pl-6 pr-3 py-6">
               {/* Era Title - Compact bottom overlay */}
-              <div className="bg-black/70 px-4 py-2 rounded-lg backdrop-blur-md border border-white/20">
-                <h3 className="text-2xl font-bold text-white drop-shadow-lg font-serif">
+              <div className="bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/20 text-right">
+                <h3 className="text-2xl font-bold text-white drop-shadow-2xl font-serif">
                   {selectedEraData.name}
                 </h3>
-                <p className="text-sm text-white/90 font-light">{selectedEraData.timeRange}</p>
+                <p className="text-sm text-white/90 drop-shadow-lg font-light">{selectedEraData.timeRange}</p>
               </div>
             </div>
             
@@ -491,9 +491,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
       <div className="max-w-7xl mx-auto">
 
         {/* Main Layout: Carousel + Era Info on Left, Controls on Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Side: Carousel and Era Information (2/3 width) */}
-          <div className="lg:col-span-2 space-y-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Left Side: Carousel and Era Information (constrained width) */}
+          <div className="flex-shrink-0 lg:max-w-2xl space-y-8">
             {/* Evolution Timeline Carousel */}
             <Card className="bg-black/20 border-white/10 text-white">
               <CardHeader>
@@ -507,9 +507,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
               </CardContent>
             </Card>
 
-            {/* Insight Mode Content - Moved to Left Column for Better Visibility */}
-            <Card className="bg-blue-900/20 border-blue-500/30">
-              <CardContent className="pt-6">
+            {/* Era Details Content */}
+            <div>
                 {educatorMode ? (
                   <div className="space-y-4">
                     {/* Era Overview */}
@@ -842,189 +841,91 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     )}
                   </div>
                 )}
-              </CardContent>
-            </Card>
+            </div>
 
           </div>
 
-          {/* Right Side: Environmental Controls (1/3 width) */}
-          <div className="flex flex-col h-96 lg:h-[500px] gap-2">
-            <Card className="bg-black/20 border-white/10 flex-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">CO₂ Concentration</CardTitle>
-                <CardDescription className="text-gray-300 text-xs">
-                  Atmospheric carbon dioxide (parts per million)
+          {/* Right Side: Environmental Dashboard (flexible width) */}
+          <div className="flex-1">
+            <Card className="bg-black/20 border-white/10 h-full">
+              <CardHeader>
+                <CardTitle className="text-white">Environmental Conditions</CardTitle>
+                <CardDescription className="text-gray-300">
+                  Key parameters for {currentEra.name}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="pt-2">
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Slider
-                      value={[co2Level]}
-                      onValueChange={(value) => setCo2Level(value[0])}
-                      max={5000}
-                      min={100}
-                      step={50}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - ±750 ppm around optimal value */}
-                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
-                         style={{
-                           left: `${Math.max(0, Math.min(100, ((currentEra.atmosphere.co2 * 50) - 750 - 100) / 4900 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((currentEra.atmosphere.co2 * 50) - 750 - 100) / 4900 * 100), (Math.min(5000, (currentEra.atmosphere.co2 * 50) + 750) - Math.max(100, (currentEra.atmosphere.co2 * 50) - 750)) / 4900 * 100))}%`
-                         }}></div>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* CO2 Concentration */}
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl">🌫️</span>
+                      <Badge className="bg-orange-700/50 text-orange-200">CO₂</Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Carbon Dioxide</h3>
+                    <div className="text-3xl font-bold text-white">{(currentEra.atmosphere.co2 * 50).toFixed(0)}</div>
+                    <p className="text-xs text-gray-400">parts per million</p>
                   </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>100 ppm</span>
-                    <span className="text-green-400 font-bold">{(currentEra.atmosphere.co2 * 50).toFixed(0)} ppm (optimal)</span>
-                    <span className="text-white font-medium">{co2Level.toFixed(0)} ppm</span>
-                    <span>5000 ppm</span>
+
+                  {/* Oxygen Level */}
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-blue-900/30 to-cyan-900/30 border border-blue-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl">💨</span>
+                      <Badge className="bg-blue-700/50 text-blue-200">O₂</Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Oxygen Level</h3>
+                    <div className="text-3xl font-bold text-white">{currentEra.atmosphere.oxygen.toFixed(1)}%</div>
+                    <p className="text-xs text-gray-400">atmospheric concentration</p>
+                  </div>
+
+                  {/* Temperature */}
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-red-900/30 to-orange-900/30 border border-red-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl">🌡️</span>
+                      <Badge className="bg-red-700/50 text-red-200">Temp</Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Global Temperature</h3>
+                    <div className="text-3xl font-bold text-white">{(currentEra.temperature + 15).toFixed(0)}°C</div>
+                    <p className="text-xs text-gray-400">average surface temperature</p>
+                  </div>
+
+                  {/* Volcanic Activity */}
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-amber-900/30 to-yellow-900/30 border border-amber-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl">🌋</span>
+                      <Badge className="bg-amber-700/50 text-amber-200">Volcanic</Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Volcanic Activity</h3>
+                    <div className="text-3xl font-bold text-white">{selectedEra <= 2 ? '12' : '3'}</div>
+                    <p className="text-xs text-gray-400">major eruptions per Myr</p>
+                  </div>
+
+                  {/* Asteroid Bombardment */}
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl">☄️</span>
+                      <Badge className="bg-purple-700/50 text-purple-200">Impact</Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Asteroid Bombardment</h3>
+                    <div className="text-3xl font-bold text-white">{selectedEra <= 1 ? '40' : selectedEra <= 3 ? '10' : '2'}</div>
+                    <p className="text-xs text-gray-400">major impacts per Myr</p>
+                  </div>
+
+                  {/* Methane Level */}
+                  <div className="p-4 rounded-lg bg-gradient-to-br from-green-900/30 to-emerald-900/30 border border-green-500/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-3xl">💚</span>
+                      <Badge className="bg-green-700/50 text-green-200">CH₄</Badge>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Methane Level</h3>
+                    <div className="text-3xl font-bold text-white">{currentEra.atmosphere.methane.toFixed(1)}%</div>
+                    <p className="text-xs text-gray-400">atmospheric concentration</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-
-            <Card className="bg-black/20 border-white/10 flex-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">Oxygen Concentration</CardTitle>
-                <CardDescription className="text-gray-300 text-xs">
-                  Atmospheric oxygen percentage
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Slider
-                      value={[oxygenLevel]}
-                      onValueChange={(value) => setOxygenLevel(value[0])}
-                      max={100}
-                      min={0}
-                      step={1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - ±10% around optimal value */}
-                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
-                         style={{
-                           left: `${Math.max(0, Math.min(100, (currentEra.atmosphere.oxygen - 10) / 100 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, (currentEra.atmosphere.oxygen - 10) / 100 * 100), (Math.min(100, currentEra.atmosphere.oxygen + 10) - Math.max(0, currentEra.atmosphere.oxygen - 10)) / 100 * 100))}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>0%</span>
-                    <span className="text-green-400 font-bold">{currentEra.atmosphere.oxygen.toFixed(1)}% (optimal)</span>
-                    <span className="text-white font-medium">{oxygenLevel.toFixed(1)}%</span>
-                    <span>100%</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10 flex-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">Global Temperature</CardTitle>
-                <CardDescription className="text-gray-300 text-xs">
-                  Average global temperature (°C)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Slider
-                      value={[temperature]}
-                      onValueChange={(value) => setTemperature(value[0])}
-                      max={500}
-                      min={-20}
-                      step={5}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - ±25°C around optimal value */}
-                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
-                         style={{
-                           left: `${Math.max(0, Math.min(100, ((currentEra.temperature + 15) - 25 + 20) / 520 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((currentEra.temperature + 15) - 25 + 20) / 520 * 100), (Math.min(500, (currentEra.temperature + 15) + 25) - Math.max(-20, (currentEra.temperature + 15) - 25) + 20) / 520 * 100))}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>-20°C</span>
-                    <span className="text-green-400 font-bold">{(currentEra.temperature + 15).toFixed(0)}°C (optimal)</span>
-                    <span className="text-white font-medium">{temperature.toFixed(0)}°C</span>
-                    <span>500°C</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10 flex-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">Volcanic Activity</CardTitle>
-                <CardDescription className="text-gray-300 text-xs">
-                  Major eruptions per million years
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Slider
-                      value={[volcanicActivity]}
-                      onValueChange={(value) => setVolcanicActivity(value[0])}
-                      max={15}
-                      min={0}
-                      step={0.5}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - ±2 eruptions around optimal value */}
-                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
-                         style={{
-                           left: `${Math.max(0, Math.min(100, ((selectedEra <= 2 ? 12 : 3) - 2) / 15 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((selectedEra <= 2 ? 12 : 3) - 2) / 15 * 100), (Math.min(15, (selectedEra <= 2 ? 12 : 3) + 2) - Math.max(0, (selectedEra <= 2 ? 12 : 3) - 2)) / 15 * 100))}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>0/Myr</span>
-                    <span className="text-green-400 font-bold">{selectedEra <= 2 ? '12' : '3'}/Myr (optimal)</span>
-                    <span className="text-white font-medium">{volcanicActivity.toFixed(1)}/Myr</span>
-                    <span>15/Myr</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-black/20 border-white/10 flex-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-white text-sm">Asteroid Bombardment</CardTitle>
-                <CardDescription className="text-gray-300 text-xs">
-                  Major asteroid impacts per million years
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="pt-2">
-                <div className="space-y-2">
-                  <div className="relative">
-                    <Slider
-                      value={[asteroidActivity]}
-                      onValueChange={(value) => setAsteroidActivity(value[0])}
-                      max={50}
-                      min={0}
-                      step={1}
-                      className="w-full"
-                    />
-                    {/* Optimal range indicator - very high for Hadean, high for early eras, low for later */}
-                    <div className="absolute top-2 h-2 bg-green-500/30 rounded pointer-events-none" 
-                         style={{
-                           left: `${Math.max(0, Math.min(100, ((selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) - 5) / 50 * 100))}%`,
-                           width: `${Math.max(0, Math.min(100 - Math.max(0, ((selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) - 5) / 50 * 100), (Math.min(50, (selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) + 5) - Math.max(0, (selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2) - 5)) / 50 * 100))}%`
-                         }}></div>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-400">
-                    <span>0/Myr</span>
-                    <span className="text-green-400 font-bold">{selectedEra === 0 ? '40' : selectedEra <= 2 ? '15' : '2'}/Myr (optimal)</span>
-                    <span className="text-white font-medium">{asteroidActivity.toFixed(0)}/Myr</span>
-                    <span>50/Myr</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
           </div>
+
         </div>
       </div>
     </div>
