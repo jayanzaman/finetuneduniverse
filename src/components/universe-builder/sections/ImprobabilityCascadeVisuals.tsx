@@ -259,7 +259,7 @@ export default function ImprobabilityCascadeVisuals() {
   return (
     <Card className="bg-red-900/20 border-red-500/30">
       <CardHeader>
-        <CardTitle className="text-red-300">🔬 The Universe's Impossible Coincidences</CardTitle>
+        <CardTitle className="text-red-300">The Universe's Impossible Coincidences</CardTitle>
         <CardDescription className="text-red-200">
           Explore why our universe seems impossibly fine-tuned for life. Each tab shows a different "cosmic coincidence" that had to be just right for anything to exist.
         </CardDescription>

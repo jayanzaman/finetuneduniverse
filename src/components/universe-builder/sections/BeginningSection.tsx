@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Slider } from '../../ui/slider'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Badge } from '../../ui/badge'
@@ -392,7 +392,7 @@ export default function BeginningSection({
           </div>
           
           <div>
-            <h4 className="font-semibold text-blue-300 mb-2">🔬 How We Measure It</h4>
+            <h4 className="font-semibold text-blue-300 mb-2">How We Measure It</h4>
             <p><strong>Step 1 - Redshift:</strong> Light from distant galaxies shifts red (z = Δλ/λ₀). For small z, velocity ≈ z × c.</p>
             <p><strong>Step 2 - Distance:</strong> Use "standard candles" like Cepheid variables and Type Ia supernovae whose true brightness we know.</p>
             <p><strong>Step 3 - Plot:</strong> Graph velocity vs distance for many galaxies. The slope is H₀.</p>
@@ -626,9 +626,9 @@ export default function BeginningSection({
     
     // Graduated outcomes based on total score
     if (totalScore > 0.85) {
-      outcome = '✨ Perfect conditions - complex structures flourish!'
+      outcome = 'Perfect conditions - complex structures flourish!'
     } else if (totalScore > 0.65) {
-      outcome = '🌟 Excellent - life and galaxies likely to emerge'
+      outcome = 'Excellent - life and galaxies likely to emerge'
     } else if (totalScore > 0.45) {
       outcome = '⚠️ Marginal - simple structures possible, life uncertain'
     } else if (totalScore > 0.25) {
@@ -636,7 +636,7 @@ export default function BeginningSection({
     } else if (entropy > 7) {
       outcome = '🌀 Maximum entropy - complete thermal death'
     } else if (effectiveExpansionRate > 2) {
-      outcome = '💨 Runaway expansion - matter tears apart instantly'
+      outcome = 'Runaway expansion - matter tears apart instantly'
     } else if (effectiveExpansionRate < 0.1) {
       outcome = '💥 Big Crunch - universe collapses in seconds'
     } else if (effectiveDensityFluctuations > 1.5) {
@@ -1017,7 +1017,7 @@ export default function BeginningSection({
                     </div>
                     
                     <div>
-                      <h4 className="font-semibold text-blue-300 mb-2">🔬 How We Measure It</h4>
+                      <h4 className="font-semibold text-blue-300 mb-2">How We Measure It</h4>
                       <p><strong>Step 1 - Redshift:</strong> Light from distant galaxies shifts red (z = Δλ/λ₀). For small z, velocity ≈ z × c.</p>
                       <p><strong>Step 2 - Distance:</strong> Use "standard candles" like Cepheid variables and Type Ia supernovae whose true brightness we know.</p>
                       <p><strong>Step 3 - Plot:</strong> Graph velocity vs distance for many galaxies. The slope is H₀.</p>

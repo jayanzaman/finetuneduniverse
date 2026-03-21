@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react'
+import { Wind, Snowflake, Waves, Droplets } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 
@@ -29,7 +30,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
           return (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-center space-y-2">
-                <div className="text-3xl">💨</div>
+                <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                 <div className="text-sm text-red-300">Water Vapor Escaping</div>
                 <div className="text-xs text-gray-400">Too hot ({temperature.toFixed(0)}°C)</div>
               </div>
@@ -51,7 +52,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
           return (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-center space-y-2">
-                <div className="text-3xl">💨</div>
+                <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                 <div className="text-sm text-red-300">Atmosphere Lost</div>
                 <div className="text-xs text-gray-400">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
               </div>
@@ -73,7 +74,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
           return (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-center space-y-2">
-                <div className="text-3xl">💨</div>
+                <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                 <div className="text-sm text-red-300">Water Boiling Away</div>
                 <div className="text-xs text-gray-400">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
               </div>
@@ -95,7 +96,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
           return (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-center space-y-2">
-                <div className="text-3xl">🧊</div>
+                <div className="text-3xl"><Snowflake className="w-8 h-8 text-cyan-300" /></div>
                 <div className="text-sm text-cyan-300">Water Frozen</div>
                 <div className="text-xs text-gray-400">Too cold ({temperature.toFixed(0)}°C)</div>
               </div>
@@ -116,7 +117,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
           return (
             <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-blue-800/30 to-blue-950/60">
               <div className="text-center space-y-2">
-                <div className="text-3xl">🌊</div>
+                <div className="text-3xl"><Waves className="w-8 h-8 text-blue-300" /></div>
                 <div className="text-sm text-blue-300">Crushing Pressure</div>
                 <div className="text-xs text-gray-400">Too dense ({effectivePressure.toFixed(2)} atm)</div>
               </div>
@@ -127,7 +128,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, ba
           return (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="text-center space-y-2">
-                <div className="text-3xl">💧</div>
+                <div className="text-3xl"><Droplets className="w-8 h-8 text-blue-400" /></div>
                 <div className="text-sm text-blue-300">Liquid Water</div>
                 <div className="text-xs text-gray-400">{temperature.toFixed(0)}°C, {effectivePressure.toFixed(2)} atm</div>
               </div>
@@ -862,7 +863,7 @@ export default function PlanetsSection({
                   return (
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-center space-y-2">
-                        <div className="text-3xl">💨</div>
+                        <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                         <div className="text-sm text-red-300">Water Vapor Escaping</div>
                         <div className="text-xs text-gray-400">Too hot ({temperature.toFixed(0)}°C)</div>
                       </div>
@@ -884,7 +885,7 @@ export default function PlanetsSection({
                   return (
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-center space-y-2">
-                        <div className="text-3xl">💨</div>
+                        <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                         <div className="text-sm text-red-300">Atmosphere Lost</div>
                         <div className="text-xs text-gray-400">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
                       </div>
@@ -906,7 +907,7 @@ export default function PlanetsSection({
                   return (
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-center space-y-2">
-                        <div className="text-3xl">💨</div>
+                        <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                         <div className="text-sm text-red-300">Water Boiling Away</div>
                         <div className="text-xs text-gray-400">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
                       </div>
@@ -928,7 +929,7 @@ export default function PlanetsSection({
                   return (
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-center space-y-2">
-                        <div className="text-3xl">🧊</div>
+                        <div className="text-3xl"><Snowflake className="w-8 h-8 text-cyan-300" /></div>
                         <div className="text-sm text-cyan-300">Water Frozen</div>
                         <div className="text-xs text-gray-400">Too cold ({temperature.toFixed(0)}°C)</div>
                       </div>
@@ -949,7 +950,7 @@ export default function PlanetsSection({
                   return (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-blue-800/30 to-blue-950/60">
                       <div className="text-center space-y-2">
-                        <div className="text-3xl">🌊</div>
+                        <div className="text-3xl"><Waves className="w-8 h-8 text-blue-300" /></div>
                         <div className="text-sm text-blue-300">Crushing Pressure</div>
                         <div className="text-xs text-gray-400">
                           Like {Math.round((atmosphericPressure - 1) * 10)}m underwater
@@ -969,7 +970,7 @@ export default function PlanetsSection({
                   return (
                     <div className="absolute inset-0 flex flex-col items-center justify-center">
                       <div className="text-center space-y-2">
-                        <div className="text-3xl">💧</div>
+                        <div className="text-3xl"><Droplets className="w-8 h-8 text-blue-400" /></div>
                         <div className="text-sm text-blue-300">Liquid Water Stable</div>
                         <div className="text-xs text-gray-400">Optimal conditions ({temperature.toFixed(0)}°C)</div>
                       </div>

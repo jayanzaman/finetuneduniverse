@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Info } from 'lucide-react'
+import { Info, Target } from 'lucide-react'
 
 interface TimelineProbabilityVisualProps {
   lifetime: number; // Proton lifetime in powers of 10 (30-40)
@@ -55,7 +55,7 @@ export function TimelineProbabilityVisual({ lifetime }: TimelineProbabilityVisua
               </div>
               {/* Current indicator */}
               {isActive && (
-                <div className="text-yellow-400 text-lg mt-0.5">🎯</div>
+                <div className="mt-0.5"><Target className="w-5 h-5 text-yellow-400" /></div>
               )}
             </div>
           )
@@ -126,7 +126,7 @@ export function TimelineProbabilityVisualMobile({ lifetime }: TimelineProbabilit
                   <div className="text-green-400 text-xs">Threshold</div>
                 )}
                 {isActive && (
-                  <div className="text-yellow-400 text-sm">🎯</div>
+                  <div><Target className="w-4 h-4 text-yellow-400" /></div>
                 )}
               </div>
             )

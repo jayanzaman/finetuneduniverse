@@ -3,7 +3,16 @@
 import { useState, useEffect, useRef } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
-import { Info } from 'lucide-react'
+import { Info, Atom, Dna, Link, Circle, FlaskConical, Bug } from 'lucide-react'
+
+const stageIcons: Record<string, React.ReactNode> = {
+  molecules: <Atom className="w-7 h-7 text-white drop-shadow-lg" />,
+  amino: <Dna className="w-7 h-7 text-white drop-shadow-lg" />,
+  chain: <Link className="w-7 h-7 text-white drop-shadow-lg" />,
+  cell: <Circle className="w-7 h-7 text-white drop-shadow-lg" />,
+  rna: <FlaskConical className="w-7 h-7 text-white drop-shadow-lg" />,
+  life: <Bug className="w-7 h-7 text-white drop-shadow-lg" />,
+};
 
 // Types and Interfaces
 interface SimulationState {
@@ -52,7 +61,7 @@ const AbiogenesisCarousel: React.FC<{
       id: 0, 
       name: 'Simple Molecules', 
       color: 'from-gray-600 to-gray-800', 
-      icon: '⚛️',
+      icon: 'molecules',
       image: '/Stage 0 - Prebiotic Soup.png',
       description: 'Basic chemical building blocks',
       active: selectedPhase >= 0 
@@ -61,7 +70,7 @@ const AbiogenesisCarousel: React.FC<{
       id: 1, 
       name: 'Amino Acids', 
       color: 'from-emerald-500 to-emerald-700', 
-      icon: '🧬',
+      icon: 'amino',
       image: '/Stage 1 - Amino Acids.png',
       description: 'Protein building blocks',
       active: selectedPhase >= 1 
@@ -70,7 +79,7 @@ const AbiogenesisCarousel: React.FC<{
       id: 2, 
       name: 'Peptide Chains', 
       color: 'from-amber-500 to-amber-700', 
-      icon: '🔗',
+      icon: 'chain',
       image: '/Stage 2 - Peptides.png',
       description: 'First catalytic molecules',
       active: selectedPhase >= 2 
@@ -79,7 +88,7 @@ const AbiogenesisCarousel: React.FC<{
       id: 3, 
       name: 'Protocells', 
       color: 'from-purple-500 to-purple-700', 
-      icon: '🫧',
+      icon: 'cell',
       image: '/Stage 3 - Protocells.png',
       description: 'Cellular compartments',
       active: selectedPhase >= 3 
@@ -88,7 +97,7 @@ const AbiogenesisCarousel: React.FC<{
       id: 4, 
       name: 'RNA World', 
       color: 'from-cyan-500 to-cyan-700', 
-      icon: '🧪',
+      icon: 'rna',
       image: '/Stage 4 - RNA World.png',
       description: 'Genes and enzymes unite',
       active: selectedPhase >= 4 
@@ -97,7 +106,7 @@ const AbiogenesisCarousel: React.FC<{
       id: 5, 
       name: 'First Life', 
       color: 'from-red-500 to-red-700', 
-      icon: '🦠',
+      icon: 'life',
       image: '/Stage 5 - First Life.png',
       description: 'True cellular organisms',
       active: selectedPhase >= 5 
@@ -164,16 +173,17 @@ const AbiogenesisCarousel: React.FC<{
                   
                   {/* Background Image */}
                   <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                    <img 
-                      src={selectedStage.image} 
-                      alt={selectedStage.name}
+                    <img
+                      src={selectedStage.image}
+                      alt={`${selectedStage.name} - ${selectedStage.description}`}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   </div>
 
                   {/* Stage Icon */}
-                  <div className="absolute top-4 left-4 text-3xl drop-shadow-lg">
-                    {selectedStage.icon}
+                  <div className="absolute top-4 left-4">
+                    {stageIcons[selectedStage.icon] || selectedStage.icon}
                   </div>
 
                   {/* Ambient Glow */}
@@ -264,17 +274,20 @@ const AbiogenesisCarousel: React.FC<{
 
         {/* Mobile Progress Indicators */}
         <div className="p-4 bg-black/20 backdrop-blur-sm border-t border-white/10">
-          <div className="flex justify-center gap-2 mb-2">
+          <div className="flex justify-center gap-1 mb-2">
             {stages.map((stage, index) => (
               <button
                 key={stage.id}
                 onClick={() => onPhaseClick(stage.id)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === selectedPhase 
-                    ? 'bg-blue-400 scale-125' 
+                aria-label={`Go to stage: ${stage.name}`}
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center"
+              >
+                <span className={`block w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === selectedPhase
+                    ? 'bg-blue-400 scale-125'
                     : 'bg-gray-600 hover:bg-gray-500'
-                }`}
-              />
+                }`} />
+              </button>
             ))}
           </div>
           <div className="text-center text-xs text-white/60">
@@ -304,9 +317,10 @@ const AbiogenesisCarousel: React.FC<{
                   
                   {/* Background Image */}
                   <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                    <img 
-                      src={selectedStage.image} 
-                      alt={selectedStage.name}
+                    <img
+                      src={selectedStage.image}
+                      alt={`${selectedStage.name} - ${selectedStage.description}`}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   </div>

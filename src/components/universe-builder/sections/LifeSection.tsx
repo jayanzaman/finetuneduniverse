@@ -4,6 +4,19 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 import { Badge } from '../../ui/badge'
+import { Flame, Bug, Snowflake, Microscope, Shell, Leaf, Cat, Factory, Wind, Thermometer, Zap, CloudFog } from 'lucide-react'
+
+const eraIcons: Record<string, React.ReactNode> = {
+  hadean: <Flame className="w-5 h-5" />,
+  archean: <Bug className="w-5 h-5" />,
+  oxygenation: <Snowflake className="w-5 h-5" />,
+  proterozoic: <Microscope className="w-5 h-5" />,
+  cambrian: <Shell className="w-5 h-5" />,
+  paleozoic: <Leaf className="w-5 h-5" />,
+  mesozoic: <Cat className="w-5 h-5" />,
+  cenozoic: <Cat className="w-5 h-5" />,
+  anthropocene: <Factory className="w-5 h-5" />,
+};
 
 // Geological Timeline Data Structure
 const GEOLOGICAL_ERAS = [
@@ -11,7 +24,7 @@ const GEOLOGICAL_ERAS = [
     id: 0,
     name: "Hadean Earth",
     timeRange: "4.6–4.0 Ga",
-    icon: "🌋",
+    icon: "hadean",
     description: "Chaos and Chemistry",
     gradient: "from-red-600 to-orange-500",
     context: "Hostile but energetic. The perfect cauldron for prebiotic chemistry.",
@@ -26,7 +39,7 @@ const GEOLOGICAL_ERAS = [
     id: 1,
     name: "Archean Earth",
     timeRange: "4.0–2.5 Ga",
-    icon: "🦠",
+    icon: "archean",
     description: "Microbial World",
     gradient: "from-green-600 to-teal-500",
     context: "Stable oceans, active volcanoes, shallow seas—bacteria's paradise.",
@@ -41,7 +54,7 @@ const GEOLOGICAL_ERAS = [
     id: 2,
     name: "Great Oxygenation",
     timeRange: "2.4–2.0 Ga",
-    icon: "❄️",
+    icon: "oxygenation",
     description: "Snowball Earth",
     gradient: "from-blue-600 to-cyan-500",
     context: "Catastrophe for anaerobes, opportunity for innovation. Cells adapted to oxygen and began evolving more efficient metabolisms.",
@@ -56,7 +69,7 @@ const GEOLOGICAL_ERAS = [
     id: 3,
     name: "Proterozoic Earth",
     timeRange: "2.0–0.6 Ga",
-    icon: "🔬",
+    icon: "proterozoic",
     description: "Eukaryotes and Cooperation",
     gradient: "from-purple-600 to-pink-500",
     context: "Alternating feast and famine of oxygen, driving cellular complexity and the rise of multicellularity.",
@@ -71,7 +84,7 @@ const GEOLOGICAL_ERAS = [
     id: 4,
     name: "Ediacaran-Cambrian",
     timeRange: "600–500 Ma",
-    icon: "🐚",
+    icon: "cambrian",
     description: "Oxygen and Explosion",
     gradient: "from-emerald-600 to-green-500",
     context: "Nutrient boom, oxygen surge, evolutionary arms race.",
@@ -86,7 +99,7 @@ const GEOLOGICAL_ERAS = [
     id: 5,
     name: "Paleozoic Earth",
     timeRange: "500–250 Ma",
-    icon: "🌿",
+    icon: "paleozoic",
     description: "Life Takes Land",
     gradient: "from-lime-600 to-green-600",
     context: "Greener land, unstable climate, rapid evolution under stress.",
@@ -101,7 +114,7 @@ const GEOLOGICAL_ERAS = [
     id: 6,
     name: "Mesozoic Earth",
     timeRange: "250–66 Ma",
-    icon: "🦕",
+    icon: "mesozoic",
     description: "Age of Dinosaurs",
     gradient: "from-yellow-600 to-orange-600",
     context: "Greenhouse warmth, continental drift, and sudden catastrophe.",
@@ -116,7 +129,7 @@ const GEOLOGICAL_ERAS = [
     id: 7,
     name: "Cenozoic Earth",
     timeRange: "66 Ma–present",
-    icon: "🐘",
+    icon: "cenozoic",
     description: "Age of Mammals",
     gradient: "from-amber-600 to-yellow-500",
     context: "Volatile but moderate. Climate oscillations sculpted intelligence, cooperation, and tool use.",
@@ -131,7 +144,7 @@ const GEOLOGICAL_ERAS = [
     id: 8,
     name: "Anthropocene",
     timeRange: "Present",
-    icon: "🏭",
+    icon: "anthropocene",
     description: "Humans Rework the Planet",
     gradient: "from-gray-600 to-slate-500",
     context: "One species reshaping the evolutionary environment itself.",
@@ -286,7 +299,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                     ) : (
                       // Icon or initial for narrow sections
                       <div className="text-lg font-bold text-white drop-shadow-2xl transform rotate-45">
-                        {era.icon || era.name.charAt(0)}
+                        {eraIcons[era.icon] || era.name.charAt(0)}
                       </div>
                     )}
                     
@@ -464,23 +477,23 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
     const totalScore = (co2Score * 0.25) + (oxygenScore * 0.25) + (tempScore * 0.2) + (volcanicScore * 0.15) + (asteroidScore * 0.15);
     
     if (totalScore > 0.85) {
-      setOutcome(`✨ Perfect conditions for ${currentEra.name} life forms!`)
+      setOutcome(`Perfect conditions for ${currentEra.name} life forms!`)
     } else if (totalScore > 0.65) {
-      setOutcome(`🌟 Good - ${currentEra.description.toLowerCase()} thrives`)
+      setOutcome(`Good - ${currentEra.description.toLowerCase()} thrives`)
     } else if (totalScore > 0.45) {
-      setOutcome(`⚠️ Marginal - some life survives but struggles`)
+      setOutcome(`Marginal - some life survives but struggles`)
     } else if (oxygenLevel > 50 && selectedEra <= 1) {
-      setOutcome('☠️ Oxygen toxicity - anaerobic life dies')
+      setOutcome('Oxygen toxicity - anaerobic life dies')
     } else if (temperature > 200) {
-      setOutcome('🔥 Too hot - proteins denature, life cannot survive')
+      setOutcome('Too hot - proteins denature, life cannot survive')
     } else if (temperature < -10) {
-      setOutcome('❄️ Global freeze - most life goes extinct')
+      setOutcome('Global freeze - most life goes extinct')
     } else if (co2Level > 4000 && selectedEra >= 4) {
-      setOutcome('🌡️ Extreme greenhouse - runaway climate change')
+      setOutcome('Extreme greenhouse - runaway climate change')
     } else if (asteroidActivity > 35) {
-      setOutcome('☄️ Asteroid bombardment - surface sterilization events')
+      setOutcome('Asteroid bombardment - surface sterilization events')
     } else {
-      setOutcome('❌ Poor conditions - mass extinction event')
+      setOutcome('Poor conditions - mass extinction event')
     }
   }, [selectedEra, co2Level, oxygenLevel, temperature, volcanicActivity, asteroidActivity])
 
@@ -514,7 +527,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {/* Era Overview */}
                     <div className="p-4 rounded-lg bg-blue-900/20 border border-blue-500/30">
                       <h4 className="font-semibold mb-2 text-blue-300 flex items-center gap-2">
-                        <span className="text-lg">{currentEra.icon}</span>
+                        <span className="text-lg">{eraIcons[currentEra.icon] || currentEra.icon}</span>
                         Era Overview
                       </h4>
                       <p className="text-blue-200 text-sm leading-relaxed mb-3">{currentEra.details}</p>
@@ -606,7 +619,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 0 && ( // Hadean Earth
                       <div className="p-6 rounded-lg bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🌋</span>
+                          <span className="text-3xl">{eraIcons.hadean}</span>
                           <div>
                             <h3 className="text-xl font-bold text-orange-300">Hadean Earth</h3>
                             <p className="text-orange-400 text-sm">4.6–4.0 billion years ago</p>
@@ -635,7 +648,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 1 && ( // Archean Earth
                       <div className="p-6 rounded-lg bg-gradient-to-br from-teal-900/30 to-green-900/30 border border-teal-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🦠</span>
+                          <span className="text-3xl">{eraIcons.archean}</span>
                           <div>
                             <h3 className="text-xl font-bold text-teal-300">Archean Earth</h3>
                             <p className="text-teal-400 text-sm">4.0–2.5 billion years ago</p>
@@ -661,7 +674,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 2 && ( // Great Oxygenation
                       <div className="p-6 rounded-lg bg-gradient-to-br from-cyan-900/30 to-blue-900/30 border border-cyan-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">❄️</span>
+                          <span className="text-3xl">{eraIcons.oxygenation}</span>
                           <div>
                             <h3 className="text-xl font-bold text-cyan-300">Great Oxygenation Event</h3>
                             <p className="text-cyan-400 text-sm">2.5–2.0 billion years ago</p>
@@ -687,7 +700,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 3 && ( // Proterozoic Earth
                       <div className="p-6 rounded-lg bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🔬</span>
+                          <span className="text-3xl">{eraIcons.proterozoic}</span>
                           <div>
                             <h3 className="text-xl font-bold text-purple-300">Proterozoic Earth</h3>
                             <p className="text-purple-400 text-sm">2.0–541 million years ago</p>
@@ -713,7 +726,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 4 && ( // Ediacaran-Cambrian
                       <div className="p-6 rounded-lg bg-gradient-to-br from-emerald-900/30 to-green-900/30 border border-emerald-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🐚</span>
+                          <span className="text-3xl">{eraIcons.cambrian}</span>
                           <div>
                             <h3 className="text-xl font-bold text-emerald-300">Ediacaran–Cambrian</h3>
                             <p className="text-emerald-400 text-sm">635–485 million years ago</p>
@@ -739,7 +752,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 5 && ( // Paleozoic Earth
                       <div className="p-6 rounded-lg bg-gradient-to-br from-lime-900/30 to-green-900/30 border border-lime-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🌿</span>
+                          <span className="text-3xl">{eraIcons.paleozoic}</span>
                           <div>
                             <h3 className="text-xl font-bold text-lime-300">Paleozoic Earth</h3>
                             <p className="text-lime-400 text-sm">485–252 million years ago</p>
@@ -765,7 +778,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 6 && ( // Mesozoic Earth
                       <div className="p-6 rounded-lg bg-gradient-to-br from-yellow-900/30 to-orange-900/30 border border-yellow-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🦕</span>
+                          <span className="text-3xl">{eraIcons.mesozoic}</span>
                           <div>
                             <h3 className="text-xl font-bold text-yellow-300">Mesozoic Earth</h3>
                             <p className="text-yellow-400 text-sm">252–66 million years ago</p>
@@ -791,7 +804,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 7 && ( // Cenozoic Earth
                       <div className="p-6 rounded-lg bg-gradient-to-br from-amber-900/30 to-yellow-900/30 border border-amber-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🐘</span>
+                          <span className="text-3xl">{eraIcons.cenozoic}</span>
                           <div>
                             <h3 className="text-xl font-bold text-amber-300">Cenozoic Earth</h3>
                             <p className="text-amber-400 text-sm">66 million years ago–today</p>
@@ -817,7 +830,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     {selectedEra === 8 && ( // Anthropocene
                       <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/30 to-slate-900/30 border border-gray-500/30">
                         <div className="flex items-center gap-3 mb-4">
-                          <span className="text-3xl">🏭</span>
+                          <span className="text-3xl">{eraIcons.anthropocene}</span>
                           <div>
                             <h3 className="text-xl font-bold text-gray-300">Anthropocene</h3>
                             <p className="text-gray-400 text-sm">Present day</p>
@@ -859,7 +872,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   {/* CO2 Concentration */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-3xl">🌫️</span>
+                      <span className="text-3xl"><CloudFog className="w-8 h-8" /></span>
                       <Badge className="bg-orange-700/50 text-orange-200">CO₂</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Carbon Dioxide</h3>
@@ -870,7 +883,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   {/* Oxygen Level */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-blue-900/30 to-cyan-900/30 border border-blue-500/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-3xl">💨</span>
+                      <span className="text-3xl"><Wind className="w-8 h-8" /></span>
                       <Badge className="bg-blue-700/50 text-blue-200">O₂</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Oxygen Level</h3>
@@ -881,7 +894,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   {/* Temperature */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-red-900/30 to-orange-900/30 border border-red-500/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-3xl">🌡️</span>
+                      <span className="text-3xl"><Thermometer className="w-8 h-8" /></span>
                       <Badge className="bg-red-700/50 text-red-200">Temp</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Global Temperature</h3>
@@ -892,7 +905,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   {/* Volcanic Activity */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-amber-900/30 to-yellow-900/30 border border-amber-500/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-3xl">🌋</span>
+                      <span className="text-3xl"><Flame className="w-8 h-8" /></span>
                       <Badge className="bg-amber-700/50 text-amber-200">Volcanic</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Volcanic Activity</h3>
@@ -903,7 +916,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   {/* Asteroid Bombardment */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-purple-900/30 to-pink-900/30 border border-purple-500/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-3xl">☄️</span>
+                      <span className="text-3xl"><Zap className="w-8 h-8" /></span>
                       <Badge className="bg-purple-700/50 text-purple-200">Impact</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Asteroid Bombardment</h3>
@@ -914,7 +927,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   {/* Methane Level */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-green-900/30 to-emerald-900/30 border border-green-500/30">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-3xl">💚</span>
+                      <span className="text-3xl"><Leaf className="w-8 h-8" /></span>
                       <Badge className="bg-green-700/50 text-green-200">CH₄</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Methane Level</h3>

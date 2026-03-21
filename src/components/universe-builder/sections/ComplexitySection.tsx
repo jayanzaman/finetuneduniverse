@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react'
+import { Brain, Dna, Globe } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 
@@ -34,7 +35,7 @@ function ComplexityEvolution({ selectionPressure, mutationRate, environmentalSta
   return (
     <div className="relative w-full h-48 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
       <div className="text-center">
-        <div className="text-3xl mb-2">🧠</div>
+        <div className="mb-2"><Brain className="w-8 h-8 text-purple-400" /></div>
         <div className="text-sm text-gray-300 mb-1">Current Level</div>
         <div className="text-lg font-bold text-white mb-2">
           {getCurrentLevel()}
@@ -144,7 +145,7 @@ export default function ComplexitySection({
           <CardContent>
             <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
               <div className="text-center">
-                <div className="text-2xl mb-2">🧬</div>
+                <div className="mb-2"><Dna className="w-7 h-7 text-green-400" /></div>
                 <div className="text-sm text-gray-300">Mutation Rate</div>
                 <div className="text-lg font-bold text-white">{(mutationRate * 100).toFixed(1)}%</div>
               </div>
@@ -195,7 +196,7 @@ export default function ComplexitySection({
           <CardContent>
             <div className="h-48 bg-black/30 rounded-lg flex items-center justify-center mb-4">
               <div className="text-center">
-                <div className="text-2xl mb-2">🌍</div>
+                <div className="mb-2"><Globe className="w-7 h-7 text-blue-400" /></div>
                 <div className="text-sm text-gray-300">Stability</div>
                 <div className="text-lg font-bold text-white">{(environmentalStability * 100).toFixed(0)}%</div>
               </div>

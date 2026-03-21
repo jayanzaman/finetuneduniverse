@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
 
@@ -14,13 +14,13 @@ function ConsciousnessNetwork({ awarenessLevel, interconnectedness, cosmicTime }
   const connectionDensity = interconnectedness;
   const timePhase = (cosmicTime * 0.1) % (2 * Math.PI);
   
-  const nodes = Array.from({ length: nodeCount }, (_, i) => ({
+  const nodes = useMemo(() => Array.from({ length: nodeCount }, (_, i) => ({
     id: i,
     x: 50 + Math.cos(i * 2 * Math.PI / nodeCount) * 35,
     y: 50 + Math.sin(i * 2 * Math.PI / nodeCount) * 35,
     size: 4 + (awarenessLevel * 6),
     brightness: 0.5 + (awarenessLevel * 0.5),
-  }));
+  })), [nodeCount, awarenessLevel]);
 
   return (
     <div className="relative w-full h-80 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
@@ -157,9 +157,9 @@ export default function ReflectiveSection({ educatorMode, cosmicTime = 0 }: { ed
     const transcendenceThreshold = 0.6;
     
     if (consciousnessScore > 0.8 && awarenessLevel > 0.7) {
-      setOutcome('✨ Perfect - the universe achieves self-awareness!')
+      setOutcome('Perfect - the universe achieves self-awareness!')
     } else if (consciousnessScore > 0.6) {
-      setOutcome('🌟 Good - consciousness emerges and reflects')
+      setOutcome('Good - consciousness emerges and reflects')
     } else if (consciousnessScore > 0.4) {
       setOutcome('⚠️ Marginal - limited self-awareness develops')
     } else if (awarenessLevel < 0.3) {
@@ -210,8 +210,8 @@ export default function ReflectiveSection({ educatorMode, cosmicTime = 0 }: { ed
               <div className="mt-4 p-3 rounded-lg bg-black/30 border border-white/10">
                 <h4 className="font-semibold mb-2 text-white">Consciousness Outcome:</h4>
                 <p className={`text-sm font-medium ${
-                  outcome.includes('✨') ? 'text-green-400' : 
-                  outcome.includes('🌟') ? 'text-emerald-400' :
+                  outcome.includes('Perfect') ? 'text-green-400' :
+                  outcome.includes('Good') ? 'text-emerald-400' :
                   outcome.includes('⚠️') ? 'text-yellow-400' : 
                   outcome.includes('❌') ? 'text-orange-400' :
                   'text-red-400'

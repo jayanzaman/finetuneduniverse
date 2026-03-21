@@ -185,17 +185,17 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
           {isTooDim && (
             <span className="text-red-400">
               {stellarMass < 0.3 ? "💀 Brown Dwarf - No Fusion" : 
-               stellarMass < 0.5 ? "🔥 Dying Red Dwarf" : 
+               stellarMass < 0.5 ? "Dying Red Dwarf" :
                "⚠️ Insufficient Mass"}
             </span>
           )}
           {isOptimal && (
-            <span className="text-green-400">✨ Stable Main Sequence</span>
+            <span className="text-green-400">Stable Main Sequence</span>
           )}
           {isTooMassive && (
             <span className="text-orange-400">
               {stellarMass > 1.8 ? "💥 Supernova Imminent!" : 
-               stellarMass > 1.6 ? "🔥 Blue Supergiant" : 
+               stellarMass > 1.6 ? "Blue Supergiant" :
                "⚠️ Massive & Unstable"}
             </span>
           )}
@@ -983,7 +983,7 @@ export default function StarlightSection({
                   <p><strong>The [Fe/H] scale:</strong> Astronomers use logarithmic notation where 0.0 = solar metallicity, negative values = metal-poor stars, positive = metal-rich. The star's color also shifts from blue-white (metal-poor) to yellow (solar) to red (metal-rich).</p>
                   <p><strong>Solar metallicity:</strong> Our Sun has ~2% heavy elements ([Fe/H] ≈ 0.0), which is optimal for planet formation and complex chemistry.</p>
                   <div className="p-3 bg-yellow-900/30 border border-yellow-500/50 rounded-lg mt-2">
-                    <p className="text-yellow-200"><strong>🌟 The Population III Mystery - The Ultimate Fine-Tuning Paradox:</strong></p>
+                    <p className="text-yellow-200"><strong>The Population III Mystery - The Ultimate Fine-Tuning Paradox:</strong></p>
                     <div className="text-xs text-yellow-100 mt-2 space-y-1">
                       <p><strong>The Problem:</strong> The first stars (Population III) had ZERO metallicity - only hydrogen and helium from Big Bang nucleosynthesis. But how did they form without heavy elements to cool the gas clouds?</p>
                       <p><strong>The Paradox:</strong> Modern star formation requires dust grains (made of heavy elements) to cool gas from 10,000K to 10K. Population III had no dust, yet somehow formed anyway at much higher temperatures.</p>

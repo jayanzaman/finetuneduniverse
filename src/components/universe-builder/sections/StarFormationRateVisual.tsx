@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { MoonStar, Sparkles, Sun, Globe } from 'lucide-react'
 
 interface StarFormationRateVisualProps {
   starFormationRate: number;
@@ -19,25 +20,25 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
       status: 'Dormant',
       description: 'Before first stars - factory not yet built',
       color: 'from-gray-800 to-black',
-      icon: '🌑'
+      icon: 'dark'
     },
     {
-      name: 'First Light Era', 
+      name: 'First Light Era',
       period: '13.0-11.0 Gya',
       rate: '0.5x',
       status: 'Startup',
       description: 'Population III stars ignite - factory startup',
       color: 'from-blue-600 to-purple-700',
-      icon: '💫'
+      icon: 'first-light'
     },
     {
       name: 'Peak Production Era',
-      period: '11.0-8.0 Gya', 
+      period: '11.0-8.0 Gya',
       rate: '1.5x',
       status: 'Peak',
       description: 'Maximum cosmic star formation rate',
       color: 'from-orange-500 to-red-600',
-      icon: '🌟'
+      icon: 'peak'
     },
     {
       name: 'Modern Era',
@@ -46,7 +47,7 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
       status: 'Standard',
       description: 'Current galactic production rate',
       color: 'from-green-500 to-blue-500',
-      icon: '🌍'
+      icon: 'modern'
     }
   ]
 
@@ -146,7 +147,12 @@ export function StarFormationRateVisual({ starFormationRate }: StarFormationRate
             whileHover={{ scale: index === currentEra ? 1.05 : 1.02 }}
           >
             <div className="flex flex-col items-center text-center">
-              <span className="text-sm mb-0.5">{era.icon}</span>
+              <span className="mb-0.5">{
+                era.icon === 'dark' ? <MoonStar className="w-4 h-4 text-gray-400" /> :
+                era.icon === 'first-light' ? <Sparkles className="w-4 h-4 text-blue-400" /> :
+                era.icon === 'peak' ? <Sun className="w-4 h-4 text-orange-400" /> :
+                <Globe className="w-4 h-4 text-green-400" />
+              }</span>
               <div className="text-xs font-semibold text-white mb-0.5 leading-tight">
                 {era.name.replace(' Era', '')}
               </div>

@@ -121,9 +121,10 @@ function MilkyWayEvolution({
         {/* Image Container with proper aspect ratio */}
         <div className="absolute inset-0 flex items-center justify-center">
           {currentPhaseData.image ? (
-            <img 
+            <img
               src={currentPhaseData.image}
-              alt={currentPhaseData.name}
+              alt={`${currentPhaseData.name} - ${currentPhaseData.description}`}
+              loading="lazy"
               className="max-w-full max-h-full object-contain transition-all duration-700 ease-out transform hover:scale-105"
               style={{ filter: 'brightness(1.1) contrast(1.1)' }}
             />
@@ -144,30 +145,35 @@ function MilkyWayEvolution({
         {/* Navigation Arrows */}
         <button
           onClick={prevPhase}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300 border border-white/20"
+          aria-label="Previous galaxy phase"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 border border-white/20 min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        
+
         <button
           onClick={nextPhase}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300 border border-white/20"
+          aria-label="Next galaxy phase"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 border border-white/20 min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
 
         {/* Phase Indicators */}
         <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
-          {galaxyPhases.map((_, index) => (
+          {galaxyPhases.map((phase, index) => (
             <button
               key={index}
               onClick={() => goToPhase(index)}
-              className={`relative transition-all duration-300 ${
-                index === currentPhase 
-                  ? 'w-8 h-2 bg-white rounded-full' 
-                  : 'w-2 h-2 bg-white/40 hover:bg-white/60 rounded-full'
-              }`}
-            />
+              aria-label={`Go to phase: ${phase.name}`}
+              className={`relative transition-all duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center`}
+            >
+              <span className={`block rounded-full transition-all duration-300 ${
+                index === currentPhase
+                  ? 'w-8 h-2 bg-white'
+                  : 'w-2 h-2 bg-white/40 hover:bg-white/60'
+              }`} />
+            </button>
           ))}
         </div>
 
@@ -241,7 +247,7 @@ function MilkyWayEvolution({
           <div>
             <h3 className="text-xl font-bold text-white mb-1">{currentPhaseData.name}</h3>
             <p className="text-sm text-blue-300 font-semibold mb-2">{currentPhaseData.age}</p>
-            <p className="text-gray-300 leading-relaxed">{currentPhaseData.description}</p>
+            <p className="text-gray-200 leading-relaxed">{currentPhaseData.description}</p>
           </div>
         </div>
       </div>
@@ -256,7 +262,7 @@ function MilkyWayEvolution({
             </div>
             
             <div className="bg-yellow-900/20 border border-yellow-500/30 p-3 rounded-lg">
-              <p className="text-yellow-200 font-semibold mb-1">🎯 Fine-Tuning Insight:</p>
+              <p className="text-yellow-200 font-semibold mb-1">Fine-Tuning Insight:</p>
               <p className="text-yellow-100 leading-relaxed text-sm">{currentPhaseData.fineTuning}</p>
             </div>
           </div>

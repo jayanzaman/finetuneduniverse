@@ -73,8 +73,9 @@ export default function UniverseBuilderApp() {
     onSwipedLeft: () => handlePrevious(),  // Swipe left = go back (like turning pages)
     onSwipedRight: () => handleNext(),     // Swipe right = go forward (like turning pages)
     trackMouse: false, // Only track touch, not mouse
-    preventScrollOnSwipe: false,
+    preventScrollOnSwipe: true,
     delta: 50, // Minimum swipe distance
+    swipeDuration: 500, // Max ms for a swipe to be recognized
   })
 
   return (
@@ -87,7 +88,7 @@ export default function UniverseBuilderApp() {
               <h1 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent truncate">
                 Our Finetuned Universe
               </h1>
-              <p className="text-xs sm:text-sm text-gray-400 hidden sm:block">Exploring the Improbable Path to Complexity</p>
+              <p className="text-xs sm:text-sm text-gray-300 hidden sm:block">Exploring the Improbable Path to Complexity</p>
             </div>
             
             <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
@@ -106,6 +107,7 @@ export default function UniverseBuilderApp() {
                 onClick={handleReset}
                 className="bg-white/5 border-white/20 hover:bg-white/10 text-white min-h-[44px] min-w-[44px]"
                 title="Reset to Defaults"
+                aria-label="Reset to defaults"
               >
                 <RotateCcw className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
@@ -132,7 +134,8 @@ export default function UniverseBuilderApp() {
             <button
               onClick={handlePrevious}
               disabled={currentSection === 0}
-              className="p-2 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-2 text-white disabled:opacity-30 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Previous section"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -141,7 +144,7 @@ export default function UniverseBuilderApp() {
             
             <div className="text-center flex-1">
               <div className="text-orange-400 font-semibold text-sm">{sections[currentSection].title}</div>
-              <div className="text-xs text-gray-400">{sections[currentSection].subtitle}</div>
+              <div className="text-xs text-gray-300">{sections[currentSection].subtitle}</div>
               {/* Subtle section progress - smaller and less prominent */}
               <div className="flex justify-center mt-1 space-x-1">
                 {sections.map((_, idx) => (
@@ -158,7 +161,8 @@ export default function UniverseBuilderApp() {
             <button
               onClick={handleNext}
               disabled={currentSection === sections.length - 1}
-              className="p-2 text-white disabled:opacity-30 disabled:cursor-not-allowed"
+              className="p-2 text-white disabled:opacity-30 disabled:cursor-not-allowed min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Next section"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -175,7 +179,7 @@ export default function UniverseBuilderApp() {
                 className={`flex-shrink-0 px-4 py-3 text-sm transition-all min-w-[140px] rounded-lg ${
                   currentSection === idx
                     ? 'text-orange-400 bg-orange-400/10 border border-orange-400/30'
-                    : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+                    : 'text-gray-300 hover:text-gray-100 hover:bg-white/5'
                 }`}
               >
                 <div className="font-semibold leading-tight">{section.title}</div>
