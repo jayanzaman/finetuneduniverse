@@ -1,64 +1,86 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────
+   FINETUNED UNIVERSE — HI-FI DESIGN SYSTEM
+   Mystical / planetarium aesthetic.
+   ───────────────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* COLOR */
+  --void:        #030308;
+  --void-2:      #07071a;
+  --void-3:      #0e0e22;
+  --hair:        rgba(255,255,255,0.07);
+  --hair-2:      rgba(255,255,255,0.14);
+
+  --ink:         #ECECF5;
+  --ink-mid:     #B9B9CC;
+  --ink-soft:    #7B7B92;
+  --ink-faint:   #4A4A60;
+
+  --indigo:      #7A7BFF;
+  --indigo-2:    #4F50E8;
+  --indigo-glow: rgba(122,123,255,0.40);
+  --indigo-band: rgba(122,123,255,0.18);
+
+  --goldilocks:  #6FE4B1;
+  --gold-band:   rgba(111,228,177,0.16);
+  --warm:        #E78C5A;
+  --warm-soft:   rgba(231,140,90,0.18);
+
+  /* TYPE — wired through next/font CSS variables in layout.tsx */
+  --f-display:   var(--font-unbounded), "Space Grotesk", system-ui, sans-serif;
+  --f-body:      var(--font-space-grotesk), system-ui, sans-serif;
+  --f-mono:      var(--font-space-mono), ui-monospace, monospace;
+  --f-italic:    var(--font-newsreader), Georgia, serif;
+
+  /* Background defaults dark */
+  --background: var(--void);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-void: var(--void);
+  --color-void-2: var(--void-2);
+  --color-void-3: var(--void-3);
+  --color-ink: var(--ink);
+  --color-ink-mid: var(--ink-mid);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-indigo-accent: var(--indigo);
+  --color-indigo-deep: var(--indigo-2);
+  --color-goldilocks: var(--goldilocks);
+  --color-warm: var(--warm);
+  --font-display: var(--f-display);
+  --font-body: var(--f-body);
+  --font-mono: var(--f-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-  /* Prevent overscroll bounce on iOS */
+  background: var(--void);
+  color: var(--ink);
+  font-family: var(--f-body);
   overscroll-behavior: none;
-  /* Improve touch scrolling on iOS */
   -webkit-overflow-scrolling: touch;
 }
 
-/* Mobile-specific optimizations */
 html {
-  /* Prevent zoom on input focus on iOS */
   -webkit-text-size-adjust: 100%;
-  /* Smooth scrolling for better UX */
   scroll-behavior: smooth;
 }
 
-/* Hide scrollbars but keep functionality */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
+button, [role="button"] { touch-action: manipulation; }
 
-/* Improve touch targets */
-button, [role="button"] {
-  touch-action: manipulation;
-}
-
-/* Focus states for all devices */
 *:focus-visible {
-  outline: 2px solid #f97316;
+  outline: 2px solid var(--indigo);
   outline-offset: 2px;
 }
 
-/* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -67,3 +89,197 @@ button, [role="button"] {
     scroll-behavior: auto !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────
+   HI-FI utility classes (mirrors hifi-styles.css)
+   ───────────────────────────────────────────────────────── */
+.hifi { font-family: var(--f-body); color: var(--ink); background: var(--void); }
+.hifi *, .hifi *::before, .hifi *::after { box-sizing: border-box; }
+.hifi p { margin: 0; }
+.hifi h1, .hifi h2, .hifi h3, .hifi h4 {
+  margin: 0; font-family: var(--f-display); font-weight: 400; letter-spacing: -0.01em;
+}
+.hifi em {
+  font-style: italic;
+  font-family: var(--f-italic);
+  font-weight: 300;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+
+.mono     { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); }
+.mono-md  { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-mid); }
+.mono-lg  { font-family: var(--f-mono); font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink); }
+.hair-line { height: 1px; background: var(--hair); width: 100%; }
+.v-hair    { width: 1px; background: var(--hair); height: 100%; }
+
+/* The cinematic frame */
+.hifi-frame {
+  position: relative; width: 100%; min-height: 100vh;
+  background: var(--void); color: var(--ink);
+  overflow: hidden; isolation: isolate;
+}
+
+.hifi-backdrop {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(120% 80% at 50% 110%, rgba(79,80,232,0.18), transparent 55%),
+    radial-gradient(80%  60% at 20% 15%,  rgba(79,80,232,0.10), transparent 60%),
+    radial-gradient(60%  60% at 95% 30%,  rgba(122,123,255,0.06), transparent 60%),
+    linear-gradient(180deg, #030308 0%, #06061a 60%, #03030c 100%);
+}
+
+.hifi-stars { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+.hifi-grain {
+  position: fixed; inset: 0; z-index: 2; pointer-events: none;
+  opacity: 0.45; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.9 0 0 0 0 0.9 0 0 0 0 1 0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* TOP NAV */
+.hifi-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 22px 36px;
+  background: linear-gradient(180deg, rgba(3,3,8,0.88) 0%, rgba(3,3,8,0.55) 70%, transparent 100%);
+  backdrop-filter: blur(8px);
+}
+.hifi-mark { display: flex; align-items: center; gap: 12px; }
+.hifi-mark-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff, var(--indigo) 70%, transparent 85%);
+  box-shadow: 0 0 14px var(--indigo-glow);
+}
+.hifi-mark-label { font-family: var(--f-display); font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink); font-weight: 400; }
+.hifi-nav-links { display: flex; gap: 28px; }
+.hifi-nav-links button,
+.hifi-nav-links span {
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid);
+  background: none; border: none; cursor: pointer; padding: 0;
+}
+.hifi-nav-links button.active,
+.hifi-nav-links span.active { color: var(--ink); }
+.hifi-nav-links button:hover { color: var(--ink); }
+
+/* CHAPTER RAIL (right edge) */
+.chapter-rail {
+  position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 18px; z-index: 40;
+}
+.chapter-rail-item {
+  display: flex; align-items: center; gap: 12px; justify-content: flex-end;
+  color: var(--ink-faint); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em;
+  background: none; border: none; cursor: pointer; padding: 0;
+}
+.chapter-rail-item .label { opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+.chapter-rail-item:hover .label { opacity: 0.6; }
+.chapter-rail-item.active { color: var(--ink); }
+.chapter-rail-item.active .label { opacity: 1; }
+.chapter-rail-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  border: 1px solid currentColor; background: transparent;
+}
+.chapter-rail-item.active .chapter-rail-dot {
+  background: var(--indigo); border-color: var(--indigo);
+  box-shadow: 0 0 10px var(--indigo-glow);
+}
+.chapter-rail-item.passed .chapter-rail-dot { background: currentColor; }
+
+/* GOLDILOCKS SLIDER */
+.gs {
+  --gs-fill: 50%;
+  --gs-zone-l: 42%;
+  --gs-zone-r: 58%;
+  display: flex; flex-direction: column; gap: 10px;
+  font-family: var(--f-body);
+}
+.gs-head { display: flex; justify-content: space-between; align-items: baseline; }
+.gs-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-mid); }
+.gs-value { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.14em; color: var(--ink); }
+.gs-value em { color: var(--goldilocks); font-style: normal; font-family: var(--f-mono); }
+
+.gs-track { position: relative; height: 28px; display: flex; align-items: center; }
+.gs-rail  { position: absolute; left: 0; right: 0; height: 2px; background: var(--hair-2); border-radius: 1px; }
+.gs-zone {
+  position: absolute; left: var(--gs-zone-l); right: calc(100% - var(--gs-zone-r));
+  top: 50%; transform: translateY(-50%); height: 12px;
+  background: linear-gradient(90deg, var(--gold-band), rgba(111,228,177,0.32), var(--gold-band));
+  border-left: 1px solid var(--goldilocks);
+  border-right: 1px solid var(--goldilocks);
+  box-shadow: 0 0 18px rgba(111,228,177,0.25);
+  pointer-events: none;
+}
+.gs-zone::before, .gs-zone::after {
+  content: ''; position: absolute; top: -6px; bottom: -6px; width: 1px; background: var(--goldilocks);
+}
+.gs-zone::before { left: -1px; }
+.gs-zone::after  { right: -1px; }
+.gs-knob {
+  position: absolute; left: var(--gs-fill); top: 50%; transform: translate(-50%, -50%);
+  width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #fff, var(--indigo) 65%);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.4), 0 0 22px var(--indigo-glow);
+  pointer-events: none;
+}
+.gs-caps { display: flex; justify-content: space-between; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); }
+.gs-cap-warn { color: var(--warm); }
+.gs-band-note { display: flex; justify-content: space-between; align-items: center; margin-top: -2px; }
+.gs-band-note .fail { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--warm); }
+
+/* BUTTONS / TAGS / CHIPS */
+.hifi-btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 14px 22px; border-radius: 999px;
+  border: 1px solid var(--hair-2);
+  background: rgba(122,123,255,0.06);
+  color: var(--ink);
+  font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.hifi-btn:hover { background: rgba(122,123,255,0.12); border-color: rgba(122,123,255,0.4); }
+.hifi-btn.primary {
+  background: linear-gradient(180deg, var(--indigo), var(--indigo-2));
+  border-color: var(--indigo);
+  box-shadow: 0 0 40px var(--indigo-glow), inset 0 1px 0 rgba(255,255,255,0.3);
+  color: #fff;
+}
+.hifi-btn.primary:hover { background: linear-gradient(180deg, #8e8fff, var(--indigo)); }
+.hifi-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.hifi-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border-radius: 999px;
+  border: 1px solid var(--hair-2);
+  font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-mid);
+}
+.hifi-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--indigo); box-shadow: 0 0 8px var(--indigo-glow); }
+
+/* HEADLINE SIZES */
+.h-mega { font-family: var(--f-display); font-weight: 300; font-size: clamp(56px, 9vw, 124px); line-height: 0.92; letter-spacing: -0.04em; color: var(--ink); }
+.h-hero { font-family: var(--f-display); font-weight: 300; font-size: clamp(40px, 6vw, 88px);  line-height: 0.95; letter-spacing: -0.03em; color: var(--ink); }
+.h-1    { font-family: var(--f-display); font-weight: 300; font-size: clamp(32px, 4.5vw, 64px); line-height: 0.96; letter-spacing: -0.025em; color: var(--ink); }
+.h-2    { font-family: var(--f-display); font-weight: 300; font-size: clamp(28px, 3vw, 44px); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
+.h-3    { font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1.15; letter-spacing: -0.005em; color: var(--ink); }
+
+.prose    { font-family: var(--f-body); font-weight: 300; font-size: 17px; line-height: 1.55; color: var(--ink-mid); max-width: 38ch; }
+.prose-sm { font-family: var(--f-body); font-weight: 300; font-size: 14px; line-height: 1.55; color: var(--ink-mid); }
+.prose em { font-family: var(--f-italic); font-weight: 300; font-style: italic; color: var(--ink); }
+.prose strong { font-weight: 500; color: var(--ink); }
+
+/* Failure-mode ghost — what happens if you leave the band */
+.ghost {
+  display: flex; flex-direction: column; gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid var(--warm-soft);
+  background: linear-gradient(180deg, rgba(231,140,90,0.06), rgba(231,140,90,0.02));
+  max-width: 260px;
+}
+.ghost-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--warm); }
+.ghost-body  { font-family: var(--f-italic); font-style: italic; font-weight: 300; font-size: 14px; line-height: 1.35; color: var(--ink-mid); }
+
+/* Scroll cue */
+.scroll-cue { display: inline-flex; align-items: center; gap: 12px; color: var(--ink-soft); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; }
+.scroll-cue .line { width: 60px; height: 1px; background: linear-gradient(90deg, var(--ink-soft), transparent); }
