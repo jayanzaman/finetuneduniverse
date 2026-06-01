@@ -31,7 +31,7 @@ export function Landing({ onBegin, onSelectChapter }: LandingProps) {
       style={{
         position: 'relative',
         minHeight: '100vh',
-        padding: '160px 64px 96px',
+        padding: '96px 64px 64px',
         overflow: 'hidden',
       }}
       aria-labelledby="ftu-landing-title"
@@ -82,7 +82,7 @@ export function Landing({ onBegin, onSelectChapter }: LandingProps) {
           maxWidth: 820,
         }}
       >
-        <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 28, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 14, alignItems: 'center', marginBottom: 20, flexWrap: 'wrap' }}>
           <span className="mono" style={{ color: 'var(--indigo)' }}>An interactive cosmology</span>
           <span style={{ width: 32, height: 1, background: 'var(--hair-2)' }} />
           <span className="mono">Seven chapters · 13.8 billion years</span>
@@ -95,7 +95,7 @@ export function Landing({ onBegin, onSelectChapter }: LandingProps) {
           didn&apos;t happen.
         </h1>
 
-        <p className="prose" style={{ marginTop: 36, maxWidth: 460, fontSize: 18 }}>
+        <p className="prose" style={{ marginTop: 24, maxWidth: 460, fontSize: 17 }}>
           Seven cosmic numbers had to land within a hair&apos;s breadth of where they did. Pull any
           one of them out of its narrow band, and the cosmos collapses, freezes, or stays
           forever still.
@@ -104,7 +104,7 @@ export function Landing({ onBegin, onSelectChapter }: LandingProps) {
           Below: a scrollable descent through every one of them.
         </p>
 
-        <div style={{ display: 'flex', gap: 16, marginTop: 44, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: 16, marginTop: 28, alignItems: 'center', flexWrap: 'wrap' }}>
           <button type="button" className="hifi-btn primary" onClick={onBegin}>
             Begin chapter 01 <span style={{ fontFamily: 'serif' }}>↓</span>
           </button>
@@ -119,7 +119,7 @@ export function Landing({ onBegin, onSelectChapter }: LandingProps) {
         style={{
           position: 'relative',
           zIndex: 5,
-          marginTop: 96,
+          marginTop: 56,
           paddingTop: 18,
         }}
       >

@@ -258,8 +258,8 @@ button, [role="button"] { touch-action: manipulation; }
 .hifi-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--indigo); box-shadow: 0 0 8px var(--indigo-glow); }
 
 /* HEADLINE SIZES */
-.h-mega { font-family: var(--f-display); font-weight: 300; font-size: clamp(56px, 9vw, 124px); line-height: 0.92; letter-spacing: -0.04em; color: var(--ink); }
-.h-hero { font-family: var(--f-display); font-weight: 300; font-size: clamp(40px, 6vw, 88px);  line-height: 0.95; letter-spacing: -0.03em; color: var(--ink); }
+.h-mega { font-family: var(--f-display); font-weight: 300; font-size: clamp(44px, 6.5vw, 88px); line-height: 0.94; letter-spacing: -0.035em; color: var(--ink); }
+.h-hero { font-family: var(--f-display); font-weight: 300; font-size: clamp(32px, 4.5vw, 64px);  line-height: 0.98; letter-spacing: -0.025em; color: var(--ink); }
 .h-1    { font-family: var(--f-display); font-weight: 300; font-size: clamp(32px, 4.5vw, 64px); line-height: 0.96; letter-spacing: -0.025em; color: var(--ink); }
 .h-2    { font-family: var(--f-display); font-weight: 300; font-size: clamp(28px, 3vw, 44px); line-height: 1.02; letter-spacing: -0.02em; color: var(--ink); }
 .h-3    { font-family: var(--f-display); font-weight: 400; font-size: 22px; line-height: 1.15; letter-spacing: -0.005em; color: var(--ink); }

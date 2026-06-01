@@ -68,9 +68,9 @@ export function ChapterFrame({
         </div>
       )}
 
-      <div style={{ position: 'relative', zIndex: 3, padding: '120px 64px 64px' }}>
+      <div style={{ position: 'relative', zIndex: 3, padding: '72px 64px 80px' }}>
         {/* Chapter mark line */}
-        <div style={{ display: 'flex', gap: 18, alignItems: 'center', marginBottom: 18 }}>
+        <div style={{ display: 'flex', gap: 18, alignItems: 'center', marginBottom: 14 }}>
           <span className="mono-lg" style={{ color: 'var(--indigo)' }}>Chapter {num}</span>
           <span style={{ width: 1, height: 14, background: 'var(--hair-2)' }} />
           <span className="mono">{era}</span>
@@ -82,7 +82,7 @@ export function ChapterFrame({
         </h1>
 
         {/* Narration */}
-        <p className="prose" style={{ marginTop: 48, maxWidth: 460 }}>
+        <p className="prose" style={{ marginTop: 28, maxWidth: 460 }}>
           {prose}
         </p>
 
@@ -91,7 +91,7 @@ export function ChapterFrame({
           <div
             style={{
               position: 'relative',
-              marginTop: 56,
+              marginTop: 36,
               padding: '24px 0',
             }}
           >
