@@ -60,20 +60,25 @@ export function MobileStepper({
         />
       </div>
 
-      <div className="inst-mobile-nav">
+      <div className="inst-mobile-nav" aria-label="Parameter navigation">
         <button
           type="button"
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           disabled={index === 0}
+          aria-label="Previous parameter"
         >
-          ← Prev
+          ← Param
         </button>
+        <span className="inst-mobile-nav-counter mono" aria-hidden>
+          Parameter {index + 1} of {PARAMS.length}
+        </span>
         <button
           type="button"
           onClick={() => setIndex((i) => Math.min(PARAMS.length - 1, i + 1))}
           disabled={index === PARAMS.length - 1}
+          aria-label="Next parameter"
         >
-          Next →
+          Param →
         </button>
       </div>
     </div>

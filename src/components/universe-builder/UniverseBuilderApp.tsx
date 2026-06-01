@@ -15,6 +15,7 @@ import LifeSection from './sections/LifeSection';
 import { HifiBackdrop } from '../hifi/HifiBackdrop';
 import { TopNav } from '../hifi/TopNav';
 import { ChapterRail } from '../hifi/ChapterRail';
+import { ChapterHUD } from '../hifi/ChapterHUD';
 import { Landing } from '../hifi/Landing';
 import { ChapterFrame } from '../hifi/ChapterFrame';
 import { CHAPTER_CONTENT } from '../hifi/chapterContent';
@@ -96,6 +97,9 @@ export default function UniverseBuilderApp() {
 
       <TopNav onIndex={goLanding} activeLabel={view.kind === 'landing' ? 'Index' : null} />
       <ChapterRail active={activeChapter} onSelect={goChapter} />
+      {activeChapter !== null && (
+        <ChapterHUD activeIndex={activeChapter} onPrev={handlePrev} onNext={handleNext} />
+      )}
 
       <main {...swipeHandlers} style={{ position: 'relative', zIndex: 3 }}>
         <AnimatePresence mode="wait">
