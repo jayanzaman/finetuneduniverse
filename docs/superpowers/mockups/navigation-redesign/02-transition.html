@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 02 — Chapter transition: dormant vs earned + handoff storyboard</title>
+<style>
+  :root {
+    --void: #030308; --panel: #0a0a14; --ink: #e8e8f0; --ink-soft: #9a9ab0; --ink-faint: #5a5a72;
+    --hair: rgba(232,232,240,0.12); --indigo: #7b8cff; --indigo-glow: rgba(123,140,255,0.35);
+    --goldilocks: #7dd6a0; --warm: #e78c5a;
+    --f-display: Georgia, 'Times New Roman', serif;
+    --f-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --f-body: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #101018; color: var(--ink); font-family: var(--f-body); padding: 32px 20px 80px; }
+  .guide { max-width: 1100px; margin: 0 auto 28px; }
+  .guide h1 { font-family: var(--f-display); font-weight: 300; font-size: 30px; letter-spacing: -0.02em; }
+  .guide p { color: var(--ink-soft); margin-top: 8px; font-size: 14px; line-height: 1.6; max-width: 720px; }
+  .guide .ask { color: var(--indigo); font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 14px; }
+  .section-label { max-width: 1100px; margin: 0 auto 12px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--indigo); display: flex; align-items: center; gap: 10px; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--hair); }
+  .note { max-width: 1100px; margin: 0 auto 14px; color: var(--ink-soft); font-size: 13px; line-height: 1.55; }
+  .pair { max-width: 1100px; margin: 0 auto 54px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 900px) { .pair { grid-template-columns: 1fr; } }
+
+  .state-tag { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 8px; }
+
+  .tblock {
+    background: radial-gradient(ellipse at 50% 120%, #0d0d22 0%, var(--void) 60%);
+    border: 1px solid var(--hair); border-radius: 8px; padding: 34px 30px; position: relative; overflow: hidden; min-height: 240px;
+  }
+  .t-eyebrow { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint); }
+  .t-next { font-family: var(--f-display); font-weight: 300; letter-spacing: -0.02em; font-size: 34px; margin-top: 10px; }
+  .t-era { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.2em; color: var(--ink-faint); margin-top: 6px; }
+
+  /* dormant */
+  .dormant .t-next { color: var(--ink-faint); filter: blur(1.5px); }
+  .dormant .veil { position: absolute; inset: 0; background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(3,3,8,0.5) 6px 12px); pointer-events: none; }
+  .checklist { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  .check { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.14em; color: var(--ink-faint); }
+  .check.done { color: var(--goldilocks); }
+  .check.done::before { content: '✓ '; }
+  .check.todo::before { content: '○ '; }
+  .check.todo { text-decoration: underline dotted; text-underline-offset: 3px; cursor: pointer; }
+  .remain { margin-top: 18px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--warm); }
+
+  /* earned */
+  .earned { border-color: rgba(123,140,255,0.5); box-shadow: 0 0 40px rgba(123,140,255,0.08) inset, 0 0 24px rgba(123,140,255,0.10); }
+  .earned .t-next { color: var(--ink); text-shadow: 0 0 24px var(--indigo-glow); }
+  .earned .t-era .roll { color: var(--indigo); animation: rollpulse 2.4s ease-in-out infinite; }
+  @keyframes rollpulse { 50% { opacity: 0.4; } }
+  .descend {
+    display: inline-flex; align-items: center; gap: 12px; margin-top: 26px;
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--void); background: var(--ink); padding: 14px 30px; border-radius: 4px; cursor: pointer;
+  }
+  .descend .arrow { animation: descendbob 1.4s ease-in-out infinite; }
+  @keyframes descendbob { 50% { transform: translateY(3px); } }
+  .earned .complete-tag { position: absolute; top: 20px; right: 22px; font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--goldilocks); }
+
+  /* storyboard */
+  .board { max-width: 1100px; margin: 0 auto 40px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  @media (max-width: 900px) { .board { grid-template-columns: 1fr; } }
+  .frame { border: 1px solid var(--hair); border-radius: 8px; background: var(--void); overflow: hidden; }
+  .frame .viz { height: 170px; position: relative; display: flex; align-items: center; justify-content: center; }
+  .frame .cap { border-top: 1px solid var(--hair); padding: 12px 14px; }
+  .frame .cap .k { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--indigo); }
+  .frame .cap p { font-size: 12px; color: var(--ink-soft); margin-top: 6px; line-height: 1.5; }
+  .collapse-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 30px 6px var(--indigo-glow); animation: shrink 2.4s ease-in-out infinite; }
+  @keyframes shrink { 0% { transform: scale(9); opacity: 0.25; } 60%,100% { transform: scale(1); opacity: 1; } }
+  .era-roll { font-family: var(--f-mono); font-size: 20px; letter-spacing: 0.18em; color: var(--ink); text-align: center; }
+  .era-roll .sub { display: block; font-size: 9px; letter-spacing: 0.3em; color: var(--ink-faint); margin-top: 10px; text-transform: uppercase; }
+  .era-roll .val { color: var(--indigo); animation: flick 0.9s steps(2) infinite; }
+  @keyframes flick { 50% { opacity: 0.55; } }
+  .bloom { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); box-shadow: 0 0 30px 6px var(--indigo-glow); animation: bloom 2.4s ease-in-out infinite; }
+  @keyframes bloom { 0% { transform: scale(1); } 60%,100% { transform: scale(11); opacity: 0.2; } }
+  .skiphint { position: absolute; bottom: 10px; right: 12px; font-family: var(--f-mono); font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <h1>Mockup 02 — The earned transition</h1>
+  <p>Every chapter ends with this block. Left: dormant state while components remain (the next chapter is veiled,
+     the checklist doubles as navigation — clicking an open item scrolls to that component). Right: the earned state
+     after the sixth component completes, with the audio cadence firing as it activates.</p>
+  <p class="ask">Reply in chat: approve, or tell me what to change</p>
+</div>
+
+<div class="section-label">State 1 → State 2 · chapter bottom</div>
+<div class="pair">
+  <div>
+    <div class="state-tag">Dormant — 4 of 6 experienced</div>
+    <div class="tblock dormant">
+      <div class="veil"></div>
+      <div class="t-eyebrow">Next phase · locked behind understanding</div>
+      <div class="t-next">Quarks to Atoms</div>
+      <div class="t-era">CH 02 · t + 1μs</div>
+      <div class="checklist">
+        <span class="check done">Initial Entropy</span>
+        <span class="check done">Expansion Rate</span>
+        <span class="check done">Quantum Fluctuations</span>
+        <span class="check done">Dark Energy</span>
+        <span class="check todo">Inflation Field</span>
+        <span class="check todo">Curvature</span>
+      </div>
+      <div class="remain">2 components remain — tap one above to jump to it</div>
+    </div>
+  </div>
+  <div>
+    <div class="state-tag">Earned — all 6 experienced</div>
+    <div class="tblock earned">
+      <div class="complete-tag">✓ chapter complete</div>
+      <div class="t-eyebrow">The universe survives its first moment</div>
+      <div class="t-next">Quarks to Atoms</div>
+      <div class="t-era">CH 02 · <span class="roll">13.8 Bya → t + 1μs</span></div>
+      <div><span class="descend">Descend <span class="arrow">↓</span></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="section-label">Handoff storyboard · ~2.5s, skippable, audio crossfade underneath</div>
+<p class="note">Animations below loop to suggest motion — in the real sequence each frame is one beat.</p>
+<div class="board">
+  <div class="frame">
+    <div class="viz"><div class="collapse-dot"></div><span class="skiphint">click / key = skip</span></div>
+    <div class="cap"><span class="k">Beat 1 · Collapse</span><p>The current chapter's visualization contracts into a single point of light. Current palette fades.</p></div>
+  </div>
+  <div class="frame">
+    <div class="viz">
+      <div class="era-roll"><span class="val">t + 10⁻³⁵ s … t + 1μs</span><span class="sub">cosmic time fast-forwards</span></div>
+    </div>
+    <div class="cap"><span class="k">Beat 2 · Time roll</span><p>The era counter races through cosmic time between the two chapters — the descent made visible.</p></div>
+  </div>
+  <div class="frame">
+    <div class="viz"><div class="bloom"></div></div>
+    <div class="cap"><span class="k">Beat 3 · Bloom</span><p>The next chapter blooms out of the same point of light as its palette fades in. HUD updates to 02/07.</p></div>
+  </div>
+</div>
+
+</body>
+</html>
