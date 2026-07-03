@@ -20,8 +20,6 @@ export function TopNav({ onIndex, activeLabel = 'Index' }: TopNavProps) {
         >
           Index
         </button>
-        <span>Glossary</span>
-        <span>About</span>
       </div>
     </nav>
   );

@@ -9,10 +9,6 @@ import { MobileStepper } from './MobileStepper';
 import { BrokenState } from './BrokenState';
 import { PARAMS, isInBand, type ParamKey } from './params';
 
-export type InstrumentProps = {
-  educatorMode?: boolean;
-};
-
 type Values = Record<ParamKey, number>;
 
 const DEFAULT_VALUES: Values = PARAMS.reduce((acc, p) => {
@@ -57,11 +53,9 @@ function outcomeFromState(values: Values): string {
   return 'Catastrophic failure — universe cannot form atoms';
 }
 
-export function Instrument({ educatorMode: educatorModeProp = false }: InstrumentProps) {
+export function Instrument() {
   const [values, setValues] = useState<Values>(DEFAULT_VALUES);
   const [focusedKey, setFocusedKey] = useState<ParamKey | null>(null);
-  const [educatorModeOverride, setEducatorModeOverride] = useState<boolean | null>(null);
-  const educatorMode = educatorModeOverride ?? educatorModeProp;
 
   // Listen for the legacy global randomize event so the chapter frame's
   // "randomize" button keeps working.
@@ -131,14 +125,6 @@ export function Instrument({ educatorMode: educatorModeProp = false }: Instrumen
           </span>
         </div>
         <div className="inst-actions">
-          <button
-            type="button"
-            className={`inst-action${educatorMode ? ' on' : ''}`}
-            onClick={() => setEducatorModeOverride(!educatorMode)}
-            aria-pressed={educatorMode}
-          >
-            <span className="ico" /> Educator mode · {educatorMode ? 'on' : 'off'}
-          </button>
           <button type="button" className="inst-action" onClick={handleRandomizeClick}>
             ⟳ Randomize universe
           </button>
@@ -186,7 +172,6 @@ export function Instrument({ educatorMode: educatorModeProp = false }: Instrumen
         <FocusedView
           param={PARAMS.find((p) => p.key === focusedKey)!}
           value={values[focusedKey]}
-          educatorMode={educatorMode}
           onChange={(next) => setValue(focusedKey, next)}
           onClose={() => setFocusedKey(null)}
         />

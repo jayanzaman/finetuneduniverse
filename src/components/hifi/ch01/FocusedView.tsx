@@ -16,18 +16,11 @@ import { EDUCATOR_CONTENT } from './EducatorContent';
 export type FocusedViewProps = {
   param: ParamDef;
   value: number;
-  educatorMode: boolean;
   onChange: (next: number) => void;
   onClose: () => void;
 };
 
-export function FocusedView({
-  param,
-  value,
-  educatorMode,
-  onChange,
-  onClose,
-}: FocusedViewProps) {
+export function FocusedView({ param, value, onChange, onClose }: FocusedViewProps) {
   const Viz = VIZ_BY_KEY[param.key];
   const content = EDUCATOR_CONTENT[param.key];
   const position = toNormalized(value, param.range);
@@ -67,7 +60,7 @@ export function FocusedView({
 
         {content.mathBlocks?.map((block, i) => (
           <div key={i} className="math-block">
-            <span className="math" style={{ fontSize: educatorMode ? 32 : 26 }}>
+            <span className="math" style={{ fontSize: 26 }}>
               {block.expression}
             </span>
             <div className="math-caption">{block.caption}</div>
