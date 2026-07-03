@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup 01 — Cinematic Prologue (two layout options)</title>
+<style>
+  :root {
+    --void: #030308;
+    --panel: #0a0a14;
+    --ink: #e8e8f0;
+    --ink-soft: #9a9ab0;
+    --ink-faint: #5a5a72;
+    --hair: rgba(232,232,240,0.12);
+    --indigo: #7b8cff;
+    --indigo-glow: rgba(123,140,255,0.35);
+    --goldilocks: #7dd6a0;
+    --warm: #e78c5a;
+    --f-display: Georgia, 'Times New Roman', serif;
+    --f-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --f-body: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #101018; color: var(--ink); font-family: var(--f-body); padding: 32px 20px 80px; }
+  .guide { max-width: 1100px; margin: 0 auto 28px; }
+  .guide h1 { font-family: var(--f-display); font-weight: 300; font-size: 30px; letter-spacing: -0.02em; }
+  .guide p { color: var(--ink-soft); margin-top: 8px; font-size: 14px; line-height: 1.6; max-width: 720px; }
+  .guide .ask { color: var(--indigo); font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; margin-top: 14px; }
+
+  .variant { max-width: 1100px; margin: 0 auto 56px; }
+  .variant-label {
+    font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--indigo); margin-bottom: 10px; display: flex; align-items: center; gap: 10px;
+  }
+  .variant-label::after { content: ''; flex: 1; height: 1px; background: var(--hair); }
+  .variant-note { color: var(--ink-soft); font-size: 13px; line-height: 1.55; margin-bottom: 14px; max-width: 720px; }
+
+  .screen {
+    background: radial-gradient(ellipse at 50% -10%, #10102a 0%, var(--void) 55%);
+    border: 1px solid var(--hair); border-radius: 8px; overflow: hidden; position: relative;
+  }
+  .chrome { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--hair); background: rgba(255,255,255,0.02); }
+  .chrome span { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-faint); opacity: 0.5; }
+
+  .topnav { display: flex; justify-content: space-between; align-items: center; padding: 18px 36px; }
+  .mark { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-soft); }
+  .mark i { width: 7px; height: 7px; border-radius: 50%; background: var(--indigo); box-shadow: 0 0 10px var(--indigo-glow); }
+  .navlinks { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); display: flex; gap: 22px; align-items: center; }
+  .navlinks .active { color: var(--ink); }
+  .soundtoggle { border: 1px solid var(--hair); border-radius: 20px; padding: 5px 12px; color: var(--ink-soft); display: inline-flex; gap: 7px; align-items: center; }
+  .soundtoggle .bars { display: inline-flex; gap: 2px; align-items: flex-end; height: 10px; }
+  .soundtoggle .bars i { width: 2px; background: var(--indigo); animation: eq 1s ease-in-out infinite alternate; }
+  .soundtoggle .bars i:nth-child(1) { height: 5px; } .soundtoggle .bars i:nth-child(2) { height: 9px; animation-delay: .2s; } .soundtoggle .bars i:nth-child(3) { height: 4px; animation-delay: .4s; }
+  @keyframes eq { to { transform: scaleY(0.4); } }
+
+  /* ---- prologue lines (shared) ---- */
+  .prologue { text-align: center; padding: 70px 24px 40px; }
+  .prologue .line {
+    font-family: var(--f-display); font-weight: 300; letter-spacing: -0.02em; line-height: 1.3;
+    opacity: 0; animation: reveal 12s linear infinite;
+  }
+  .prologue .l1 { font-size: 30px; color: var(--ink-soft); animation-delay: 0s; }
+  .prologue .l2 { font-size: 30px; color: var(--ink); margin-top: 18px; animation-delay: 2.2s; }
+  .prologue .l3 { font-size: 38px; color: var(--ink); margin-top: 18px; animation-delay: 4.4s; }
+  .prologue .l3 em { color: var(--indigo); font-style: normal; }
+  @keyframes reveal { 0% {opacity: 0; transform: translateY(10px);} 8% {opacity: 1; transform: none;} 90% {opacity: 1;} 100% {opacity: 0;} }
+  .skip { position: absolute; top: 64px; right: 28px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--ink-faint); border: 1px solid var(--hair); padding: 6px 12px; border-radius: 4px; }
+  .begin {
+    display: inline-block; margin-top: 34px; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.3em;
+    text-transform: uppercase; color: var(--void); background: var(--ink); padding: 14px 34px; border-radius: 4px;
+  }
+  .begin-sub { margin-top: 12px; font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); }
+
+  /* ---- progress ring ---- */
+  .ring { position: relative; width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring .num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--f-mono); font-size: 9px; color: var(--ink-soft); }
+  .ring.done .num { color: var(--goldilocks); }
+
+  /* ---- Variant A: index strip on same screen ---- */
+  .index-strip { border-top: 1px solid var(--hair); padding: 26px 36px 34px; }
+  .strip-label { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 16px; display: flex; justify-content: space-between; }
+  .chapters { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; }
+  .chapter { border: 1px solid var(--hair); border-radius: 6px; padding: 12px 10px; display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.015); }
+  .chapter.current { border-color: var(--indigo); box-shadow: 0 0 18px rgba(123,140,255,0.12); }
+  .ch-meta .n { font-family: var(--f-mono); font-size: 9px; color: var(--ink-faint); letter-spacing: 0.2em; }
+  .ch-meta .t { font-family: var(--f-display); font-size: 15px; font-weight: 300; margin-top: 3px; }
+  .ch-meta .d { font-size: 10px; color: var(--ink-faint); margin-top: 3px; }
+
+  /* ---- Variant B: full-bleed, index by scroll ---- */
+  .fullbleed { min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .scrollcue { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); text-align: center; color: var(--ink-faint); font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; }
+  .scrollcue .chev { display: block; margin: 8px auto 0; width: 10px; height: 10px; border-right: 1px solid var(--ink-faint); border-bottom: 1px solid var(--ink-faint); transform: rotate(45deg); animation: bob 1.6s ease-in-out infinite; }
+  @keyframes bob { 50% { transform: rotate(45deg) translate(3px,3px); } }
+  .below-fold { border-top: 1px dashed var(--hair); padding: 30px 36px 40px; }
+  .fold-note { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase; color: var(--warm); margin-bottom: 18px; }
+  .list-row { display: flex; align-items: center; gap: 18px; padding: 13px 6px; border-bottom: 1px solid var(--hair); }
+  .list-row .n { font-family: var(--f-mono); font-size: 10px; color: var(--ink-faint); width: 26px; }
+  .list-row .t { font-family: var(--f-display); font-size: 19px; font-weight: 300; flex: 1; }
+  .list-row .era { font-family: var(--f-mono); font-size: 10px; color: var(--ink-faint); letter-spacing: 0.14em; }
+  .list-row .status { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint); }
+  .list-row .status.now { color: var(--indigo); }
+  .list-row .status.done { color: var(--goldilocks); }
+  .list-row.current { background: rgba(123,140,255,0.05); }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <h1>Mockup 01 — Cinematic prologue</h1>
+  <p>Both variants open with the same skippable line-by-line reveal (the lines loop in this mockup so you can watch the pacing).
+     They differ in how the 7-chapter index appears and how progress is shown.
+     The sound toggle in the top-right is the audio engine's on/off switch — present in both.</p>
+  <p class="ask">Reply in chat: “A” or “B” — plus anything you'd change</p>
+</div>
+
+<!-- ================= VARIANT A ================= -->
+<div class="variant">
+  <div class="variant-label">Variant A · Prologue + index on one screen</div>
+  <p class="variant-note">The premise plays out above; the index is always visible as a compact card strip below the fold line.
+     Progress rings on each card fill as components are completed. Returning visitors see everything at a glance with zero scrolling.</p>
+  <div class="screen">
+    <div class="chrome"><span></span><span></span><span></span></div>
+    <div class="topnav">
+      <div class="mark"><i></i> Finetuned · Universe</div>
+      <div class="navlinks"><span class="active">Index</span><span class="soundtoggle"><span class="bars"><i></i><i></i><i></i></span> sound on</span></div>
+    </div>
+    <div style="position:relative">
+      <div class="skip">skip ↦</div>
+      <div class="prologue">
+        <div class="line l1">Our universe runs on a handful of numbers.</div>
+        <div class="line l2">Tune any one of them slightly — and there are no stars, no chemistry, no you.</div>
+        <div class="line l3">This is the story of the <em>seven thresholds</em> everything had to cross.</div>
+        <div style="opacity:0; animation: reveal 12s linear infinite; animation-delay: 6.6s;">
+          <span class="begin">Begin the descent</span>
+          <div class="begin-sub">↓ or choose a chapter below</div>
+        </div>
+      </div>
+    </div>
+    <div class="index-strip">
+      <div class="strip-label"><span>The descent · seven chapters</span><span>3 of 42 components experienced</span></div>
+      <div class="chapters">
+        <div class="chapter">
+          <div class="ring done"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/><circle cx="17" cy="17" r="15" fill="none" stroke="#7dd6a0" stroke-width="2" stroke-dasharray="94.2" stroke-dashoffset="47"/></svg><span class="num">3/6</span></div>
+          <div class="ch-meta"><div class="n">01 · 13.8 BYA</div><div class="t">Beginning</div><div class="d">Low entropy start</div></div>
+        </div>
+        <div class="chapter current">
+          <div class="ring"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/><circle cx="17" cy="17" r="15" fill="none" stroke="#7b8cff" stroke-width="2" stroke-dasharray="94.2" stroke-dashoffset="94.2"/></svg><span class="num">0/4</span></div>
+          <div class="ch-meta"><div class="n">02 · t + 1μs</div><div class="t">Matter</div><div class="d">Quarks to atoms</div></div>
+        </div>
+        <div class="chapter">
+          <div class="ring"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/></svg><span class="num">0/4</span></div>
+          <div class="ch-meta"><div class="n">03 · 200 MYA</div><div class="t">Stars</div><div class="d">Ignition</div></div>
+        </div>
+        <div class="chapter">
+          <div class="ring"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/></svg><span class="num">0/4</span></div>
+          <div class="ch-meta"><div class="n">04 · 1 GYA</div><div class="t">Galaxy</div><div class="d">Blackhole heart</div></div>
+        </div>
+        <div class="chapter">
+          <div class="ring"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/></svg><span class="num">0/5</span></div>
+          <div class="ch-meta"><div class="n">05 · 9.2 GYA</div><div class="t">Planets</div><div class="d">Goldilocks zone</div></div>
+        </div>
+        <div class="chapter">
+          <div class="ring"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/></svg><span class="num">0/5</span></div>
+          <div class="ch-meta"><div class="n">06 · 3.8 GYA</div><div class="t">Life</div><div class="d">Abiogenesis</div></div>
+        </div>
+        <div class="chapter">
+          <div class="ring"><svg width="34" height="34"><circle cx="17" cy="17" r="15" fill="none" stroke="rgba(232,232,240,0.12)" stroke-width="2"/></svg><span class="num">0/4</span></div>
+          <div class="ch-meta"><div class="n">07 · NOW</div><div class="t">Geology</div><div class="d">A planet remade</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= VARIANT B ================= -->
+<div class="variant">
+  <div class="variant-label">Variant B · Full-bleed prologue, index revealed on scroll</div>
+  <p class="variant-note">The prologue owns the entire first screen — nothing competes with it. A scroll cue leads to a
+     taller, list-style index with per-chapter status words instead of cards. More cinematic; index requires one scroll.</p>
+  <div class="screen">
+    <div class="chrome"><span></span><span></span><span></span></div>
+    <div class="topnav">
+      <div class="mark"><i></i> Finetuned · Universe</div>
+      <div class="navlinks"><span class="active">Index</span><span class="soundtoggle"><span class="bars"><i></i><i></i><i></i></span> sound on</span></div>
+    </div>
+    <div class="fullbleed">
+      <div class="skip" style="top:14px">skip ↦</div>
+      <div class="prologue" style="padding-top:20px">
+        <div class="line l1">Our universe runs on a handful of numbers.</div>
+        <div class="line l2">Tune any one of them slightly — and there are no stars, no chemistry, no you.</div>
+        <div class="line l3">This is the story of the <em>seven thresholds</em> everything had to cross.</div>
+        <div style="opacity:0; animation: reveal 12s linear infinite; animation-delay: 6.6s;">
+          <span class="begin">Begin the descent</span>
+        </div>
+      </div>
+      <div class="scrollcue">the seven chapters<span class="chev"></span></div>
+    </div>
+    <div class="below-fold">
+      <div class="fold-note">▼ below the fold — revealed on scroll</div>
+      <div class="list-row"><span class="n">01</span><span class="t">Beginning</span><span class="era">13.8 BYA</span><span class="status done">3/6 experienced</span></div>
+      <div class="list-row current"><span class="n">02</span><span class="t">Quarks to Atoms</span><span class="era">t + 1μs</span><span class="status now">continue here →</span></div>
+      <div class="list-row"><span class="n">03</span><span class="t">First Stars</span><span class="era">200 MYA</span><span class="status">unexplored</span></div>
+      <div class="list-row"><span class="n">04</span><span class="t">Blackhole at the Heart</span><span class="era">1 GYA</span><span class="status">unexplored</span></div>
+      <div class="list-row"><span class="n">05</span><span class="t">Goldilocks Zone</span><span class="era">9.2 GYA</span><span class="status">unexplored</span></div>
+      <div class="list-row"><span class="n">06</span><span class="t">Chemistry to Codes</span><span class="era">3.8 GYA</span><span class="status">unexplored</span></div>
+      <div class="list-row"><span class="n">07</span><span class="t">Geologic Time</span><span class="era">NOW</span><span class="status">unexplored</span></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
