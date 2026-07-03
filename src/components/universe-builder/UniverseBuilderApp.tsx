@@ -68,6 +68,10 @@ export default function UniverseBuilderApp() {
   // Keyboard navigation
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      // Don't steal arrow keys from sliders/inputs or while a focus modal is open
+      if (target?.closest('[role="slider"], input, textarea, select, [contenteditable="true"]')) return;
+      if (document.querySelector('.focus-modal')) return;
       if (e.key === 'ArrowRight') handleNext();
       if (e.key === 'ArrowLeft') handlePrev();
     };

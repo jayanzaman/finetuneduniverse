@@ -21,7 +21,6 @@ export function ChapterHUD({ activeIndex, onPrev, onNext }: ChapterHUDProps) {
         type="button"
         className="chapter-hud-arrow"
         onClick={onPrev}
-        disabled={!prev && activeIndex === 0}
         aria-label={prev ? `Previous chapter: ${prev.t}` : 'Back to index'}
         title={prev ? `${prev.n} · ${prev.t}` : 'Back to index'}
       >

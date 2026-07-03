@@ -145,13 +145,15 @@ export function Instrument({ educatorMode: educatorModeProp = false }: Instrumen
         </div>
       </div>
 
-      <OutcomeBanner
-        label={outcomeLabel}
-        warn={warn}
-        total={total}
-        complexity={complexity}
-        status={status}
-      />
+      <div className="inst-desktop-outcome">
+        <OutcomeBanner
+          label={outcomeLabel}
+          warn={warn}
+          total={total}
+          complexity={complexity}
+          status={status}
+        />
+      </div>
       <FateLadder position={total} />
 
       <div className="param-grid">
