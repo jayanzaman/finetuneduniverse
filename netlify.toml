@@ -10,9 +10,6 @@
   to = "/index.html"
   status = 200
 
-[context.production.environment]
-  NODE_ENV = "production"
-
 # Force HTTPS redirect
 [[redirects]]
   from = "http://finetuneduniverse.net/*"
