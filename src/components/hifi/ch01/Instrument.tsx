@@ -8,6 +8,7 @@ import { FocusedView } from './FocusedView';
 import { MobileStepper } from './MobileStepper';
 import { BrokenState } from './BrokenState';
 import { PARAMS, isInBand, type ParamKey } from './params';
+import { useProgression } from '../progression/ProgressionContext';
 
 type Values = Record<ParamKey, number>;
 
@@ -56,6 +57,7 @@ function outcomeFromState(values: Values): string {
 export function Instrument() {
   const [values, setValues] = useState<Values>(DEFAULT_VALUES);
   const [focusedKey, setFocusedKey] = useState<ParamKey | null>(null);
+  const { markInteracted, markLessonOpened } = useProgression();
 
   // Listen for the legacy global randomize event so the chapter frame's
   // "randomize" button keeps working.
@@ -74,9 +76,21 @@ export function Instrument() {
     return () => window.removeEventListener('randomizeUniverse', handleRandomize);
   }, []);
 
-  const setValue = useCallback((key: ParamKey, next: number) => {
-    setValues((prev) => ({ ...prev, [key]: next }));
-  }, []);
+  const setValue = useCallback(
+    (key: ParamKey, next: number) => {
+      setValues((prev) => ({ ...prev, [key]: next }));
+      markInteracted(`ch01:${key}`);
+    },
+    [markInteracted]
+  );
+
+  const openFocused = useCallback(
+    (key: ParamKey) => {
+      setFocusedKey(key);
+      markLessonOpened(`ch01:${key}`);
+    },
+    [markLessonOpened]
+  );
 
   const { total, complexity, outsideBandCount, warnIndex, outcomeLabel } = useMemo(() => {
     const entropyScore = scoreParam('entropy', values.entropy);
@@ -149,8 +163,8 @@ export function Instrument() {
             p={p}
             value={values[p.key]}
             onChange={(next) => setValue(p.key, next)}
-            onMaximize={() => setFocusedKey(p.key)}
-            onReadLesson={() => setFocusedKey(p.key)}
+            onMaximize={() => openFocused(p.key)}
+            onReadLesson={() => openFocused(p.key)}
           />
         ))}
       </div>
@@ -158,7 +172,7 @@ export function Instrument() {
       <MobileStepper
         values={values}
         onChange={setValue}
-        onMaximize={setFocusedKey}
+        onMaximize={openFocused}
         outcomeLabel={outcomeLabel}
         total={total}
         complexity={complexity}
