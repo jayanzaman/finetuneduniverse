@@ -67,4 +67,13 @@ describe('useProgression', () => {
     expect(result.current.chapterProgress(0).done).toBe(1);
     expect(result.current.state.prologueSeen).toBe(true);
   });
+
+  it('exposes prologueSeen as a top-level selector', async () => {
+    const { result } = renderHook(() => useProgression(), { wrapper });
+    await waitFor(() => expect(result.current.hydrated).toBe(true));
+    expect(result.current.prologueSeen).toBe(false);
+
+    act(() => result.current.markPrologueSeen());
+    expect(result.current.prologueSeen).toBe(true);
+  });
 });

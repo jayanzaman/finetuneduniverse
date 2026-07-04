@@ -29,6 +29,8 @@ export type Progression = {
   state: ProgressState;
   /** False until the mount-time localStorage read has landed. */
   hydrated: boolean;
+  /** Whether the prologue has been seen (mirrors state.prologueSeen). */
+  prologueSeen: boolean;
   markInteracted: (id: string) => void;
   markLessonOpened: (id: string) => void;
   markPrologueSeen: () => void;
@@ -72,6 +74,7 @@ export function ProgressionProvider({ children }: { children: ReactNode }) {
     () => ({
       state,
       hydrated,
+      prologueSeen: state.prologueSeen,
       markInteracted: doMarkInteracted,
       markLessonOpened: doMarkLessonOpened,
       markPrologueSeen: doMarkPrologueSeen,
