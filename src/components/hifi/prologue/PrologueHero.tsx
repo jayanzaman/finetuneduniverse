@@ -1,16 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { prefersReducedMotion } from '../motion';
 import { useProgression } from '../progression/ProgressionContext';
 
 type Phase = 'pending' | 'revealing' | 'resting';
 
 const LINE_DELAYS_MS = [0, 2200, 4400];
 const SETTLE_DELAY_MS = 6600;
-
-function prefersReducedMotion(): boolean {
-  return window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true;
-}
 
 export type PrologueHeroProps = {
   onBegin: () => void;
