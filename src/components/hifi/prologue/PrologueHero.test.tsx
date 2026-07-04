@@ -32,7 +32,7 @@ describe('PrologueHero', () => {
   it('reveals lines sequentially on first visit and marks prologueSeen at settle', async () => {
     stubMatchMedia(false);
     const { container } = wrap(
-      <PrologueHero onBegin={() => {}} lineDelaysMs={[0, 20, 40]} settleDelayMs={60} />
+      <PrologueHero onBegin={() => {}} lineDelaysMs={[0, 20, 800]} settleDelayMs={900} />
     );
     const hero = () => container.querySelector('.prologue-hero')!;
 
