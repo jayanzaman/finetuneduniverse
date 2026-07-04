@@ -16,7 +16,7 @@ import { HifiBackdrop } from '../hifi/HifiBackdrop';
 import { TopNav } from '../hifi/TopNav';
 import { ChapterRail } from '../hifi/ChapterRail';
 import { ChapterHUD } from '../hifi/ChapterHUD';
-import { Landing } from '../hifi/Landing';
+import { PrologueLanding } from '../hifi/prologue/PrologueLanding';
 import { ChapterFrame } from '../hifi/ChapterFrame';
 import { CHAPTER_CONTENT } from '../hifi/chapterContent';
 import { ProgressionProvider, useProgression } from '../hifi/progression/ProgressionContext';
@@ -117,7 +117,7 @@ export default function UniverseBuilderApp() {
                 exit={{ opacity: 0, y: -16 }}
                 transition={{ duration: 0.5 }}
               >
-                <Landing onBegin={() => goChapter(0)} onSelectChapter={goChapter} />
+                <PrologueLanding onBegin={() => goChapter(0)} onSelectChapter={goChapter} />
               </motion.div>
             ) : (
               <motion.div

@@ -635,3 +635,247 @@ button, [role="button"] { touch-action: manipulation; }
 }
 .what-if-card .label { font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--warm); margin-bottom: 6px; }
 .what-if-card .body { font-family: var(--f-body); font-size: 13px; line-height: 1.5; color: var(--ink-mid); font-weight: 300; }
+
+/* ============ Prologue landing (P2) ============ */
+
+.prologue-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  padding: 0 24px;
+  text-align: center;
+}
+
+.prologue-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 720px;
+}
+
+.prologue-line {
+  font-family: var(--f-display);
+  font-size: clamp(22px, 3.4vw, 30px);
+  line-height: 1.45;
+  color: var(--ink-mid);
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.prologue-l3 {
+  font-size: clamp(22px, 4vw, 38px);
+  color: var(--ink);
+}
+
+.prologue-l3 em {
+  font-family: var(--f-italic);
+  font-style: italic;
+  color: var(--indigo);
+}
+
+.prologue-line.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+/* Returning visitors / reduced motion: everything instantly visible. */
+.prologue-hero[data-phase='resting'] .prologue-line,
+.prologue-hero[data-phase='resting'] .prologue-begin-row,
+.prologue-hero[data-phase='resting'] .prologue-scrollcue {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.prologue-skip {
+  position: fixed;
+  top: 84px;
+  right: 28px;
+  z-index: 20;
+  background: none;
+  border: 1px solid var(--hair-2);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.prologue-skip:hover {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.prologue-begin-row,
+.prologue-scrollcue {
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.prologue-begin-row {
+  visibility: hidden;
+}
+
+.prologue-begin-row.is-visible,
+.prologue-hero[data-phase='resting'] .prologue-begin-row {
+  visibility: visible;
+}
+
+.prologue-begin-row.is-visible,
+.prologue-scrollcue.is-visible {
+  opacity: 1;
+}
+
+.prologue-begin {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--void);
+  border: none;
+  border-radius: 2px;
+  padding: 14px 30px;
+  cursor: pointer;
+}
+
+.prologue-begin:hover {
+  background: var(--indigo);
+  color: var(--ink);
+}
+
+.prologue-scrollcue {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.prologue-chevron {
+  font-size: 16px;
+  animation: prologue-bob 2.2s ease-in-out infinite;
+}
+
+@keyframes prologue-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.prologue-index {
+  max-width: 1060px;
+  margin: 0 auto;
+  padding: 60px 24px 120px;
+  display: flex;
+  flex-direction: column;
+}
+
+.prologue-row {
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
+  width: 100%;
+  padding: 22px 10px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--hair);
+  text-align: left;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.prologue-index.is-inview .prologue-row {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+  transition-delay: calc(var(--row, 0) * 90ms);
+}
+
+.prologue-row:first-child {
+  border-top: 1px solid var(--hair);
+}
+
+.prologue-row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.prologue-row-n {
+  font-size: 11px;
+  color: var(--ink-faint);
+  min-width: 26px;
+}
+
+.prologue-row-title {
+  font-family: var(--f-display);
+  font-size: clamp(18px, 2.4vw, 24px);
+  color: var(--ink);
+}
+
+.prologue-row.is-frontier .prologue-row-title {
+  color: var(--indigo);
+}
+
+.prologue-row-d {
+  font-family: var(--f-body);
+  font-size: 13px;
+  color: var(--ink-soft);
+  flex: 1;
+}
+
+.prologue-row-era {
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+
+.prologue-row-status {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+  min-width: 130px;
+  text-align: right;
+}
+
+.prologue-row-status.status-frontier {
+  color: var(--indigo);
+}
+
+.prologue-row-status.status-complete {
+  color: var(--goldilocks);
+}
+
+@media (max-width: 640px) {
+  .prologue-row {
+    flex-wrap: wrap;
+    gap: 10px 14px;
+  }
+
+  .prologue-row-d {
+    display: none;
+  }
+
+  .prologue-row-status {
+    min-width: 0;
+    text-align: left;
+    width: 100%;
+    padding-left: 40px;
+  }
+
+  .prologue-skip {
+    top: 72px;
+    right: 16px;
+  }
+}
