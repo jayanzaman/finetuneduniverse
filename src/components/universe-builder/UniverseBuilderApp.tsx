@@ -19,6 +19,7 @@ import { ChapterHUD } from '../hifi/ChapterHUD';
 import { Landing } from '../hifi/Landing';
 import { ChapterFrame } from '../hifi/ChapterFrame';
 import { CHAPTER_CONTENT } from '../hifi/chapterContent';
+import { ProgressionProvider, useProgression } from '../hifi/progression/ProgressionContext';
 
 type View = { kind: 'landing' } | { kind: 'chapter'; index: number };
 
@@ -96,46 +97,48 @@ export default function UniverseBuilderApp() {
   const activeChapter = view.kind === 'chapter' ? view.index : null;
 
   return (
-    <div className="hifi" style={{ position: 'relative', minHeight: '100vh' }}>
-      <HifiBackdrop seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3} />
+    <ProgressionProvider>
+      <div className="hifi" style={{ position: 'relative', minHeight: '100vh' }}>
+        <HifiBackdrop seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3} />
 
-      <TopNav onIndex={goLanding} activeLabel={view.kind === 'landing' ? 'Index' : null} />
-      <ChapterRail active={activeChapter} onSelect={goChapter} />
-      {activeChapter !== null && (
-        <ChapterHUD activeIndex={activeChapter} onPrev={handlePrev} onNext={handleNext} />
-      )}
+        <TopNav onIndex={goLanding} activeLabel={view.kind === 'landing' ? 'Index' : null} />
+        <ChapterRail active={activeChapter} onSelect={goChapter} />
+        {activeChapter !== null && (
+          <ChapterHUD activeIndex={activeChapter} onPrev={handlePrev} onNext={handleNext} />
+        )}
 
-      <main {...swipeHandlers} style={{ position: 'relative', zIndex: 3 }}>
-        <AnimatePresence mode="wait">
-          {view.kind === 'landing' ? (
-            <motion.div
-              key="landing"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Landing onBegin={() => goChapter(0)} onSelectChapter={goChapter} />
-            </motion.div>
-          ) : (
-            <motion.div
-              key={`ch-${view.index}`}
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -24 }}
-              transition={{ duration: 0.5 }}
-            >
-              <ChapterView
-                index={view.index}
-                cosmicTime={cosmicTime}
-                onNext={view.index < SECTION_COMPONENTS.length - 1 ? handleNext : undefined}
-                onPrev={handlePrev}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
-    </div>
+        <main {...swipeHandlers} style={{ position: 'relative', zIndex: 3 }}>
+          <AnimatePresence mode="wait">
+            {view.kind === 'landing' ? (
+              <motion.div
+                key="landing"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ duration: 0.5 }}
+              >
+                <Landing onBegin={() => goChapter(0)} onSelectChapter={goChapter} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key={`ch-${view.index}`}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -24 }}
+                transition={{ duration: 0.5 }}
+              >
+                <ChapterView
+                  index={view.index}
+                  cosmicTime={cosmicTime}
+                  onNext={view.index < SECTION_COMPONENTS.length - 1 ? handleNext : undefined}
+                  onPrev={handlePrev}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+      </div>
+    </ProgressionProvider>
   );
 }
 
@@ -149,6 +152,11 @@ type ChapterViewProps = {
 function ChapterView({ index, cosmicTime, onNext, onPrev }: ChapterViewProps) {
   const SectionComponent = SECTION_COMPONENTS[index];
   const content = CHAPTER_CONTENT[index];
+
+  const { markLegacyVisit } = useProgression();
+  useEffect(() => {
+    markLegacyVisit(index);
+  }, [index, markLegacyVisit]);
 
   return (
     <ChapterFrame
