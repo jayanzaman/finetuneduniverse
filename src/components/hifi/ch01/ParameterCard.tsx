@@ -40,7 +40,7 @@ export function ParameterCard({
     : undefined;
 
   return (
-    <div className={`param-card${warn ? ' warn' : ''}`}>
+    <div id={`comp-ch01:${p.key}`} className={`param-card${warn ? ' warn' : ''}`}>
       <div className="param-card-head">
         <span className="param-card-num">{p.n} · Parameter</span>
         <span className={`param-card-badge ${p.scored ? 'scored' : 'open'}`}>
