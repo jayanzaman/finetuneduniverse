@@ -14,6 +14,11 @@ export type ChapterComponents = {
   components: ComponentDef[];
 };
 
+/**
+ * Only valid for legacy chapters (chapterIndex 1..6 today). When a chapter is
+ * rebuilt, its `:legacy` id is retired and prior visit-completion is
+ * intentionally not migrated — selectors ignore orphaned ids in saved state.
+ */
 export function legacyComponentId(chapterIndex: number): string {
   return `ch${CHAPTERS[chapterIndex].n}:legacy`;
 }
