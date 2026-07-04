@@ -18,10 +18,8 @@ type ChapterFrameProps = {
   sliderProps: GoldilocksSliderProps;
   /** Failure-mode ghost ("If you leave the band →"). */
   ghost?: { body: ReactNode };
-  /** Title shown in the bottom-right "Next chapter" footer. */
-  nextTitle?: ReactNode;
-  nextLabel?: ReactNode;
-  onNext?: () => void;
+  /** End-of-chapter transition block (dormant/earned) — rendered after the footer. */
+  transition?: ReactNode;
   onPrev?: () => void;
   /** Per-chapter cinematic visualization (renders above the backdrop). */
   visualization?: ReactNode;
@@ -44,9 +42,7 @@ export function ChapterFrame({
   prose,
   sliderProps,
   ghost,
-  nextTitle,
-  nextLabel,
-  onNext,
+  transition,
   onPrev,
   visualization,
   children,
@@ -143,34 +139,10 @@ export function ChapterFrame({
                 ← Previous
               </button>
             )}
-            {nextTitle && (
-              <button
-                type="button"
-                className="hifi-btn primary"
-                onClick={onNext}
-                disabled={!onNext}
-              >
-                <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 2 }}>
-                  <span className="mono" style={{ color: 'rgba(255,255,255,0.7)', letterSpacing: '0.22em' }}>
-                    Next chapter
-                  </span>
-                  <span style={{ fontFamily: 'var(--f-display)', fontSize: 14, letterSpacing: '-0.005em', textTransform: 'none' }}>
-                    {nextTitle} ↓
-                  </span>
-                </span>
-              </button>
-            )}
-            {!nextTitle && (
-              <span className="mono" style={{ color: 'var(--ink-faint)' }}>End of the descent · t = now</span>
-            )}
           </div>
         </div>
 
-        {nextLabel && (
-          <div style={{ marginTop: 12, textAlign: 'right' }}>
-            <span className="mono" style={{ color: 'var(--ink-soft)' }}>{nextLabel}</span>
-          </div>
-        )}
+        {transition && <div style={{ marginTop: 72 }}>{transition}</div>}
       </div>
     </section>
   );

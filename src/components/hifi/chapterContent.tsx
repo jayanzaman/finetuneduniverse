@@ -23,8 +23,6 @@ export type ChapterContent = {
   prose: ReactNode;
   sliderProps: GoldilocksSliderProps;
   ghost: { body: ReactNode };
-  nextTitle?: ReactNode;
-  nextLabel?: ReactNode;
   visualization: ReactNode;
 };
 
@@ -61,8 +59,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'An eternally still universe — frozen perfection. No stars ignite. No time, in any meaningful sense, passes.',
     },
-    nextTitle: 'Quarks to Atoms',
-    nextLabel: 't + 1 microsecond',
     visualization: <PrimordialBubble />,
   },
   {
@@ -96,8 +92,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Loosen the bond by 2% — quarks never bind. The universe is a fog of free particles, dark, structureless, forever.',
     },
-    nextTitle: 'First Stars',
-    nextLabel: '~ 200 million years later',
     visualization: <ProtonViz />,
   },
   {
@@ -132,8 +126,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Stars only half this mass — they fuse hydrogen, but never the heavy elements. No carbon. No water. No us, ever.',
     },
-    nextTitle: 'Blackhole at the Heart',
-    nextLabel: '~ 1 billion years later',
     visualization: <FirstStarViz />,
   },
   {
@@ -168,8 +160,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'A black hole twice this large — and the galaxy never settles into a disc. Stars are pulled apart faster than they form. No planetary orbits, ever.',
     },
-    nextTitle: 'The Goldilocks Zone',
-    nextLabel: '~ 9.2 billion years later',
     visualization: <GalaxyViz />,
   },
   {
@@ -203,8 +193,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Push the orbit out by 10% — Earth ices over for good. Snowball planet, locked in white forever. No reset switch.',
     },
-    nextTitle: 'Chemistry to Codes',
-    nextLabel: '~ 3.8 billion years ago',
     visualization: <GoldilocksViz />,
   },
   {
@@ -239,8 +227,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Halve the UV and the building blocks never assemble. Double it and every fragile molecule shreds before it can replicate.',
     },
-    nextTitle: 'Geologic Time',
-    nextLabel: '4.6 billion years — and a long becoming',
     visualization: <PrimordialEarthViz />,
   },
   {
@@ -275,8 +261,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Oxygen arrived neither too fast nor too slow. A billion years off and complex life never gets its window — Earth stays a microbial planet forever.',
     },
-    nextTitle: undefined,
-    nextLabel: undefined,
     visualization: <EarthLimbViz />,
   },
 ];

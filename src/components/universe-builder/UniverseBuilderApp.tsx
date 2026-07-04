@@ -20,6 +20,8 @@ import { PrologueLanding } from '../hifi/prologue/PrologueLanding';
 import { ChapterFrame } from '../hifi/ChapterFrame';
 import { CHAPTER_CONTENT } from '../hifi/chapterContent';
 import { ProgressionProvider, useProgression } from '../hifi/progression/ProgressionContext';
+import { ChapterTransition } from '../hifi/transition/ChapterTransition';
+import { HandoffOverlay } from '../hifi/transition/HandoffOverlay';
 
 type View = { kind: 'landing' } | { kind: 'chapter'; index: number };
 
@@ -36,6 +38,7 @@ const SECTION_COMPONENTS = [
 export default function UniverseBuilderApp() {
   const [view, setView] = useState<View>({ kind: 'landing' });
   const [cosmicTime, setCosmicTime] = useState(0);
+  const [handoff, setHandoff] = useState<{ from: number; to: number } | null>(null);
 
   const goLanding = useCallback(() => setView({ kind: 'landing' }), []);
   const goChapter = useCallback(
@@ -72,7 +75,7 @@ export default function UniverseBuilderApp() {
       const target = e.target as HTMLElement | null;
       // Don't steal arrow keys from sliders/inputs or while a focus modal is open
       if (target?.closest('[role="slider"], input, textarea, select, [contenteditable="true"]')) return;
-      if (document.querySelector('.focus-modal')) return;
+      if (document.querySelector('.focus-modal, .handoff')) return;
       if (e.key === 'ArrowRight') handleNext();
       if (e.key === 'ArrowLeft') handlePrev();
     };
@@ -130,13 +133,22 @@ export default function UniverseBuilderApp() {
                 <ChapterView
                   index={view.index}
                   cosmicTime={cosmicTime}
-                  onNext={view.index < SECTION_COMPONENTS.length - 1 ? handleNext : undefined}
+                  onDescend={() => setHandoff({ from: view.index, to: Math.min(6, view.index + 1) })}
                   onPrev={handlePrev}
                 />
               </motion.div>
             )}
           </AnimatePresence>
         </main>
+
+        {handoff && (
+          <HandoffOverlay
+            fromIndex={handoff.from}
+            toIndex={handoff.to}
+            onArrive={() => goChapter(handoff.to)}
+            onDone={() => setHandoff(null)}
+          />
+        )}
       </div>
     </ProgressionProvider>
   );
@@ -145,11 +157,11 @@ export default function UniverseBuilderApp() {
 type ChapterViewProps = {
   index: number;
   cosmicTime: number;
-  onNext?: () => void;
+  onDescend: () => void;
   onPrev: () => void;
 };
 
-function ChapterView({ index, cosmicTime, onNext, onPrev }: ChapterViewProps) {
+function ChapterView({ index, cosmicTime, onDescend, onPrev }: ChapterViewProps) {
   const SectionComponent = SECTION_COMPONENTS[index];
   const content = CHAPTER_CONTENT[index];
 
@@ -167,11 +179,9 @@ function ChapterView({ index, cosmicTime, onNext, onPrev }: ChapterViewProps) {
       prose={content.prose}
       sliderProps={content.sliderProps}
       ghost={content.ghost}
-      nextTitle={content.nextTitle}
-      nextLabel={content.nextLabel}
-      onNext={onNext}
       onPrev={onPrev}
       visualization={content.visualization}
+      transition={<ChapterTransition chapterIndex={index} onDescend={onDescend} />}
     >
       <div className="hifi-section-embed">
         <SectionComponent educatorMode={false} cosmicTime={cosmicTime} />
