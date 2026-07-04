@@ -879,3 +879,286 @@ button, [role="button"] { touch-action: manipulation; }
     right: 16px;
   }
 }
+
+/* ============================================================
+   Chapter transition (P3) — dormant / earned block + handoff
+   ============================================================ */
+
+.transition-block {
+  position: relative;
+  overflow: hidden;
+  max-width: 720px;
+  padding: 34px 30px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 50% 120%, var(--void-3) 0%, var(--void) 60%);
+}
+
+.transition-eyebrow {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.transition-next {
+  margin-top: 10px;
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: 34px;
+  letter-spacing: -0.02em;
+  transition: color 0.9s ease, filter 0.9s ease, text-shadow 0.9s ease;
+}
+
+.transition-era {
+  margin-top: 6px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-faint);
+}
+
+/* --- dormant --- */
+
+.transition-block.is-dormant .transition-next {
+  color: var(--ink-faint);
+  filter: blur(1.5px);
+}
+
+.transition-veil {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, transparent 0 6px, rgba(3, 3, 8, 0.5) 6px 12px);
+  pointer-events: none;
+}
+
+.transition-checklist {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.transition-check {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+.transition-check.is-done { color: var(--goldilocks); }
+.transition-check.is-done::before { content: '✓ '; }
+
+.transition-check.is-todo {
+  cursor: pointer;
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.transition-check.is-todo::before { content: '○ '; }
+.transition-check.is-todo:hover,
+.transition-check.is-todo:focus-visible { color: var(--ink-soft); }
+
+.transition-remain {
+  margin-top: 18px;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--warm);
+}
+
+/* --- earned --- */
+
+.transition-block.is-earned {
+  border-color: rgba(122, 123, 255, 0.5);
+  box-shadow: 0 0 40px rgba(122, 123, 255, 0.08) inset, 0 0 24px rgba(122, 123, 255, 0.1);
+}
+
+.transition-block.is-earned .transition-next {
+  color: var(--ink);
+  text-shadow: 0 0 24px var(--indigo-glow);
+}
+
+.transition-complete-tag {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--goldilocks);
+}
+
+.transition-roll {
+  color: var(--indigo);
+  animation: transition-rollpulse 2.4s ease-in-out infinite;
+}
+
+@keyframes transition-rollpulse {
+  50% { opacity: 0.4; }
+}
+
+.transition-descend {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--ink);
+  border: 0;
+  padding: 14px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.transition-descend:hover,
+.transition-descend:focus-visible {
+  box-shadow: 0 0 24px var(--indigo-glow);
+}
+
+.transition-descend-arrow {
+  animation: transition-descendbob 1.4s ease-in-out infinite;
+}
+
+@keyframes transition-descendbob {
+  50% { transform: translateY(3px); }
+}
+
+/* --- closing block (chapter 07) --- */
+
+.transition-closing {
+  max-width: 720px;
+  padding: 34px 30px;
+  border: 1px solid var(--hair);
+  border-radius: 8px;
+  background: radial-gradient(ellipse at 50% 120%, var(--void-3) 0%, var(--void) 60%);
+}
+
+.transition-closing .transition-next {
+  color: var(--ink);
+}
+
+.transition-closing-body {
+  margin-top: 16px;
+  max-width: 420px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+/* --- handoff overlay --- */
+
+.handoff {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--void);
+  animation: handoff-fadein 0.3s ease both;
+}
+
+@keyframes handoff-fadein {
+  from { opacity: 0; }
+}
+
+.handoff-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 30px 6px var(--indigo-glow);
+}
+
+.handoff-dot--collapse { animation: handoff-shrink 0.8s ease-in both; }
+
+@keyframes handoff-shrink {
+  from { transform: scale(9); opacity: 0.25; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.handoff-dot--bloom { animation: handoff-bloom 0.8s ease-out both; }
+
+@keyframes handoff-bloom {
+  from { transform: scale(1); opacity: 1; }
+  to { transform: scale(11); opacity: 0.2; }
+}
+
+.handoff-roll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--f-mono);
+  text-align: center;
+}
+
+.handoff-roll-val {
+  font-size: 20px;
+  letter-spacing: 0.18em;
+  color: var(--indigo);
+  animation: handoff-flick 0.9s steps(2) infinite;
+}
+
+@keyframes handoff-flick {
+  50% { opacity: 0.55; }
+}
+
+.handoff-roll-sub {
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.handoff-skiphint {
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  font-family: var(--f-mono);
+  font-size: 8px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .transition-roll,
+  .transition-descend-arrow,
+  .handoff-roll-val,
+  .handoff-dot--collapse,
+  .handoff-dot--bloom {
+    animation: none;
+  }
+
+  .transition-next {
+    transition: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .transition-block,
+  .transition-closing {
+    padding: 26px 20px;
+  }
+
+  .transition-next {
+    font-size: 27px;
+  }
+
+  .transition-complete-tag {
+    position: static;
+    display: block;
+    margin-bottom: 10px;
+  }
+}
