@@ -100,6 +100,33 @@ describe('audioDirector', () => {
     expect(d.getState().enabled).toBe(true);
   });
 
+  it('disable during a pending enable wins', async () => {
+    const f = makeFakes();
+    let release!: () => void;
+    const gate = new Promise<void>((r) => { release = r; });
+    const loadTone = vi.fn(async () => {
+      await gate;
+      return { start: f.start } as unknown as ToneLike & { start(): Promise<void> };
+    });
+    const d = createAudioDirector({ loadTone, buildEngine: f.buildEngine });
+    const p = d.enable();
+    d.disable();
+    release();
+    await p;
+    expect(d.getState()).toEqual({ enabled: false, loading: false });
+    expect(JSON.parse(localStorage.getItem(AUDIO_PREF_KEY)!)).toEqual({ version: 1, enabled: false });
+    expect(f.buildEngine).not.toHaveBeenCalled();
+  });
+
+  it('enableFromPref works when detached from the director', async () => {
+    const f = makeFakes();
+    const d = createAudioDirector({ loadTone: f.loadTone, buildEngine: f.buildEngine });
+    const { enableFromPref } = d;
+    localStorage.setItem(AUDIO_PREF_KEY, JSON.stringify({ version: 1, enabled: true }));
+    await enableFromPref();
+    expect(d.getState().enabled).toBe(true);
+  });
+
   it('notifies subscribers on state changes and supports unsubscribe', async () => {
     const f = makeFakes();
     const d = createAudioDirector({ loadTone: f.loadTone, buildEngine: f.buildEngine });

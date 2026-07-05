@@ -24,11 +24,44 @@ export function createAudioDirector(deps: Deps = defaultDeps) {
   let state: AudioDirectorState = { enabled: false, loading: false };
   let chapterId = 'prologue';
   let tension = 0;
+  // Bumped by disable() so an in-flight enable() becomes stale and yields.
+  let generation = 0;
   const listeners = new Set<() => void>();
 
   function setState(next: AudioDirectorState): void {
     state = next;
     listeners.forEach((l) => l());
+  }
+
+  /**
+   * Enable sound. Must be called from a user-gesture handler (click/key) —
+   * the browser autoplay policy requires it for AudioContext.start().
+   */
+  async function doEnable(): Promise<void> {
+    if (state.enabled || state.loading) return;
+    const gen = ++generation;
+    setState({ enabled: false, loading: true });
+    try {
+      const tone = await deps.loadTone();
+      // A disable() during the await wins — abandon before building anything.
+      if (gen !== generation) return;
+      await tone.start();
+      if (gen !== generation) return;
+      const built = deps.buildEngine(tone);
+      if (gen !== generation) {
+        built.dispose();
+        return;
+      }
+      engine = built;
+      engine.setPalette(getPalette(chapterId), { immediate: true });
+      engine.setTension(tension);
+      saveAudioPref(true);
+      setState({ enabled: true, loading: false });
+    } catch {
+      // Load/start failed (offline, blocked context) — stay silent, but
+      // never let a stale failure clobber a newer state.
+      if (gen === generation) setState({ enabled: false, loading: false });
+    }
   }
 
   return {
@@ -39,33 +72,16 @@ export function createAudioDirector(deps: Deps = defaultDeps) {
       return () => listeners.delete(listener);
     },
 
-    /**
-     * Enable sound. Must be called from a user-gesture handler (click/key) —
-     * the browser autoplay policy requires it for AudioContext.start().
-     */
-    async enable(): Promise<void> {
-      if (state.enabled || state.loading) return;
-      setState({ enabled: false, loading: true });
-      try {
-        const tone = await deps.loadTone();
-        await tone.start();
-        engine = deps.buildEngine(tone);
-        engine.setPalette(getPalette(chapterId), { immediate: true });
-        engine.setTension(tension);
-        saveAudioPref(true);
-        setState({ enabled: true, loading: false });
-      } catch {
-        // Load/start failed (offline, blocked context) — stay silent.
-        setState({ enabled: false, loading: false });
-      }
-    },
+    enable: doEnable,
 
     /** Re-enable from the persisted preference — also gesture-context only (P5 wires this). */
     async enableFromPref(): Promise<void> {
-      if (loadAudioPref()) await this.enable();
+      if (loadAudioPref()) await doEnable();
     },
 
     disable(): void {
+      if (!state.enabled && !state.loading && !engine) return;
+      generation++; // any in-flight enable() is now stale
       saveAudioPref(false);
       engine?.dispose();
       engine = null;
