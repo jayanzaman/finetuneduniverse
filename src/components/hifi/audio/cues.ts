@@ -1,5 +1,9 @@
+import { audioDirector } from './director';
+
 /** One-shot audio cue names (spec §7). */
 export type CueName = 'lesson-open' | 'component-complete' | 'chapter-complete' | 'broken';
 
-/** No-op until the AudioDirector lands (P4/P5); P3 calls it at the moment a chapter is earned. */
-export function cue(_name: CueName): void {}
+/** Forwarded to the AudioDirector — a safe no-op until the visitor enables sound. */
+export function cue(name: CueName): void {
+  audioDirector.cue(name);
+}
