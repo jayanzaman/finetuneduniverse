@@ -1,5 +1,7 @@
 'use client';
 
+import { SoundToggle } from './audio/SoundToggle';
+
 type TopNavProps = {
   onIndex?: () => void;
   activeLabel?: 'Index' | 'Chapter' | null;
@@ -20,6 +22,7 @@ export function TopNav({ onIndex, activeLabel = 'Index' }: TopNavProps) {
         >
           Index
         </button>
+        <SoundToggle />
       </div>
     </nav>
   );
