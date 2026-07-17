@@ -5,22 +5,6 @@
 [build.environment]
   NODE_VERSION = "22"
 
-# Force HTTPS redirect
-[[redirects]]
-  from = "http://finetuneduniverse.net/*"
-  to = "https://finetuneduniverse.net/:splat"
-  status = 301
-  force = true
-
-[[redirects]]
-  from = "http://www.finetuneduniverse.net/*"
-  to = "https://finetuneduniverse.net/:splat"
-  status = 301
-  force = true
-
-# Ensure both www and non-www work
-[[redirects]]
-  from = "https://www.finetuneduniverse.net/*"
-  to = "https://finetuneduniverse.net/:splat"
-  status = 301
-  force = true
+# Netlify manages HTTPS and the primary-domain redirect. Duplicating those
+# redirects here can create a loop when the site's configured primary domain
+# changes between the apex and www hostnames.
