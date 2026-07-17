@@ -16,6 +16,7 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
   const isTooDim = stellarMass < 0.8;
   const isTooMassive = stellarMass > 1.4;
   const isOptimal = stellarMass >= 0.8 && stellarMass <= 1.4;
+  const backgroundStarCount = Math.round(6 + starFormationRate * 8);
   
   // Calculate star properties based on mass
   const baseSize = 50;
@@ -53,6 +54,24 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
 
   return (
     <div className="relative w-full h-64 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
+      <div className="absolute inset-0" aria-hidden>
+        {[...Array(backgroundStarCount)].map((_, i) => (
+          <span
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              left: `${(i * 37 + 11) % 96}%`,
+              top: `${(i * 53 + 7) % 92}%`,
+              width: `${1 + (i % 2)}px`,
+              height: `${1 + (i % 2)}px`,
+              opacity: Math.min(0.85, 0.18 + starFormationRate * 0.22),
+            }}
+          />
+        ))}
+      </div>
+      <span className="absolute left-3 top-3 text-[10px] tracking-wider text-gray-400">
+        Relative formation rate: {starFormationRate.toFixed(1)}×
+      </span>
       <div className="star-system">
         {/* Main Star */}
         <div 
@@ -479,6 +498,7 @@ export default function StarlightSection({
   educatorMode: boolean; 
   cosmicTime?: number;
 }) {
+  void cosmicTime;
   const [stellarMass, setStellarMass] = useState(1)
   const [selectedStar, setSelectedStar] = useState('sun')
   
@@ -630,7 +650,7 @@ export default function StarlightSection({
     const handleRandomize = () => {
       setStellarMass(0.1 + Math.random() * 1.9)
       // Randomly select a star for metallicity
-      const starKeys = Object.keys(stellarDatabase)
+      const starKeys = ['popiii', 'hd140283', 'tauceti', 'sun', 'muleo', 'galcenter']
       const randomStar = starKeys[Math.floor(Math.random() * starKeys.length)]
       setSelectedStar(randomStar)
       setStarFormationRate(0.1 + Math.random() * 1.9)
@@ -886,7 +906,7 @@ export default function StarlightSection({
                       { key: 'si', name: 'Si', threshold: 0.008, multiplier: 15, color: '#96ceb4' },
                       { key: 'cr', name: 'Cr', threshold: 0.01, multiplier: 12, color: '#a55eea' },
                       { key: 'ni', name: 'Ni', threshold: 0.015, multiplier: 10, color: '#fd79a8' }
-                    ].filter(element => metallicity > element.threshold).map((element, index) => (
+                    ].filter(element => metallicity > element.threshold).map((element) => (
                       <span 
                         key={element.key}
                         className="element-tag"

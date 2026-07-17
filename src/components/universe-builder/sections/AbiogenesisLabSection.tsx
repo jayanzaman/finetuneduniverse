@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
 import { Slider } from '../../ui/slider'
-import { Info, Atom, Dna, Link, Circle, FlaskConical, Bug } from 'lucide-react'
+import { Atom, Dna, Link, Circle, FlaskConical, Bug } from 'lucide-react'
 
 const stageIcons: Record<string, React.ReactNode> = {
   molecules: <Atom className="w-7 h-7 text-white drop-shadow-lg" />,
@@ -50,12 +50,10 @@ interface EnvironmentalControls {
 
 // Simulation Canvas Component
 const AbiogenesisCarousel: React.FC<{ 
-  state: SimulationState; 
-  controls: EnvironmentalControls;
   selectedPhase: number;
   onPhaseClick: (phase: number) => void;
   educatorMode: boolean;
-}> = ({ state, controls, selectedPhase, onPhaseClick, educatorMode }) => {
+}> = ({ selectedPhase, onPhaseClick, educatorMode }) => {
   const stages = [
     { 
       id: 0, 
@@ -723,6 +721,7 @@ export default function AbiogenesisLabSection({
   educatorMode: boolean; 
   cosmicTime?: number;
 }) {
+  void cosmicTime;
   // Selected phase for navigation
   const [selectedPhase, setSelectedPhase] = useState<number>(0);
   
@@ -925,8 +924,6 @@ export default function AbiogenesisLabSection({
             </CardHeader>
             <CardContent>
               <AbiogenesisCarousel 
-                state={simulationState} 
-                controls={controls} 
                 selectedPhase={selectedPhase}
                 onPhaseClick={handlePhaseClick}
                 educatorMode={educatorMode}

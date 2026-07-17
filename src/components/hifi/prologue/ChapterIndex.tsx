@@ -53,7 +53,7 @@ export function ChapterIndex({ onSelectChapter }: ChapterIndexProps) {
           >
             <span className="prologue-row-n mono">{ch.n}</span>
             <span className="prologue-row-title">{ch.long}</span>
-            <span className="prologue-row-d">{ch.d}</span>
+            <span className="prologue-row-d">{ch.question}</span>
             <span className="prologue-row-era mono">{ch.era}</span>
             <span className={`prologue-row-status mono status-${status?.kind ?? 'pending'}`}>
               {status?.label ?? ''}

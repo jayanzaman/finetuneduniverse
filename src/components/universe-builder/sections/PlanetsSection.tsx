@@ -6,12 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Slider } from '../../ui/slider'
 
 // Water State Visualization Component
-function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure, basePressure, magneticField }: {
+function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: {
   orbitalDistance: number;
   planetMass: number;
   atmosphericPressure: number;
-  basePressure: number;
-  magneticField: number;
 }) {
   // More realistic temperature calculation (Earth = ~15°C at 1 AU)
   const baseTemp = 278 / Math.sqrt(orbitalDistance);
@@ -397,6 +395,7 @@ export default function PlanetsSection({
   educatorMode: boolean; 
   cosmicTime?: number;
 }) {
+  void cosmicTime;
   const [orbitalDistance, setOrbitalDistance] = useState(1) // AU
   const [planetMass, setPlanetMass] = useState(1) // Earth masses
   const [basePressure, setBasePressure] = useState(1) // Base atmospheric pressure (what user sets)
@@ -458,8 +457,6 @@ export default function PlanetsSection({
         orbitalDistance={orbitalDistance}
         planetMass={planetMass}
         atmosphericPressure={atmosphericPressure}
-        basePressure={basePressure}
-        magneticField={magneticField}
       />,
       educatorContent: (
         <div className="space-y-2">

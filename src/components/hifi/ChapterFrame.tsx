@@ -1,7 +1,8 @@
 'use client';
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { GoldilocksSlider, type GoldilocksSliderProps } from './GoldilocksSlider';
+import { trackJourney } from '../../lib/analytics';
 
 type ChapterFrameProps = {
   /** Two-digit chapter number, e.g. "01" */
@@ -25,6 +26,13 @@ type ChapterFrameProps = {
   visualization?: ReactNode;
   /** Optional embedded interactive content (existing section widgets). */
   children?: ReactNode;
+  experimentOutcome?: ReactNode;
+  formula?: ReactNode;
+  question?: ReactNode;
+  currentAnswer?: ReactNode;
+  openQuestion?: ReactNode;
+  evidenceLabel?: ReactNode;
+  visualState?: { intensity: number; instability: number; scale: number };
 };
 
 /**
@@ -46,7 +54,17 @@ export function ChapterFrame({
   onPrev,
   visualization,
   children,
+  experimentOutcome,
+  formula,
+  question,
+  currentAnswer,
+  openQuestion,
+  evidenceLabel,
+  visualState,
+  chapterIndex,
 }: ChapterFrameProps) {
+  const [showDeepDive, setShowDeepDive] = useState(false);
+  const [labRevision, setLabRevision] = useState(0);
   return (
     <section className="hifi hifi-frame" aria-labelledby={`ch-${num}-title`}>
       {visualization && (
@@ -58,6 +76,11 @@ export function ChapterFrame({
             zIndex: 2,
             pointerEvents: 'none',
             overflow: 'hidden',
+            opacity: 0.72 + (visualState?.intensity ?? 0.5) * 0.28,
+            filter: `saturate(${0.7 + (visualState?.intensity ?? 0.5) * 0.6}) contrast(${1 + (visualState?.instability ?? 0) * 0.12})`,
+            transform: `scale(${visualState?.scale ?? 1})`,
+            transformOrigin: 'center',
+            transition: 'filter 220ms ease, opacity 220ms ease, transform 220ms ease',
           }}
         >
           {visualization}
@@ -82,21 +105,16 @@ export function ChapterFrame({
           {prose}
         </p>
 
-        {/* Embedded section content (existing interactive viz / sliders) */}
-        {children && (
-          <div
-            style={{
-              position: 'relative',
-              marginTop: 36,
-              padding: '24px 0',
-            }}
-          >
-            {children}
+        {question && (
+          <div className="chapter-question-block">
+            <span className="chapter-evidence">{evidenceLabel}</span>
+            <h2>{question}</h2>
           </div>
         )}
 
-        {/* Primary slider + ghost */}
+        {/* Primary story experiment */}
         <div
+          className="chapter-experiment-layout"
           style={{
             marginTop: 56,
             display: 'grid',
@@ -108,6 +126,12 @@ export function ChapterFrame({
         >
           <div style={{ minWidth: 0 }}>
             <GoldilocksSlider {...sliderProps} />
+            {(formula || experimentOutcome) && (
+              <div className="chapter-experiment-feedback" aria-live="polite">
+                {formula && <div className="chapter-formula">{formula}</div>}
+                {experimentOutcome && <div className="chapter-outcome">{experimentOutcome}</div>}
+              </div>
+            )}
           </div>
           {ghost && (
             <div className="ghost" style={{ width: 280 }}>
@@ -116,6 +140,31 @@ export function ChapterFrame({
             </div>
           )}
         </div>
+
+        {/* Secondary variables and lessons are intentionally opt-in. */}
+        {children && (
+          <div className="chapter-deep-dive">
+            <div className="chapter-lab-actions">
+              <button
+                type="button"
+                className="hifi-btn"
+                aria-expanded={showDeepDive}
+                onClick={() => setShowDeepDive((open) => {
+                  trackJourney({ name: 'deep_lab_toggle', chapter: chapterIndex, open: !open });
+                  return !open;
+                })}
+              >
+                {showDeepDive ? 'Close deeper lab' : 'Explore the deeper lab'}
+              </button>
+              {showDeepDive && (
+                <button type="button" className="hifi-btn" onClick={() => setLabRevision((value) => value + 1)}>
+                  Restore reference values
+                </button>
+              )}
+            </div>
+            {showDeepDive && <div key={labRevision} className="hifi-section-embed">{children}</div>}
+          </div>
+        )}
 
         {/* Continue footer */}
         <div
@@ -130,7 +179,7 @@ export function ChapterFrame({
         >
           <div className="scroll-cue">
             <span className="line" />
-            <span>Scroll · time advances</span>
+            <span>Continue when you are ready</span>
           </div>
 
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
@@ -143,6 +192,13 @@ export function ChapterFrame({
         </div>
 
         {transition && <div style={{ marginTop: 72 }}>{transition}</div>}
+
+        {(currentAnswer || openQuestion) && (
+          <div className="chapter-knowledge-summary">
+            <div><span>Current answer</span><p>{currentAnswer}</p></div>
+            <div><span>What remains open</span><p>{openQuestion}</p></div>
+          </div>
+        )}
       </div>
     </section>
   );

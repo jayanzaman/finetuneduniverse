@@ -4,10 +4,12 @@ import { SoundToggle } from './audio/SoundToggle';
 
 type TopNavProps = {
   onIndex?: () => void;
+  onChapters?: () => void;
+  chaptersOpen?: boolean;
   activeLabel?: 'Index' | 'Chapter' | null;
 };
 
-export function TopNav({ onIndex, activeLabel = 'Index' }: TopNavProps) {
+export function TopNav({ onIndex, onChapters, chaptersOpen = false, activeLabel = 'Index' }: TopNavProps) {
   return (
     <nav className="hifi-nav" aria-label="Primary">
       <div className="hifi-mark">
@@ -21,6 +23,15 @@ export function TopNav({ onIndex, activeLabel = 'Index' }: TopNavProps) {
           className={activeLabel === 'Index' ? 'active' : ''}
         >
           Index
+        </button>
+        <button
+          type="button"
+          onClick={onChapters}
+          className={chaptersOpen ? 'active' : ''}
+          aria-expanded={chaptersOpen}
+          aria-controls="chapter-skip-menu"
+        >
+          Skip to chapter
         </button>
         <SoundToggle />
       </div>

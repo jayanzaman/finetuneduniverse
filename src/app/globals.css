@@ -75,6 +75,8 @@ html {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 
 button, [role="button"] { touch-action: manipulation; }
+.skip-link { position: fixed; left: 16px; top: 12px; z-index: 2000; transform: translateY(-160%); padding: 10px 14px; background: var(--ink); color: var(--void); font-weight: 600; }
+.skip-link:focus { transform: translateY(0); }
 
 *:focus-visible {
   outline: 2px solid var(--indigo);
@@ -167,12 +169,23 @@ button, [role="button"] { touch-action: manipulation; }
   position: fixed; right: 28px; top: 50%; transform: translateY(-50%);
   display: flex; flex-direction: column; gap: 18px; z-index: 40;
 }
+.chapter-rail-heading {
+  display: block;
+  margin-bottom: 10px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
 .chapter-rail-item {
   display: flex; align-items: center; gap: 12px; justify-content: flex-end;
   color: var(--ink-faint); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em;
   background: none; border: none; cursor: pointer; padding: 0;
 }
 .chapter-rail-item .label { opacity: 0; transition: opacity 0.2s; white-space: nowrap; }
+.chapter-rail .chapter-rail-item .label { opacity: 0.72; }
 .chapter-rail-item:hover .label { opacity: 0.6; }
 .chapter-rail-item.active { color: var(--ink); }
 .chapter-rail-item.active .label { opacity: 1; }
@@ -406,6 +419,54 @@ button, [role="button"] { touch-action: manipulation; }
 .gs.gs--interactive .gs-knob { pointer-events: auto; cursor: grab; }
 .gs.gs--interactive .gs-knob:active { cursor: grabbing; }
 .gs.gs--interactive .gs-knob:focus-visible { outline: 2px solid var(--indigo); outline-offset: 3px; }
+
+.chapter-experiment-feedback {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 16px;
+  margin-top: 18px;
+}
+.chapter-formula,
+.chapter-outcome {
+  padding: 14px 16px;
+  border: 1px solid var(--hair);
+  background: rgba(3, 3, 8, 0.46);
+  line-height: 1.5;
+}
+.chapter-formula {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.chapter-outcome {
+  font-family: var(--f-body);
+  font-size: 15px;
+  color: var(--ink);
+  border-left-color: var(--goldilocks);
+}
+.chapter-deep-dive { margin-top: 32px; }
+.chapter-lab-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.chapter-deep-dive > .hifi-section-embed { margin-top: 24px; padding: 24px 0; }
+.deep-lab-loading { min-height: 220px; display: grid; place-items: center; border: 1px solid var(--hair); color: var(--ink-soft); font-family: var(--f-mono); font-size: 10px; letter-spacing: .16em; text-transform: uppercase; }
+.chapter-question-block { margin-top: 28px; max-width: 720px; }
+.chapter-question-block h2 { margin-top: 10px; font-family: var(--f-display); font-size: clamp(24px, 3vw, 38px); font-weight: 300; line-height: 1.12; color: var(--ink); }
+.chapter-evidence { display: inline-flex; padding: 6px 10px; border: 1px solid var(--hair-2); border-radius: 999px; font-family: var(--f-mono); font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--goldilocks); }
+.chapter-knowledge-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; max-width: 960px; }
+.chapter-knowledge-summary > div { padding: 18px; border: 1px solid var(--hair); background: rgba(3,3,8,.5); }
+.chapter-knowledge-summary span { font-family: var(--f-mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
+.chapter-knowledge-summary p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--ink-mid); }
+
+@media (max-width: 720px) {
+  .chapter-experiment-feedback { grid-template-columns: 1fr; }
+  .chapter-experiment-layout { grid-template-columns: 1fr !important; gap: 24px !important; }
+  .chapter-experiment-layout .ghost { width: auto !important; max-width: none; }
+  .chapter-knowledge-summary { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hifi *, .hifi *::before, .hifi *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
 
 .param-readout { display: flex; justify-content: space-between; align-items: baseline; margin-top: 10px; }
 .param-value { font-family: var(--f-mono); font-size: 13px; color: var(--ink); letter-spacing: 0.04em; }

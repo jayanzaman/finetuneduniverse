@@ -14,7 +14,8 @@ type ChapterRailProps = {
  */
 export function ChapterRail({ active, onSelect }: ChapterRailProps) {
   return (
-    <div className="chapter-rail" aria-label="Chapter index">
+    <div id="chapter-skip-menu" className="chapter-rail" aria-label="Optional chapter skipping">
+      <span className="chapter-rail-heading">Optional chapter skipping</span>
       {CHAPTERS.map((c, i) => {
         const cls =
           active != null && i === active
@@ -29,6 +30,7 @@ export function ChapterRail({ active, onSelect }: ChapterRailProps) {
             className={`chapter-rail-item ${cls}`}
             onClick={() => onSelect?.(i)}
             aria-label={`Chapter ${c.n} ${c.t}`}
+            title={c.question}
             aria-current={active === i ? 'page' : undefined}
           >
             <span className="label">{c.t}</span>

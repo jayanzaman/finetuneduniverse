@@ -423,7 +423,68 @@ function EvolutionInsightContent({ selectedEra }: { selectedEra: number }) {
   );
 }
 
+function EnvironmentControl({
+  label,
+  value,
+  children,
+}: {
+  label: string;
+  value: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+      <div className="mb-2 flex items-center justify-between gap-3 text-xs">
+        <span className="font-medium text-gray-300">{label}</span>
+        <span className="font-mono text-white">{value}</span>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+export function calculateLifeOutcome({
+  selectedEra,
+  co2Level,
+  oxygenLevel,
+  temperature,
+  volcanicActivity,
+  asteroidActivity,
+}: {
+  selectedEra: number;
+  co2Level: number;
+  oxygenLevel: number;
+  temperature: number;
+  volcanicActivity: number;
+  asteroidActivity: number;
+}) {
+  const currentEra = GEOLOGICAL_ERAS[selectedEra];
+  const idealAtmosphere = currentEra.atmosphere;
+  const idealTemp = currentEra.temperature;
+  const co2Score = Math.max(0, 1 - Math.abs(co2Level - idealAtmosphere.co2 * 50) / 750);
+  const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 25);
+  const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 50);
+  const idealVolcanic = selectedEra <= 2 ? 12 : 3;
+  const volcanicScore = Math.max(0, 1 - Math.abs(volcanicActivity - idealVolcanic) / 5);
+  const idealAsteroid = selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2;
+  const asteroidScore = Math.max(0, 1 - Math.abs(asteroidActivity - idealAsteroid) / 10);
+  const totalScore = co2Score * 0.25 + oxygenScore * 0.25 + tempScore * 0.2 + volcanicScore * 0.15 + asteroidScore * 0.15;
+
+  // Hard failure modes take precedence over a blended score. Otherwise several
+  // good inputs can mask a single condition that makes survival impossible.
+  if (oxygenLevel > 50 && selectedEra <= 1) return 'Oxygen toxicity - anaerobic life dies';
+  if (temperature > 200) return 'Too hot - proteins denature, life cannot survive';
+  if (temperature < -10) return 'Global freeze - most life goes extinct';
+  if (co2Level > 4000 && selectedEra >= 4) return 'Extreme greenhouse - runaway climate change';
+  if (asteroidActivity > 35 && selectedEra > 0) return 'Asteroid bombardment - surface sterilization events';
+  if (totalScore > 0.85) return `Perfect conditions for ${currentEra.name} life forms!`;
+  if (totalScore > 0.65) return `Good - ${currentEra.description.toLowerCase()} thrives`;
+  if (totalScore > 0.45) return 'Marginal - some life survives but struggles';
+  return 'Poor conditions - mass extinction event';
+}
+
 export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educatorMode: boolean; cosmicTime?: number }) {
+  void cosmicTime;
   const [selectedEra, setSelectedEra] = useState(0)
   // Initialize with optimal values for first era (Hadean Earth) - using scientific units
   const [co2Level, setCo2Level] = useState(GEOLOGICAL_ERAS[0].atmosphere.co2 * 50) // Convert % to ppm (×500 for scale)
@@ -460,41 +521,14 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
   }, [])
 
   useEffect(() => {
-    // Calculate evolutionary success based on current era and environmental conditions
-    const currentEra = GEOLOGICAL_ERAS[selectedEra];
-    const idealAtmosphere = currentEra.atmosphere;
-    const idealTemp = currentEra.temperature;
-    
-    // Score based on how close conditions are to the era's optimal values (using new units)
-    const co2Score = Math.max(0, 1 - Math.abs(co2Level - (idealAtmosphere.co2 * 50)) / 750); // ppm scale
-    const oxygenScore = Math.max(0, 1 - Math.abs(oxygenLevel - idealAtmosphere.oxygen) / 25); // % scale (0-100% range)
-    const tempScore = Math.max(0, 1 - Math.abs(temperature - (idealTemp + 15)) / 50); // absolute temp scale (-20 to +500°C)
-    const idealVolcanic = selectedEra <= 2 ? 12 : 3;
-    const volcanicScore = Math.max(0, 1 - Math.abs(volcanicActivity - idealVolcanic) / 5); // eruptions/Myr scale
-    const idealAsteroid = selectedEra === 0 ? 40 : selectedEra <= 2 ? 15 : 2;
-    const asteroidScore = Math.max(0, 1 - Math.abs(asteroidActivity - idealAsteroid) / 10); // impacts/Myr scale
-    
-    const totalScore = (co2Score * 0.25) + (oxygenScore * 0.25) + (tempScore * 0.2) + (volcanicScore * 0.15) + (asteroidScore * 0.15);
-    
-    if (totalScore > 0.85) {
-      setOutcome(`Perfect conditions for ${currentEra.name} life forms!`)
-    } else if (totalScore > 0.65) {
-      setOutcome(`Good - ${currentEra.description.toLowerCase()} thrives`)
-    } else if (totalScore > 0.45) {
-      setOutcome(`Marginal - some life survives but struggles`)
-    } else if (oxygenLevel > 50 && selectedEra <= 1) {
-      setOutcome('Oxygen toxicity - anaerobic life dies')
-    } else if (temperature > 200) {
-      setOutcome('Too hot - proteins denature, life cannot survive')
-    } else if (temperature < -10) {
-      setOutcome('Global freeze - most life goes extinct')
-    } else if (co2Level > 4000 && selectedEra >= 4) {
-      setOutcome('Extreme greenhouse - runaway climate change')
-    } else if (asteroidActivity > 35) {
-      setOutcome('Asteroid bombardment - surface sterilization events')
-    } else {
-      setOutcome('Poor conditions - mass extinction event')
-    }
+    setOutcome(calculateLifeOutcome({
+      selectedEra,
+      co2Level,
+      oxygenLevel,
+      temperature,
+      volcanicActivity,
+      asteroidActivity,
+    }));
   }, [selectedEra, co2Level, oxygenLevel, temperature, volcanicActivity, asteroidActivity])
 
   const currentEra = GEOLOGICAL_ERAS[selectedEra];
@@ -868,6 +902,37 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                 </CardDescription>
               </CardHeader>
               <CardContent>
+                <div
+                  className="mb-5 rounded-lg border border-emerald-500/30 bg-emerald-950/30 p-4"
+                  aria-live="polite"
+                >
+                  <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">
+                    Model outcome
+                  </div>
+                  <div className="mt-1 text-base text-white">{outcome}</div>
+                  <div className="mt-1 text-xs leading-relaxed text-gray-400">
+                    Weighted model: CO₂ 25% · O₂ 25% · temperature 20% · volcanism 15% · impacts 15%.
+                  </div>
+                </div>
+
+                <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2" aria-label="Environmental model controls">
+                  <EnvironmentControl label="CO₂" value={`${co2Level.toFixed(0)} ppm`}>
+                    <Slider value={[co2Level]} min={0} max={5000} step={10} onValueChange={([value]) => setCo2Level(value)} />
+                  </EnvironmentControl>
+                  <EnvironmentControl label="Oxygen" value={`${oxygenLevel.toFixed(1)}%`}>
+                    <Slider value={[oxygenLevel]} min={0} max={100} step={0.1} onValueChange={([value]) => setOxygenLevel(value)} />
+                  </EnvironmentControl>
+                  <EnvironmentControl label="Temperature" value={`${temperature.toFixed(0)}°C`}>
+                    <Slider value={[temperature]} min={-20} max={500} step={1} onValueChange={([value]) => setTemperature(value)} />
+                  </EnvironmentControl>
+                  <EnvironmentControl label="Volcanism" value={`${volcanicActivity.toFixed(1)} / Myr`}>
+                    <Slider value={[volcanicActivity]} min={0} max={15} step={0.1} onValueChange={([value]) => setVolcanicActivity(value)} />
+                  </EnvironmentControl>
+                  <EnvironmentControl label="Major impacts" value={`${asteroidActivity.toFixed(1)} / Myr`}>
+                    <Slider value={[asteroidActivity]} min={0} max={50} step={0.5} onValueChange={([value]) => setAsteroidActivity(value)} />
+                  </EnvironmentControl>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* CO2 Concentration */}
                   <div className="p-4 rounded-lg bg-gradient-to-br from-orange-900/30 to-red-900/30 border border-orange-500/30">
@@ -876,7 +941,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <Badge className="bg-orange-700/50 text-orange-200">CO₂</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Carbon Dioxide</h3>
-                    <div className="text-3xl font-bold text-white">{(currentEra.atmosphere.co2 * 50).toFixed(0)}</div>
+                    <div className="text-3xl font-bold text-white">{co2Level.toFixed(0)}</div>
                     <p className="text-xs text-gray-400">parts per million</p>
                   </div>
 
@@ -887,7 +952,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <Badge className="bg-blue-700/50 text-blue-200">O₂</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Oxygen Level</h3>
-                    <div className="text-3xl font-bold text-white">{currentEra.atmosphere.oxygen.toFixed(1)}%</div>
+                    <div className="text-3xl font-bold text-white">{oxygenLevel.toFixed(1)}%</div>
                     <p className="text-xs text-gray-400">atmospheric concentration</p>
                   </div>
 
@@ -898,7 +963,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <Badge className="bg-red-700/50 text-red-200">Temp</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Global Temperature</h3>
-                    <div className="text-3xl font-bold text-white">{(currentEra.temperature + 15).toFixed(0)}°C</div>
+                    <div className="text-3xl font-bold text-white">{temperature.toFixed(0)}°C</div>
                     <p className="text-xs text-gray-400">average surface temperature</p>
                   </div>
 
@@ -909,7 +974,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <Badge className="bg-amber-700/50 text-amber-200">Volcanic</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Volcanic Activity</h3>
-                    <div className="text-3xl font-bold text-white">{selectedEra <= 2 ? '12' : '3'}</div>
+                    <div className="text-3xl font-bold text-white">{volcanicActivity.toFixed(1)}</div>
                     <p className="text-xs text-gray-400">major eruptions per Myr</p>
                   </div>
 
@@ -920,7 +985,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <Badge className="bg-purple-700/50 text-purple-200">Impact</Badge>
                     </div>
                     <h3 className="text-sm font-semibold text-gray-300 mb-1">Asteroid Bombardment</h3>
-                    <div className="text-3xl font-bold text-white">{selectedEra <= 1 ? '40' : selectedEra <= 3 ? '10' : '2'}</div>
+                    <div className="text-3xl font-bold text-white">{asteroidActivity.toFixed(1)}</div>
                     <p className="text-xs text-gray-400">major impacts per Myr</p>
                   </div>
 

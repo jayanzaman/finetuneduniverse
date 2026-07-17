@@ -16,7 +16,7 @@ function stubMatchMedia(reduced: boolean) {
   })) as unknown as typeof window.matchMedia;
 }
 
-function renderOverlay(beats: [number, number, number] = [40, 40, 40]) {
+function renderOverlay(beats: [number, number, number] = [120, 120, 120]) {
   const onArrive = vi.fn();
   const onDone = vi.fn();
   render(

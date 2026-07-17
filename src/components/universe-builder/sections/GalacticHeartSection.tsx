@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
-import { Slider } from '../../ui/slider'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 // Galaxy Evolution Data
@@ -274,11 +273,12 @@ function MilkyWayEvolution({
 
 export default function GalacticHeartSection({ 
   educatorMode, 
-  cosmicTime = 0
+  cosmicTime: _cosmicTime = 0
 }: { 
   educatorMode: boolean; 
   cosmicTime?: number;
 }) {
+  void _cosmicTime;
   const [currentGalacticAge, setCurrentGalacticAge] = useState(13.8) // Start at Big Bang
 
   useEffect(() => {
