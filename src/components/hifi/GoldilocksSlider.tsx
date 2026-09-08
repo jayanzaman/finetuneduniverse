@@ -80,6 +80,7 @@ export function GoldilocksSlider({
   const handlePointerDown = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
       if (!interactive) return;
+      e.stopPropagation();
       e.preventDefault();
       draggingRef.current = true;
       (e.currentTarget as Element).setPointerCapture?.(e.pointerId);
@@ -91,6 +92,7 @@ export function GoldilocksSlider({
   const handlePointerMove = useCallback(
     (e: PointerEvent<HTMLDivElement>) => {
       if (!interactive || !draggingRef.current) return;
+      e.stopPropagation();
       emit(positionFromClientX(e.clientX));
     },
     [interactive, emit, positionFromClientX],
@@ -147,9 +149,11 @@ export function GoldilocksSlider({
     const cancel = () => {
       draggingRef.current = false;
     };
+    window.addEventListener('pointerup', cancel);
     window.addEventListener('pointercancel', cancel);
     window.addEventListener('blur', cancel);
     return () => {
+      window.removeEventListener('pointerup', cancel);
       window.removeEventListener('pointercancel', cancel);
       window.removeEventListener('blur', cancel);
     };

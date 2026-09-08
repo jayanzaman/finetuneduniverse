@@ -177,21 +177,14 @@ export function ChapterFrame({
             flexWrap: 'wrap',
           }}
         >
-          <div className="scroll-cue">
-            <span className="line" />
-            <span>Continue when you are ready</span>
-          </div>
-
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            {onPrev && (
-              <button type="button" className="hifi-btn" onClick={onPrev}>
-                ← Previous
-              </button>
-            )}
-          </div>
+          {onPrev ? (
+            <button type="button" className="hifi-btn" onClick={onPrev}>
+              ← Previous
+            </button>
+          ) : <div />}
         </div>
 
-        {transition && <div style={{ marginTop: 72 }}>{transition}</div>}
+        {transition && <div id="chapter-transition-container" style={{ marginTop: 48 }}>{transition}</div>}
 
         {(currentAnswer || openQuestion) && (
           <div className="chapter-knowledge-summary">

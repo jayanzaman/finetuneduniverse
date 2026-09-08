@@ -1,6 +1,7 @@
 'use client';
 
 import { CHAPTERS } from './chapters';
+import { useProgression } from './progression/ProgressionContext';
 
 type ChapterHUDProps = {
   activeIndex: number;
@@ -9,11 +10,23 @@ type ChapterHUDProps = {
 };
 
 export function ChapterHUD({ activeIndex, onPrev, onNext }: ChapterHUDProps) {
+  const { hydrated, chapterProgress } = useProgression();
   const total = CHAPTERS.length;
   const current = CHAPTERS[activeIndex];
   const prev = activeIndex > 0 ? CHAPTERS[activeIndex - 1] : null;
   const next = activeIndex < total - 1 ? CHAPTERS[activeIndex + 1] : null;
   const counter = `${String(activeIndex + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+
+  const progress = chapterProgress(activeIndex);
+  const earned = hydrated && progress.complete;
+
+  const handleNextClick = () => {
+    if (!earned) {
+      document.querySelector('.transition-block')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      onNext();
+    }
+  };
 
   return (
     <div className="chapter-hud" role="navigation" aria-label="Chapter navigation">
@@ -38,11 +51,12 @@ export function ChapterHUD({ activeIndex, onPrev, onNext }: ChapterHUDProps) {
 
       <button
         type="button"
-        className="chapter-hud-arrow"
-        onClick={onNext}
+        className={`chapter-hud-arrow ${!earned ? 'is-locked' : ''}`}
+        style={{ opacity: earned ? 1 : 0.4 }}
+        onClick={handleNextClick}
         disabled={!next}
-        aria-label={next ? `Next chapter: ${next.t}` : 'End of descent'}
-        title={next ? `${next.n} · ${next.t}` : 'End of descent'}
+        aria-label={next ? (earned ? `Next chapter: ${next.t}` : 'Complete tasks to unlock next chapter') : 'End of descent'}
+        title={next ? (earned ? `${next.n} · ${next.t}` : 'Complete tasks to unlock next chapter') : 'End of descent'}
       >
         →
       </button>
