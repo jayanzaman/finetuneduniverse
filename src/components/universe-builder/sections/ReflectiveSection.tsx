@@ -16,8 +16,8 @@ function ConsciousnessNetwork({ awarenessLevel, interconnectedness, cosmicTime }
   
   const nodes = useMemo(() => Array.from({ length: nodeCount }, (_, i) => ({
     id: i,
-    x: 50 + Math.cos(i * 2 * Math.PI / nodeCount) * 35,
-    y: 50 + Math.sin(i * 2 * Math.PI / nodeCount) * 35,
+    x: Number((50 + Math.cos(i * 2 * Math.PI / nodeCount) * 35).toFixed(4)),
+    y: Number((50 + Math.sin(i * 2 * Math.PI / nodeCount) * 35).toFixed(4)),
     size: 4 + (awarenessLevel * 6),
     brightness: 0.5 + (awarenessLevel * 0.5),
   })), [nodeCount, awarenessLevel]);
@@ -65,7 +65,7 @@ function ConsciousnessNetwork({ awarenessLevel, interconnectedness, cosmicTime }
         {/* Connections */}
         {nodes.map((node, i) => 
           nodes.slice(i + 1).map((otherNode, j) => {
-            if (Math.random() < connectionDensity) {
+            if (((i * 31 + j * 17 + 11) % 101) / 101 < connectionDensity) {
               return (
                 <div 
                   key={`connection-${i}-${j}`}

@@ -94,7 +94,7 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
                 className="explosion-particle"
                 style={{
                   transform: `rotate(${i * 45}deg) translateX(${60 + (stellarMass - 1.7) * 40}px)`,
-                  backgroundColor: `rgba(255, ${Math.floor(100 + Math.random() * 155)}, 0, 0.8)`,
+                  backgroundColor: `rgba(255, ${100 + (i * 37) % 156}, 0, 0.8)`,
                   animationDelay: `${i * 0.1}s`,
                 }}
               />

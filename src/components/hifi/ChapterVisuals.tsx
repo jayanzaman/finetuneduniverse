@@ -13,6 +13,11 @@ const seededRandom = (seed: number) => {
   };
 };
 
+/** Fixed-precision SVG coordinate. Math.cos/sin can differ by ±1 ulp between
+ *  the Node SSR engine and the browser engine, which triggers React hydration
+ *  mismatches on chapter visuals. Rounding keeps server and client HTML identical. */
+const svg = (n: number) => Number(n.toFixed(4));
+
 // CH 01 — Primordial bubble
 export function PrimordialBubble() {
   return (
@@ -64,8 +69,8 @@ export function PrimordialBubble() {
           {Array.from({ length: 40 }).map((_, i) => {
             const a = (i / 40) * Math.PI * 2 + (i % 3) * 0.2;
             const r = 22 + (i % 7) * 4;
-            const x = 50 + Math.cos(a) * r;
-            const y = 50 + Math.sin(a) * r;
+            const x = svg(50 + Math.cos(a) * r);
+            const y = svg(50 + Math.sin(a) * r);
             return (
               <circle key={i} cx={x} cy={y} r="0.15" fill="var(--indigo)" opacity={0.5 + (i % 5) * 0.1} />
             );
@@ -184,12 +189,12 @@ export function FirstStarViz() {
         <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100">
           {Array.from({ length: 14 }).map((_, i) => {
             const a = (i / 14) * Math.PI * 2;
-            const x1 = 50 + Math.cos(a) * 48;
-            const y1 = 50 + Math.sin(a) * 48;
-            const cx = 50 + Math.cos(a + 0.6) * 28;
-            const cy = 50 + Math.sin(a + 0.6) * 28;
-            const x2 = 50 + Math.cos(a) * 15;
-            const y2 = 50 + Math.sin(a) * 15;
+            const x1 = svg(50 + Math.cos(a) * 48);
+            const y1 = svg(50 + Math.sin(a) * 48);
+            const cx = svg(50 + Math.cos(a + 0.6) * 28);
+            const cy = svg(50 + Math.sin(a + 0.6) * 28);
+            const x2 = svg(50 + Math.cos(a) * 15);
+            const y2 = svg(50 + Math.sin(a) * 15);
             return (
               <path
                 key={i}
@@ -232,8 +237,8 @@ export function GalaxyViz() {
       const arm = Math.floor(rand() * 2);
       const a = t * 0.6 + arm * Math.PI + rand() * 0.5;
       out.push({
-        x: 50 + Math.cos(a) * r,
-        y: 50 + Math.sin(a) * r,
+        x: svg(50 + Math.cos(a) * r),
+        y: svg(50 + Math.sin(a) * r),
         size: 0.15 + rand() * 0.35,
         op: 0.4 + rand() * 0.5,
       });
@@ -274,7 +279,7 @@ export function GalaxyViz() {
             for (let t = 0; t < 4; t += 0.05) {
               const r = 4 + t * 9;
               const a = t * 1.2 + arm * (Math.PI / 2);
-              pts.push(`${50 + Math.cos(a) * r},${50 + Math.sin(a) * r}`);
+              pts.push(`${svg(50 + Math.cos(a) * r)},${svg(50 + Math.sin(a) * r)}`);
             }
             return (
               <polyline key={arm} points={pts.join(' ')} fill="none" stroke="var(--indigo)" strokeWidth="0.15" opacity="0.35" />

@@ -98,9 +98,9 @@ export function MetallicitySpectrumVisual({
               key={i}
               className="absolute w-1 h-1 bg-white rounded-full opacity-30"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`
+                left: `${(i * 37 + 11) % 100}%`,
+                top: `${(i * 53 + 29) % 100}%`,
+                animationDelay: `${((i * 13) % 20) / 10}s`
               }}
             />
           ))}
