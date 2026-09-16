@@ -328,18 +328,6 @@ button, [role="button"] { touch-action: manipulation; }
   .hifi-mark-label {
     font-size: 11px;
   }
-  .chapter-experiment-feedback--mobile {
-    display: grid;
-  }
-  .chapter-experiment-feedback--desktop {
-    display: none;
-  }
-}
-
-@media (min-width: 769px) {
-  .chapter-experiment-feedback--mobile {
-    display: none;
-  }
 }
 
 .inst-desktop-outcome { display: block; }
@@ -475,6 +463,22 @@ button, [role="button"] { touch-action: manipulation; }
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: 16px;
   margin-top: 18px;
+}
+
+/* Mobile vs desktop outcome blocks — placed after the base rule so the
+   display override wins the cascade. */
+@media (max-width: 768px) {
+  .chapter-experiment-feedback--mobile {
+    display: grid;
+  }
+  .chapter-experiment-feedback--desktop {
+    display: none;
+  }
+}
+@media (min-width: 769px) {
+  .chapter-experiment-feedback--mobile {
+    display: none;
+  }
 }
 .chapter-formula,
 .chapter-outcome {
