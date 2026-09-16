@@ -31,8 +31,9 @@ export function PrimordialBubble() {
             inset: 0,
             borderRadius: '50%',
             background:
-              'radial-gradient(circle at 40% 35%, rgba(170,180,255,0.4) 0%, rgba(80,90,220,0.25) 25%, rgba(20,20,60,0.4) 55%, transparent 80%)',
+              'radial-gradient(circle at 40% 35%, var(--indigo) 0%, rgba(80,90,220,0.25) 25%, rgba(20,20,60,0.4) 55%, transparent 80%)',
             filter: 'blur(2px)',
+            opacity: 0.4,
           }}
         />
         <div
@@ -43,7 +44,7 @@ export function PrimordialBubble() {
             background:
               'radial-gradient(circle at 38% 32%, rgba(255,255,255,0.6) 0%, rgba(140,150,255,0.4) 12%, rgba(50,55,180,0.45) 38%, rgba(8,8,28,0.85) 70%)',
             boxShadow:
-              'inset 0 0 200px rgba(0,0,0,0.6), 0 0 180px rgba(79,80,232,0.35)',
+              'inset 0 0 200px rgba(0,0,0,0.6), 0 0 180px var(--indigo-glow)',
           }}
         />
         {[0.18, 0.32, 0.46, 0.6, 0.74].map((inset, i) => (
@@ -56,6 +57,7 @@ export function PrimordialBubble() {
               border: '1px solid rgba(180,190,255,0.10)',
               opacity: 0.7 - i * 0.1,
             }}
+            className="chapter-viz-ring"
           />
         ))}
         <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -65,7 +67,7 @@ export function PrimordialBubble() {
             const x = 50 + Math.cos(a) * r;
             const y = 50 + Math.sin(a) * r;
             return (
-              <circle key={i} cx={x} cy={y} r="0.15" fill="#a8b3ff" opacity={0.5 + (i % 5) * 0.1} />
+              <circle key={i} cx={x} cy={y} r="0.15" fill="var(--indigo)" opacity={0.5 + (i % 5) * 0.1} />
             );
           })}
         </svg>
@@ -265,7 +267,7 @@ export function GalaxyViz() {
 
         <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100">
           {dust.map((d, i) => (
-            <circle key={i} cx={d.x} cy={d.y} r={d.size * 0.12} fill="#cdd4ff" opacity={d.op} />
+            <circle key={i} cx={d.x} cy={d.y} r={d.size * 0.12} fill="var(--indigo)" opacity={d.op} />
           ))}
           {[0, 1, 2, 3].map((arm) => {
             const pts: string[] = [];
@@ -275,7 +277,7 @@ export function GalaxyViz() {
               pts.push(`${50 + Math.cos(a) * r},${50 + Math.sin(a) * r}`);
             }
             return (
-              <polyline key={arm} points={pts.join(' ')} fill="none" stroke="#7A7BFF" strokeWidth="0.15" opacity="0.35" />
+              <polyline key={arm} points={pts.join(' ')} fill="none" stroke="var(--indigo)" strokeWidth="0.15" opacity="0.35" />
             );
           })}
         </svg>

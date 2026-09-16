@@ -44,9 +44,13 @@ export function ChapterTransition({ chapterIndex, onDescend }: ChapterTransition
         <div className="transition-eyebrow">End of the descent</div>
         <div className="transition-next">You are here.</div>
         <p className="transition-closing-body">
-          Seven thresholds, crossed. The full closing sequence arrives with the final
-          chapter&apos;s rebuild.
+          Seven thresholds. Fourteen billion years. From a whisper of order in the
+          void to a species that can turn around and ask <em>why</em>. The descent
+          ends, but the questions it opens are only beginning.
         </p>
+        <div style={{ marginTop: 22, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+          <a href="/" className="hifi-btn">↩ Return to index</a>
+        </div>
       </div>
     );
   }

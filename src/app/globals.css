@@ -289,13 +289,63 @@ button, [role="button"] { touch-action: manipulation; }
   border: 1px solid var(--warm-soft);
   background: linear-gradient(180deg, rgba(231,140,90,0.06), rgba(231,140,90,0.02));
   max-width: 260px;
+  width: 100%;
 }
 .ghost-label { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--warm); }
 .ghost-body  { font-family: var(--f-italic); font-style: italic; font-weight: 300; font-size: 14px; line-height: 1.35; color: var(--ink-mid); }
 
+.chapter-ghost { max-width: 280px; }
+
 /* Scroll cue */
 .scroll-cue { display: inline-flex; align-items: center; gap: 12px; color: var(--ink-soft); font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; }
 .scroll-cue .line { width: 60px; height: 1px; background: linear-gradient(90deg, var(--ink-soft), transparent); }
+
+/* GS — focus-within band highlight for keyboard accessibility */
+.gs-track:focus-within .gs-zone {
+  box-shadow: 0 0 28px rgba(111,228,177,0.45);
+  border-color: var(--goldilocks);
+}
+.gs.gs--interactive:focus-within .gs-knob {
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.6), 0 0 32px var(--indigo-glow);
+}
+
+/* Responsive — experiment layout */
+@media (max-width: 900px) {
+  .chapter-experiment-layout {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .chapter-ghost {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hifi-nav {
+    padding: 16px 20px;
+  }
+  .hifi-mark-label {
+    font-size: 11px;
+  }
+  .chapter-experiment-feedback--mobile {
+    display: grid;
+  }
+  .chapter-experiment-feedback--desktop {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .chapter-experiment-feedback--mobile {
+    display: none;
+  }
+}
+
+.inst-desktop-outcome { display: block; }
+@media (max-width: 768px) {
+  .inst-desktop-outcome { display: none; }
+}
 
 /* ─────────────────────────────────────────────────────────
    CH 01 · INSTRUMENT (embedded interactive)
@@ -534,6 +584,18 @@ button, [role="button"] { touch-action: manipulation; }
 .chapter-hud-arrow:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+}
+.chapter-hud-arrow.is-locked {
+  position: relative;
+  opacity: 0.5;
+}
+.chapter-hud-arrow.is-locked::after {
+  content: '🔒';
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  font-size: 10px;
+  line-height: 1;
 }
 .chapter-hud-center {
   display: inline-flex;

@@ -15,6 +15,8 @@ type StarfieldProps = {
   density?: number;
   color?: string;
   className?: string;
+  /** Brightness multiplier per star layer to respond to cosmic epoch. */
+  brightness?: number;
 };
 
 export function Starfield({
@@ -22,6 +24,7 @@ export function Starfield({
   density = 1,
   color = '#ffffff',
   className,
+  brightness = 1,
 }: StarfieldProps) {
   const stars = useMemo(() => {
     const layers = [
@@ -49,11 +52,11 @@ export function Starfield({
     <svg
       className={className ?? 'hifi-stars'}
       viewBox="0 0 100 100"
-      preserveAspectRatio="none"
+      preserveAspectRatio="xMidYMid slice"
       aria-hidden
     >
       {stars.map((s, i) => (
-        <circle key={i} cx={s.cx} cy={s.cy} r={s.r * 0.06} fill={color} opacity={s.o} />
+        <circle key={i} cx={s.cx} cy={s.cy} r={s.r * 0.06} fill={color} opacity={s.o * brightness} />
       ))}
     </svg>
   );

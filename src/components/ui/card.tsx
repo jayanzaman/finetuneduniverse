@@ -7,6 +7,11 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}
+    style={{
+      background: 'linear-gradient(180deg, rgba(122,123,255,0.05), rgba(122,123,255,0.01))',
+      borderColor: 'var(--hair-2)',
+      color: 'var(--ink)',
+    }}
     {...props}
   />
 ))
@@ -26,7 +31,8 @@ const CardTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h3
     ref={ref}
-    className={`text-2xl font-semibold leading-none tracking-tight ${className}`}
+    className={`font-display font-light text-xl leading-tight tracking-tight ${className}`}
+    style={{ fontFamily: 'var(--f-display)', color: 'var(--ink)' }}
     {...props}
   />
 ))
@@ -39,6 +45,7 @@ const CardDescription = React.forwardRef<
   <p
     ref={ref}
     className={`text-sm text-muted-foreground ${className}`}
+    style={{ color: 'var(--ink-mid)', fontFamily: 'var(--f-body)' }}
     {...props}
   />
 ))

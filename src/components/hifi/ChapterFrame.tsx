@@ -87,7 +87,7 @@ export function ChapterFrame({
         </div>
       )}
 
-      <div style={{ position: 'relative', zIndex: 3, padding: '72px 64px 80px' }}>
+      <div style={{ position: 'relative', zIndex: 3, padding: 'clamp(40px, 6vw, 72px) clamp(20px, 5vw, 64px) 80px' }}>
         {/* Chapter mark line */}
         <div style={{ display: 'flex', gap: 18, alignItems: 'center', marginBottom: 14 }}>
           <span className="mono-lg" style={{ color: 'var(--indigo)' }}>Chapter {num}</span>
@@ -105,6 +105,14 @@ export function ChapterFrame({
           {prose}
         </p>
 
+        {/* Mobile outcome — inline before the experiment grid */}
+        {experimentOutcome && (
+          <div className="chapter-experiment-feedback chapter-experiment-feedback--mobile" aria-live="polite">
+            {formula && <div className="chapter-formula">{formula}</div>}
+            <div className="chapter-outcome">{experimentOutcome}</div>
+          </div>
+        )}
+
         {question && (
           <div className="chapter-question-block">
             <span className="chapter-evidence">{evidenceLabel}</span>
@@ -114,7 +122,6 @@ export function ChapterFrame({
 
         {/* Primary story experiment */}
         <div
-          className="chapter-experiment-layout"
           style={{
             marginTop: 56,
             display: 'grid',
@@ -123,18 +130,19 @@ export function ChapterFrame({
             alignItems: 'end',
             maxWidth: 1280,
           }}
+          className="chapter-experiment-layout"
         >
           <div style={{ minWidth: 0 }}>
             <GoldilocksSlider {...sliderProps} />
             {(formula || experimentOutcome) && (
-              <div className="chapter-experiment-feedback" aria-live="polite">
+              <div className="chapter-experiment-feedback chapter-experiment-feedback--desktop" aria-live="polite">
                 {formula && <div className="chapter-formula">{formula}</div>}
                 {experimentOutcome && <div className="chapter-outcome">{experimentOutcome}</div>}
               </div>
             )}
           </div>
           {ghost && (
-            <div className="ghost" style={{ width: 280 }}>
+            <div className="ghost chapter-ghost">
               <span className="ghost-label">If you leave the band →</span>
               <span className="ghost-body">{ghost.body}</span>
             </div>

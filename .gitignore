@@ -42,3 +42,10 @@ next-env.d.ts
 
 # local git worktrees
 .worktrees/
+
+# local agents / tooling
+.claude/
+.superpowers/
+
+# netlify build artifacts
+.netlify/

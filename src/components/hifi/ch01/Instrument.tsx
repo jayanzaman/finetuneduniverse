@@ -56,6 +56,7 @@ function outcomeFromState(values: Values): string {
 
 export function Instrument() {
   const [values, setValues] = useState<Values>(DEFAULT_VALUES);
+  const [previousValues, setPreviousValues] = useState<Values | null>(null);
   const [focusedKey, setFocusedKey] = useState<ParamKey | null>(null);
   const { markInteracted, markLessonOpened } = useProgression();
 
@@ -64,6 +65,7 @@ export function Instrument() {
   useEffect(() => {
     const handleRandomize = () => {
       setValues((prev) => {
+        setPreviousValues(prev);
         const next: Values = { ...prev };
         for (const p of PARAMS) {
           const [min, max] = p.range;
@@ -125,6 +127,13 @@ export function Instrument() {
     window.dispatchEvent(new Event('randomizeUniverse'));
   }, []);
 
+  const handleUndoRandomize = useCallback(() => {
+    if (previousValues) {
+      setValues(previousValues);
+      setPreviousValues(null);
+    }
+  }, [previousValues]);
+
   const handleReset = useCallback(() => {
     setValues(DEFAULT_VALUES);
   }, []);
@@ -142,6 +151,11 @@ export function Instrument() {
           <button type="button" className="inst-action" onClick={handleRandomizeClick}>
             ⟳ Randomize universe
           </button>
+          {previousValues && (
+            <button type="button" className="inst-action" onClick={handleUndoRandomize}>
+              ↩ Undo
+            </button>
+          )}
         </div>
       </div>
 

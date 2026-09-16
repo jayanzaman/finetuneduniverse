@@ -51,12 +51,11 @@ export function ChapterHUD({ activeIndex, onPrev, onNext }: ChapterHUDProps) {
 
       <button
         type="button"
-        className={`chapter-hud-arrow ${!earned ? 'is-locked' : ''}`}
-        style={{ opacity: earned ? 1 : 0.4 }}
+        className={`chapter-hud-arrow${!earned && next ? ' is-locked' : ''}`}
         onClick={handleNextClick}
         disabled={!next}
-        aria-label={next ? (earned ? `Next chapter: ${next.t}` : 'Complete tasks to unlock next chapter') : 'End of descent'}
-        title={next ? (earned ? `${next.n} · ${next.t}` : 'Complete tasks to unlock next chapter') : 'End of descent'}
+        aria-label={next ? (earned ? `Next chapter: ${next.t}` : `${progress.done}/${progress.total} tasks — tap to see what's left`) : 'End of descent'}
+        title={next ? (earned ? `${next.n} · ${next.t}` : `${progress.done}/${progress.total} tasks complete — click to jump to remaining`) : 'End of descent'}
       >
         →
       </button>

@@ -127,10 +127,11 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
       if (document.querySelector('.focus-modal, .handoff')) return;
       if (e.key === 'ArrowRight') handleNext();
       if (e.key === 'ArrowLeft') handlePrev();
+      if (e.key === 'Escape' && view.kind === 'chapter') goLanding();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [handleNext, handlePrev]);
+  }, [handleNext, handlePrev, goLanding, view]);
 
   // Reset scroll when view changes
   useEffect(() => {
@@ -148,10 +149,25 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
 
   const activeChapter = view.kind === 'chapter' ? view.index : null;
 
+  const STAR_PALETTE = [
+    { color: '#a8b3ff', brightness: 0.9 },
+    { color: '#cdd4ff', brightness: 1.0 },
+    { color: '#ffe8cc', brightness: 1.1 },
+    { color: '#cdd4ff', brightness: 0.85 },
+    { color: '#b8f0d5', brightness: 1.0 },
+    { color: '#d4c8f0', brightness: 1.0 },
+    { color: '#c8dff0', brightness: 1.05 },
+  ];
+  const starTheme = view.kind === 'chapter' ? STAR_PALETTE[view.index] : { color: '#ffffff', brightness: 1 };
+
   return (
     <ProgressionProvider>
       <div className="hifi" style={{ position: 'relative', minHeight: '100vh' }}>
-        <HifiBackdrop seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3} />
+        <HifiBackdrop
+          seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3}
+          starColor={starTheme.color}
+          starBrightness={starTheme.brightness}
+        />
 
         <TopNav
           onIndex={goLanding}
