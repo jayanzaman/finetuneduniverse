@@ -5,6 +5,7 @@ import { CHAPTERS } from '../chapters';
 import { CHAPTER_COMPONENTS } from '../progression/registry';
 import { useProgression } from '../progression/ProgressionContext';
 import { cue } from '../audio/cues';
+import { trackJourney } from '../../../lib/analytics';
 
 export type ChapterTransitionProps = {
   chapterIndex: number;
@@ -34,9 +35,12 @@ export function ChapterTransition({ chapterIndex, onDescend }: ChapterTransition
   const prevComplete = useRef<boolean | null>(null);
   useEffect(() => {
     if (isLast || !hydrated) return;
-    if (prevComplete.current === false && progress.complete) cue('chapter-complete');
+    if (prevComplete.current === false && progress.complete) {
+      cue('chapter-complete');
+      trackJourney({ name: 'chapter_complete', chapter: chapterIndex });
+    }
     prevComplete.current = progress.complete;
-  }, [isLast, hydrated, progress.complete]);
+  }, [isLast, hydrated, progress.complete, chapterIndex]);
 
   if (isLast) {
     return (
