@@ -53,3 +53,14 @@ describe('modelVisualState', () => {
     }
   });
 });
+
+describe('claim metadata', () => {
+  it('gives every model a band inside its range and at least one source', () => {
+    for (const model of CHAPTER_MODELS) {
+      expect(model.sources.length).toBeGreaterThan(0);
+      expect(model.band[0]).toBeGreaterThanOrEqual(model.min);
+      expect(model.band[1]).toBeLessThanOrEqual(model.max);
+      expect(model.band[0]).toBeLessThanOrEqual(model.band[1]);
+    }
+  });
+});

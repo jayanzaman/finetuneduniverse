@@ -175,8 +175,8 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     prose: (
       <>
         A young star, a settling disc, a rocky world finds one band of orbit where water
-        can be water. Move it inward by a tenth — the oceans boil. Move it outward by a
-        tenth — they freeze forever. The band is <em>narrower than the orbit itself</em>.
+        can be water. Move it inward by a twentieth — the oceans boil. Move it outward by
+        a third — they freeze forever. The band is a sliver of the distances on offer.
       </>
     ),
     sliderProps: {
@@ -191,7 +191,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
       failRight: 'snowball, forever',
     },
     ghost: {
-      body: 'Push the orbit out by 10% — Earth ices over for good. Snowball planet, locked in white forever. No reset switch.',
+      body: 'Push the orbit out by a third — Earth ices over for good. Snowball planet, locked in white forever. No reset switch.',
     },
     visualization: <GoldilocksViz />,
   },

@@ -8,6 +8,10 @@ export type ChapterModel = {
   format?: (value: number) => string;
   outcome: (value: number) => string;
   visualState?: (position: number) => { intensity: number; instability: number; scale: number };
+  /** Source entries for the model's consequential quantitative claim. */
+  sources: string[];
+  /** Temperate/optimal band in real units — drives both the outcome and the slider zone. */
+  band: [number, number];
 };
 
 const bandOutcome = (
@@ -29,7 +33,9 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     max: 10,
     initial: 1,
     precision: 2,
-    unit: 'S/k',
+    unit: 'S/k (normalized)',
+    sources: ['Carroll, From Eternity to Here (2010)', 'Penrose, The Road to Reality (2004)', 'Planck Collaboration (2020) A&A 641, A6'],
+    band: [0.5, 1.5],
     formula: 'Habitability score falls with |S/k − 1|',
     outcome: bandOutcome(
       0.5,
@@ -45,11 +51,13 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     initial: 1,
     precision: 3,
     unit: 'gₛ / gₛ₀',
+    sources: ['Rees, Just Six Numbers (2000)', 'Sakharov (1967)', 'Planck 2018 baryon asymmetry'],
+    band: [0.98, 1.02],
     formula: 'Binding energy scales with the strong-coupling ratio gₛ/gₛ₀',
     outcome: bandOutcome(
       0.98,
       1.02,
-      'Binding is too weak: stable protons become unlikely in this model.',
+      'Binding is too weak: bound nuclei and light elements become unlikely in this model.',
       'Stable nuclei and light elements remain possible.',
       'Binding is too strong: the balance of light nuclei is disrupted.',
     ),
@@ -60,6 +68,8 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     initial: 1,
     precision: 2,
     unit: 'M☉',
+    sources: ['Burbidge, Burbidge, Fowler & Hoyle (1957) Rev. Mod. Phys. 29, 547', 'Kippenhahn & Weigert (1990)'],
+    band: [0.5, 8],
     formula: 'Main-sequence lifetime ≈ 10¹⁰ yr × (M/M☉)⁻²·⁵',
     outcome: (value) => {
       const lifetime = 10 * Math.pow(value, -2.5);
@@ -74,6 +84,8 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     initial: 6.61,
     precision: 2,
     unit: 'log₁₀ M☉',
+    sources: ['Ghez et al. (2008) ApJ 689, 1044', 'Kormendy & Ho (2013) ARA&A 51, 511'],
+    band: [6, 7.3],
     formula: 'M = 10ˣ M☉',
     outcome: (value) => {
       const mass = Math.pow(10, value);
@@ -88,6 +100,8 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     initial: 1,
     precision: 3,
     unit: 'AU',
+    sources: ['Kasting, Whitmire & Reynolds (1993) Icarus 101, 108', 'Kopparapu et al. (2014) ApJ 787, L29'],
+    band: [0.95, 1.37],
     formula: 'Equilibrium temperature ≈ 278 K / √(distance in AU)',
     outcome: (value) => {
       const celsius = 278 / Math.sqrt(value) - 273.15;
@@ -102,6 +116,8 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     initial: 13.5,
     precision: 1,
     unit: 'W/m²',
+    sources: ['Miller (1953) Science 117, 528', 'Patel et al. (2015) Nat. Chem. 7, 301'],
+    band: [8, 28],
     formula: 'Productive chemistry requires energy without overwhelming molecular damage',
     outcome: bandOutcome(
       8,
@@ -117,6 +133,8 @@ export const CHAPTER_MODELS: ChapterModel[] = [
     initial: 2.4,
     precision: 2,
     unit: 'billion yr after formation',
+    sources: ['Holland (2006) Phil. Trans. R. Soc. B 361, 903', 'Lyons, Reinhard & Planavsky (2014) Nature 506, 307'],
+    band: [1.8, 3],
     formula: 'Timing controls how long anaerobic and oxygen-using ecosystems can develop',
     outcome: bandOutcome(
       1.8,

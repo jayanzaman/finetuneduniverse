@@ -261,6 +261,7 @@ function ChapterView({ index, cosmicTime, onDescend, onPrev }: ChapterViewProps)
         value: modelReadout(model, primaryValue),
         unit: model.unit,
         position: modelPosition(model, primaryValue),
+        zone: [modelPosition(model, model.band[0]), modelPosition(model, model.band[1])],
         interactive: true,
         ariaLabel: `${String(content.sliderProps.label)}. ${model.unit}`,
         onPositionChange: (position) => {
@@ -275,6 +276,7 @@ function ChapterView({ index, cosmicTime, onDescend, onPrev }: ChapterViewProps)
       openQuestion={CHAPTERS[index].openQuestion}
       evidenceLabel={EVIDENCE_LABELS[CHAPTERS[index].evidence]}
       visualState={modelVisualState(model, primaryValue)}
+      sources={model.sources}
       ghost={content.ghost}
       onPrev={onPrev}
       visualization={content.visualization}

@@ -33,6 +33,8 @@ type ChapterFrameProps = {
   openQuestion?: ReactNode;
   evidenceLabel?: ReactNode;
   visualState?: { intensity: number; instability: number; scale: number };
+  /** Source entries for the chapter's consequential quantitative claim. */
+  sources?: string[];
 };
 
 /**
@@ -61,6 +63,7 @@ export function ChapterFrame({
   openQuestion,
   evidenceLabel,
   visualState,
+  sources,
   chapterIndex,
 }: ChapterFrameProps) {
   const [showDeepDive, setShowDeepDive] = useState(false);
@@ -194,10 +197,16 @@ export function ChapterFrame({
 
         {transition && <div id="chapter-transition-container" style={{ marginTop: 48 }}>{transition}</div>}
 
-        {(currentAnswer || openQuestion) && (
+        {(currentAnswer || openQuestion || (sources && sources.length > 0)) && (
           <div className="chapter-knowledge-summary">
-            <div><span>Current answer</span><p>{currentAnswer}</p></div>
-            <div><span>What remains open</span><p>{openQuestion}</p></div>
+            {currentAnswer && <div><span>Current answer</span><p>{currentAnswer}</p></div>}
+            {openQuestion && <div><span>What remains open</span><p>{openQuestion}</p></div>}
+            {sources && sources.length > 0 && (
+              <div className="chapter-sources">
+                <span>Sources</span>
+                <ul>{sources.map((s) => <li key={s}>{s}</li>)}</ul>
+              </div>
+            )}
           </div>
         )}
       </div>

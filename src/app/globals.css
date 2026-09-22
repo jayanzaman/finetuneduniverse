@@ -512,6 +512,9 @@ button, [role="button"] { touch-action: manipulation; }
 .chapter-knowledge-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 36px; max-width: 960px; }
 .chapter-knowledge-summary > div { padding: 18px; border: 1px solid var(--hair); background: rgba(3,3,8,.5); }
 .chapter-knowledge-summary span { font-family: var(--f-mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
+.chapter-sources { grid-column: 1 / -1; }
+.chapter-sources ul { margin: 8px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.chapter-sources li { font-family: var(--f-mono); font-size: 10px; color: var(--ink-mid); }
 .chapter-knowledge-summary p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--ink-mid); }
 
 @media (max-width: 720px) {
