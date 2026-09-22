@@ -2,7 +2,8 @@ export type JourneyEvent =
   | { name: 'chapter_view'; chapter: number; method: 'guided' | 'skip' | 'direct' }
   | { name: 'primary_experiment'; chapter: number }
   | { name: 'deep_lab_toggle'; chapter: number; open: boolean }
-  | { name: 'chapter_complete'; chapter: number };
+  | { name: 'chapter_complete'; chapter: number }
+  | { name: 'chapter_exit'; chapter: number };
 
 export type AnalyticsSink = (event: JourneyEvent) => void;
 

@@ -12,6 +12,8 @@ describe('journey analytics', () => {
     configureAnalytics(sink);
     trackJourney({ name: 'primary_experiment', chapter: 2 });
     expect(sink).toHaveBeenCalledWith({ name: 'primary_experiment', chapter: 2 });
+    trackJourney({ name: 'chapter_exit', chapter: 4 });
+    expect(sink).toHaveBeenCalledWith({ name: 'chapter_exit', chapter: 4 });
     configureAnalytics(null);
   });
 });

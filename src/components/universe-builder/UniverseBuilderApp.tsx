@@ -76,8 +76,11 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
 
   const goLanding = useCallback(() => {
     setChapterMenuOpen(false);
+    if (view.kind === 'chapter') {
+      trackJourney({ name: 'chapter_exit', chapter: view.index });
+    }
     commitView({ kind: 'landing' });
-  }, [commitView]);
+  }, [commitView, view]);
   const goChapter = useCallback(
     (index: number) => {
       setChapterMenuOpen(false);
