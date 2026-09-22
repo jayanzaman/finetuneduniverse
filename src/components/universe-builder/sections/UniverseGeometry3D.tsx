@@ -115,6 +115,8 @@ export function UniverseGeometry3D({ density }: { density: number }) {
     <div className="relative w-full h-full bg-black/30 rounded-lg overflow-hidden">
       <Canvas
         camera={{ position: [5, 3, 5], fov: 50 }}
+        dpr={[1, 2]}
+        gl={{ powerPreference: 'high-performance' }}
         style={{ background: 'transparent' }}
       >
         {/* Lighting */}
