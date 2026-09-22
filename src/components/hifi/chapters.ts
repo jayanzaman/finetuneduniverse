@@ -6,8 +6,8 @@ export const CHAPTERS = [
   {
     n: '01', slug: 'why-did-the-universe-begin-ordered', t: 'Beginning', long: 'The Beginning', d: 'Low entropy start', era: '13.8 Bya',
     question: 'Why did the universe begin in such a low-entropy state?',
-    currentAnswer: 'Observations are consistent with an extraordinarily smooth, low-gravitational-entropy early universe.',
-    openQuestion: 'Physics does not yet provide a settled explanation for that initial condition.',
+    currentAnswer: 'Cosmic microwave background maps show the early universe was almost perfectly smooth, with temperature differences of about one part in 100,000, corresponding to extraordinarily low gravitational entropy. Gravity then amplified those tiny differences into galaxies and the large-scale structure we observe today.',
+    openQuestion: 'Why the universe began in that low-entropy state rather than the vastly more probable high-entropy one remains unsettled. Proposed explanations include cosmic inflation and the idea that the low-entropy boundary records a deeper statistical or quantum constraint.',
     evidence: 'open-question',
   },
   {
@@ -20,8 +20,8 @@ export const CHAPTERS = [
   {
     n: '03', slug: 'why-can-stars-make-complex-elements', t: 'Stars', long: 'First Stars', d: 'Ignition', era: '200 Mya',
     question: 'Why can stars manufacture complex elements?',
-    currentAnswer: 'Gravity, nuclear binding, and stellar evolution allow fusion and explosive nucleosynthesis to build heavier nuclei.',
-    openQuestion: 'The first stars and their exact enrichment history remain active observational targets.',
+    currentAnswer: 'Stellar cores fuse hydrogen into helium. More massive stars build carbon, oxygen, and heavier nuclei, and the heaviest elements are forged and dispersed by supernovae and neutron-star mergers. Main-sequence lifetime scales roughly as mass to the power minus 2.5, so a Sun-like star shines for about 10 billion years.',
+    openQuestion: 'The first, metal-free Population III stars have never been directly observed, and reconstructing exactly how their explosions enriched the cosmos into the element mix we see today remains active work.',
     evidence: 'observed-model',
   },
   {
@@ -34,8 +34,8 @@ export const CHAPTERS = [
   {
     n: '05', slug: 'how-narrow-is-planetary-habitability', t: 'Planets', long: 'Goldilocks Zone', d: 'A habitable orbit', era: '9.2 Gya',
     question: 'How narrow is planetary habitability?',
-    currentAnswer: 'Orbital energy, atmosphere, mass, chemistry, and stellar history jointly determine whether surface liquid water is plausible.',
-    openQuestion: 'Life may tolerate conditions far beyond the simplified surface-water model used here.',
+    currentAnswer: 'For a Sun-like star, equilibrium temperature scales as the inverse square root of orbital distance, about 278 kelvin divided by the square root of the distance in AU. Greenhouse effect, reflectivity, and atmosphere then decide whether surface liquid water can persist; conservative models place the habitable zone near 0.95 to 1.4 AU.',
+    openQuestion: 'Real habitability likely extends beyond this surface-water model. Subsurface oceans, water-rich worlds, and organisms far more tolerant than any we know could widen the zone substantially.',
     evidence: 'simplified-model',
   },
   {
