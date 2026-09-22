@@ -84,6 +84,7 @@ export function PrologueHero({
 
   return (
     <section className="prologue-hero" data-phase={phase}>
+      <h1 className="sr-only">Our Finetuned Universe</h1>
       {phase === 'revealing' && (
         <button
           type="button"

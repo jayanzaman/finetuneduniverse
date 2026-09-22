@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
 import dynamic from 'next/dynamic';
 
@@ -162,7 +162,8 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
 
   return (
     <ProgressionProvider>
-      <div className="hifi" style={{ position: 'relative', minHeight: '100vh' }}>
+      <MotionConfig reducedMotion="user">
+        <div className="hifi" style={{ position: 'relative', minHeight: '100vh' }}>
         <HifiBackdrop
           seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3}
           starColor={starTheme.color}
@@ -219,7 +220,8 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
             onDone={() => setHandoff(null)}
           />
         )}
-      </div>
+        </div>
+      </MotionConfig>
     </ProgressionProvider>
   );
 }
