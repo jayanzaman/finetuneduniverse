@@ -62,6 +62,16 @@ const galaxyPhases = [
   }
 ];
 
+/** Map a galactic age (billion years after the Big Bang) to a phase index. */
+function getPhaseIndex(age: number): number {
+  if (age > 13.6) return 0; // Pre-Galactic Era
+  if (age > 12.0) return 1; // Proto-Galaxy Formation
+  if (age > 10.0) return 2; // Starburst Phase
+  if (age > 8.0) return 3; // Quasar Phase
+  if (age > 4.0) return 4; // Early Spiral Formation
+  return 5; // Modern Milky Way
+}
+
 // Milky Way Evolution Carousel Component
 function MilkyWayEvolution({ 
   currentAge,
@@ -72,16 +82,6 @@ function MilkyWayEvolution({
   educatorMode: boolean;
   onAgeChange: (age: number) => void;
 }) {
-  // Determine galaxy phase based on age
-  const getPhaseIndex = (age: number) => {
-    if (age > 13.6) return 0;      // Pre-Galactic Era
-    if (age > 12.0) return 1;      // Proto-Galaxy Formation
-    if (age > 10.0) return 2;      // Starburst Phase  
-    if (age > 8.0) return 3;       // Quasar Phase
-    if (age > 4.0) return 4;       // Early Spiral Formation
-    return 5;                      // Modern Milky Way
-  };
-
   // Get representative age for each phase (middle of the phase range)
   const getPhaseAge = (phaseIndex: number) => {
     switch (phaseIndex) {
@@ -280,6 +280,7 @@ export default function GalacticHeartSection({
 }) {
   void _cosmicTime;
   const [currentGalacticAge, setCurrentGalacticAge] = useState(13.8) // Start at Big Bang
+  const currentPhase = galaxyPhases[getPhaseIndex(currentGalacticAge)]
 
   useEffect(() => {
     const handleRandomize = () => {
@@ -302,6 +303,10 @@ export default function GalacticHeartSection({
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <div aria-live="polite" className="mb-4 rounded-lg border border-white/10 bg-black/30 px-4 py-3">
+            <span className="text-xs uppercase tracking-widest text-white/50">Current phase</span>
+            <p className="text-white font-semibold">{currentPhase.name} · {currentPhase.age}</p>
+          </div>
           <MilkyWayEvolution 
             currentAge={currentGalacticAge}
             educatorMode={educatorMode}
