@@ -93,7 +93,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Loosen the bond by 2% — quarks never bind. The universe is a fog of free particles, dark, structureless, forever.',
     },
-    visualization: () => <ProtonViz />,
+    visualization: (v) => <ProtonViz coupling={v} />,
   },
   {
     num: '03',
@@ -127,7 +127,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Stars only half this mass — they fuse hydrogen, but never the heavy elements. No carbon. No water. No us, ever.',
     },
-    visualization: () => <FirstStarViz />,
+    visualization: (v) => <FirstStarViz mass={v} />,
   },
   {
     num: '04',
@@ -161,7 +161,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'A black hole twice this large — and the galaxy never settles into a disc. Stars are pulled apart faster than they form. No planetary orbits, ever.',
     },
-    visualization: () => <GalaxyViz />,
+    visualization: (v) => <GalaxyViz blackHoleMass={v} />,
   },
   {
     num: '05',
@@ -228,7 +228,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Halve the UV and the building blocks never assemble. Double it and every fragile molecule shreds before it can replicate.',
     },
-    visualization: () => <PrimordialEarthViz />,
+    visualization: (v) => <PrimordialEarthViz flux={v} />,
   },
   {
     num: '07',
@@ -262,6 +262,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Oxygen arrived neither too fast nor too slow. A billion years off and complex life never gets its window — Earth stays a microbial planet forever.',
     },
-    visualization: () => <EarthLimbViz />,
+    visualization: (v) => <EarthLimbViz oxygenTiming={v} />,
   },
 ];

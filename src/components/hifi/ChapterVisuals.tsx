@@ -91,12 +91,22 @@ export function PrimordialBubble({ entropy = 1 }: { entropy?: number }) {
 }
 
 // CH 02 — Proton (three quarks bound by gluon strands)
-export function ProtonViz() {
+export function ProtonViz({ coupling = 1 }: { coupling?: number }) {
+  // Strong-coupling ratio drives how tightly the quarks are bound: below band
+  // they drift apart, above band they over-bind.
+  const t = Math.max(0, Math.min(1, (coupling - 0.8) / 0.4));
+  const spread = 1.3 - 0.6 * t;
+  const tubeOpacity = 0.4 + 0.6 * t;
   const quarks = [
-    { x: '50%', y: '25%', label: 'u', color: '#A8B3FF' },
-    { x: '25%', y: '70%', label: 'u', color: '#A8B3FF' },
-    { x: '75%', y: '70%', label: 'd', color: '#E78C5A' },
+    { ox: 0, oy: -25, label: 'u', color: '#A8B3FF' },
+    { ox: -25, oy: 20, label: 'u', color: '#A8B3FF' },
+    { ox: 25, oy: 20, label: 'd', color: '#E78C5A' },
   ];
+  const pts = quarks.map((q) => ({
+    x: svg(50 + q.ox * spread),
+    y: svg(50 + q.oy * spread),
+  }));
+  const edges: Array<[number, number]> = [[0, 1], [0, 2], [1, 2]];
 
   return (
     <div style={{ position: 'absolute', right: -60, top: '50%', transform: 'translateY(-50%)' }}>
@@ -127,12 +137,18 @@ export function ProtonViz() {
               <stop offset="100%" stopColor="#7A7BFF" stopOpacity="0.8" />
             </linearGradient>
           </defs>
-          <path d="M 50 25 Q 35 50 25 70" stroke="url(#ftu-gluon1)" strokeWidth="0.5" fill="none" opacity="0.7" />
-          <path d="M 50 25 Q 65 50 75 70" stroke="url(#ftu-gluon1)" strokeWidth="0.5" fill="none" opacity="0.7" />
-          <path d="M 25 70 Q 50 78 75 70" stroke="url(#ftu-gluon1)" strokeWidth="0.5" fill="none" opacity="0.7" />
-          <path d="M 50 25 Q 35 50 25 70" stroke="#ffffff" strokeWidth="0.2" fill="none" strokeDasharray="0.5 1.2" opacity="0.8" />
-          <path d="M 50 25 Q 65 50 75 70" stroke="#ffffff" strokeWidth="0.2" fill="none" strokeDasharray="0.5 1.2" opacity="0.8" />
-          <path d="M 25 70 Q 50 78 75 70" stroke="#ffffff" strokeWidth="0.2" fill="none" strokeDasharray="0.5 1.2" opacity="0.8" />
+          {edges.map(([a, b]) => (
+            <line
+              key={`${a}-${b}`}
+              x1={pts[a].x}
+              y1={pts[a].y}
+              x2={pts[b].x}
+              y2={pts[b].y}
+              stroke="url(#ftu-gluon1)"
+              strokeWidth="0.5"
+              opacity={tubeOpacity}
+            />
+          ))}
         </svg>
 
         {quarks.map((q, i) => (
@@ -140,14 +156,14 @@ export function ProtonViz() {
             key={i}
             style={{
               position: 'absolute',
-              left: q.x,
-              top: q.y,
+              left: `${pts[i].x}%`,
+              top: `${pts[i].y}%`,
               transform: 'translate(-50%, -50%)',
               width: 90,
               height: 90,
               borderRadius: '50%',
               background: `radial-gradient(circle at 35% 30%, #ffffff 0%, ${q.color} 35%, rgba(20,20,60,0.7) 80%)`,
-              boxShadow: `0 0 50px ${q.color}80, inset 0 0 18px rgba(0,0,0,0.4)`,
+              boxShadow: `0 0 ${30 + t * 30}px ${q.color}80, inset 0 0 18px rgba(0,0,0,0.4)`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -155,6 +171,7 @@ export function ProtonViz() {
               fontSize: 28,
               fontWeight: 300,
               color: 'var(--ink)',
+              transition: 'left 300ms ease, top 300ms ease, box-shadow 300ms ease',
             }}
           >
             {q.label}
@@ -181,7 +198,13 @@ export function ProtonViz() {
 }
 
 // CH 03 — First star
-export function FirstStarViz() {
+export function FirstStarViz({ mass = 1 }: { mass?: number }) {
+  // Stellar mass drives the star's size/energy: red dwarf < main sequence < supergiant.
+  const size = Math.min(420, Math.max(150, 260 * Math.pow(mass, 0.18)));
+  const glow = Math.max(0.5, Math.min(2, Math.pow(mass, 0.35)));
+  const hot = Math.max(0, Math.min(1, (Math.log10(mass) + 1.1) / 2.7));
+  const glowColor =
+    hot < 0.4 ? 'rgba(255,150,90,' : hot > 0.6 ? 'rgba(170,200,255,' : 'rgba(255,210,140,';
   return (
     <div style={{ position: 'absolute', right: -60, top: '50%', transform: 'translateY(-50%)' }}>
       <div style={{ position: 'relative', width: 820, height: 820 }}>
@@ -221,13 +244,14 @@ export function FirstStarViz() {
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 260,
-            height: 260,
+            width: size,
+            height: size,
             borderRadius: '50%',
             background:
               'radial-gradient(circle at 38% 30%, #ffffff 0%, #fff6e0 20%, #ffd09a 45%, #d97742 75%, rgba(80,30,10,0.9) 95%)',
             boxShadow:
-              '0 0 120px 30px rgba(255,210,140,0.55), 0 0 250px 60px rgba(231,140,90,0.35), inset 0 0 30px rgba(80,30,10,0.4)',
+              `0 0 ${Math.round(120 * glow)}px ${Math.round(30 * glow)}px ${glowColor}${(0.55 * glow).toFixed(3)}), 0 0 ${Math.round(250 * glow)}px ${Math.round(60 * glow)}px rgba(231,140,90,${(0.35 * glow).toFixed(3)}), inset 0 0 30px rgba(80,30,10,0.4)`,
+            transition: 'width 300ms ease, height 300ms ease, box-shadow 300ms ease',
           }}
         />
       </div>
@@ -236,7 +260,13 @@ export function FirstStarViz() {
 }
 
 // CH 04 — Spiral galaxy with Sgr A*
-export function GalaxyViz() {
+export function GalaxyViz({ blackHoleMass = 6.61 }: { blackHoleMass?: number }) {
+  // Central black-hole mass (log10 Msun) drives the core's glow and reach.
+  const t = Math.max(0, Math.min(1, (blackHoleMass - 5) / 4));
+  const glowSize = 160 + t * 200;
+  const coreSize = 80 + t * 80;
+  const coreGlow = Math.round(40 + t * 80);
+  const coreOpacity = 0.5 + t * 0.3;
   const dust = (() => {
     const rand = seededRandom(404);
     const out: { x: number; y: number; size: number; op: number }[] = [];
@@ -302,13 +332,14 @@ export function GalaxyViz() {
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 240,
-            height: 240,
+            width: glowSize,
+            height: glowSize,
             borderRadius: '50%',
             background:
               'conic-gradient(from 0deg, rgba(231,140,90,0.6), rgba(122,123,255,0.45), rgba(231,140,90,0.6), rgba(122,123,255,0.45), rgba(231,140,90,0.6))',
             filter: 'blur(8px)',
-            opacity: 0.6,
+            opacity: coreOpacity,
+            transition: 'width 300ms ease, height 300ms ease, opacity 300ms ease',
           }}
         />
         <div
@@ -317,12 +348,13 @@ export function GalaxyViz() {
             left: '50%',
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 110,
-            height: 110,
+            width: coreSize,
+            height: coreSize,
             borderRadius: '50%',
             background:
               'radial-gradient(circle at 50% 50%, #000 60%, rgba(231,140,90,0.6) 78%, rgba(122,123,255,0.3) 90%, transparent 100%)',
-            boxShadow: '0 0 70px 20px rgba(231,140,90,0.35)',
+            boxShadow: `0 0 ${coreGlow}px 20px rgba(231,140,90,0.35)`,
+            transition: 'width 300ms ease, height 300ms ease, box-shadow 300ms ease',
           }}
         />
       </div>
@@ -447,7 +479,12 @@ export function GoldilocksViz({ orbitalDistance = 1 }: { orbitalDistance?: numbe
 }
 
 // CH 06 — Primordial Earth: lightning + drifting molecules
-export function PrimordialEarthViz() {
+export function PrimordialEarthViz({ flux = 13.5 }: { flux?: number }) {
+  // UV flux drives lightning intensity (low = inert, high = sterilizing) and
+  // molecule visibility (productive only inside the 8-28 band).
+  const inBand = flux >= 8 && flux <= 28;
+  const boltFactor = Math.max(0.35, Math.min(2, flux / 13.5));
+  const molOpacity = inBand ? 0.55 : 0.3;
   const molecules = [
     { x: 16, y: 48, t: 'CH₄', s: 22 },
     { x: 24, y: 62, t: 'NH₃', s: 18 },
@@ -509,7 +546,7 @@ export function PrimordialEarthViz() {
           stroke="#ffffff"
           strokeWidth="2.5"
           filter="url(#ftu-glow6)"
-          opacity="0.95"
+          opacity={0.95 * boltFactor}
         />
         <polyline
           points="160,0 130,80 180,120 100,200 160,240 90,330 150,360 80,440"
@@ -517,7 +554,7 @@ export function PrimordialEarthViz() {
           stroke="rgba(170,180,255,0.7)"
           strokeWidth="6"
           filter="url(#ftu-glow6)"
-          opacity="0.5"
+          opacity={0.5 * boltFactor}
         />
       </svg>
       {molecules.map((m, i) => (
@@ -530,7 +567,7 @@ export function PrimordialEarthViz() {
             fontFamily: 'var(--f-mono)',
             fontSize: m.s,
             color: 'var(--ink)',
-            opacity: 0.55,
+            opacity: molOpacity,
             letterSpacing: '0.04em',
             textShadow: '0 0 12px rgba(122,123,255,0.6)',
           }}
@@ -543,7 +580,16 @@ export function PrimordialEarthViz() {
 }
 
 // CH 07 — Curved earth limb (the column lives in the chapter body)
-export function EarthLimbViz() {
+export function EarthLimbViz({ oxygenTiming = 2.4 }: { oxygenTiming?: number }) {
+  // Oxygenation timing drives the atmosphere/land palette: hazy before the
+  // oxygenation window, blue-green inside it, icy after it.
+  const state = oxygenTiming < 1.8 ? 'early' : oxygenTiming > 3 ? 'late' : 'oxygen';
+  const ATM = {
+    early: 'radial-gradient(circle at 30% 35%, rgba(240,210,170,0.6) 0%, rgba(180,140,110,0.8) 8%, rgba(120,90,70,0.8) 28%, rgba(70,50,40,0.85) 55%, rgba(30,20,25,0.9) 80%)',
+    oxygen: 'radial-gradient(circle at 30% 35%, rgba(220,235,255,0.65) 0%, rgba(120,180,220,0.85) 8%, rgba(60,130,170,0.85) 28%, rgba(40,80,120,0.85) 55%, rgba(20,40,80,0.9) 80%)',
+    late: 'radial-gradient(circle at 30% 35%, rgba(235,248,255,0.7) 0%, rgba(190,225,245,0.85) 8%, rgba(140,190,225,0.85) 28%, rgba(90,140,190,0.85) 55%, rgba(40,80,130,0.9) 80%)',
+  } as const;
+  const LAND = { early: 'rgba(120,105,88,0.75)', oxygen: 'rgba(80,110,70,0.7)', late: 'rgba(235,245,250,0.85)' } as const;
   return (
     <div
       style={{
@@ -561,7 +607,7 @@ export function EarthLimbViz() {
           inset: 0,
           borderRadius: '50%',
           background:
-            'radial-gradient(circle at 30% 35%, rgba(220,235,255,0.65) 0%, rgba(120,180,220,0.85) 8%, rgba(60,130,170,0.85) 28%, rgba(40,80,120,0.85) 55%, rgba(20,40,80,0.9) 80%)',
+            ATM[state],
           boxShadow: '0 0 120px 20px rgba(120,180,220,0.4), inset 30px 40px 200px rgba(0,0,0,0.7)',
           border: '1px solid rgba(180,210,235,0.4)',
         }}
@@ -573,10 +619,10 @@ export function EarthLimbViz() {
           </clipPath>
         </defs>
         <g clipPath="url(#ftu-earthclip)" opacity="0.7">
-          <path d="M 18 30 Q 28 22 38 28 Q 42 38 32 44 Q 22 42 18 30 Z" fill="rgba(80,110,70,0.7)" />
-          <path d="M 42 50 Q 52 45 58 52 Q 62 64 54 70 Q 44 68 42 50 Z" fill="rgba(80,110,70,0.7)" />
-          <path d="M 22 60 Q 32 58 34 66 Q 30 76 22 70 Z" fill="rgba(80,110,70,0.7)" />
-          <path d="M 68 24 Q 78 22 82 32 Q 76 40 70 36 Q 66 30 68 24 Z" fill="rgba(80,110,70,0.7)" />
+          <path d="M 18 30 Q 28 22 38 28 Q 42 38 32 44 Q 22 42 18 30 Z" fill={LAND[state]} />
+          <path d="M 42 50 Q 52 45 58 52 Q 62 64 54 70 Q 44 68 42 50 Z" fill={LAND[state]} />
+          <path d="M 22 60 Q 32 58 34 66 Q 30 76 22 70 Z" fill={LAND[state]} />
+          <path d="M 68 24 Q 78 22 82 32 Q 76 40 70 36 Q 66 30 68 24 Z" fill={LAND[state]} />
           <path d="M 30 18 Q 50 14 70 20 Q 80 30 70 32 Q 50 28 30 24 Z" fill="rgba(255,255,255,0.25)" />
           <path d="M 20 75 Q 40 72 60 80 Q 70 86 50 88 Q 30 86 20 75 Z" fill="rgba(255,255,255,0.2)" />
         </g>
