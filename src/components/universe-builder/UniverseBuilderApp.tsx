@@ -66,6 +66,9 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
   const [cosmicTime, setCosmicTime] = useState(0);
   const [handoff, setHandoff] = useState<{ from: number; to: number } | null>(null);
   const [chapterMenuOpen, setChapterMenuOpen] = useState(false);
+  const [starPosition, setStarPosition] = useState(0.5);
+
+  const handlePrimaryChange = useCallback((position: number) => setStarPosition(position), []);
 
   const commitView = useCallback((next: View, replace = false) => {
     const path = next.kind === 'landing' ? '/' : `/questions/${CHAPTERS[next.index].slug}`;
@@ -141,6 +144,11 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [view]);
 
+  // Backdrop returns to a neutral signal while on the landing view.
+  useEffect(() => {
+    if (view.kind !== 'chapter') setStarPosition(0.5);
+  }, [view.kind]);
+
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => handleNext(),
     onSwipedRight: () => handlePrev(),
@@ -162,6 +170,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
     { color: '#c8dff0', brightness: 1.05 },
   ];
   const starTheme = view.kind === 'chapter' ? STAR_PALETTE[view.index] : { color: '#ffffff', brightness: 1 };
+  const starBrightness = starTheme.brightness * (0.7 + 0.6 * starPosition);
 
   return (
     <ProgressionProvider>
@@ -170,7 +179,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
         <HifiBackdrop
           seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3}
           starColor={starTheme.color}
-          starBrightness={starTheme.brightness}
+          starBrightness={starBrightness}
           phase={cosmicTime}
         />
 
@@ -208,6 +217,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
                 <ChapterView
                   index={view.index}
                   cosmicTime={cosmicTime}
+                  onPrimaryChange={handlePrimaryChange}
                   onDescend={() => setHandoff({ from: view.index, to: Math.min(6, view.index + 1) })}
                   onPrev={handlePrev}
                 />
@@ -235,15 +245,21 @@ type ChapterViewProps = {
   cosmicTime: number;
   onDescend: () => void;
   onPrev: () => void;
+  onPrimaryChange?: (position: number) => void;
 };
 
-function ChapterView({ index, cosmicTime, onDescend, onPrev }: ChapterViewProps) {
+function ChapterView({ index, cosmicTime, onDescend, onPrev, onPrimaryChange }: ChapterViewProps) {
   const SectionComponent = SECTION_COMPONENTS[index];
   const content = CHAPTER_CONTENT[index];
   const model = CHAPTER_MODELS[index];
   const [primaryValue, setPrimaryValue] = useState(model.initial);
 
   useEffect(() => setPrimaryValue(model.initial), [model]);
+
+  // Report the normalized slider position up so the backdrop can respond to it.
+  useEffect(() => {
+    onPrimaryChange?.(modelPosition(model, primaryValue));
+  }, [onPrimaryChange, model, primaryValue]);
 
   const { markLegacyVisit } = useProgression();
   useEffect(() => {
