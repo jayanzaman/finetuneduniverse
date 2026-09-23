@@ -33,14 +33,18 @@ remaining work can be picked up lab-by-lab.
 
 Legend: ✅ present · ⚠️ partial/implicit · ❌ missing.
 
-## Remaining work
+## Resolved
 
-1. Add an explicit outcome-summary block (formula + live result + band status) to
-   the labs that only imply it: Matter (02), Galaxy (04), Geology (07).
-2. Add interaction tests for the six labs that lack one, using the existing
-   Vitest + RTL pattern (`cleanup()` in `afterEach`, no jest-dom).
-3. Add a unit/normalized label convention everywhere and call out assumptions
-   ("normalized teaching value" vs a real physical unit).
+All four criteria are now met across the seven labs:
 
-This is intentionally incremental — each lab can be completed as its own
-sub-task without cross-lab refactors.
+1. **Outcome summary** — Matter and Galaxy gained a live top-level summary;
+   Life already had a "Model outcome" block; the remaining labs had readouts.
+2. **Reset/reference** — the shell "Restore reference values" remount reset every
+   lab; randomize is wired where it applies.
+3. **Units** — every lab labels physical units (and the normalized ch01
+   `S/k (normalized)` case is handled in the #39 audit).
+4. **Interaction tests** — added for Matter, Stars, Galaxy, Planets, Abiogenesis,
+   and Beginning (Instrument randomize/undo); Life already had one.
+
+Commits: d3b6e6b (Galaxy), 667cc6f (Matter), eb08a58 (Planets), 1af3f18 (Stars),
+ec70bd0 (Abiogenesis), and the Instrument test.
