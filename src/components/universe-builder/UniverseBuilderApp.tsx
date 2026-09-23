@@ -279,7 +279,7 @@ function ChapterView({ index, cosmicTime, onDescend, onPrev }: ChapterViewProps)
       sources={model.sources}
       ghost={content.ghost}
       onPrev={onPrev}
-      visualization={content.visualization}
+      visualization={content.visualization(primaryValue)}
       transition={<ChapterTransition chapterIndex={index} onDescend={onDescend} />}
     >
       <SectionComponent educatorMode={false} cosmicTime={cosmicTime} />

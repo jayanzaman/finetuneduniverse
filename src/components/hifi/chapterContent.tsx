@@ -23,7 +23,8 @@ export type ChapterContent = {
   prose: ReactNode;
   sliderProps: GoldilocksSliderProps;
   ghost: { body: ReactNode };
-  visualization: ReactNode;
+  /** Cinematic visualization rendered from the chapter's primary model value. */
+  visualization: (value: number) => ReactNode;
 };
 
 export const CHAPTER_CONTENT: ChapterContent[] = [
@@ -59,7 +60,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'An eternally still universe — frozen perfection. No stars ignite. No time, in any meaningful sense, passes.',
     },
-    visualization: <PrimordialBubble />,
+    visualization: (v) => <PrimordialBubble entropy={v} />,
   },
   {
     num: '02',
@@ -92,7 +93,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Loosen the bond by 2% — quarks never bind. The universe is a fog of free particles, dark, structureless, forever.',
     },
-    visualization: <ProtonViz />,
+    visualization: () => <ProtonViz />,
   },
   {
     num: '03',
@@ -126,7 +127,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Stars only half this mass — they fuse hydrogen, but never the heavy elements. No carbon. No water. No us, ever.',
     },
-    visualization: <FirstStarViz />,
+    visualization: () => <FirstStarViz />,
   },
   {
     num: '04',
@@ -160,7 +161,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'A black hole twice this large — and the galaxy never settles into a disc. Stars are pulled apart faster than they form. No planetary orbits, ever.',
     },
-    visualization: <GalaxyViz />,
+    visualization: () => <GalaxyViz />,
   },
   {
     num: '05',
@@ -193,7 +194,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Push the orbit out by a third — Earth ices over for good. Snowball planet, locked in white forever. No reset switch.',
     },
-    visualization: <GoldilocksViz />,
+    visualization: (v) => <GoldilocksViz orbitalDistance={v} />,
   },
   {
     num: '06',
@@ -227,7 +228,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Halve the UV and the building blocks never assemble. Double it and every fragile molecule shreds before it can replicate.',
     },
-    visualization: <PrimordialEarthViz />,
+    visualization: () => <PrimordialEarthViz />,
   },
   {
     num: '07',
@@ -261,6 +262,6 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Oxygen arrived neither too fast nor too slow. A billion years off and complex life never gets its window — Earth stays a microbial planet forever.',
     },
-    visualization: <EarthLimbViz />,
+    visualization: () => <EarthLimbViz />,
   },
 ];

@@ -19,7 +19,9 @@ const seededRandom = (seed: number) => {
 const svg = (n: number) => Number(n.toFixed(4));
 
 // CH 01 — Primordial bubble
-export function PrimordialBubble() {
+export function PrimordialBubble({ entropy = 1 }: { entropy?: number }) {
+  // Low entropy → orderly clustering; high entropy → chaotic dispersal.
+  const cluster = Math.sqrt(Math.max(0.1, Math.min(10, entropy)));
   return (
     <div
       style={{
@@ -68,7 +70,7 @@ export function PrimordialBubble() {
         <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100" preserveAspectRatio="none">
           {Array.from({ length: 40 }).map((_, i) => {
             const a = (i / 40) * Math.PI * 2 + (i % 3) * 0.2;
-            const r = 22 + (i % 7) * 4;
+            const r = Math.min(47, (22 + (i % 7) * 4) * cluster);
             const x = svg(50 + Math.cos(a) * r);
             const y = svg(50 + Math.sin(a) * r);
             return (
@@ -322,7 +324,12 @@ export function GalaxyViz() {
 }
 
 // CH 05 — Goldilocks band: star with green habitable annulus
-export function GoldilocksViz() {
+export function GoldilocksViz({ orbitalDistance = 1 }: { orbitalDistance?: number }) {
+  // Orbital distance drives the planet's orbit radius and the sun's illumination
+  // via the inverse-square law.
+  const distance = Math.max(0.5, Math.min(2, orbitalDistance));
+  const orbitRadius = distance * 280;
+  const heat = Math.min(2, Math.max(0.35, 1 / (distance * distance)));
   return (
     <div style={{ position: 'absolute', right: -160, top: '50%', transform: 'translateY(-50%)' }}>
       <div style={{ position: 'relative', width: 1100, height: 1100 }}>
@@ -363,14 +370,14 @@ export function GoldilocksViz() {
             background:
               'radial-gradient(circle at 38% 30%, #ffffff 0%, #fff6e0 18%, #ffd09a 45%, #e78c5a 75%, rgba(80,30,10,0.9) 95%)',
             boxShadow:
-              '0 0 100px 25px rgba(255,210,140,0.5), 0 0 200px 50px rgba(231,140,90,0.3)',
+              `0 0 ${Math.round(100 * heat)}px ${Math.round(25 * heat)}px rgba(255,210,140,${(0.5 * heat).toFixed(3)}), 0 0 ${Math.round(200 * heat)}px ${Math.round(50 * heat)}px rgba(231,140,90,${(0.3 * heat).toFixed(3)})`,
           }}
         />
         {/* Earth in band */}
         <div
           style={{
             position: 'absolute',
-            left: 'calc(50% + 280px)',
+            left: `calc(50% + ${orbitRadius}px)`,
             top: '50%',
             transform: 'translate(-50%, -50%)',
             width: 90,
