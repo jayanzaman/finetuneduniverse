@@ -335,7 +335,8 @@ export function GoldilocksViz({ orbitalDistance = 1 }: { orbitalDistance?: numbe
   // Orbital distance drives the planet's orbit radius and the sun's illumination
   // via the inverse-square law.
   const distance = Math.max(0.5, Math.min(2, orbitalDistance));
-  const orbitRadius = distance * 280;
+  const pxPerAU = 260;
+  const orbitRadius = Math.max(130, distance * pxPerAU);
   const heat = Math.min(2, Math.max(0.35, 1 / (distance * distance)));
 
   // Planet appearance reflects its surface state against the 0.95-1.37 AU band.
@@ -361,66 +362,86 @@ export function GoldilocksViz({ orbitalDistance = 1 }: { orbitalDistance?: numbe
     },
   } as const;
   const earth = EARTH[state];
+
+  // The habitable annulus is sized from the same band as the state mapping so
+  // the planet visually crosses the dashed edges exactly at 0.95 and 1.37 AU.
+  const innerPx = 0.95 * pxPerAU;
+  const outerPx = 1.37 * pxPerAU;
+
   return (
-    <div style={{ position: 'absolute', right: -160, top: '50%', transform: 'translateY(-50%)' }}>
-      <div style={{ position: 'relative', width: 1100, height: 1100 }}>
-        <div
-          style={{
-            position: 'absolute',
-            inset: '24%',
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, transparent 60%, rgba(111,228,177,0.16) 68%, rgba(111,228,177,0.06) 82%, transparent 92%)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: '24%',
-            borderRadius: '50%',
-            border: '1px dashed rgba(111,228,177,0.45)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: '36%',
-            borderRadius: '50%',
-            border: '1px dashed rgba(111,228,177,0.45)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 220,
-            height: 220,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle at 38% 30%, #ffffff 0%, #fff6e0 18%, #ffd09a 45%, #e78c5a 75%, rgba(80,30,10,0.9) 95%)',
-            boxShadow:
-              `0 0 ${Math.round(100 * heat)}px ${Math.round(25 * heat)}px rgba(255,210,140,${(0.5 * heat).toFixed(3)}), 0 0 ${Math.round(200 * heat)}px ${Math.round(50 * heat)}px rgba(231,140,90,${(0.3 * heat).toFixed(3)})`,
-          }}
-        />
-        {/* Earth — surface state follows the band */}
-        <div
-          style={{
-            position: 'absolute',
-            left: `calc(50% + ${orbitRadius}px)`,
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: earth.size,
-            height: earth.size,
-            borderRadius: '50%',
-            background: earth.bg,
-            boxShadow: earth.glow,
-            border: earth.border,
-            transition: 'width 400ms ease, height 400ms ease, box-shadow 400ms ease, border-color 400ms ease',
-          }}
-        />
-      </div>
+    <div style={{ position: 'absolute', left: '50%', top: '50%', width: 0, height: 0 }}>
+      {/* Habitable zone tint */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          transform: 'translate(-50%, -50%)',
+          width: outerPx * 2,
+          height: outerPx * 2,
+          borderRadius: '50%',
+          background:
+            `radial-gradient(circle, transparent ${((innerPx / outerPx) * 100).toFixed(1)}%, rgba(111,228,177,0.14) ${((innerPx / outerPx) * 100).toFixed(1)}%, rgba(111,228,177,0.05) 88%, transparent 100%)`,
+        }}
+      />
+      {/* Inner (0.95 AU) dashed edge */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          transform: 'translate(-50%, -50%)',
+          width: innerPx * 2,
+          height: innerPx * 2,
+          borderRadius: '50%',
+          border: '1px dashed rgba(111,228,177,0.5)',
+        }}
+      />
+      {/* Outer (1.37 AU) dashed edge */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          transform: 'translate(-50%, -50%)',
+          width: outerPx * 2,
+          height: outerPx * 2,
+          borderRadius: '50%',
+          border: '1px dashed rgba(111,228,177,0.5)',
+        }}
+      />
+      {/* Sun */}
+      <div
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          transform: 'translate(-50%, -50%)',
+          width: 150,
+          height: 150,
+          borderRadius: '50%',
+          background:
+            'radial-gradient(circle at 38% 30%, #ffffff 0%, #fff6e0 18%, #ffd09a 45%, #e78c5a 75%, rgba(80,30,10,0.9) 95%)',
+          boxShadow:
+            `0 0 ${Math.round(100 * heat)}px ${Math.round(25 * heat)}px rgba(255,210,140,${(0.5 * heat).toFixed(3)}), 0 0 ${Math.round(200 * heat)}px ${Math.round(50 * heat)}px rgba(231,140,90,${(0.3 * heat).toFixed(3)})`,
+        }}
+      />
+      {/* Earth — surface state follows the band, position follows the orbit */}
+      <div
+        style={{
+          position: 'absolute',
+          left: orbitRadius,
+          top: 0,
+          transform: 'translate(-50%, -50%)',
+          width: earth.size,
+          height: earth.size,
+          borderRadius: '50%',
+          background: earth.bg,
+          boxShadow: earth.glow,
+          border: earth.border,
+          transition: 'left 300ms ease, width 400ms ease, height 400ms ease, box-shadow 400ms ease, border-color 400ms ease',
+        }}
+      />
     </div>
   );
 }
