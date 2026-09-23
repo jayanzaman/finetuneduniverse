@@ -114,9 +114,9 @@ function MilkyWayEvolution({
   const currentPhaseData = galaxyPhases[currentPhase];
 
   return (
-    <div className="relative w-full bg-black/20 border border-white/10 rounded-lg overflow-hidden">
+    <div className="relative w-full bg-[var(--void)] border border-[var(--hair)] rounded-lg overflow-hidden">
       {/* Image Carousel */}
-      <div className="relative aspect-video bg-black/40">
+      <div className="relative aspect-video bg-[var(--void-2)]">
         {/* Image Container with proper aspect ratio */}
         <div className="absolute inset-0 flex items-center justify-center">
           {currentPhaseData.image ? (
@@ -129,13 +129,13 @@ function MilkyWayEvolution({
             />
           ) : (
             /* Empty space visualization for Pre-Galactic Era */
-            <div className="w-full h-full flex items-center justify-center bg-black/60">
+            <div className="w-full h-full flex items-center justify-center bg-[var(--void-3)]">
               <div className="text-center space-y-4">
-                <div className="w-32 h-32 mx-auto rounded-full bg-black/40 flex items-center justify-center border border-white/20">
-                  <div className="text-4xl text-gray-400">∅</div>
+                <div className="w-32 h-32 mx-auto rounded-full bg-[var(--void-2)] flex items-center justify-center border border-[var(--hair-2)]">
+                  <div className="text-4xl text-[var(--ink-soft)]">∅</div>
                 </div>
-                <div className="text-gray-300 text-sm font-medium">No Galaxy Structure</div>
-                <div className="text-gray-400 text-xs">Primordial gas clouds only</div>
+                <div className="text-[var(--ink-mid)] text-sm font-medium">No Galaxy Structure</div>
+                <div className="text-[var(--ink-soft)] text-xs">Primordial gas clouds only</div>
               </div>
             </div>
           )}
@@ -145,7 +145,7 @@ function MilkyWayEvolution({
         <button
           onClick={prevPhase}
           aria-label="Previous galaxy phase"
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 border border-white/20 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[var(--void-2)] hover:bg-[var(--void-3)] text-[var(--ink)] p-3 rounded-full transition-all duration-300 border border-[var(--hair-2)] min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -153,7 +153,7 @@ function MilkyWayEvolution({
         <button
           onClick={nextPhase}
           aria-label="Next galaxy phase"
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 border border-white/20 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[var(--void-2)] hover:bg-[var(--void-3)] text-[var(--ink)] p-3 rounded-full transition-all duration-300 border border-[var(--hair-2)] min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -169,8 +169,8 @@ function MilkyWayEvolution({
             >
               <span className={`block rounded-full transition-all duration-300 ${
                 index === currentPhase
-                  ? 'w-8 h-2 bg-white'
-                  : 'w-2 h-2 bg-white/40 hover:bg-white/60'
+                  ? 'w-8 h-2 bg-[var(--ink)]'
+                  : 'w-2 h-2 bg-[var(--ink-faint)] hover:bg-[var(--indigo)]'
               }`} />
             </button>
           ))}
@@ -180,41 +180,41 @@ function MilkyWayEvolution({
         {/* Progress Bar with Timeline Legends - Desktop only */}
         <div className="absolute bottom-0 left-0 right-0 hidden md:block">
           {/* Progress Bar */}
-          <div className="h-1 bg-white/10">
+          <div className="h-1 bg-[var(--void-3)]">
             <div 
-              className="h-full bg-white/60 transition-all duration-700"
+              className="h-full bg-[var(--indigo)] transition-all duration-700"
               style={{ width: `${((currentPhase + 1) / galaxyPhases.length) * 100}%` }}
             />
           </div>
           
           {/* Timeline Legends */}
-          <div className="flex justify-between items-center px-4 py-2 bg-black/40 text-xs">
+          <div className="flex justify-between items-center px-4 py-2 bg-[var(--void-2)] text-xs">
             <div className="flex flex-col items-start">
-              <span className="text-white font-medium">13.8 Gya</span>
-              <span className="text-gray-400">Big Bang</span>
+              <span className="text-[var(--ink)] font-medium">13.8 Gya</span>
+              <span className="text-[var(--ink-soft)]">Big Bang</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-white font-medium">10 Gya</span>
-              <span className="text-gray-400">Active Phase</span>
+              <span className="text-[var(--ink)] font-medium">10 Gya</span>
+              <span className="text-[var(--ink-soft)]">Active Phase</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="text-white font-medium">5 Gya</span>
-              <span className="text-gray-400">Stabilization</span>
+              <span className="text-[var(--ink)] font-medium">5 Gya</span>
+              <span className="text-[var(--ink-soft)]">Stabilization</span>
             </div>
             <div className="flex flex-col items-end">
-              <span className="text-white font-medium">Today</span>
-              <span className="text-gray-400">Modern Era</span>
+              <span className="text-[var(--ink)] font-medium">Today</span>
+              <span className="text-[var(--ink-soft)]">Modern Era</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Timeline - Mobile only, below image */}
-      <div className="md:hidden bg-black/20 border-t border-white/10">
+      <div className="md:hidden bg-[var(--void)] border-t border-[var(--hair)]">
         {/* Progress Bar */}
-        <div className="h-1 bg-white/10">
+        <div className="h-1 bg-[var(--void-3)]">
           <div 
-            className="h-full bg-white/60 transition-all duration-700"
+            className="h-full bg-[var(--indigo)] transition-all duration-700"
             style={{ width: `${((currentPhase + 1) / galaxyPhases.length) * 100}%` }}
           />
         </div>
@@ -222,47 +222,47 @@ function MilkyWayEvolution({
         {/* Timeline Legends */}
         <div className="flex justify-between items-center px-4 py-2 text-xs">
           <div className="flex flex-col items-start">
-            <span className="text-white font-medium">13.8 Gya</span>
-            <span className="text-gray-400">Big Bang</span>
+            <span className="text-[var(--ink)] font-medium">13.8 Gya</span>
+            <span className="text-[var(--ink-soft)]">Big Bang</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-white font-medium">10 Gya</span>
-            <span className="text-gray-400">Active Phase</span>
+            <span className="text-[var(--ink)] font-medium">10 Gya</span>
+            <span className="text-[var(--ink-soft)]">Active Phase</span>
           </div>
           <div className="flex flex-col items-center">
-            <span className="text-white font-medium">5 Gya</span>
-            <span className="text-gray-400">Stabilization</span>
+            <span className="text-[var(--ink)] font-medium">5 Gya</span>
+            <span className="text-[var(--ink-soft)]">Stabilization</span>
           </div>
           <div className="flex flex-col items-end">
-            <span className="text-white font-medium">Today</span>
-            <span className="text-gray-400">Modern Era</span>
+            <span className="text-[var(--ink)] font-medium">Today</span>
+            <span className="text-[var(--ink-soft)]">Modern Era</span>
           </div>
         </div>
       </div>
 
       {/* Phase Information - Now below the image */}
-      <div className="p-4 bg-black/30 border-t border-white/10">
+      <div className="p-4 bg-[var(--void-2)] border-t border-[var(--hair)]">
         <div className="text-center space-y-3">
           <div>
-            <h3 className="text-xl font-bold text-white mb-1">{currentPhaseData.name}</h3>
-            <p className="text-sm text-blue-300 font-semibold mb-2">{currentPhaseData.age}</p>
-            <p className="text-gray-200 leading-relaxed">{currentPhaseData.description}</p>
+            <h3 className="text-xl font-bold text-[var(--ink)] mb-1">{currentPhaseData.name}</h3>
+            <p className="text-sm text-[var(--goldilocks)] font-semibold mb-2">{currentPhaseData.age}</p>
+            <p className="text-[var(--ink-mid)] leading-relaxed">{currentPhaseData.description}</p>
           </div>
         </div>
       </div>
 
       {/* Educational Content (Educator Mode) */}
       {educatorMode && (
-        <div className="p-4 bg-black/20 border-t border-white/10">
+        <div className="p-4 bg-[var(--void)] border-t border-[var(--hair)]">
           <div className="space-y-3">
             <div>
-              <h4 className="text-lg font-semibold text-white mb-2">What's Happening</h4>
-              <p className="text-gray-300 leading-relaxed mb-3">{currentPhaseData.details}</p>
+              <h4 className="text-lg font-semibold text-[var(--ink)] mb-2">What's Happening</h4>
+              <p className="text-[var(--ink-mid)] leading-relaxed mb-3">{currentPhaseData.details}</p>
             </div>
             
-            <div className="bg-yellow-900/20 border border-yellow-500/30 p-3 rounded-lg">
-              <p className="text-yellow-200 font-semibold mb-1">Fine-Tuning Insight:</p>
-              <p className="text-yellow-100 leading-relaxed text-sm">{currentPhaseData.fineTuning}</p>
+            <div className="bg-[var(--warm-soft)] border border-[var(--warm)] p-3 rounded-lg">
+              <p className="text-[var(--warm)] font-semibold mb-1">Fine-Tuning Insight:</p>
+              <p className="text-[var(--ink)] leading-relaxed text-sm">{currentPhaseData.fineTuning}</p>
             </div>
           </div>
         </div>
@@ -295,17 +295,17 @@ export default function GalacticHeartSection({
   return (
     <div className="container mx-auto px-4">
       {/* Single Milky Way Evolution Visualization */}
-      <Card className="bg-black/20 border-white/10 mb-8 sm:mb-12">
+      <Card className="bg-[var(--void)] border-[var(--hair)] mb-8 sm:mb-12">
         <CardHeader>
-          <CardTitle className="text-white">Milky Way Evolution</CardTitle>
-          <CardDescription className="text-gray-300">
+          <CardTitle className="text-[var(--ink)]">Milky Way Evolution</CardTitle>
+          <CardDescription className="text-[var(--ink-mid)]">
             Explore 13.8 billion years of galactic evolution driven by our central black hole
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div aria-live="polite" className="mb-4 rounded-lg border border-white/10 bg-black/30 px-4 py-3">
-            <span className="text-xs uppercase tracking-widest text-white/50">Current phase</span>
-            <p className="text-white font-semibold">{currentPhase.name} · {currentPhase.age}</p>
+          <div aria-live="polite" className="mb-4 rounded-lg border border-[var(--hair)] bg-[var(--void-2)] px-4 py-3">
+            <span className="text-xs uppercase tracking-widest text-[var(--ink)]/50">Current phase</span>
+            <p className="text-[var(--ink)] font-semibold">{currentPhase.name} · {currentPhase.age}</p>
           </div>
           <MilkyWayEvolution 
             currentAge={currentGalacticAge}
