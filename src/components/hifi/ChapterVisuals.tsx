@@ -18,6 +18,13 @@ const seededRandom = (seed: number) => {
  *  mismatches on chapter visuals. Rounding keeps server and client HTML identical. */
 const svg = (n: number) => Number(n.toFixed(4));
 
+/** Planet surface state as a function of orbital distance (AU). */
+export function planetState(distance: number): 'hot' | 'habitable' | 'frozen' {
+  if (distance < 0.95) return 'hot';
+  if (distance > 1.37) return 'frozen';
+  return 'habitable';
+}
+
 // CH 01 — Primordial bubble
 export function PrimordialBubble({ entropy = 1 }: { entropy?: number }) {
   // Low entropy → orderly clustering; high entropy → chaotic dispersal.
@@ -330,6 +337,30 @@ export function GoldilocksViz({ orbitalDistance = 1 }: { orbitalDistance?: numbe
   const distance = Math.max(0.5, Math.min(2, orbitalDistance));
   const orbitRadius = distance * 280;
   const heat = Math.min(2, Math.max(0.35, 1 / (distance * distance)));
+
+  // Planet appearance reflects its surface state against the 0.95-1.37 AU band.
+  const state = planetState(distance);
+  const EARTH = {
+    hot: {
+      size: 82,
+      bg: 'radial-gradient(circle at 35% 30%, rgba(255,240,208,1) 0%, rgba(216,148,88,1) 25%, rgba(146,76,38,1) 70%, rgba(58,22,10,1) 100%)',
+      glow: '0 0 36px rgba(255,175,90,0.65), inset -8px -10px 18px rgba(40,8,0,0.55)',
+      border: '1px solid rgba(255,205,150,0.55)',
+    },
+    habitable: {
+      size: 90,
+      bg: 'radial-gradient(circle at 35% 30%, rgba(220,235,255,1) 0%, rgba(120,180,220,1) 25%, rgba(40,80,140,1) 70%, rgba(8,20,50,1) 100%)',
+      glow: '0 0 30px rgba(120,180,220,0.5), inset -8px -10px 18px rgba(0,0,0,0.5)',
+      border: '1px solid rgba(180,210,235,0.4)',
+    },
+    frozen: {
+      size: 96,
+      bg: 'radial-gradient(circle at 35% 30%, rgba(245,252,255,1) 0%, rgba(200,230,248,1) 25%, rgba(130,195,238,1) 70%, rgba(15,55,105,1) 100%)',
+      glow: '0 0 26px rgba(170,215,245,0.6), inset -8px -10px 20px rgba(5,35,80,0.65)',
+      border: '1px solid rgba(215,238,255,0.65)',
+    },
+  } as const;
+  const earth = EARTH[state];
   return (
     <div style={{ position: 'absolute', right: -160, top: '50%', transform: 'translateY(-50%)' }}>
       <div style={{ position: 'relative', width: 1100, height: 1100 }}>
@@ -373,20 +404,20 @@ export function GoldilocksViz({ orbitalDistance = 1 }: { orbitalDistance?: numbe
               `0 0 ${Math.round(100 * heat)}px ${Math.round(25 * heat)}px rgba(255,210,140,${(0.5 * heat).toFixed(3)}), 0 0 ${Math.round(200 * heat)}px ${Math.round(50 * heat)}px rgba(231,140,90,${(0.3 * heat).toFixed(3)})`,
           }}
         />
-        {/* Earth in band */}
+        {/* Earth — surface state follows the band */}
         <div
           style={{
             position: 'absolute',
             left: `calc(50% + ${orbitRadius}px)`,
             top: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 90,
-            height: 90,
+            width: earth.size,
+            height: earth.size,
             borderRadius: '50%',
-            background:
-              'radial-gradient(circle at 35% 30%, rgba(220,235,255,1) 0%, rgba(120,180,220,1) 25%, rgba(40,80,140,1) 70%, rgba(8,20,50,1) 100%)',
-            boxShadow: '0 0 30px rgba(120,180,220,0.5), inset -8px -10px 18px rgba(0,0,0,0.5)',
-            border: '1px solid rgba(180,210,235,0.4)',
+            background: earth.bg,
+            boxShadow: earth.glow,
+            border: earth.border,
+            transition: 'width 400ms ease, height 400ms ease, box-shadow 400ms ease, border-color 400ms ease',
           }}
         />
       </div>
