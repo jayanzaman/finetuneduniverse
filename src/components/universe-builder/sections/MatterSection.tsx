@@ -108,6 +108,14 @@ export default function MatterSection({
   
   // Mobile navigation state
   const [currentStep, setCurrentStep] = useState(0)
+
+  // Single live outcome summary across the four parameters.
+  const bandStatus = [
+    { name: 'Quark binding (αs)', ok: strongForce >= 0.98 && strongForce <= 1.02 },
+    { name: 'Mass hierarchy', ok: hierarchyScale >= 0.9 && hierarchyScale <= 1.1 },
+    { name: 'Matter asymmetry', ok: matterAsymmetry >= 0.08 && matterAsymmetry <= 0.12 },
+    { name: 'Proton lifetime', ok: protonLifetime >= 34 },
+  ]
   
   // Define the steps in optimal order for Formation of Matter
   const steps = [
@@ -209,7 +217,7 @@ export default function MatterSection({
 
   useEffect(() => {
     const handleRandomize = () => {
-      setStrongForce(Math.random() * 2)
+      setStrongForce(0.8 + Math.random() * 0.4)
       setHierarchyScale(0.5 + Math.random() * 1.5)
       setMatterAsymmetry(Math.random() * 0.2)
       setProtonLifetime(30 + Math.random() * 10)
@@ -221,6 +229,14 @@ export default function MatterSection({
 
   return (
     <div className="container mx-auto px-4 md:px-4">
+      <div aria-live="polite" className="mb-6 rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-white">
+        <span className="text-xs uppercase tracking-widest text-gray-400">Outcome</span>
+        <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          {bandStatus.map((s) => (
+            <span key={s.name}>{s.ok ? '✅' : '❌'} {s.name}</span>
+          ))}
+        </div>
+      </div>
       {/* Mobile: Optimized full-screen layout */}
       <div className="md:hidden mb-6">
         <Card className="bg-black/20 border-white/10 text-white">

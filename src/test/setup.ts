@@ -15,3 +15,12 @@ class MemoryStorage implements Storage {
 const storage = new MemoryStorage();
 Object.defineProperty(window, 'localStorage', { configurable: true, value: storage });
 Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: storage });
+
+// Radix Slider measures its thumb via ResizeObserver, which jsdom lacks.
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as unknown as typeof ResizeObserver;
+}
