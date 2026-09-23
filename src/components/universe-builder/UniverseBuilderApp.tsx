@@ -171,6 +171,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
           seed={view.kind === 'chapter' ? (view.index + 1) * 13 : 3}
           starColor={starTheme.color}
           starBrightness={starTheme.brightness}
+          phase={cosmicTime}
         />
 
         <TopNav

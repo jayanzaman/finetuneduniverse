@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { prefersReducedMotion } from './motion';
 
 const seededRandom = (seed: number) => {
   let s = seed;
@@ -17,6 +18,8 @@ type StarfieldProps = {
   className?: string;
   /** Brightness multiplier per star layer to respond to cosmic epoch. */
   brightness?: number;
+  /** Monotonic clock (e.g. cosmicTime) driving the subtle ambient shimmer. */
+  phase?: number;
 };
 
 export function Starfield({
@@ -25,6 +28,7 @@ export function Starfield({
   color = '#ffffff',
   className,
   brightness = 1,
+  phase = 0,
 }: StarfieldProps) {
   const stars = useMemo(() => {
     const layers = [
@@ -48,12 +52,17 @@ export function Starfield({
     return out;
   }, [seed, density]);
 
+  const reduced = useMemo(() => typeof window !== 'undefined' && prefersReducedMotion(), []);
+  // Slow ambient shimmer so the sky feels alive without being distracting.
+  const shimmer = reduced ? 1 : 0.96 + 0.04 * (0.5 + 0.5 * Math.sin(phase * 0.4));
+
   return (
     <svg
       className={className ?? 'hifi-stars'}
       viewBox="0 0 100 100"
       preserveAspectRatio="xMidYMid slice"
       aria-hidden
+      style={{ opacity: shimmer }}
     >
       {stars.map((s, i) => (
         <circle key={i} cx={s.cx} cy={s.cy} r={s.r * 0.06} fill={color} opacity={s.o * brightness} />
