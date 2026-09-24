@@ -18,7 +18,7 @@ function ParticleField({ strongForce }: { strongForce: number }) {
   const stability = protonStability * 100;
 
   return (
-    <div className="relative w-full h-64 overflow-hidden bg-black/20 rounded-lg">
+    <div className="relative w-full h-64 overflow-hidden bg-[var(--void)] rounded-lg">
       <div 
         className="particle-container"
         style={{
@@ -134,7 +134,7 @@ export default function MatterSection({
       optimal: '0.98-1.02 αs (optimal)',
       optimalRange: { left: ((0.98 - 0.8) / (1.2 - 0.8)) * 100, width: ((1.02 - 0.98) / (1.2 - 0.8)) * 100 },
       educatorContent: (
-        <div className="text-xs text-blue-200 space-y-2">
+        <div className="text-xs text-[var(--indigo)] space-y-2">
           <p><strong>What you're seeing:</strong> Three quarks bound by flux tubes (gluon field) inside a proton. The visualization transitions from chaos to creation to collapse as you adjust αs.</p>
           <p><strong>Critical precision:</strong> Strong force (αs) must be within 0.98-1.02 range - just 4% tolerance for stable matter. This represents extraordinary fine-tuning.</p>
           <p><strong>Too weak (&lt; 0.98):</strong> Flux tubes weaken, quarks drift apart. No protons can form - just scattered energy in an empty void.</p>
@@ -158,7 +158,7 @@ export default function MatterSection({
       optimal: '0.9-1.1 (optimal)',
       optimalRange: { left: ((0.9 - 0.5) / (2 - 0.5)) * 100, width: ((1.1 - 0.9) / (2 - 0.5)) * 100 },
       educatorContent: (
-        <div className="text-xs text-blue-200 space-y-2">
+        <div className="text-xs text-[var(--indigo)] space-y-2">
           <p><strong>What you're seeing:</strong> Bar chart displays relative strengths of fundamental forces - gravity is 10^40 times weaker than the others.</p>
           <p><strong>The hierarchy mystery:</strong> Forces differ by 10^40 - requires 1 part in 10^34 fine-tuning. Why is gravity so incredibly weak compared to everything else?</p>
           <p><strong>Quantum puzzle:</strong> Our theories predict all forces should be roughly equal strength, like identical cakes from the same recipe. Instead, one is crumb-sized while others are normal.</p>
@@ -181,7 +181,7 @@ export default function MatterSection({
       optimal: '8-12% excess (optimal)',
       optimalRange: { left: ((0.08 - 0) / (0.2 - 0)) * 100, width: ((0.12 - 0.08) / (0.2 - 0)) * 100 },
       educatorContent: (
-        <div className="text-xs text-blue-200 space-y-2">
+        <div className="text-xs text-[var(--indigo)] space-y-2">
           <p><strong>What you're seeing:</strong> Particle visualization shows matter/antimatter distribution - the tiny excess that became everything we see.</p>
           <p><strong>The existence puzzle:</strong> Need 8-12% matter excess, but theory is off by factor of 100 million. Why does anything exist instead of nothing?</p>
           <p><strong>What should have happened:</strong> Big Bang creates equal matter/antimatter (like equal left/right shoes). They annihilate completely, leaving only energy.</p>
@@ -204,7 +204,7 @@ export default function MatterSection({
       optimal: '10³⁴-10³⁶ years (optimal)',
       optimalRange: { left: ((34 - 30) / (40 - 30)) * 100, width: ((36 - 34) / (40 - 30)) * 100 },
       educatorContent: (
-        <div className="text-xs text-blue-200 space-y-2">
+        <div className="text-xs text-[var(--indigo)] space-y-2">
           <p><strong>What you're seeing:</strong> Threshold visualization showing minimum proton stability needed for cosmic complexity - this is NOT traditional fine-tuning.</p>
           <p><strong>Threshold vs Fine-Tuning:</strong> Unlike other parameters (strong force: 0.98-1.02), proton stability just needs to exceed ~10³⁰ years. Longer lifetimes (10³⁴, 10⁴⁰, ∞) work equally well.</p>
           <p><strong>Scientific reality:</strong> Protons have never been observed to decay despite decades of experiments. They may be absolutely stable (infinite lifetime), making this parameter irrelevant to fine-tuning.</p>
@@ -229,8 +229,8 @@ export default function MatterSection({
 
   return (
     <div className="container mx-auto px-4 md:px-4">
-      <div aria-live="polite" className="mb-6 rounded-lg border border-white/10 bg-black/30 px-4 py-3 text-white">
-        <span className="text-xs uppercase tracking-widest text-gray-400">Outcome</span>
+      <div aria-live="polite" className="mb-6 rounded-lg border border-[var(--hair)] bg-[var(--void-2)] px-4 py-3 text-[var(--ink)]">
+        <span className="text-xs uppercase tracking-widest text-[var(--ink-soft)]">Outcome</span>
         <div className="mt-2 flex flex-wrap gap-x-6 gap-y-2 text-sm">
           {bandStatus.map((s) => (
             <span key={s.name}>{s.ok ? '✅' : '❌'} {s.name}</span>
@@ -239,14 +239,14 @@ export default function MatterSection({
       </div>
       {/* Mobile: Optimized full-screen layout */}
       <div className="md:hidden mb-6">
-        <Card className="bg-black/20 border-white/10 text-white">
+        <Card className="bg-[var(--void)] border-[var(--hair)] text-[var(--ink)]">
           <CardContent>
                 <div className="space-y-2">
                   {/* Compact header with progress */}
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex-1">
-                      <h4 className="text-base font-semibold text-white">{steps[currentStep].title}</h4>
-                      <p className="text-xs text-gray-300">{steps[currentStep].subtitle}</p>
+                      <h4 className="text-base font-semibold text-[var(--ink)]">{steps[currentStep].title}</h4>
+                      <p className="text-xs text-[var(--ink-mid)]">{steps[currentStep].subtitle}</p>
                     </div>
                     <div className="flex items-center space-x-1">
                       {steps.map((_, index) => (
@@ -254,8 +254,8 @@ export default function MatterSection({
                           key={index}
                           className={`w-2 h-2 rounded-full transition-all duration-300 ${
                             index === currentStep 
-                              ? 'bg-blue-400 scale-125' 
-                              : 'bg-gray-500/60'
+                              ? 'bg-[var(--indigo)] scale-125' 
+                              : 'bg-[var(--ink-faint)]'
                           }`}
                         />
                       ))}
@@ -263,7 +263,7 @@ export default function MatterSection({
                   </div>
                   
                   {/* Full-height visualization */}
-                  <div className="bg-black/30 rounded-lg p-3">
+                  <div className="bg-[var(--void-2)] rounded-lg p-3">
                     <div className="h-80 mb-3">
                       {steps[currentStep].visual}
                     </div>
@@ -280,17 +280,17 @@ export default function MatterSection({
                           className="w-full"
                         />
                         <div 
-                          className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                          className="absolute top-1/2 -translate-y-1/2 h-2 bg-[rgba(111,228,177,0.3)] rounded pointer-events-none" 
                           style={{
                             left: `${steps[currentStep].optimalRange.left}%`,
                             width: `${steps[currentStep].optimalRange.width}%`
                           }}
                         />
                       </div>
-                      <div className="flex justify-between text-xs text-gray-400">
+                      <div className="flex justify-between text-xs text-[var(--ink-soft)]">
                         <span>Low</span>
-                        <span className="text-green-400 font-medium">{steps[currentStep].optimal}</span>
-                        <span className="text-white font-medium">
+                        <span className="text-[var(--goldilocks)] font-medium">{steps[currentStep].optimal}</span>
+                        <span className="text-[var(--ink)] font-medium">
                           {steps[currentStep].id === 'matter-antimatter' 
                             ? `${(steps[currentStep].value * 100).toFixed(1)}${steps[currentStep].unit}`
                             : steps[currentStep].id === 'proton-stability'
@@ -308,22 +308,22 @@ export default function MatterSection({
                     <button
                       onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                       disabled={currentStep === 0}
-                      className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                      className="px-4 py-2 bg-[var(--void-3)] text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-[var(--void-2)] active:scale-95 text-sm"
                     >
                       Previous
                     </button>
                     
                     <div className="text-center px-4">
-                      <span className="text-sm font-medium text-blue-400">
+                      <span className="text-sm font-medium text-[var(--indigo)]">
                         {currentStep + 1} / {steps.length}
                       </span>
-                      <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
+                      <p className="text-xs text-[var(--ink-soft)] mt-1">{steps[currentStep].description}</p>
                     </div>
                     
                     <button
                       onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
                       disabled={currentStep === steps.length - 1}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+                      className="px-4 py-2 bg-[var(--indigo)] text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-[var(--indigo-2)] active:scale-95 text-sm"
                     >
                       Next
                     </button>
@@ -331,7 +331,7 @@ export default function MatterSection({
 
                   {/* Educator Mode Content */}
                   {educatorMode && (
-                    <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
+                    <div className="mt-4 p-3 bg-[var(--indigo-band)] border border-[var(--indigo-glow)] rounded-lg">
                       {steps[currentStep].educatorContent}
                     </div>
                   )}
@@ -343,27 +343,27 @@ export default function MatterSection({
       {/* Primary Controls - Desktop only */}
       <div className="hidden md:grid md:grid-cols-1 sm:md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Quark Binding Force */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
-            <CardTitle className="text-white">Quark Binding Force</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Quark Binding Force</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               How tightly are the pieces of protons held together?
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {/* Visualization - Fixed Height */}
-              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+              <div className="h-48 bg-[var(--void-2)] rounded-lg overflow-hidden">
                 <QuarkBindingVisual strongForce={strongForce} />
               </div>
               
               {/* Current Value */}
               <div className="text-center py-2">
-                <div className="text-3xl font-bold text-yellow-400 font-mono">{strongForce.toFixed(3)}</div>
+                <div className="text-3xl font-bold text-[var(--indigo)] font-mono">{strongForce.toFixed(3)}</div>
                 <div className={`text-xs mt-1 font-medium ${
                   strongForce >= 0.98 && strongForce <= 1.02 
-                    ? 'text-green-400' 
-                    : 'text-red-400'
+                    ? 'text-[var(--goldilocks)]' 
+                    : 'text-[var(--warm)]'
                 }`}>
                   {strongForce >= 0.98 && strongForce <= 1.02 ? '✅ Stable Matter' : '❌ Unstable'}
                 </div>
@@ -379,7 +379,7 @@ export default function MatterSection({
                   step={0.001}
                   className="w-full"
                 />
-                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-[rgba(111,228,177,0.3)] rounded pointer-events-none" 
                      style={{
                        left: `${((0.98 - 0.8) / (1.2 - 0.8)) * 100}%`,
                        width: `${((1.02 - 0.98) / (1.2 - 0.8)) * 100}%`
@@ -387,15 +387,15 @@ export default function MatterSection({
               </div>
 
               {/* Range Labels */}
-              <div className="flex justify-between text-xs text-gray-400 px-1">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] px-1">
                 <span>0.8</span>
-                <span className="text-green-400 font-medium">0.98-1.02</span>
+                <span className="text-[var(--goldilocks)] font-medium">0.98-1.02</span>
                 <span>1.2</span>
               </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                  <div className="text-xs text-blue-200 space-y-2">
+                <div className="mt-4 p-3 bg-[var(--indigo-band)] border border-[var(--indigo-glow)] rounded-lg">
+                  <div className="text-xs text-[var(--indigo)] space-y-2">
                     <p><strong>What you're seeing:</strong> Three quarks bound by flux tubes (gluon field) inside a proton. The visualization transitions from chaos to creation to collapse as you adjust αₛ.</p>
                     <p><strong>Critical precision:</strong> Strong force (αₛ) must be within 0.98-1.02 range - just 4% tolerance for stable matter. This represents extraordinary fine-tuning.</p>
                     <p><strong>Too weak (&lt; 0.98):</strong> Flux tubes weaken, quarks drift apart. No protons can form - just scattered energy in an empty void.</p>
@@ -409,27 +409,27 @@ export default function MatterSection({
         </Card>
 
         {/* Mass Hierarchy */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
-            <CardTitle className="text-white">Mass Hierarchy</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Mass Hierarchy</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Why are fundamental forces so different in strength?
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {/* Visualization - Fixed Height */}
-              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+              <div className="h-48 bg-[var(--void-2)] rounded-lg overflow-hidden">
                 <SimpleHierarchyVisual massScale={hierarchyScale} />
               </div>
               
               {/* Current Value */}
               <div className="text-center py-2">
-                <div className="text-3xl font-bold text-yellow-400 font-mono">{hierarchyScale.toFixed(2)}</div>
+                <div className="text-3xl font-bold text-[var(--indigo)] font-mono">{hierarchyScale.toFixed(2)}</div>
                 <div className={`text-xs mt-1 font-medium ${
                   hierarchyScale >= 0.9 && hierarchyScale <= 1.1 
-                    ? 'text-green-400' 
-                    : 'text-red-400'
+                    ? 'text-[var(--goldilocks)]' 
+                    : 'text-[var(--warm)]'
                 }`}>
                   {hierarchyScale >= 0.9 && hierarchyScale <= 1.1 ? '✅ Balanced Forces' : '❌ Imbalanced'}
                 </div>
@@ -445,7 +445,7 @@ export default function MatterSection({
                   step={0.01}
                   className="w-full"
                 />
-                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-[rgba(111,228,177,0.3)] rounded pointer-events-none" 
                      style={{
                        left: `${((0.9 - 0.5) / (2 - 0.5)) * 100}%`,
                        width: `${((1.1 - 0.9) / (2 - 0.5)) * 100}%`
@@ -453,16 +453,16 @@ export default function MatterSection({
               </div>
 
               {/* Range Labels */}
-              <div className="flex justify-between text-xs text-gray-400 px-1">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] px-1">
                 <span>0.5</span>
-                <span className="text-green-400 font-medium">0.9-1.1</span>
+                <span className="text-[var(--goldilocks)] font-medium">0.9-1.1</span>
                 <span>2.0</span>
               </div>
             </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                  <div className="text-xs text-blue-200 space-y-2">
+                <div className="mt-4 p-3 bg-[var(--indigo-band)] border border-[var(--indigo-glow)] rounded-lg">
+                  <div className="text-xs text-[var(--indigo)] space-y-2">
                     <p><strong>What you're seeing:</strong> Bar chart displays relative strengths of fundamental forces - gravity is 10^40 times weaker than the others.</p>
                     <p><strong>The hierarchy mystery:</strong> Forces differ by 10^40 - requires 1 part in 10^34 fine-tuning. Why is gravity so incredibly weak compared to everything else?</p>
                     <p><strong>Quantum puzzle:</strong> Our theories predict all forces should be roughly equal strength, like identical cakes from the same recipe. Instead, one is crumb-sized while others are normal.</p>
@@ -474,27 +474,27 @@ export default function MatterSection({
         </Card>
 
         {/* Matter vs Antimatter */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
-            <CardTitle className="text-white">Matter vs Antimatter</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Matter vs Antimatter</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Why does matter exist instead of nothing?
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {/* Visualization - Fixed Height */}
-              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+              <div className="h-48 bg-[var(--void-2)] rounded-lg overflow-hidden">
                 <SimpleMatterAntimatterVisual asymmetry={matterAsymmetry} />
               </div>
               
               {/* Current Value */}
               <div className="text-center py-2">
-                <div className="text-3xl font-bold text-yellow-400 font-mono">{(matterAsymmetry * 100).toFixed(1)}%</div>
+                <div className="text-3xl font-bold text-[var(--indigo)] font-mono">{(matterAsymmetry * 100).toFixed(1)}%</div>
                 <div className={`text-xs mt-1 font-medium ${
                   matterAsymmetry >= 0.08 && matterAsymmetry <= 0.12 
-                    ? 'text-green-400' 
-                    : 'text-red-400'
+                    ? 'text-[var(--goldilocks)]' 
+                    : 'text-[var(--warm)]'
                 }`}>
                   {matterAsymmetry >= 0.08 && matterAsymmetry <= 0.12 ? '✅ Matter Exists' : '❌ No Matter'}
                 </div>
@@ -510,7 +510,7 @@ export default function MatterSection({
                   step={0.001}
                   className="w-full"
                 />
-                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-[rgba(111,228,177,0.3)] rounded pointer-events-none" 
                      style={{
                        left: `${((0.08 - 0) / (0.2 - 0)) * 100}%`,
                        width: `${((0.12 - 0.08) / (0.2 - 0)) * 100}%`
@@ -518,16 +518,16 @@ export default function MatterSection({
               </div>
 
               {/* Range Labels */}
-              <div className="flex justify-between text-xs text-gray-400 px-1">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] px-1">
                 <span>0%</span>
-                <span className="text-green-400 font-medium">8-12%</span>
+                <span className="text-[var(--goldilocks)] font-medium">8-12%</span>
                 <span>20%</span>
               </div>
             </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                  <div className="text-xs text-blue-200 space-y-2">
+                <div className="mt-4 p-3 bg-[var(--indigo-band)] border border-[var(--indigo-glow)] rounded-lg">
+                  <div className="text-xs text-[var(--indigo)] space-y-2">
                     <p><strong>What you're seeing:</strong> Particle visualization shows matter/antimatter distribution - the tiny excess that became everything we see.</p>
                     <p><strong>The existence puzzle:</strong> Need 8-12% matter excess, but theory is off by factor of 100 million. Why does anything exist instead of nothing?</p>
                     <p><strong>What should have happened:</strong> Big Bang creates equal matter/antimatter (like equal left/right shoes). They annihilate completely, leaving only energy.</p>
@@ -539,27 +539,27 @@ export default function MatterSection({
         </Card>
 
         {/* Proton Stability */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
-            <CardTitle className="text-white">Proton Stability</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Proton Stability</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               How long do the building blocks of atoms last?
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {/* Visualization - Fixed Height */}
-              <div className="h-48 bg-black/30 rounded-lg overflow-hidden">
+              <div className="h-48 bg-[var(--void-2)] rounded-lg overflow-hidden">
                 <TimelineProbabilityVisual lifetime={protonLifetime} />
               </div>
               
               {/* Current Value */}
               <div className="text-center py-2">
-                <div className="text-3xl font-bold text-yellow-400 font-mono">10^{protonLifetime.toFixed(0)}</div>
+                <div className="text-3xl font-bold text-[var(--indigo)] font-mono">10^{protonLifetime.toFixed(0)}</div>
                 <div className={`text-xs mt-1 font-medium ${
                   protonLifetime >= 34 
-                    ? 'text-green-400' 
-                    : 'text-red-400'
+                    ? 'text-[var(--goldilocks)]' 
+                    : 'text-[var(--warm)]'
                 }`}>
                   {protonLifetime >= 34 ? '✅ Stable Protons' : '❌ Decay Too Fast'}
                 </div>
@@ -575,7 +575,7 @@ export default function MatterSection({
                   step={0.1}
                   className="w-full"
                 />
-                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-green-500/30 rounded pointer-events-none" 
+                <div className="absolute top-1/2 -translate-y-1/2 h-2 bg-[rgba(111,228,177,0.3)] rounded pointer-events-none" 
                      style={{
                        left: `${((34 - 30) / (40 - 30)) * 100}%`,
                        width: `${((36 - 34) / (40 - 30)) * 100}%`
@@ -583,16 +583,16 @@ export default function MatterSection({
               </div>
 
               {/* Range Labels */}
-              <div className="flex justify-between text-xs text-gray-400 px-1">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] px-1">
                 <span>10^30</span>
-                <span className="text-green-400 font-medium">10^34+</span>
+                <span className="text-[var(--goldilocks)] font-medium">10^34+</span>
                 <span>10^40</span>
               </div>
             </div>
               
               {educatorMode && (
-                <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-                  <div className="text-xs text-blue-200 space-y-2">
+                <div className="mt-4 p-3 bg-[var(--indigo-band)] border border-[var(--indigo-glow)] rounded-lg">
+                  <div className="text-xs text-[var(--indigo)] space-y-2">
                     <p><strong>What you're seeing:</strong> Threshold visualization showing minimum proton stability needed for cosmic complexity - this is NOT traditional fine-tuning.</p>
                     <p><strong>Threshold vs Fine-Tuning:</strong> Unlike other parameters (strong force: 0.98-1.02), proton stability just needs to exceed ~10³⁰ years. Longer lifetimes (10³⁴, 10⁴⁰, ∞) work equally well.</p>
                     <p><strong>Scientific reality:</strong> Protons have never been observed to decay despite decades of experiments. They may be absolutely stable (infinite lifetime), making this parameter irrelevant to fine-tuning.</p>
