@@ -246,7 +246,13 @@ function MilkyWayEvolution({
           <div>
             <h3 className="text-xl font-bold text-[var(--ink)] mb-1">{currentPhaseData.name}</h3>
             <p className="text-sm text-[var(--goldilocks)] font-semibold mb-2">{currentPhaseData.age}</p>
-            <p className="text-[var(--ink-mid)] leading-relaxed">{currentPhaseData.description}</p>
+            <p
+              key={currentPhaseData.description}
+              className="text-[var(--ink-mid)] leading-relaxed text-swap"
+              style={{ minHeight: '2.6em' }}
+            >
+              {currentPhaseData.description}
+            </p>
           </div>
         </div>
       </div>

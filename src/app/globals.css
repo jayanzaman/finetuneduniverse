@@ -509,6 +509,10 @@ button, [role="button"] { touch-action: manipulation; }
   from { opacity: 0; transform: translateY(2px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Reusable fade-in for text whose content swaps on interaction. Pair with a
+   React `key` on the text node so each swap replays the animation. */
+.text-swap { animation: text-swap-in 180ms ease; }
 .chapter-deep-dive { margin-top: 32px; }
 .chapter-lab-actions { display: flex; flex-wrap: wrap; gap: 12px; }
 .chapter-deep-dive > .hifi-section-embed { margin-top: 24px; padding: 24px 0; }
