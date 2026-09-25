@@ -125,11 +125,11 @@ const AbiogenesisCarousel: React.FC<{
       {/* Mobile Layout */}
       <div className="md:hidden relative h-full flex flex-col">
         {/* Mobile Navigation Header */}
-        <div className="flex justify-between items-center p-4 bg-black/20 backdrop-blur-sm border-b border-white/10">
+        <div className="flex justify-between items-center p-4 bg-[var(--void)] backdrop-blur-sm border-b border-[var(--hair)]">
           <button
             onClick={() => onPhaseClick(Math.max(0, selectedPhase - 1))}
             disabled={selectedPhase === 0}
-            className="px-4 py-2 bg-gray-700 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+            className="px-4 py-2 bg-[var(--void-3)] text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-[var(--void-2)] active:scale-95 text-sm"
           >
             ← Previous
           </button>
@@ -189,7 +189,7 @@ const AbiogenesisCarousel: React.FC<{
                 </div>
 
                 {/* Stage Information */}
-                <div className="bg-black/30 rounded-lg p-4 border border-white/20">
+                <div className="bg-[var(--void-2)] rounded-lg p-4 border border-[var(--hair-2)]">
                   <h3 className="text-[var(--ink)] font-semibold text-lg mb-2">{selectedStage.name}</h3>
                   <p className="text-[var(--ink)] text-sm mb-3">{selectedStage.description}</p>
                   
@@ -271,7 +271,7 @@ const AbiogenesisCarousel: React.FC<{
         </div>
 
         {/* Mobile Progress Indicators */}
-        <div className="p-4 bg-black/20 backdrop-blur-sm border-t border-white/10">
+        <div className="p-4 bg-[var(--void)] backdrop-blur-sm border-t border-[var(--hair)]">
           <div className="flex justify-center gap-1 mb-2">
             {stages.map((stage, index) => (
               <button
@@ -283,7 +283,7 @@ const AbiogenesisCarousel: React.FC<{
                 <span className={`block w-3 h-3 rounded-full transition-all duration-300 ${
                   index === selectedPhase
                     ? 'bg-blue-400 scale-125'
-                    : 'bg-gray-600 hover:bg-gray-500'
+                    : 'bg-[var(--void-2)] hover:bg-[var(--ink-faint)]'
                 }`} />
               </button>
             ))}
@@ -327,7 +327,7 @@ const AbiogenesisCarousel: React.FC<{
                   <div className="relative h-full p-8 flex flex-col justify-end text-[var(--ink)] z-10">
                     {/* Description Only */}
                     <div className="text-center">
-                      <p className="text-xl opacity-95 leading-relaxed max-w-2xl mx-auto drop-shadow-lg bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20">
+                      <p className="text-xl opacity-95 leading-relaxed max-w-2xl mx-auto drop-shadow-lg bg-[var(--void-3)] px-8 py-4 rounded-2xl backdrop-blur-md border border-[var(--hair-2)]">
                         {selectedStage.description}
                       </p>
                     </div>
@@ -342,7 +342,7 @@ const AbiogenesisCarousel: React.FC<{
         </div>
 
         {/* Sidebar - Unselected Cards */}
-        <div className="w-80 p-4 flex flex-col space-y-3 bg-black/20 backdrop-blur-sm">
+        <div className="w-80 p-4 flex flex-col space-y-3 bg-[var(--void)] backdrop-blur-sm">
           {/* Header */}
           <div className="text-center mb-4">
             <h3 className="text-[var(--ink)] font-semibold text-lg mb-2">Abiogenesis Stages</h3>
@@ -409,7 +409,7 @@ const AbiogenesisCarousel: React.FC<{
           </div>
 
           {/* Navigation Dots */}
-          <div className="flex justify-center space-x-2 pt-4 border-t border-white/10">
+          <div className="flex justify-center space-x-2 pt-4 border-t border-[var(--hair)]">
             {stages.map((stage) => (
               <button
                 key={stage.id}
@@ -644,7 +644,7 @@ function StageInfo({ stage }: { stage: number }) {
   };
 
   return (
-    <div className='p-4 bg-white/5 rounded-lg border border-white/20'>
+    <div className='p-4 bg-white/5 rounded-lg border border-[var(--hair-2)]'>
       <h3 className='text-lg font-semibold mb-2'>Stage {stage}: {currentStage.title}</h3>
       <p className='text-sm text-[var(--ink-mid)] mb-2'>{currentStage.description}</p>
       
@@ -913,7 +913,7 @@ export default function AbiogenesisLabSection({
         
         {/* Left Panel - Simulation Canvas */}
         <div className='lg:col-span-2 space-y-4'>
-          <Card className='bg-white/5 border-white/20 text-[var(--ink)]'>
+          <Card className='bg-white/5 border-[var(--hair-2)] text-[var(--ink)]'>
             <CardHeader>
               <CardTitle className='text-2xl bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent'>
                 Abiogenesis Lab: From Chemistry to Codes
@@ -941,7 +941,7 @@ export default function AbiogenesisLabSection({
 
         {/* Right Panel - Controls */}
         <div className='space-y-4'>
-          <Card className='bg-white/5 border-white/20 text-[var(--ink)]'>
+          <Card className='bg-white/5 border-[var(--hair-2)] text-[var(--ink)]'>
             <CardHeader>
               <CardTitle className='text-lg'>Environmental Controls</CardTitle>
             </CardHeader>
@@ -1272,7 +1272,7 @@ export default function AbiogenesisLabSection({
       </div>
       
       {/* System Readouts - Full Width */}
-      <Card className='bg-white/5 border-white/20 text-[var(--ink)] mt-6'>
+      <Card className='bg-white/5 border-[var(--hair-2)] text-[var(--ink)] mt-6'>
         <CardHeader>
           <CardTitle className='text-xl'>System Readouts</CardTitle>
           {educatorMode && (

@@ -53,7 +53,7 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
   }
 
   return (
-    <div className="relative w-full h-64 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
+    <div className="relative w-full h-64 flex items-center justify-center overflow-hidden bg-[var(--void-2)] rounded-lg">
       <div className="absolute inset-0" aria-hidden>
         {[...Array(backgroundStarCount)].map((_, i) => (
           <span
@@ -664,7 +664,7 @@ export default function StarlightSection({
     <div className="container mx-auto px-4 md:px-4">
       {/* Mobile: Optimized full-screen layout */}
       <div className="md:hidden mb-6">
-        <Card className="bg-black/20 border-white/10 text-[var(--ink)]">
+        <Card className="bg-[var(--void)] border-[var(--hair)] text-[var(--ink)]">
           <CardContent>
             <div className="space-y-2">
               {/* Compact header with progress */}
@@ -680,7 +680,7 @@ export default function StarlightSection({
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         index === currentStep 
                           ? 'bg-blue-400 scale-125' 
-                          : 'bg-gray-500/60'
+                          : 'bg-[var(--ink-faint)]'
                       }`}
                     />
                   ))}
@@ -692,7 +692,7 @@ export default function StarlightSection({
                 <button
                   onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                   disabled={currentStep === 0}
-                  className="px-4 py-2 bg-gray-700 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                  className="px-4 py-2 bg-[var(--void-3)] text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-[var(--void-2)] active:scale-95 text-sm"
                 >
                   Previous
                 </button>
@@ -716,7 +716,7 @@ export default function StarlightSection({
               {/* Dynamic layout container */}
               <div className="flex flex-col space-y-3">
                 {/* Visualization - compact but not constrained */}
-                <div className="bg-black/30 rounded-lg p-2">
+                <div className="bg-[var(--void-2)] rounded-lg p-2">
                   <div className={`${steps[currentStep].isSelector ? '' : ''}`}>
                     {steps[currentStep].visual}
                   </div>
@@ -772,7 +772,7 @@ export default function StarlightSection({
       {/* Primary Controls - Desktop only */}
       <div className="hidden md:grid md:grid-cols-1 sm:md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12">
         {/* Stellar Mass */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <CardTitle className="text-[var(--ink)]">Stellar Mass</CardTitle>
             <CardDescription className="text-[var(--ink-mid)]">
@@ -821,7 +821,7 @@ export default function StarlightSection({
         </Card>
 
         {/* Metallicity */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <CardTitle className="text-[var(--ink)]">Metallicity</CardTitle>
             <CardDescription className="text-[var(--ink-mid)]">
@@ -829,7 +829,7 @@ export default function StarlightSection({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="h-48 bg-black/30 rounded-lg p-4 mb-4 relative overflow-hidden">
+            <div className="h-48 bg-[var(--void-2)] rounded-lg p-4 mb-4 relative overflow-hidden">
               {/* Stellar Spectrum Visualization */}
               <div className="spectrum-container">
                 {/* Title */}
@@ -968,7 +968,7 @@ export default function StarlightSection({
                     className={`p-3 rounded-lg border text-left transition-all ${
                       selectedStar === key 
                         ? 'bg-blue-600/30 border-blue-400 text-[var(--ink)]' 
-                        : 'bg-black/20 border-white/20 text-[var(--ink-mid)] hover:bg-white/5'
+                        : 'bg-[var(--void)] border-[var(--hair-2)] text-[var(--ink-mid)] hover:bg-white/5'
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -1020,7 +1020,7 @@ export default function StarlightSection({
         </Card>
 
         {/* Star Formation Rate */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
@@ -1069,7 +1069,7 @@ export default function StarlightSection({
                   className="group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-slate-600 to-slate-700 text-[var(--ink)] font-medium text-xs shadow-md shadow-slate-600/25 hover:shadow-slate-600/40 hover:scale-105 transition-all duration-300"
                 >
                   <div className="w-3 h-3 flex items-center justify-center">
-                    <div className="w-2 h-2 border-2 border-white border-t-transparent rounded-full animate-spin group-hover:animate-none transition-all duration-300"></div>
+                    <div className="w-2 h-2 border-2 border-[var(--hair-2)] border-t-transparent rounded-full animate-spin group-hover:animate-none transition-all duration-300"></div>
                   </div>
                   <span className="font-semibold">Reset</span>
                   <div className="absolute inset-0 rounded-lg bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -1084,7 +1084,7 @@ export default function StarlightSection({
                 <div className="text-sm text-[var(--ink-mid)]">Universe Factory Settings</div>
                 
                 {/* Current Status - Modern UI */}
-                <div className="flex items-center gap-3 px-3 py-1.5 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg border border-slate-600/30 backdrop-blur-sm min-w-[280px]">
+                <div className="flex items-center gap-3 px-3 py-1.5 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg border border-[var(--hair-2)] backdrop-blur-sm min-w-[280px]">
                   <div className="flex items-center gap-2 min-w-[120px]">
                     <div className={`w-2 h-2 rounded-full ${
                       starFormationRate <= 0.6 ? 'bg-blue-400 animate-pulse' :
@@ -1098,7 +1098,7 @@ export default function StarlightSection({
                        starFormationRate <= 1.6 ? 'High Demand' : 'Emergency Production'}
                     </span>
                   </div>
-                  <div className="h-4 w-px bg-slate-500/50 flex-shrink-0"></div>
+                  <div className="h-4 w-px bg-[var(--void-2)] flex-shrink-0"></div>
                   <div className="flex items-center gap-3 text-xs text-[var(--ink-mid)] min-w-[100px]">
                     <span className="min-w-[35px]"><strong className="text-[var(--ink)]">{starFormationRate.toFixed(1)}x</strong> Rate</span>
                     <span className="min-w-[45px]"><strong className="text-[var(--ink)]">{Math.min(100, starFormationRate * 50).toFixed(0)}%</strong> Eff</span>
@@ -1107,7 +1107,7 @@ export default function StarlightSection({
               </div>
               
               {/* Animated Timeline Visualization */}
-              <div className="relative bg-black/40 rounded-lg p-3 mb-4">
+              <div className="relative bg-[var(--void-2)] rounded-lg p-3 mb-4">
                 <div className="text-xs text-[var(--ink-soft)] mb-2 text-center">Cosmic Star Formation History</div>
                 
                 <div className="relative h-8 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded overflow-hidden">
@@ -1222,7 +1222,7 @@ export default function StarlightSection({
                           : setting.status === 'warning'
                           ? 'bg-yellow-600/30 border-yellow-400 text-[var(--ink)]'
                           : 'bg-red-600/30 border-red-400 text-[var(--ink)]'
-                        : 'bg-black/20 border-white/20 text-[var(--ink-mid)] hover:bg-white/5'
+                        : 'bg-[var(--void)] border-[var(--hair-2)] text-[var(--ink-mid)] hover:bg-white/5'
                     }`}
                   >
                     <div className="flex justify-between items-start">

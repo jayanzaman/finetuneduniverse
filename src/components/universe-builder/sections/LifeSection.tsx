@@ -239,7 +239,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
             
             {/* Subtle dark overlay for text readability over images */}
             {backgroundImage && (
-              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute inset-0 bg-[var(--void)]" />
             )}
             
             {/* Enhanced Shimmer Effect */}
@@ -250,7 +250,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
             {/* Content - Minimal overlay for better image visibility */}
             <div className="relative z-10 h-full flex flex-col justify-end items-end pl-6 pr-3 py-6">
               {/* Era Title - Compact bottom overlay */}
-              <div className="bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/20 text-right">
+              <div className="bg-[var(--void-2)] px-4 py-2 rounded-lg backdrop-blur-sm border border-[var(--hair-2)] text-right">
                 <h3 className="text-2xl font-bold text-[var(--ink)] drop-shadow-2xl font-serif">
                   {selectedEraData.name}
                 </h3>
@@ -267,7 +267,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
       {/* Proportional Geological Timeline */}
       <div className="mt-8 relative">
         {/* Timeline Bar */}
-        <div className="flex h-16 rounded-lg overflow-hidden border border-white/20">
+        <div className="flex h-16 rounded-lg overflow-hidden border border-[var(--hair-2)]">
           {GEOLOGICAL_ERAS.map((era, index) => {
             const width = proportionalWidths[index];
             const canFitLabel = width.percentage > 8;
@@ -313,7 +313,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                 )}
                 
                 {/* Duration indicator */}
-                <div className="absolute bottom-0 left-0 right-0 bg-black/30 text-center">
+                <div className="absolute bottom-0 left-0 right-0 bg-[var(--void-2)] text-center">
                   <div className="text-xs text-[var(--ink)] py-1 font-light">
                     {width.duration >= 1000 ? `${(width.duration/1000).toFixed(1)}Gy` : `${width.duration}Ma`}
                   </div>
@@ -433,7 +433,7 @@ function EnvironmentControl({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+    <div className="rounded-lg border border-[var(--hair)] bg-[var(--void)] p-3">
       <div className="mb-2 flex items-center justify-between gap-3 text-xs">
         <span className="font-medium text-[var(--ink-mid)]">{label}</span>
         <span className="font-mono text-[var(--ink)]">{value}</span>
@@ -542,7 +542,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           {/* Left Side: Carousel and Era Information (constrained width) */}
           <div className="flex-shrink-0 lg:max-w-2xl space-y-8">
             {/* Evolution Timeline Carousel */}
-            <Card className="bg-black/20 border-white/10 text-[var(--ink)]">
+            <Card className="bg-[var(--void)] border-[var(--hair)] text-[var(--ink)]">
               <CardHeader>
                 <CardTitle className="text-[var(--ink)]">Geological Timeline</CardTitle>
                 <CardDescription className="text-[var(--ink-mid)]">
@@ -634,7 +634,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     </div>
 
                     {/* Time Period */}
-                    <div className="p-3 rounded-lg bg-gray-900/20 border border-gray-500/30">
+                    <div className="p-3 rounded-lg bg-[var(--void-2)] border border-[var(--hair-2)]">
                       <div className="flex justify-between items-center">
                         <div>
                           <h4 className="font-semibold text-[var(--ink-mid)]">Time Period</h4>
@@ -862,7 +862,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     )}
 
                     {selectedEra === 8 && ( // Anthropocene
-                      <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/30 to-slate-900/30 border border-gray-500/30">
+                      <div className="p-6 rounded-lg bg-gradient-to-br from-gray-900/30 to-slate-900/30 border border-[var(--hair-2)]">
                         <div className="flex items-center gap-3 mb-4">
                           <span className="text-3xl">{eraIcons.anthropocene}</span>
                           <div>
@@ -894,7 +894,7 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
 
           {/* Right Side: Environmental Dashboard (flexible width) */}
           <div className="flex-1">
-            <Card className="bg-black/20 border-white/10 h-full">
+            <Card className="bg-[var(--void)] border-[var(--hair)] h-full">
               <CardHeader>
                 <CardTitle className="text-[var(--ink)]">Environmental Conditions</CardTitle>
                 <CardDescription className="text-[var(--ink-mid)]">

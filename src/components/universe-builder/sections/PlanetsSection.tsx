@@ -261,7 +261,7 @@ function MagneticFieldVisual({ magneticField }: { magneticField: number }) {
       </div>
       
       {/* Field strength reading with dynamic color */}
-      <div className={`absolute bottom-2 right-2 text-xs bg-black/50 px-2 py-1 rounded ${status.color}`}>
+      <div className={`absolute bottom-2 right-2 text-xs bg-[var(--void-2)] px-2 py-1 rounded ${status.color}`}>
         {fieldStrength.toFixed(0)} μT
       </div>
     </div>
@@ -294,7 +294,7 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure, bas
   };
 
   return (
-    <div className="relative w-full h-48 flex items-center justify-center overflow-hidden bg-black/30 rounded-lg">
+    <div className="relative w-full h-48 flex items-center justify-center overflow-hidden bg-[var(--void-2)] rounded-lg">
       <div className="solar-system relative w-full h-full max-w-48 max-h-48">
         {/* Habitable Zone */}
         <div 
@@ -333,7 +333,7 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure, bas
         
         {/* Planet Orbit */}
         <div 
-          className="absolute border border-white/20 rounded-full"
+          className="absolute border border-[var(--hair-2)] rounded-full"
           style={{
             width: `${orbitRadius * 2}px`,
             height: `${orbitRadius * 2}px`,
@@ -380,7 +380,7 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure, bas
         </div>
         
         {/* Temperature indicator */}
-        <div className="absolute bottom-2 left-2 text-xs text-[var(--ink)] bg-black/50 px-2 py-1 rounded">
+        <div className="absolute bottom-2 left-2 text-xs text-[var(--ink)] bg-[var(--void-2)] px-2 py-1 rounded">
           {temperature.toFixed(0)}°C
         </div>
       </div>
@@ -488,7 +488,7 @@ export default function PlanetsSection({
     <div className="container mx-auto px-4">
       {/* Mobile: Carousel Layout */}
       <div className="md:hidden mb-6">
-        <Card className="bg-black/20 border-white/10 text-[var(--ink)]">
+        <Card className="bg-[var(--void)] border-[var(--hair)] text-[var(--ink)]">
           <CardContent>
             <div className="space-y-4">
               {/* Header with progress */}
@@ -504,7 +504,7 @@ export default function PlanetsSection({
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         index === currentStep 
                           ? 'bg-blue-400 scale-125' 
-                          : 'bg-gray-500/60'
+                          : 'bg-[var(--ink-faint)]'
                       }`}
                     />
                   ))}
@@ -516,7 +516,7 @@ export default function PlanetsSection({
                 <button
                   onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                   disabled={currentStep === 0}
-                  className="px-4 py-2 bg-gray-700 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                  className="px-4 py-2 bg-[var(--void-3)] text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-[var(--void-2)] active:scale-95 text-sm"
                 >
                   Previous
                 </button>
@@ -538,7 +538,7 @@ export default function PlanetsSection({
               </div>
               
               {/* Visualization */}
-              <div className="bg-black/30 rounded-lg p-3">
+              <div className="bg-[var(--void-2)] rounded-lg p-3">
                 <div className="h-64">
                   {steps[currentStep].visual}
                 </div>
@@ -664,7 +664,7 @@ export default function PlanetsSection({
       <div className="hidden md:grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
         
         {/* Control Panel: All Parameter Sliders */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <CardTitle className="text-[var(--ink)]">Habitability Controls</CardTitle>
             <CardDescription className="text-[var(--ink-mid)]">
@@ -807,7 +807,7 @@ export default function PlanetsSection({
         </Card>
 
         {/* Orbital Distance Visual */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <CardTitle className="text-[var(--ink)]">Orbital Distance</CardTitle>
             <CardDescription className="text-[var(--ink-mid)]">
@@ -836,7 +836,7 @@ export default function PlanetsSection({
         </Card>
 
         {/* Water State Visual */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <CardTitle className="text-[var(--ink)]">Water State</CardTitle>
             <CardDescription className="text-[var(--ink-mid)]">
@@ -987,7 +987,7 @@ export default function PlanetsSection({
               })()}
               
               {/* Environmental readings */}
-              <div className="absolute bottom-2 right-2 text-xs text-[var(--ink)] bg-black/50 px-2 py-1 rounded">
+              <div className="absolute bottom-2 right-2 text-xs text-[var(--ink)] bg-[var(--void-2)] px-2 py-1 rounded">
                 <div>{atmosphericPressure.toFixed(1)} atm</div>
                 <div>{((278 / Math.sqrt(orbitalDistance)) - 273).toFixed(0)}°C</div>
                 <div>Mass: {planetMass.toFixed(1)} M⊕</div>
@@ -1007,7 +1007,7 @@ export default function PlanetsSection({
         </Card>
 
         {/* Magnetic Field */}
-        <Card className="bg-black/20 border-white/10">
+        <Card className="bg-[var(--void)] border-[var(--hair)]">
           <CardHeader>
             <CardTitle className="text-[var(--ink)]">Magnetic Field</CardTitle>
             <CardDescription className="text-[var(--ink-mid)]">
@@ -1161,7 +1161,7 @@ export default function PlanetsSection({
               )}
               
               {/* Field strength reading */}
-              <div className="absolute bottom-2 right-2 text-xs text-[var(--ink)] bg-black/50 px-2 py-1 rounded">
+              <div className="absolute bottom-2 right-2 text-xs text-[var(--ink)] bg-[var(--void-2)] px-2 py-1 rounded">
                 {(magneticField * 50).toFixed(0)} μT
               </div>
             </div>
