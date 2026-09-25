@@ -6,12 +6,12 @@ import { Slider } from '../../ui/slider'
 import { Atom, Dna, Link, Circle, FlaskConical, Bug } from 'lucide-react'
 
 const stageIcons: Record<string, React.ReactNode> = {
-  molecules: <Atom className="w-7 h-7 text-white drop-shadow-lg" />,
-  amino: <Dna className="w-7 h-7 text-white drop-shadow-lg" />,
-  chain: <Link className="w-7 h-7 text-white drop-shadow-lg" />,
-  cell: <Circle className="w-7 h-7 text-white drop-shadow-lg" />,
-  rna: <FlaskConical className="w-7 h-7 text-white drop-shadow-lg" />,
-  life: <Bug className="w-7 h-7 text-white drop-shadow-lg" />,
+  molecules: <Atom className="w-7 h-7 text-[var(--ink)] drop-shadow-lg" />,
+  amino: <Dna className="w-7 h-7 text-[var(--ink)] drop-shadow-lg" />,
+  chain: <Link className="w-7 h-7 text-[var(--ink)] drop-shadow-lg" />,
+  cell: <Circle className="w-7 h-7 text-[var(--ink)] drop-shadow-lg" />,
+  rna: <FlaskConical className="w-7 h-7 text-[var(--ink)] drop-shadow-lg" />,
+  life: <Bug className="w-7 h-7 text-[var(--ink)] drop-shadow-lg" />,
 };
 
 // Types and Interfaces
@@ -129,16 +129,16 @@ const AbiogenesisCarousel: React.FC<{
           <button
             onClick={() => onPhaseClick(Math.max(0, selectedPhase - 1))}
             disabled={selectedPhase === 0}
-            className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+            className="px-4 py-2 bg-gray-700 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
           >
             ← Previous
           </button>
           
           <div className="text-center">
-            <div className="text-white font-semibold text-sm">
+            <div className="text-[var(--ink)] font-semibold text-sm">
               {stages.find(s => s.id === selectedPhase)?.name || 'Unknown Stage'}
             </div>
-            <div className="text-white/60 text-xs">
+            <div className="text-[var(--ink-mid)] text-xs">
               Stage {selectedPhase + 1} of {stages.length}
             </div>
           </div>
@@ -146,7 +146,7 @@ const AbiogenesisCarousel: React.FC<{
           <button
             onClick={() => onPhaseClick(Math.min(stages.length - 1, selectedPhase + 1))}
             disabled={selectedPhase === stages.length - 1}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+            className="px-4 py-2 bg-blue-600 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
           >
             Next →
           </button>
@@ -190,8 +190,8 @@ const AbiogenesisCarousel: React.FC<{
 
                 {/* Stage Information */}
                 <div className="bg-black/30 rounded-lg p-4 border border-white/20">
-                  <h3 className="text-white font-semibold text-lg mb-2">{selectedStage.name}</h3>
-                  <p className="text-white/80 text-sm mb-3">{selectedStage.description}</p>
+                  <h3 className="text-[var(--ink)] font-semibold text-lg mb-2">{selectedStage.name}</h3>
+                  <p className="text-[var(--ink)] text-sm mb-3">{selectedStage.description}</p>
                   
                   {/* Difficulty and Status Indicators */}
                   <div className="flex gap-2 mb-3">
@@ -204,7 +204,7 @@ const AbiogenesisCarousel: React.FC<{
                   </div>
 
                   {/* Key Challenge */}
-                  <div className="text-xs text-gray-300">
+                  <div className="text-xs text-[var(--ink-mid)]">
                     <strong>Key Challenge:</strong> {
                       selectedPhase === 0 ? 'Creating organic molecules from inorganic precursors' :
                       selectedPhase === 1 ? 'Forming complex amino acids under prebiotic conditions' :
@@ -288,7 +288,7 @@ const AbiogenesisCarousel: React.FC<{
               </button>
             ))}
           </div>
-          <div className="text-center text-xs text-white/60">
+          <div className="text-center text-xs text-[var(--ink-mid)]">
             Tap dots to jump to any stage
           </div>
         </div>
@@ -324,7 +324,7 @@ const AbiogenesisCarousel: React.FC<{
                   </div>
 
                   {/* Card Content */}
-                  <div className="relative h-full p-8 flex flex-col justify-end text-white z-10">
+                  <div className="relative h-full p-8 flex flex-col justify-end text-[var(--ink)] z-10">
                     {/* Description Only */}
                     <div className="text-center">
                       <p className="text-xl opacity-95 leading-relaxed max-w-2xl mx-auto drop-shadow-lg bg-black/60 px-8 py-4 rounded-2xl backdrop-blur-md border border-white/20">
@@ -345,8 +345,8 @@ const AbiogenesisCarousel: React.FC<{
         <div className="w-80 p-4 flex flex-col space-y-3 bg-black/20 backdrop-blur-sm">
           {/* Header */}
           <div className="text-center mb-4">
-            <h3 className="text-white/90 font-semibold text-lg mb-2">Abiogenesis Stages</h3>
-            <div className="text-white/60 text-sm">
+            <h3 className="text-[var(--ink)] font-semibold text-lg mb-2">Abiogenesis Stages</h3>
+            <div className="text-[var(--ink-mid)] text-sm">
               {selectedPhase + 1} of {stages.length}
             </div>
           </div>
@@ -389,7 +389,7 @@ const AbiogenesisCarousel: React.FC<{
                     </div>
                     
                     {/* Mini Content */}
-                    <div className="relative h-full p-3 flex items-center text-white z-10">
+                    <div className="relative h-full p-3 flex items-center text-[var(--ink)] z-10">
                       <div className="flex-1 min-w-0">
                         <div className="font-semibold text-sm leading-tight truncate drop-shadow">
                           {stage.name}
@@ -628,7 +628,7 @@ function StageInfo({ stage }: { stage: number }) {
       case 'Active research': return 'text-orange-400';
       case 'Strongly hypothesized': return 'text-blue-400';
       case 'Evolutionary transition': return 'text-purple-400';
-      default: return 'text-gray-400';
+      default: return 'text-[var(--ink-soft)]';
     }
   };
   
@@ -639,14 +639,14 @@ function StageInfo({ stage }: { stage: number }) {
       case 'Difficult': return 'text-orange-400';
       case 'Very Difficult': return 'text-red-400';
       case 'Extremely Difficult': return 'text-red-500';
-      default: return 'text-gray-400';
+      default: return 'text-[var(--ink-soft)]';
     }
   };
 
   return (
     <div className='p-4 bg-white/5 rounded-lg border border-white/20'>
       <h3 className='text-lg font-semibold mb-2'>Stage {stage}: {currentStage.title}</h3>
-      <p className='text-sm text-gray-300 mb-2'>{currentStage.description}</p>
+      <p className='text-sm text-[var(--ink-mid)] mb-2'>{currentStage.description}</p>
       
       <div className='flex flex-wrap gap-2 mb-2'>
         <span className={`text-xs px-2 py-1 rounded ${getConfidenceColor(currentStage.confidence)} bg-white/10`}>
@@ -913,12 +913,12 @@ export default function AbiogenesisLabSection({
         
         {/* Left Panel - Simulation Canvas */}
         <div className='lg:col-span-2 space-y-4'>
-          <Card className='bg-white/5 border-white/20 text-white'>
+          <Card className='bg-white/5 border-white/20 text-[var(--ink)]'>
             <CardHeader>
               <CardTitle className='text-2xl bg-gradient-to-r from-green-400 to-blue-400 bg-clip-text text-transparent'>
                 Abiogenesis Lab: From Chemistry to Codes
               </CardTitle>
-              <CardDescription className='text-gray-300'>
+              <CardDescription className='text-[var(--ink-mid)]'>
                 Interactive simulation of life's chemical origins
               </CardDescription>
             </CardHeader>
@@ -929,7 +929,7 @@ export default function AbiogenesisLabSection({
                 educatorMode={educatorMode}
               />
               
-              <div className='mt-6 text-center text-sm text-gray-400'>
+              <div className='mt-6 text-center text-sm text-[var(--ink-soft)]'>
                 <div className='mb-2'>Click any stage in the sidebar to explore that phase of abiogenesis</div>
                 <div className='text-xs opacity-75'>Selected stage is displayed in the main view with detailed information below</div>
               </div>
@@ -941,7 +941,7 @@ export default function AbiogenesisLabSection({
 
         {/* Right Panel - Controls */}
         <div className='space-y-4'>
-          <Card className='bg-white/5 border-white/20 text-white'>
+          <Card className='bg-white/5 border-white/20 text-[var(--ink)]'>
             <CardHeader>
               <CardTitle className='text-lg'>Environmental Controls</CardTitle>
             </CardHeader>
@@ -961,7 +961,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>UV Radiation</label>
-                    <span className='text-xs text-gray-400'>{(controls.energyInputs.uv * 0.3).toFixed(1)} W/m²</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{(controls.energyInputs.uv * 0.3).toFixed(1)} W/m²</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -980,7 +980,7 @@ export default function AbiogenesisLabSection({
                            left: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '25%' : '20%',
                            width: simulationState.stage < 4 ? '30%' : simulationState.stage < 5 ? '20%' : '15%'
                          }}></div>
-                    <div className='flex justify-between text-xs text-gray-600 mt-1'>
+                    <div className='flex justify-between text-xs text-[var(--ink-faint)] mt-1'>
                       <span>0</span>
                       <span className='text-green-400 font-bold'>
                         {simulationState.stage < 4 ? '30-60 (energy for chemistry)' :
@@ -990,7 +990,7 @@ export default function AbiogenesisLabSection({
                       <span>100</span>
                     </div>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1'>
                     {controls.energyInputs.uv < 10 ? 'Safe for humans' :
                      controls.energyInputs.uv < 30 ? 'Sunburn in hours' :
                      controls.energyInputs.uv < 60 ? 'DNA damage, cancer risk' :
@@ -1001,7 +1001,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>Lightning</label>
-                    <span className='text-xs text-gray-400'>{(controls.energyInputs.lightning * 0.02).toFixed(1)} strikes/km²/yr</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{(controls.energyInputs.lightning * 0.02).toFixed(1)} strikes/km²/yr</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -1020,7 +1020,7 @@ export default function AbiogenesisLabSection({
                            left: simulationState.stage < 3 ? '50%' : simulationState.stage < 5 ? '40%' : '30%',
                            width: simulationState.stage < 3 ? '30%' : simulationState.stage < 5 ? '20%' : '25%'
                          }}></div>
-                    <div className='flex justify-between text-xs text-gray-600 mt-1'>
+                    <div className='flex justify-between text-xs text-[var(--ink-faint)] mt-1'>
                       <span>0</span>
                       <span className='text-green-400 font-bold'>
                         {simulationState.stage < 3 ? '50-80 (amino acids)' :
@@ -1030,7 +1030,7 @@ export default function AbiogenesisLabSection({
                       <span>100</span>
                     </div>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1'>
                     {controls.energyInputs.lightning < 25 ? 'Rural areas' :
                      controls.energyInputs.lightning < 50 ? 'Thunderstorm regions' :
                      controls.energyInputs.lightning < 75 ? 'Tropical storm zones' :
@@ -1041,7 +1041,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>Hydrothermal</label>
-                    <span className='text-xs text-gray-400'>{(controls.energyInputs.hydrothermal * 0.5).toFixed(1)} MW/km²</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{(controls.energyInputs.hydrothermal * 0.5).toFixed(1)} MW/km²</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -1060,7 +1060,7 @@ export default function AbiogenesisLabSection({
                            left: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '60%' : '70%',
                            width: simulationState.stage < 2 ? '40%' : simulationState.stage < 4 ? '20%' : '15%'
                          }}></div>
-                    <div className='flex justify-between text-xs text-gray-600 mt-1'>
+                    <div className='flex justify-between text-xs text-[var(--ink-faint)] mt-1'>
                       <span>0</span>
                       <span className='text-green-400 font-bold'>
                         {simulationState.stage < 2 ? '40-80 (amino synthesis)' :
@@ -1070,7 +1070,7 @@ export default function AbiogenesisLabSection({
                       <span>100</span>
                     </div>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1'>
                     {controls.energyInputs.hydrothermal < 20 ? 'Hot springs' :
                      controls.energyInputs.hydrothermal < 40 ? 'Yellowstone geysers' :
                      controls.energyInputs.hydrothermal < 70 ? 'Ocean floor vents' :
@@ -1081,7 +1081,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>Dry-Wet Cycling</label>
-                    <span className='text-xs text-gray-400'>{(controls.energyInputs.dryWetCycling * 0.1).toFixed(1)} cycles/day</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{(controls.energyInputs.dryWetCycling * 0.1).toFixed(1)} cycles/day</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -1100,7 +1100,7 @@ export default function AbiogenesisLabSection({
                            left: simulationState.stage < 2 ? '60%' : simulationState.stage < 4 ? '70%' : '80%',
                            width: simulationState.stage < 2 ? '30%' : simulationState.stage < 4 ? '20%' : '15%'
                          }}></div>
-                    <div className='flex justify-between text-xs text-gray-600 mt-1'>
+                    <div className='flex justify-between text-xs text-[var(--ink-faint)] mt-1'>
                       <span>0</span>
                       <span className='text-green-400 font-bold'>
                         {simulationState.stage < 2 ? '60-90 (peptide formation)' :
@@ -1110,7 +1110,7 @@ export default function AbiogenesisLabSection({
                       <span>100</span>
                     </div>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1'>
                     {controls.energyInputs.dryWetCycling < 25 ? 'Stable pools' :
                      controls.energyInputs.dryWetCycling < 50 ? 'Tidal zones' :
                      controls.energyInputs.dryWetCycling < 75 ? 'Desert flash floods' :
@@ -1133,7 +1133,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>Chemistry Richness</label>
-                    <span className='text-xs text-gray-400'>{(controls.chemistryRichness * 0.01).toFixed(2)} M total</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{(controls.chemistryRichness * 0.01).toFixed(2)} M total</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -1149,7 +1149,7 @@ export default function AbiogenesisLabSection({
                            left: simulationState.stage < 1 ? '50%' : simulationState.stage < 4 ? '70%' : '85%',
                            width: simulationState.stage < 1 ? '40%' : simulationState.stage < 4 ? '25%' : '15%'
                          }}></div>
-                    <div className='flex justify-between text-xs text-gray-600 mt-1'>
+                    <div className='flex justify-between text-xs text-[var(--ink-faint)] mt-1'>
                       <span>0</span>
                       <span className='text-green-400 font-bold'>
                         {simulationState.stage < 1 ? '50-90 (precursor diversity)' :
@@ -1159,7 +1159,7 @@ export default function AbiogenesisLabSection({
                       <span>100</span>
                     </div>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1'>
                     {controls.chemistryRichness < 25 ? 'Pure water' :
                      controls.chemistryRichness < 50 ? 'River water' :
                      controls.chemistryRichness < 75 ? 'Seawater' :
@@ -1170,7 +1170,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>Water Activity</label>
-                    <span className='text-xs text-gray-400'>{(controls.waterActivity * 0.01).toFixed(2)} aw</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{(controls.waterActivity * 0.01).toFixed(2)} aw</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -1186,7 +1186,7 @@ export default function AbiogenesisLabSection({
                            left: simulationState.stage < 3 ? '60%' : simulationState.stage < 5 ? '70%' : '75%',
                            width: simulationState.stage < 3 ? '35%' : simulationState.stage < 5 ? '20%' : '15%'
                          }}></div>
-                    <div className='flex justify-between text-xs text-gray-600 mt-1'>
+                    <div className='flex justify-between text-xs text-[var(--ink-faint)] mt-1'>
                       <span>0</span>
                       <span className='text-green-400 font-bold'>
                         {simulationState.stage < 3 ? '60-95 (vesicle formation)' :
@@ -1196,7 +1196,7 @@ export default function AbiogenesisLabSection({
                       <span>100</span>
                     </div>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1'>
                     {controls.waterActivity < 25 ? 'Dry salt' :
                      controls.waterActivity < 50 ? 'Honey consistency' :
                      controls.waterActivity < 75 ? 'Seawater' :
@@ -1207,7 +1207,7 @@ export default function AbiogenesisLabSection({
                 <div className='space-y-2'>
                   <div className='flex justify-between items-center'>
                     <label className='text-xs'>Temperature</label>
-                    <span className='text-xs text-gray-400'>{controls.temperature} K ({(controls.temperature - 273.15).toFixed(0)}°C)</span>
+                    <span className='text-xs text-[var(--ink-soft)]'>{controls.temperature} K ({(controls.temperature - 273.15).toFixed(0)}°C)</span>
                   </div>
                   <div className='relative'>
                     <Slider
@@ -1225,7 +1225,7 @@ export default function AbiogenesisLabSection({
                            width: `${(simulationState.stage < 4 ? 20 : simulationState.stage < 5 ? 10 : 6) / (673 - 253) * 100}%`
                          }}></div>
                   </div>
-                  <div className='flex justify-between text-xs text-gray-500'>
+                  <div className='flex justify-between text-xs text-[var(--ink-faint)]'>
                     <span>253 K (-20°C)</span>
                     <span className='text-green-400 font-bold'>
                       {simulationState.stage < 4 ? '298 K (±10K optimal)' :
@@ -1234,7 +1234,7 @@ export default function AbiogenesisLabSection({
                     </span>
                     <span>673 K (400°C)</span>
                   </div>
-                  <div className='text-xs text-gray-500 mt-1 text-center'>
+                  <div className='text-xs text-[var(--ink-faint)] mt-1 text-center'>
                     {controls.temperature < 273 ? 'Frozen, slow chemistry' :
                      controls.temperature < 310 ? 'Human body temperature' :
                      controls.temperature < 373 ? 'Hot bath to boiling' :
@@ -1272,11 +1272,11 @@ export default function AbiogenesisLabSection({
       </div>
       
       {/* System Readouts - Full Width */}
-      <Card className='bg-white/5 border-white/20 text-white mt-6'>
+      <Card className='bg-white/5 border-white/20 text-[var(--ink)] mt-6'>
         <CardHeader>
           <CardTitle className='text-xl'>System Readouts</CardTitle>
           {educatorMode && (
-            <CardDescription className='text-sm text-gray-300'>
+            <CardDescription className='text-sm text-[var(--ink-mid)]'>
               These metrics track the molecular complexity and replication fidelity of your prebiotic system
             </CardDescription>
           )}
@@ -1284,7 +1284,7 @@ export default function AbiogenesisLabSection({
         <CardContent className='space-y-4'>
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 text-sm'>
             <div>
-              <span className='text-gray-400'>Amino Acids:</span>
+              <span className='text-[var(--ink-soft)]'>Amino Acids:</span>
               <div className='font-mono text-lg'>{simulationState.aminoAcidYield.toFixed(1)} ppm</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1293,7 +1293,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>Peptides:</span>
+              <span className='text-[var(--ink-soft)]'>Peptides:</span>
               <div className='font-mono text-lg'>{simulationState.peptideCount.toFixed(0)}</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1302,7 +1302,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>Vesicles:</span>
+              <span className='text-[var(--ink-soft)]'>Vesicles:</span>
               <div className='font-mono text-lg'>{simulationState.vesicleCount.toFixed(0)}</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1311,7 +1311,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>Templates:</span>
+              <span className='text-[var(--ink-soft)]'>Templates:</span>
               <div className='font-mono text-lg'>{simulationState.templateStrands.toFixed(0)}</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1320,7 +1320,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>RNA:</span>
+              <span className='text-[var(--ink-soft)]'>RNA:</span>
               <div className='font-mono text-lg'>{simulationState.rnaStrands.toFixed(0)}</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1329,7 +1329,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>DNA:</span>
+              <span className='text-[var(--ink-soft)]'>DNA:</span>
               <div className='font-mono text-lg'>{simulationState.dnaStrands.toFixed(0)}</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1338,7 +1338,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>Per-Base:</span>
+              <span className='text-[var(--ink-soft)]'>Per-Base:</span>
               <div className='font-mono text-lg'>{(simulationState.perBaseAccuracy * 100).toFixed(1)}%</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1347,7 +1347,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>Strand:</span>
+              <span className='text-[var(--ink-soft)]'>Strand:</span>
               <div className='font-mono text-lg'>{(simulationState.strandFidelity * 100).toFixed(1)}%</div>
               {educatorMode && (
                 <div className='text-xs text-blue-300 mt-1'>
@@ -1356,7 +1356,7 @@ export default function AbiogenesisLabSection({
               )}
             </div>
             <div>
-              <span className='text-gray-400'>Eigen:</span>
+              <span className='text-[var(--ink-soft)]'>Eigen:</span>
               <div className={`font-mono text-lg ${simulationState.passesEigen ? 'text-green-400' : 'text-red-400'}`}>
                 {simulationState.passesEigen ? '✓ Pass' : '✗ Fail'}
                 {simulationState.stage >= 4 && !simulationState.passesEigen && (

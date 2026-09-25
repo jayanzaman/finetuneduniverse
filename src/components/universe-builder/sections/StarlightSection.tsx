@@ -69,7 +69,7 @@ function StarField({ stellarMass, metallicity, starFormationRate }: {
           />
         ))}
       </div>
-      <span className="absolute left-3 top-3 text-[10px] tracking-wider text-gray-400">
+      <span className="absolute left-3 top-3 text-[10px] tracking-wider text-[var(--ink-soft)]">
         Relative formation rate: {starFormationRate.toFixed(1)}×
       </span>
       <div className="star-system">
@@ -664,14 +664,14 @@ export default function StarlightSection({
     <div className="container mx-auto px-4 md:px-4">
       {/* Mobile: Optimized full-screen layout */}
       <div className="md:hidden mb-6">
-        <Card className="bg-black/20 border-white/10 text-white">
+        <Card className="bg-black/20 border-white/10 text-[var(--ink)]">
           <CardContent>
             <div className="space-y-2">
               {/* Compact header with progress */}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
-                  <h4 className="text-base font-semibold text-white">{steps[currentStep].title}</h4>
-                  <p className="text-xs text-gray-300">{steps[currentStep].subtitle}</p>
+                  <h4 className="text-base font-semibold text-[var(--ink)]">{steps[currentStep].title}</h4>
+                  <p className="text-xs text-[var(--ink-mid)]">{steps[currentStep].subtitle}</p>
                 </div>
                 <div className="flex items-center space-x-1">
                   {steps.map((_, index) => (
@@ -692,7 +692,7 @@ export default function StarlightSection({
                 <button
                   onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                   disabled={currentStep === 0}
-                  className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                  className="px-4 py-2 bg-gray-700 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
                 >
                   Previous
                 </button>
@@ -701,13 +701,13 @@ export default function StarlightSection({
                   <span className="text-sm font-medium text-blue-400">
                     {currentStep + 1} / {steps.length}
                   </span>
-                  <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
+                  <p className="text-xs text-[var(--ink-soft)] mt-1">{steps[currentStep].description}</p>
                 </div>
                 
                 <button
                   onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
                   disabled={currentStep === steps.length - 1}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+                  className="px-4 py-2 bg-blue-600 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
                 >
                   Next
                 </button>
@@ -744,10 +744,10 @@ export default function StarlightSection({
                         />
                       )}
                     </div>
-                    <div className="flex justify-between text-xs text-gray-300">
+                    <div className="flex justify-between text-xs text-[var(--ink-mid)]">
                       <span className="text-xs">Low</span>
                       <span className="text-green-400 font-medium text-center flex-1 text-xs">{steps[currentStep].optimal}</span>
-                      <span className="text-white font-medium text-xs">
+                      <span className="text-[var(--ink)] font-medium text-xs">
                         {`${steps[currentStep].value.toFixed(1)} ${steps[currentStep].unit}`}
                       </span>
                       <span className="text-xs">High</span>
@@ -774,8 +774,8 @@ export default function StarlightSection({
         {/* Stellar Mass */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Stellar Mass</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Stellar Mass</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Mass of first-generation stars (in solar masses)
             </CardDescription>
           </CardHeader>
@@ -800,10 +800,10 @@ export default function StarlightSection({
                      width: `${((1.4 - 0.8) / (2 - 0.1)) * 100}%`
                    }}></div>
             </div>
-            <div className="flex justify-between text-sm text-gray-400 mt-4">
+            <div className="flex justify-between text-sm text-[var(--ink-soft)] mt-4">
               <span>Red Dwarf</span>
               <span className="text-green-400 font-bold">0.8-1.4 M☉ (optimal)</span>
-              <span className="text-white font-medium">{stellarMass.toFixed(1)} M☉</span>
+              <span className="text-[var(--ink)] font-medium">{stellarMass.toFixed(1)} M☉</span>
               <span>Supergiant</span>
             </div>
             
@@ -823,8 +823,8 @@ export default function StarlightSection({
         {/* Metallicity */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Metallicity</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Metallicity</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Fraction of heavy elements in stellar composition
             </CardDescription>
           </CardHeader>
@@ -833,7 +833,7 @@ export default function StarlightSection({
               {/* Stellar Spectrum Visualization */}
               <div className="spectrum-container">
                 {/* Title */}
-                <div className="text-xs text-gray-300 mb-2 text-center">Stellar Spectrum Analysis</div>
+                <div className="text-xs text-[var(--ink-mid)] mb-2 text-center">Stellar Spectrum Analysis</div>
                 
                 {/* Rainbow Spectrum Bar */}
                 <div className="spectrum-bar">
@@ -939,7 +939,7 @@ export default function StarlightSection({
                       boxShadow: `0 0 15px rgb(${255 - metallicity * 500}, ${240 - metallicity * 300}, ${200 - metallicity * 200})`,
                     }}
                   />
-                  <div className="text-xs text-gray-300 mt-1">
+                  <div className="text-xs text-[var(--ink-mid)] mt-1">
                     {metallicity < 0.01 ? "Hot Blue-White" :
                      metallicity < 0.03 ? "Yellow (Sun-like)" :
                      "Cool Red Giant"}
@@ -948,8 +948,8 @@ export default function StarlightSection({
                 
                 {/* Metallicity Reading */}
                 <div className="absolute bottom-2 right-2 text-right">
-                  <div className="text-xs text-gray-400">Metallicity [Fe/H]</div>
-                  <div className="text-sm font-bold text-white">
+                  <div className="text-xs text-[var(--ink-soft)]">Metallicity [Fe/H]</div>
+                  <div className="text-sm font-bold text-[var(--ink)]">
                     {metallicity < 0.001 ? "-∞" : 
                      metallicity < 0.01 ? `${(Math.log10(metallicity / 0.02)).toFixed(1)}` :
                      `+${(Math.log10(metallicity / 0.02)).toFixed(1)}`}
@@ -959,7 +959,7 @@ export default function StarlightSection({
             </div>
             {/* Observatory Telescope Selector */}
             <div className="space-y-3">
-              <div className="text-sm text-gray-300 mb-2">🔭 Select Target Star:</div>
+              <div className="text-sm text-[var(--ink-mid)] mb-2">🔭 Select Target Star:</div>
               <div className="grid grid-cols-1 gap-2">
                 {Object.entries(stellarDatabase).map(([key, star]) => (
                   <button
@@ -967,20 +967,20 @@ export default function StarlightSection({
                     onClick={() => setSelectedStar(key)}
                     className={`p-3 rounded-lg border text-left transition-all ${
                       selectedStar === key 
-                        ? 'bg-blue-600/30 border-blue-400 text-white' 
-                        : 'bg-black/20 border-white/20 text-gray-300 hover:bg-white/5'
+                        ? 'bg-blue-600/30 border-blue-400 text-[var(--ink)]' 
+                        : 'bg-black/20 border-white/20 text-[var(--ink-mid)] hover:bg-white/5'
                     }`}
                   >
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="font-medium">{star.name}</div>
-                        <div className="text-xs text-gray-400">{star.nickname}</div>
+                        <div className="text-xs text-[var(--ink-soft)]">{star.nickname}</div>
                         <div className="text-xs text-blue-300 mt-1">{star.type}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-bold text-white">{(star.metallicity * 100).toFixed(2)}%</div>
-                        <div className="text-xs text-gray-400">{star.distance}</div>
-                        <div className="text-xs text-gray-500">{star.age}</div>
+                        <div className="text-sm font-bold text-[var(--ink)]">{(star.metallicity * 100).toFixed(2)}%</div>
+                        <div className="text-xs text-[var(--ink-soft)]">{star.distance}</div>
+                        <div className="text-xs text-[var(--ink-faint)]">{star.age}</div>
                       </div>
                     </div>
                   </button>
@@ -1024,8 +1024,8 @@ export default function StarlightSection({
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
-                <CardTitle className="text-white">Star Formation Rate</CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardTitle className="text-[var(--ink)]">Star Formation Rate</CardTitle>
+                <CardDescription className="text-[var(--ink-mid)]">
                   Rate of stellar birth in early galaxies
                 </CardDescription>
               </div>
@@ -1037,8 +1037,8 @@ export default function StarlightSection({
                   onClick={() => setIsTimeLapseActive(!isTimeLapseActive)}
                   className={`group relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-xs transition-all duration-300 ${
                     isTimeLapseActive 
-                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md shadow-red-500/25 hover:shadow-red-500/40 hover:scale-105' 
-                      : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-md shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105'
+                      ? 'bg-gradient-to-r from-red-500 to-red-600 text-[var(--ink)] shadow-md shadow-red-500/25 hover:shadow-red-500/40 hover:scale-105' 
+                      : 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-[var(--ink)] shadow-md shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105'
                   }`}
                 >
                   <div className={`w-3 h-3 flex items-center justify-center transition-transform duration-300 ${
@@ -1066,7 +1066,7 @@ export default function StarlightSection({
                     setStarFormationRate(0.1)
                     setIsTimeLapseActive(false)
                   }}
-                  className="group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-slate-600 to-slate-700 text-white font-medium text-xs shadow-md shadow-slate-600/25 hover:shadow-slate-600/40 hover:scale-105 transition-all duration-300"
+                  className="group relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-slate-600 to-slate-700 text-[var(--ink)] font-medium text-xs shadow-md shadow-slate-600/25 hover:shadow-slate-600/40 hover:scale-105 transition-all duration-300"
                 >
                   <div className="w-3 h-3 flex items-center justify-center">
                     <div className="w-2 h-2 border-2 border-white border-t-transparent rounded-full animate-spin group-hover:animate-none transition-all duration-300"></div>
@@ -1081,7 +1081,7 @@ export default function StarlightSection({
             {/* Cosmic Timeline & Factory Settings Combined */}
             <div className="space-y-4">
               <div className="flex justify-between items-center mb-2">
-                <div className="text-sm text-gray-300">Universe Factory Settings</div>
+                <div className="text-sm text-[var(--ink-mid)]">Universe Factory Settings</div>
                 
                 {/* Current Status - Modern UI */}
                 <div className="flex items-center gap-3 px-3 py-1.5 bg-gradient-to-r from-slate-800/50 to-slate-700/50 rounded-lg border border-slate-600/30 backdrop-blur-sm min-w-[280px]">
@@ -1091,7 +1091,7 @@ export default function StarlightSection({
                       starFormationRate > 1.5 ? 'bg-red-400 animate-pulse' : 
                       'bg-green-400 animate-pulse'
                     }`}></div>
-                    <span className="text-xs font-medium text-white truncate">
+                    <span className="text-xs font-medium text-[var(--ink)] truncate">
                       {starFormationRate <= 0.2 ? 'Shutdown' :
                        starFormationRate <= 0.6 ? 'Maintenance Mode' :
                        starFormationRate <= 1.1 ? 'Standard Operation' :
@@ -1099,23 +1099,23 @@ export default function StarlightSection({
                     </span>
                   </div>
                   <div className="h-4 w-px bg-slate-500/50 flex-shrink-0"></div>
-                  <div className="flex items-center gap-3 text-xs text-slate-300 min-w-[100px]">
-                    <span className="min-w-[35px]"><strong className="text-white">{starFormationRate.toFixed(1)}x</strong> Rate</span>
-                    <span className="min-w-[45px]"><strong className="text-white">{Math.min(100, starFormationRate * 50).toFixed(0)}%</strong> Eff</span>
+                  <div className="flex items-center gap-3 text-xs text-[var(--ink-mid)] min-w-[100px]">
+                    <span className="min-w-[35px]"><strong className="text-[var(--ink)]">{starFormationRate.toFixed(1)}x</strong> Rate</span>
+                    <span className="min-w-[45px]"><strong className="text-[var(--ink)]">{Math.min(100, starFormationRate * 50).toFixed(0)}%</strong> Eff</span>
                   </div>
                 </div>
               </div>
               
               {/* Animated Timeline Visualization */}
               <div className="relative bg-black/40 rounded-lg p-3 mb-4">
-                <div className="text-xs text-gray-400 mb-2 text-center">Cosmic Star Formation History</div>
+                <div className="text-xs text-[var(--ink-soft)] mb-2 text-center">Cosmic Star Formation History</div>
                 
                 <div className="relative h-8 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded overflow-hidden">
                   {/* Timeline markers */}
                   <div className="absolute inset-0 flex items-center justify-between px-2">
-                    <span className="text-xs text-white font-bold">13.8 Gya</span>
-                    <span className="text-xs text-white font-bold">Peak (10 Gya)</span>
-                    <span className="text-xs text-white font-bold">Today</span>
+                    <span className="text-xs text-[var(--ink)] font-bold">13.8 Gya</span>
+                    <span className="text-xs text-[var(--ink)] font-bold">Peak (10 Gya)</span>
+                    <span className="text-xs text-[var(--ink)] font-bold">Today</span>
                   </div>
                   
                   {/* Animated position indicator */}
@@ -1137,7 +1137,7 @@ export default function StarlightSection({
                   />
                 </div>
                 
-                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                <div className="flex justify-between text-xs text-[var(--ink-soft)] mt-1">
                   <span>Big Bang</span>
                   <span>Star Formation Peak</span>
                   <span>Present Day</span>
@@ -1145,9 +1145,9 @@ export default function StarlightSection({
                 
                 {/* Current Age Display */}
                 <div className="text-center mt-2">
-                  <div className="text-sm font-bold text-white">
+                  <div className="text-sm font-bold text-[var(--ink)]">
                     {currentCosmicAge.toFixed(1)} Gya 
-                    <span className="text-xs text-gray-400 ml-2">
+                    <span className="text-xs text-[var(--ink-soft)] ml-2">
                       ({currentCosmicAge > 13.0 ? 'Dark Ages' :
                         currentCosmicAge > 11.0 ? 'First Light Era' :
                         currentCosmicAge > 8.0 ? 'Peak Formation Era' :
@@ -1218,11 +1218,11 @@ export default function StarlightSection({
                     className={`p-3 rounded-lg border text-left transition-all ${
                       Math.abs(starFormationRate - setting.rate) < 0.05
                         ? setting.status === 'success' 
-                          ? 'bg-green-600/30 border-green-400 text-white' 
+                          ? 'bg-green-600/30 border-green-400 text-[var(--ink)]' 
                           : setting.status === 'warning'
-                          ? 'bg-yellow-600/30 border-yellow-400 text-white'
-                          : 'bg-red-600/30 border-red-400 text-white'
-                        : 'bg-black/20 border-white/20 text-gray-300 hover:bg-white/5'
+                          ? 'bg-yellow-600/30 border-yellow-400 text-[var(--ink)]'
+                          : 'bg-red-600/30 border-red-400 text-[var(--ink)]'
+                        : 'bg-black/20 border-white/20 text-[var(--ink-mid)] hover:bg-white/5'
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -1232,12 +1232,12 @@ export default function StarlightSection({
                           {setting.label}
                         </div>
                         <div className="text-xs text-blue-300 font-medium">{setting.era}</div>
-                        <div className="text-xs text-gray-400 mt-1">{setting.description}</div>
+                        <div className="text-xs text-[var(--ink-soft)] mt-1">{setting.description}</div>
                         <div className="text-xs text-purple-300 mt-1 italic">{setting.cosmicEvent}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-bold text-white">{setting.rate}x</div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-sm font-bold text-[var(--ink)]">{setting.rate}x</div>
+                        <div className="text-xs text-[var(--ink-soft)]">
                           {setting.rate <= 0.3 ? 'Dormant' :
                            setting.rate <= 0.7 ? 'Startup' :
                            setting.rate <= 1.2 ? 'Standard' :

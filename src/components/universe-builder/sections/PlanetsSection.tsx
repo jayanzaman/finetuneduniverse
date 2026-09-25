@@ -30,7 +30,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: 
               <div className="text-center space-y-2">
                 <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                 <div className="text-sm text-red-300">Water Vapor Escaping</div>
-                <div className="text-xs text-gray-400">Too hot ({temperature.toFixed(0)}°C)</div>
+                <div className="text-xs text-[var(--ink-soft)]">Too hot ({temperature.toFixed(0)}°C)</div>
               </div>
               {[...Array(8)].map((_, i) => (
                 <div
@@ -52,7 +52,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: 
               <div className="text-center space-y-2">
                 <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                 <div className="text-sm text-red-300">Atmosphere Lost</div>
-                <div className="text-xs text-gray-400">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
+                <div className="text-xs text-[var(--ink-soft)]">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
               </div>
               {[...Array(8)].map((_, i) => (
                 <div
@@ -74,7 +74,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: 
               <div className="text-center space-y-2">
                 <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                 <div className="text-sm text-red-300">Water Boiling Away</div>
-                <div className="text-xs text-gray-400">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
+                <div className="text-xs text-[var(--ink-soft)]">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
               </div>
               {[...Array(8)].map((_, i) => (
                 <div
@@ -96,7 +96,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: 
               <div className="text-center space-y-2">
                 <div className="text-3xl"><Snowflake className="w-8 h-8 text-cyan-300" /></div>
                 <div className="text-sm text-cyan-300">Water Frozen</div>
-                <div className="text-xs text-gray-400">Too cold ({temperature.toFixed(0)}°C)</div>
+                <div className="text-xs text-[var(--ink-soft)]">Too cold ({temperature.toFixed(0)}°C)</div>
               </div>
               {[...Array(6)].map((_, i) => (
                 <div
@@ -117,7 +117,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: 
               <div className="text-center space-y-2">
                 <div className="text-3xl"><Waves className="w-8 h-8 text-blue-300" /></div>
                 <div className="text-sm text-blue-300">Crushing Pressure</div>
-                <div className="text-xs text-gray-400">Too dense ({effectivePressure.toFixed(2)} atm)</div>
+                <div className="text-xs text-[var(--ink-soft)]">Too dense ({effectivePressure.toFixed(2)} atm)</div>
               </div>
             </div>
           );
@@ -128,7 +128,7 @@ function WaterStateVisual({ orbitalDistance, planetMass, atmosphericPressure }: 
               <div className="text-center space-y-2">
                 <div className="text-3xl"><Droplets className="w-8 h-8 text-blue-400" /></div>
                 <div className="text-sm text-blue-300">Liquid Water</div>
-                <div className="text-xs text-gray-400">{temperature.toFixed(0)}°C, {effectivePressure.toFixed(2)} atm</div>
+                <div className="text-xs text-[var(--ink-soft)]">{temperature.toFixed(0)}°C, {effectivePressure.toFixed(2)} atm</div>
               </div>
               {[...Array(6)].map((_, i) => (
                 <div
@@ -187,7 +187,7 @@ function MagneticFieldVisual({ magneticField }: { magneticField: number }) {
         {/* Status text */}
         <div className="absolute top-4 left-4 right-4 text-center">
           <div className={`text-sm font-semibold ${status.color}`}>{status.text}</div>
-          <div className="text-xs text-gray-400">{status.subtext}</div>
+          <div className="text-xs text-[var(--ink-soft)]">{status.subtext}</div>
         </div>
         
         {magneticField < 0.2 ? (
@@ -380,7 +380,7 @@ function PlanetarySystem({ orbitalDistance, planetMass, atmosphericPressure, bas
         </div>
         
         {/* Temperature indicator */}
-        <div className="absolute bottom-2 left-2 text-xs text-white bg-black/50 px-2 py-1 rounded">
+        <div className="absolute bottom-2 left-2 text-xs text-[var(--ink)] bg-black/50 px-2 py-1 rounded">
           {temperature.toFixed(0)}°C
         </div>
       </div>
@@ -488,14 +488,14 @@ export default function PlanetsSection({
     <div className="container mx-auto px-4">
       {/* Mobile: Carousel Layout */}
       <div className="md:hidden mb-6">
-        <Card className="bg-black/20 border-white/10 text-white">
+        <Card className="bg-black/20 border-white/10 text-[var(--ink)]">
           <CardContent>
             <div className="space-y-4">
               {/* Header with progress */}
               <div className="flex items-center justify-between mb-2">
                 <div className="flex-1">
-                  <h4 className="text-base font-semibold text-white">{steps[currentStep].title}</h4>
-                  <p className="text-xs text-gray-300">{steps[currentStep].subtitle}</p>
+                  <h4 className="text-base font-semibold text-[var(--ink)]">{steps[currentStep].title}</h4>
+                  <p className="text-xs text-[var(--ink-mid)]">{steps[currentStep].subtitle}</p>
                 </div>
                 <div className="flex items-center space-x-1">
                   {steps.map((_, index) => (
@@ -516,7 +516,7 @@ export default function PlanetsSection({
                 <button
                   onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
                   disabled={currentStep === 0}
-                  className="px-4 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
+                  className="px-4 py-2 bg-gray-700 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-gray-600 active:scale-95 text-sm"
                 >
                   Previous
                 </button>
@@ -525,13 +525,13 @@ export default function PlanetsSection({
                   <span className="text-sm font-medium text-blue-400">
                     {currentStep + 1} / {steps.length}
                   </span>
-                  <p className="text-xs text-gray-400 mt-1">{steps[currentStep].description}</p>
+                  <p className="text-xs text-[var(--ink-soft)] mt-1">{steps[currentStep].description}</p>
                 </div>
                 
                 <button
                   onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
                   disabled={currentStep === steps.length - 1}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
+                  className="px-4 py-2 bg-blue-600 text-[var(--ink)] rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:bg-blue-500 active:scale-95 text-sm"
                 >
                   Next
                 </button>
@@ -548,7 +548,7 @@ export default function PlanetsSection({
               <div className="space-y-2 mt-3">
                 {/* Orbital Distance Slider */}
                 <div>
-                  <div className="text-xs text-gray-300 mb-1">Orbital Distance</div>
+                  <div className="text-xs text-[var(--ink-mid)] mb-1">Orbital Distance</div>
                   <div className="relative">
                     <Slider
                       value={[orbitalDistance]}
@@ -564,16 +564,16 @@ export default function PlanetsSection({
                            width: `${((1.1 - 0.9) / (5 - 0.1)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-[var(--ink-soft)]">
                     <span>Hot</span>
-                    <span className="text-white font-medium">{orbitalDistance.toFixed(1)} AU</span>
+                    <span className="text-[var(--ink)] font-medium">{orbitalDistance.toFixed(1)} AU</span>
                     <span>Cold</span>
                   </div>
                 </div>
 
                 {/* Planet Mass Slider */}
                 <div>
-                  <div className="text-xs text-gray-300 mb-1">Planet Mass</div>
+                  <div className="text-xs text-[var(--ink-mid)] mb-1">Planet Mass</div>
                   <div className="relative">
                     <Slider
                       value={[planetMass]}
@@ -589,16 +589,16 @@ export default function PlanetsSection({
                            width: `${((1.3 - 0.8) / (10 - 0.01)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-[var(--ink-soft)]">
                     <span>Small</span>
-                    <span className="text-white font-medium">{planetMass.toFixed(1)} M⊕</span>
+                    <span className="text-[var(--ink)] font-medium">{planetMass.toFixed(1)} M⊕</span>
                     <span>Large</span>
                   </div>
                 </div>
 
                 {/* Atmospheric Pressure Slider */}
                 <div>
-                  <div className="text-xs text-gray-300 mb-1">Atmospheric Pressure</div>
+                  <div className="text-xs text-[var(--ink-mid)] mb-1">Atmospheric Pressure</div>
                   <div className="relative">
                     <Slider
                       value={[basePressure]}
@@ -614,16 +614,16 @@ export default function PlanetsSection({
                            width: `${((1.2 - 0.8) / (10 - 0)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-[var(--ink-soft)]">
                     <span>Vapor</span>
-                    <span className="text-white font-medium">{basePressure.toFixed(2)} atm</span>
+                    <span className="text-[var(--ink)] font-medium">{basePressure.toFixed(2)} atm</span>
                     <span>Crush</span>
                   </div>
                 </div>
 
                 {/* Magnetic Field Slider */}
                 <div>
-                  <div className="text-xs text-gray-300 mb-1">Magnetic Field</div>
+                  <div className="text-xs text-[var(--ink-mid)] mb-1">Magnetic Field</div>
                   <div className="relative">
                     <Slider
                       value={[magneticField]}
@@ -639,9 +639,9 @@ export default function PlanetsSection({
                            width: `${((1.2 - 0.8) / (5 - 0)) * 100}%`
                          }}></div>
                   </div>
-                  <div className="flex justify-between text-xs text-gray-400">
+                  <div className="flex justify-between text-xs text-[var(--ink-soft)]">
                     <span>None</span>
-                    <span className="text-white font-medium">{(magneticField * 50).toFixed(0)} μT</span>
+                    <span className="text-[var(--ink)] font-medium">{(magneticField * 50).toFixed(0)} μT</span>
                     <span>Strong</span>
                   </div>
                 </div>
@@ -666,15 +666,15 @@ export default function PlanetsSection({
         {/* Control Panel: All Parameter Sliders */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Habitability Controls</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Habitability Controls</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Adjust orbital distance, mass, atmosphere, and magnetic field
             </CardDescription>
           </CardHeader>
           <CardContent>
             {/* Orbital Distance Slider */}
             <div className="mb-6">
-              <div className="text-sm text-gray-300 mb-2">Orbital Distance</div>
+              <div className="text-sm text-[var(--ink-mid)] mb-2">Orbital Distance</div>
               <div className="relative">
                 <Slider
                   value={[orbitalDistance]}
@@ -690,16 +690,16 @@ export default function PlanetsSection({
                        width: `${((1.1 - 0.9) / (5 - 0.1)) * 100}%`
                      }}></div>
               </div>
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] mt-2">
                 <span>Hot</span>
-                <span className="text-white font-medium">{orbitalDistance.toFixed(1)} AU</span>
+                <span className="text-[var(--ink)] font-medium">{orbitalDistance.toFixed(1)} AU</span>
                 <span>Cold</span>
               </div>
             </div>
 
             {/* Planet Mass Slider */}
             <div className="mb-6">
-              <div className="text-sm text-gray-300 mb-2">Planet Mass</div>
+              <div className="text-sm text-[var(--ink-mid)] mb-2">Planet Mass</div>
               <div className="relative">
                 <Slider
                   value={[planetMass]}
@@ -715,16 +715,16 @@ export default function PlanetsSection({
                        width: `${((1.3 - 0.8) / (10 - 0.01)) * 100}%`
                      }}></div>
               </div>
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] mt-2">
                 <span>Small</span>
-                <span className="text-white font-medium">{planetMass.toFixed(1)} M⊕</span>
+                <span className="text-[var(--ink)] font-medium">{planetMass.toFixed(1)} M⊕</span>
                 <span>Large</span>
               </div>
             </div>
 
             {/* Atmospheric Pressure Slider */}
             <div className="mb-6">
-              <div className="text-sm text-gray-300 mb-2">
+              <div className="text-sm text-[var(--ink-mid)] mb-2">
                 Atmospheric Pressure
                 {planetMass < 0.3 && (
                   <span className="text-red-300 text-xs ml-2 animate-pulse">(Mass too low - atmosphere escaping!)</span>
@@ -753,12 +753,12 @@ export default function PlanetsSection({
                        width: `${((1.2 - 0.8) / (10 - 0)) * 100}%`
                      }}></div>
               </div>
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] mt-2">
                 <span>Vapor</span>
                 <div className="text-center">
-                  <div className="text-white font-medium">{atmosphericPressure.toFixed(2)} atm</div>
+                  <div className="text-[var(--ink)] font-medium">{atmosphericPressure.toFixed(2)} atm</div>
                   {basePressure !== atmosphericPressure && (
-                    <div className="text-gray-400 text-xs">
+                    <div className="text-[var(--ink-soft)] text-xs">
                       {planetMass < 0.3 ? 
                         `Lost: ${(basePressure - atmosphericPressure).toFixed(2)} atm` :
                         `Base: ${basePressure.toFixed(2)} atm`
@@ -772,7 +772,7 @@ export default function PlanetsSection({
 
             {/* Magnetic Field Slider */}
             <div className="mb-4">
-              <div className="text-sm text-gray-300 mb-2">Magnetic Field</div>
+              <div className="text-sm text-[var(--ink-mid)] mb-2">Magnetic Field</div>
               <div className="relative">
                 <Slider
                   value={[magneticField]}
@@ -788,9 +788,9 @@ export default function PlanetsSection({
                        width: `${((1.2 - 0.8) / (5 - 0)) * 100}%`
                      }}></div>
               </div>
-              <div className="flex justify-between text-xs text-gray-400 mt-2">
+              <div className="flex justify-between text-xs text-[var(--ink-soft)] mt-2">
                 <span>None</span>
-                <span className="text-white font-medium">{(magneticField * 50).toFixed(0)} μT</span>
+                <span className="text-[var(--ink)] font-medium">{(magneticField * 50).toFixed(0)} μT</span>
                 <span>Strong</span>
               </div>
             </div>
@@ -809,8 +809,8 @@ export default function PlanetsSection({
         {/* Orbital Distance Visual */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Orbital Distance</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Orbital Distance</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Distance from host star affects temperature
             </CardDescription>
           </CardHeader>
@@ -838,8 +838,8 @@ export default function PlanetsSection({
         {/* Water State Visual */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Water State</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Water State</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Liquid water stability affected by multiple factors
             </CardDescription>
           </CardHeader>
@@ -862,7 +862,7 @@ export default function PlanetsSection({
                       <div className="text-center space-y-2">
                         <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                         <div className="text-sm text-red-300">Water Vapor Escaping</div>
-                        <div className="text-xs text-gray-400">Too hot ({temperature.toFixed(0)}°C)</div>
+                        <div className="text-xs text-[var(--ink-soft)]">Too hot ({temperature.toFixed(0)}°C)</div>
                       </div>
                       {[...Array(8)].map((_, i) => (
                         <div
@@ -884,7 +884,7 @@ export default function PlanetsSection({
                       <div className="text-center space-y-2">
                         <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                         <div className="text-sm text-red-300">Atmosphere Lost</div>
-                        <div className="text-xs text-gray-400">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
+                        <div className="text-xs text-[var(--ink-soft)]">Mass too low ({planetMass.toFixed(1)} M⊕)</div>
                       </div>
                       {[...Array(8)].map((_, i) => (
                         <div
@@ -906,7 +906,7 @@ export default function PlanetsSection({
                       <div className="text-center space-y-2">
                         <div className="text-3xl"><Wind className="w-8 h-8 text-red-300" /></div>
                         <div className="text-sm text-red-300">Water Boiling Away</div>
-                        <div className="text-xs text-gray-400">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
+                        <div className="text-xs text-[var(--ink-soft)]">Pressure too low ({effectivePressure.toFixed(2)} atm)</div>
                       </div>
                       {[...Array(8)].map((_, i) => (
                         <div
@@ -928,7 +928,7 @@ export default function PlanetsSection({
                       <div className="text-center space-y-2">
                         <div className="text-3xl"><Snowflake className="w-8 h-8 text-cyan-300" /></div>
                         <div className="text-sm text-cyan-300">Water Frozen</div>
-                        <div className="text-xs text-gray-400">Too cold ({temperature.toFixed(0)}°C)</div>
+                        <div className="text-xs text-[var(--ink-soft)]">Too cold ({temperature.toFixed(0)}°C)</div>
                       </div>
                       {[...Array(6)].map((_, i) => (
                         <div
@@ -949,7 +949,7 @@ export default function PlanetsSection({
                       <div className="text-center space-y-2">
                         <div className="text-3xl"><Waves className="w-8 h-8 text-blue-300" /></div>
                         <div className="text-sm text-blue-300">Crushing Pressure</div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-[var(--ink-soft)]">
                           Like {Math.round((atmosphericPressure - 1) * 10)}m underwater
                         </div>
                       </div>
@@ -969,7 +969,7 @@ export default function PlanetsSection({
                       <div className="text-center space-y-2">
                         <div className="text-3xl"><Droplets className="w-8 h-8 text-blue-400" /></div>
                         <div className="text-sm text-blue-300">Liquid Water Stable</div>
-                        <div className="text-xs text-gray-400">Optimal conditions ({temperature.toFixed(0)}°C)</div>
+                        <div className="text-xs text-[var(--ink-soft)]">Optimal conditions ({temperature.toFixed(0)}°C)</div>
                       </div>
                       {[...Array(3)].map((_, i) => (
                         <div
@@ -987,7 +987,7 @@ export default function PlanetsSection({
               })()}
               
               {/* Environmental readings */}
-              <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded">
+              <div className="absolute bottom-2 right-2 text-xs text-[var(--ink)] bg-black/50 px-2 py-1 rounded">
                 <div>{atmosphericPressure.toFixed(1)} atm</div>
                 <div>{((278 / Math.sqrt(orbitalDistance)) - 273).toFixed(0)}°C</div>
                 <div>Mass: {planetMass.toFixed(1)} M⊕</div>
@@ -1009,8 +1009,8 @@ export default function PlanetsSection({
         {/* Magnetic Field */}
         <Card className="bg-black/20 border-white/10">
           <CardHeader>
-            <CardTitle className="text-white">Magnetic Field</CardTitle>
-            <CardDescription className="text-gray-300">
+            <CardTitle className="text-[var(--ink)]">Magnetic Field</CardTitle>
+            <CardDescription className="text-[var(--ink-mid)]">
               Planetary magnetic shield protecting atmosphere
             </CardDescription>
           </CardHeader>
@@ -1036,7 +1036,7 @@ export default function PlanetsSection({
                   {/* Status text */}
                   <div className="absolute top-4 left-4 right-4 text-center">
                     <div className="text-sm text-red-300 font-semibold">Atmosphere Stripping</div>
-                    <div className="text-xs text-gray-400">No magnetic protection</div>
+                    <div className="text-xs text-[var(--ink-soft)]">No magnetic protection</div>
                   </div>
                   
                   {/* Solar wind particles hitting planet directly */}
@@ -1072,7 +1072,7 @@ export default function PlanetsSection({
                   {/* Status text */}
                   <div className="absolute top-4 left-4 right-4 text-center">
                     <div className="text-sm text-purple-300 font-semibold">Dangerous Radiation Belts</div>
-                    <div className="text-xs text-gray-400">Field too strong</div>
+                    <div className="text-xs text-[var(--ink-soft)]">Field too strong</div>
                   </div>
                   
                   {/* Intense magnetic field lines */}
@@ -1110,7 +1110,7 @@ export default function PlanetsSection({
                   {/* Status text */}
                   <div className="absolute top-4 left-4 right-4 text-center">
                     <div className="text-sm text-blue-300 font-semibold">Protective Magnetosphere</div>
-                    <div className="text-xs text-gray-400">Optimal protection</div>
+                    <div className="text-xs text-[var(--ink-soft)]">Optimal protection</div>
                   </div>
                   
                   {/* Magnetic field lines - dipole pattern */}
@@ -1161,7 +1161,7 @@ export default function PlanetsSection({
               )}
               
               {/* Field strength reading */}
-              <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded">
+              <div className="absolute bottom-2 right-2 text-xs text-[var(--ink)] bg-black/50 px-2 py-1 rounded">
                 {(magneticField * 50).toFixed(0)} μT
               </div>
             </div>

@@ -251,10 +251,10 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
             <div className="relative z-10 h-full flex flex-col justify-end items-end pl-6 pr-3 py-6">
               {/* Era Title - Compact bottom overlay */}
               <div className="bg-black/40 px-4 py-2 rounded-lg backdrop-blur-sm border border-white/20 text-right">
-                <h3 className="text-2xl font-bold text-white drop-shadow-2xl font-serif">
+                <h3 className="text-2xl font-bold text-[var(--ink)] drop-shadow-2xl font-serif">
                   {selectedEraData.name}
                 </h3>
-                <p className="text-sm text-white/90 drop-shadow-lg font-light">{selectedEraData.timeRange}</p>
+                <p className="text-sm text-[var(--ink)] drop-shadow-lg font-light">{selectedEraData.timeRange}</p>
               </div>
             </div>
             
@@ -288,24 +288,24 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                     {/* Adaptive text based on available width */}
                     {width.percentage > 15 ? (
                       // Full name for wide sections
-                      <div className="text-xs font-semibold text-white drop-shadow-2xl leading-tight px-1 font-sans">
+                      <div className="text-xs font-semibold text-[var(--ink)] drop-shadow-2xl leading-tight px-1 font-sans">
                         {era.name}
                       </div>
                     ) : width.percentage > 10 ? (
                       // Abbreviated name for medium sections
-                      <div className="text-xs font-bold text-white drop-shadow-2xl leading-tight px-1 font-mono transform -rotate-12">
+                      <div className="text-xs font-bold text-[var(--ink)] drop-shadow-2xl leading-tight px-1 font-mono transform -rotate-12">
                         {era.name.split(' ')[0]}
                       </div>
                     ) : (
                       // Icon or initial for narrow sections
-                      <div className="text-lg font-bold text-white drop-shadow-2xl transform rotate-45">
+                      <div className="text-lg font-bold text-[var(--ink)] drop-shadow-2xl transform rotate-45">
                         {eraIcons[era.icon] || era.name.charAt(0)}
                       </div>
                     )}
                     
                     {/* Time range - only show for wider sections */}
                     {width.percentage > 12 && (
-                      <div className="text-xs text-white/90 drop-shadow-lg font-light leading-tight">
+                      <div className="text-xs text-[var(--ink)] drop-shadow-lg font-light leading-tight">
                         {era.timeRange}
                       </div>
                     )}
@@ -314,7 +314,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
                 
                 {/* Duration indicator */}
                 <div className="absolute bottom-0 left-0 right-0 bg-black/30 text-center">
-                  <div className="text-xs text-white/90 py-1 font-light">
+                  <div className="text-xs text-[var(--ink)] py-1 font-light">
                     {width.duration >= 1000 ? `${(width.duration/1000).toFixed(1)}Gy` : `${width.duration}Ma`}
                   </div>
                 </div>
@@ -329,7 +329,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
         </div>
         
         {/* Timeline Scale */}
-        <div className="flex justify-between mt-2 text-xs text-gray-400">
+        <div className="flex justify-between mt-2 text-xs text-[var(--ink-soft)]">
           <span>4.6 Billion Years Ago</span>
           <span>Present</span>
         </div>
@@ -435,8 +435,8 @@ function EnvironmentControl({
   return (
     <div className="rounded-lg border border-white/10 bg-black/20 p-3">
       <div className="mb-2 flex items-center justify-between gap-3 text-xs">
-        <span className="font-medium text-gray-300">{label}</span>
-        <span className="font-mono text-white">{value}</span>
+        <span className="font-medium text-[var(--ink-mid)]">{label}</span>
+        <span className="font-mono text-[var(--ink)]">{value}</span>
       </div>
       {children}
     </div>
@@ -542,10 +542,10 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           {/* Left Side: Carousel and Era Information (constrained width) */}
           <div className="flex-shrink-0 lg:max-w-2xl space-y-8">
             {/* Evolution Timeline Carousel */}
-            <Card className="bg-black/20 border-white/10 text-white">
+            <Card className="bg-black/20 border-white/10 text-[var(--ink)]">
               <CardHeader>
-                <CardTitle className="text-white">Geological Timeline</CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardTitle className="text-[var(--ink)]">Geological Timeline</CardTitle>
+                <CardDescription className="text-[var(--ink-mid)]">
                   Explore 4.6 billion years of Earth's history and the evolution of life
                 </CardDescription>
               </CardHeader>
@@ -637,12 +637,12 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                     <div className="p-3 rounded-lg bg-gray-900/20 border border-gray-500/30">
                       <div className="flex justify-between items-center">
                         <div>
-                          <h4 className="font-semibold text-gray-300">Time Period</h4>
-                          <p className="text-gray-400 text-sm">{currentEra.timeRange}</p>
+                          <h4 className="font-semibold text-[var(--ink-mid)]">Time Period</h4>
+                          <p className="text-[var(--ink-soft)] text-sm">{currentEra.timeRange}</p>
                         </div>
                         <div className="text-right">
-                          <div className="text-lg font-bold text-gray-200">{currentEra.description}</div>
-                          <div className="text-xs text-gray-400">Era Classification</div>
+                          <div className="text-lg font-bold text-[var(--ink-mid)]">{currentEra.description}</div>
+                          <div className="text-xs text-[var(--ink-soft)]">Era Classification</div>
                         </div>
                       </div>
                     </div>
@@ -866,21 +866,21 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                         <div className="flex items-center gap-3 mb-4">
                           <span className="text-3xl">{eraIcons.anthropocene}</span>
                           <div>
-                            <h3 className="text-xl font-bold text-gray-300">Anthropocene</h3>
-                            <p className="text-gray-400 text-sm">Present day</p>
+                            <h3 className="text-xl font-bold text-[var(--ink-mid)]">Anthropocene</h3>
+                            <p className="text-[var(--ink-soft)] text-sm">Present day</p>
                           </div>
                         </div>
                         
                         <div className="mb-4">
-                          <h4 className="font-semibold text-gray-200 mb-2">Role: Human transformation of Earth systems</h4>
-                          <p className="text-gray-100 text-sm leading-relaxed">
+                          <h4 className="font-semibold text-[var(--ink-mid)] mb-2">Role: Human transformation of Earth systems</h4>
+                          <p className="text-[var(--ink)] text-sm leading-relaxed">
                             Humans have become a geological force, reshaping the planet's climate, chemistry, and biology faster than natural processes. This represents the first time in Earth's history that a single species has gained conscious control over planetary systems.
                           </p>
                         </div>
 
                         <div>
-                          <h4 className="font-semibold text-gray-200 mb-2">Tempo: Technological acceleration</h4>
-                          <p className="text-gray-100 text-sm leading-relaxed">
+                          <h4 className="font-semibold text-[var(--ink-mid)] mb-2">Tempo: Technological acceleration</h4>
+                          <p className="text-[var(--ink)] text-sm leading-relaxed">
                             The pace of change has accelerated beyond biological timescales. What once took millions of years now happens in decades. This creates both unprecedented opportunities and existential risks for life on Earth.
                           </p>
                         </div>
@@ -896,8 +896,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
           <div className="flex-1">
             <Card className="bg-black/20 border-white/10 h-full">
               <CardHeader>
-                <CardTitle className="text-white">Environmental Conditions</CardTitle>
-                <CardDescription className="text-gray-300">
+                <CardTitle className="text-[var(--ink)]">Environmental Conditions</CardTitle>
+                <CardDescription className="text-[var(--ink-mid)]">
                   Key parameters for {currentEra.name}
                 </CardDescription>
               </CardHeader>
@@ -909,8 +909,8 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                   <div className="text-xs uppercase tracking-[0.18em] text-emerald-300">
                     Model outcome
                   </div>
-                  <div className="mt-1 text-base text-white">{outcome}</div>
-                  <div className="mt-1 text-xs leading-relaxed text-gray-400">
+                  <div className="mt-1 text-base text-[var(--ink)]">{outcome}</div>
+                  <div className="mt-1 text-xs leading-relaxed text-[var(--ink-soft)]">
                     Weighted model: CO₂ 25% · O₂ 25% · temperature 20% · volcanism 15% · impacts 15%.
                   </div>
                 </div>
@@ -940,9 +940,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <span className="text-3xl"><CloudFog className="w-8 h-8" /></span>
                       <Badge className="bg-orange-700/50 text-orange-200">CO₂</Badge>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Carbon Dioxide</h3>
-                    <div className="text-3xl font-bold text-white">{co2Level.toFixed(0)}</div>
-                    <p className="text-xs text-gray-400">parts per million</p>
+                    <h3 className="text-sm font-semibold text-[var(--ink-mid)] mb-1">Carbon Dioxide</h3>
+                    <div className="text-3xl font-bold text-[var(--ink)]">{co2Level.toFixed(0)}</div>
+                    <p className="text-xs text-[var(--ink-soft)]">parts per million</p>
                   </div>
 
                   {/* Oxygen Level */}
@@ -951,9 +951,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <span className="text-3xl"><Wind className="w-8 h-8" /></span>
                       <Badge className="bg-blue-700/50 text-blue-200">O₂</Badge>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Oxygen Level</h3>
-                    <div className="text-3xl font-bold text-white">{oxygenLevel.toFixed(1)}%</div>
-                    <p className="text-xs text-gray-400">atmospheric concentration</p>
+                    <h3 className="text-sm font-semibold text-[var(--ink-mid)] mb-1">Oxygen Level</h3>
+                    <div className="text-3xl font-bold text-[var(--ink)]">{oxygenLevel.toFixed(1)}%</div>
+                    <p className="text-xs text-[var(--ink-soft)]">atmospheric concentration</p>
                   </div>
 
                   {/* Temperature */}
@@ -962,9 +962,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <span className="text-3xl"><Thermometer className="w-8 h-8" /></span>
                       <Badge className="bg-red-700/50 text-red-200">Temp</Badge>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Global Temperature</h3>
-                    <div className="text-3xl font-bold text-white">{temperature.toFixed(0)}°C</div>
-                    <p className="text-xs text-gray-400">average surface temperature</p>
+                    <h3 className="text-sm font-semibold text-[var(--ink-mid)] mb-1">Global Temperature</h3>
+                    <div className="text-3xl font-bold text-[var(--ink)]">{temperature.toFixed(0)}°C</div>
+                    <p className="text-xs text-[var(--ink-soft)]">average surface temperature</p>
                   </div>
 
                   {/* Volcanic Activity */}
@@ -973,9 +973,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <span className="text-3xl"><Flame className="w-8 h-8" /></span>
                       <Badge className="bg-amber-700/50 text-amber-200">Volcanic</Badge>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Volcanic Activity</h3>
-                    <div className="text-3xl font-bold text-white">{volcanicActivity.toFixed(1)}</div>
-                    <p className="text-xs text-gray-400">major eruptions per Myr</p>
+                    <h3 className="text-sm font-semibold text-[var(--ink-mid)] mb-1">Volcanic Activity</h3>
+                    <div className="text-3xl font-bold text-[var(--ink)]">{volcanicActivity.toFixed(1)}</div>
+                    <p className="text-xs text-[var(--ink-soft)]">major eruptions per Myr</p>
                   </div>
 
                   {/* Asteroid Bombardment */}
@@ -984,9 +984,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <span className="text-3xl"><Zap className="w-8 h-8" /></span>
                       <Badge className="bg-purple-700/50 text-purple-200">Impact</Badge>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Asteroid Bombardment</h3>
-                    <div className="text-3xl font-bold text-white">{asteroidActivity.toFixed(1)}</div>
-                    <p className="text-xs text-gray-400">major impacts per Myr</p>
+                    <h3 className="text-sm font-semibold text-[var(--ink-mid)] mb-1">Asteroid Bombardment</h3>
+                    <div className="text-3xl font-bold text-[var(--ink)]">{asteroidActivity.toFixed(1)}</div>
+                    <p className="text-xs text-[var(--ink-soft)]">major impacts per Myr</p>
                   </div>
 
                   {/* Methane Level */}
@@ -995,9 +995,9 @@ export default function LifeSection({ educatorMode, cosmicTime = 0 }: { educator
                       <span className="text-3xl"><Leaf className="w-8 h-8" /></span>
                       <Badge className="bg-green-700/50 text-green-200">CH₄</Badge>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-300 mb-1">Methane Level</h3>
-                    <div className="text-3xl font-bold text-white">{currentEra.atmosphere.methane.toFixed(1)}%</div>
-                    <p className="text-xs text-gray-400">atmospheric concentration</p>
+                    <h3 className="text-sm font-semibold text-[var(--ink-mid)] mb-1">Methane Level</h3>
+                    <div className="text-3xl font-bold text-[var(--ink)]">{currentEra.atmosphere.methane.toFixed(1)}%</div>
+                    <p className="text-xs text-[var(--ink-soft)]">atmospheric concentration</p>
                   </div>
                 </div>
               </CardContent>
