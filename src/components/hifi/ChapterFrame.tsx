@@ -112,7 +112,7 @@ export function ChapterFrame({
         {experimentOutcome && (
           <div className="chapter-experiment-feedback chapter-experiment-feedback--mobile" aria-live="polite">
             {formula && <div className="chapter-formula">{formula}</div>}
-            <div className="chapter-outcome">{experimentOutcome}</div>
+            <div className="chapter-outcome" key={typeof experimentOutcome === 'string' ? experimentOutcome : undefined}>{experimentOutcome}</div>
           </div>
         )}
 
@@ -140,7 +140,7 @@ export function ChapterFrame({
             {(formula || experimentOutcome) && (
               <div className="chapter-experiment-feedback chapter-experiment-feedback--desktop" aria-live="polite">
                 {formula && <div className="chapter-formula">{formula}</div>}
-                {experimentOutcome && <div className="chapter-outcome">{experimentOutcome}</div>}
+                {experimentOutcome && <div className="chapter-outcome" key={typeof experimentOutcome === 'string' ? experimentOutcome : undefined}>{experimentOutcome}</div>}
               </div>
             )}
           </div>
