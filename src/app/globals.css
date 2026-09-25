@@ -689,12 +689,15 @@ button, [role="button"] { touch-action: manipulation; }
   background: linear-gradient(180deg, #07071a 0%, #03030a 100%);
   border: 1px solid var(--hair-2);
   display: grid; grid-template-columns: 1.1fr 1fr; gap: 0;
+  /* Constrain the row to the modal height so the detail pane scrolls
+     rather than the page behind it. */
+  grid-template-rows: minmax(0, 1fr);
   box-shadow: 0 30px 80px rgba(0,0,0,0.7);
   z-index: 60;
   overflow: hidden;
 }
-.focus-modal-viz  { padding: 40px; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 18px; }
-.focus-modal-side { padding: 36px 40px; border-left: 1px solid var(--hair); overflow: auto; }
+.focus-modal-viz  { padding: 40px; position: relative; overflow: hidden; min-height: 0; display: flex; flex-direction: column; gap: 18px; }
+.focus-modal-side { padding: 36px 40px; border-left: 1px solid var(--hair); overflow: auto; min-height: 0; }
 .focus-modal-eyebrow { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--indigo); display: inline-flex; align-items: center; gap: 12px; }
 .focus-modal-eyebrow::before { content: ''; width: 22px; height: 1px; background: var(--indigo); }
 .focus-modal-title { font-family: var(--f-display); font-weight: 300; font-size: 40px; letter-spacing: -0.02em; color: var(--ink); margin-top: 8px; }
@@ -754,7 +757,8 @@ button, [role="button"] { touch-action: manipulation; }
     flex: 1; text-align: center;
     font-size: 9px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint);
   }
-  .focus-modal { inset: 0; grid-template-columns: 1fr; }
+  .focus-modal { inset: 0; grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .focus-modal-viz { overflow: auto; }
   .focus-modal-side { border-left: none; border-top: 1px solid var(--hair); }
 }
 
