@@ -172,38 +172,83 @@ export const EDUCATOR_CONTENT: Record<ParamKey, EducatorPanel> = {
             Ω <span className="op">=</span> ρ / ρ<sub>c</sub>
           </>
         ),
-        caption: 'Ratio of actual density to the critical density',
+        caption: 'Density parameter: actual energy density relative to critical density',
       },
       {
         expression: (
           <>
-            ρ<sub>c</sub> <span className="op">=</span> 3<em>H</em>
-            <sup>2</sup> <span className="op">/</span> 8π<em>G</em>
+            d<em>s</em><sup>2</sup> <span className="op">=</span> −<em>c</em><sup>2</sup>d<em>t</em><sup>2</sup> <span className="op">+</span> <em>a</em>(<em>t</em>)<sup>2</sup> <span className="op">[</span> d<em>r</em><sup>2</sup>/(1 − <em>k</em> <em>r</em><sup>2</sup>) <span className="op">+</span> <em>r</em><sup>2</sup>dΩ<sup>2</sup> <span className="op">]</span>
           </>
         ),
-        caption: 'Friedmann · the critical density',
+        caption: 'FLRW metric · Curvature parameter k (+1, 0, −1)',
+      },
+      {
+        expression: (
+          <>
+            Ω &gt; 1 (<em>k</em>=+1) ➔ <strong>S³</strong> &nbsp;|&nbsp; Ω = 1 (<em>k</em>=0) ➔ <strong>ℝ³</strong> &nbsp;|&nbsp; Ω &lt; 1 (<em>k</em>=−1) ➔ <strong>H³</strong>
+          </>
+        ),
+        caption: 'The three geometries of spacetime',
       },
     ],
     sections: [
       {
         kind: 'lesson',
-        label: 'Three possible worlds',
+        label: 'Why a 2D Sphere & Saddle Represent 3D Space',
         body: (
           <>
-            <strong>Spherical (Ω &gt; 1)</strong>: like a ball&apos;s surface — triangles sum to{' '}
-            <em>more</em> than 180°. <strong>Flat (Ω = 1)</strong>: Euclidean — exactly 180°.{' '}
-            <strong>Saddle (Ω &lt; 1)</strong>: hyperbolic — less than 180°.
+            We live inside 3D space, so we cannot step &quot;outside&quot; into a 4th dimension to view a 3-sphere
+            or hyperbolic 3-space directly. Instead, cosmologists visualize cosmic geometry by taking a <strong>2D cross-section</strong>:
+            <br /><br />
+            • <strong>Positive Curvature (Ω &gt; 1, k = +1) ➔ 3-Sphere (S³)</strong>: Its 2D slice is the surface of a <strong>sphere (S²)</strong>.
+            Space is closed and finite in volume (2π²R³), yet has no edge or center. Parallel lines converge, and triangles bulge outward.
+            <br />
+            • <strong>Zero Curvature (Ω = 1, k = 0) ➔ Flat Euclidean (ℝ³)</strong>: Its 2D slice is a <strong>flat sheet (ℝ²)</strong>.
+            The Pythagorean theorem holds everywhere, and parallel lines stay equidistant forever.
+            <br />
+            • <strong>Negative Curvature (Ω &lt; 1, k = −1) ➔ Hyperbolic Space (H³)</strong>: Its 2D slice is a <strong>saddle surface (H²)</strong>.
+            Space flares outward in opposite directions at every point. Parallel light rays diverge exponentially, and triangles pinch inward.
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'Curvature Tests: Triangles & Light Rays',
+        body: (
+          <>
+            How can an observer inside the universe determine its shape?
+            <br /><br />
+            1. <strong>Geodesic Triangles</strong>: Form a giant triangle between Earth and two points on the Cosmic Microwave Background.
+            On a 3-sphere (S³), great circles curve outward, so interior angles sum to <em>more than 180°</em>.
+            In flat space (ℝ³), angles sum to <em>exactly 180°</em>.
+            In hyperbolic space (H³), angles pinch inward, summing to <em>less than 180°</em>.
+            <br /><br />
+            2. <strong>Parallel Light Beams</strong>: Two parallel laser beams fired across cosmic voids will <em>converge</em> in a closed 3-sphere,
+            <em>remain parallel</em> in flat space, and <em>diverge exponentially</em> in hyperbolic space.
           </>
         ),
       },
       {
         kind: 'pullquote',
-        label: 'Astonishingly flat',
+        label: 'The Flatness Fine-Tuning Problem',
         body: (
           <>
-            Best measurements: Ω<sub>total</sub> ≈ <strong>1.00009 ± 0.0005</strong>. Within a
-            millionth of perfectly flat. Inflation is the candidate answer — but it carries its
-            own tuning problem.
+            Satellite measurements (WMAP, Planck) find Ω<sub>total</sub> ≈ <strong>1.0007 ± 0.0019</strong> — within a fraction of a percent of exact flatness.
+            In general relativity, any tiny deviation from Ω = 1 amplifies exponentially over cosmic time.
+            For Ω to remain flat today after 13.8 billion years, it had to equal <strong>1.0000000000000000... to 60 decimal places</strong> at the Planck epoch.
+            Cosmic inflation explains how space stretched flat, but why did inflation begin with the necessary conditions?
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'Open vs. Closed: The Ultimate Fate',
+        body: (
+          <>
+            Curvature is deeply intertwined with destiny:
+            A closed 3-sphere (S³) has finite total volume — if you flew in a straight rocket trajectory forever, you would eventually return to your starting point.
+            Without dark energy, a closed universe recollapses in a fiery Big Crunch.
+            Flat (ℝ³) and hyperbolic (H³) universes are unbounded, infinite in volume, and expand forever into eternal cosmic freeze.
           </>
         ),
       },

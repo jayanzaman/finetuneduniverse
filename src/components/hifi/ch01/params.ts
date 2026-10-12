@@ -91,8 +91,10 @@ export const PARAMS: ParamDef[] = [
     band: [0.98, 1.02],
     defaultValue: 1,
     precision: 3,
-    leftCap: 'spherical',
-    rightCap: 'saddle',
+    leftCap: 'saddle (H³ open)',
+    rightCap: 'sphere (S³ closed)',
+    failLeft: 'hyperbolic space (H³)',
+    failRight: 'closed 3-sphere (S³)',
     scored: false,
   },
   {
