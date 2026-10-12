@@ -1830,11 +1830,59 @@ button, [role="button"] { touch-action: manipulation; }
 }
 
 .chapter-experiment-layout--ch01 {
-  max-width: min(680px, 48vw) !important;
+  max-width: min(1040px, 72vw) !important;
+  width: 100%;
+}
+
+.ch01-experiment-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.ch01-slider-wrapper {
+  width: 100%;
+  position: relative;
+  z-index: 7;
+  padding: 16px 20px;
+  margin-left: -20px;
+  border-radius: 14px;
+  background: rgba(5, 7, 18, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.ch01-feedback-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: stretch;
+  max-width: min(840px, 58vw);
+}
+
+.ch01-feedback-row .chapter-experiment-feedback--desktop {
+  margin-top: 0;
+  flex: 1 1 340px;
+}
+
+.ch01-ghost {
+  flex: 1 1 240px;
+  max-width: 320px;
+  margin: 0;
 }
 
 @media (max-width: 1024px) {
   .chapter-experiment-layout--ch01 {
     max-width: 100% !important;
+  }
+  .ch01-slider-wrapper {
+    margin-left: 0;
+    padding: 12px 14px;
+  }
+  .ch01-feedback-row {
+    max-width: 100%;
   }
 }

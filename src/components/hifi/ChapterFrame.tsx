@@ -142,27 +142,62 @@ export function ChapterFrame({
         <div
           style={{
             marginTop: 56,
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1fr) auto',
-            gap: 48,
-            alignItems: 'end',
             maxWidth: 1280,
           }}
           className={`chapter-experiment-layout ${chapterIndex === 0 ? 'chapter-experiment-layout--ch01' : ''}`}
         >
-          <div style={{ minWidth: 0 }}>
-            <GoldilocksSlider {...sliderProps} />
-            {(formula || experimentOutcome) && (
-              <div className="chapter-experiment-feedback chapter-experiment-feedback--desktop" aria-live="polite">
-                {formula && <div className="chapter-formula">{formula}</div>}
-                {experimentOutcome && <div className="chapter-outcome" key={typeof experimentOutcome === 'string' ? experimentOutcome : undefined}>{experimentOutcome}</div>}
+          {chapterIndex === 0 ? (
+            <div className="ch01-experiment-stack">
+              <div className="ch01-slider-wrapper">
+                <GoldilocksSlider {...sliderProps} />
               </div>
-            )}
-          </div>
-          {ghost && (
-            <div className="ghost chapter-ghost">
-              <span className="ghost-label">If you leave the band →</span>
-              <span className="ghost-body">{ghost.body}</span>
+              <div className="ch01-feedback-row">
+                {(formula || experimentOutcome) && (
+                  <div className="chapter-experiment-feedback chapter-experiment-feedback--desktop" aria-live="polite">
+                    {formula && <div className="chapter-formula">{formula}</div>}
+                    {experimentOutcome && (
+                      <div className="chapter-outcome" key={typeof experimentOutcome === 'string' ? experimentOutcome : undefined}>
+                        {experimentOutcome}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {ghost && (
+                  <div className="ghost chapter-ghost ch01-ghost">
+                    <span className="ghost-label">If you leave the band →</span>
+                    <span className="ghost-body">{ghost.body}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 1fr) auto',
+                gap: 48,
+                alignItems: 'end',
+              }}
+            >
+              <div style={{ minWidth: 0 }}>
+                <GoldilocksSlider {...sliderProps} />
+                {(formula || experimentOutcome) && (
+                  <div className="chapter-experiment-feedback chapter-experiment-feedback--desktop" aria-live="polite">
+                    {formula && <div className="chapter-formula">{formula}</div>}
+                    {experimentOutcome && (
+                      <div className="chapter-outcome" key={typeof experimentOutcome === 'string' ? experimentOutcome : undefined}>
+                        {experimentOutcome}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {ghost && (
+                <div className="ghost chapter-ghost">
+                  <span className="ghost-label">If you leave the band →</span>
+                  <span className="ghost-body">{ghost.body}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
