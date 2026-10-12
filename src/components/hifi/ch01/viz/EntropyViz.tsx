@@ -77,6 +77,12 @@ export function EntropyViz({
     pitch: 0.22,
   });
 
+  // Particle state ref (accessible to both render loop and resetBattery)
+  const particlesRef = useRef<ThermodynamicParticle[]>(
+    STATIC_PARTICLES.map((p) => ({ ...p }))
+  );
+  const rechargePulseRef = useRef<number>(0);
+
   // UI state
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isCompact, setIsCompact] = useState<boolean>(false);
@@ -177,7 +183,7 @@ export function EntropyViz({
     setIsCompact(height < 210 || width < 320);
 
     // Particle state tracking
-    const particles = STATIC_PARTICLES.map((p) => ({ ...p }));
+    const particles = particlesRef.current;
     lastTimeRef.current = performance.now();
 
     // 3D Perspective Projection Function
@@ -240,9 +246,32 @@ export function EntropyViz({
 
       const yaw = yawRef.current;
       const pitch = pitchRef.current;
+      // Recharge pulse decay
+      if (rechargePulseRef.current > 0) {
+        rechargePulseRef.current = Math.max(0, rechargePulseRef.current - dt * 2.0);
+      }
 
       // 1. DRAW 3D GLASS HOURGLASS VESSEL
       ctx.save();
+
+      // Recharge glow aura if recharged
+      if (rechargePulseRef.current > 0) {
+        const topCenter = project3D(0, 0.45, 0, yaw, pitch, cx, cy, scale);
+        const pulseGrad = ctx.createRadialGradient(
+          topCenter.sx,
+          topCenter.sy,
+          0,
+          topCenter.sx,
+          topCenter.sy,
+          scale * 0.48
+        );
+        pulseGrad.addColorStop(0, `rgba(111, 228, 177, ${0.5 * rechargePulseRef.current})`);
+        pulseGrad.addColorStop(1, 'rgba(111, 228, 177, 0)');
+        ctx.beginPath();
+        ctx.arc(topCenter.sx, topCenter.sy, scale * 0.48, 0, Math.PI * 2);
+        ctx.fillStyle = pulseGrad;
+        ctx.fill();
+      }
 
       // Horizontal contour rings along vertical axis
       const ringHeights = [-0.85, -0.65, -0.45, -0.22, 0.0, 0.22, 0.45, 0.65, 0.85];
@@ -660,9 +689,10 @@ export function EntropyViz({
   }, []);
 
   const resetBattery = useCallback(() => {
-    STATIC_PARTICLES.forEach((p, i) => {
-      p.cascadePos = (i / 72) * 0.45; // Reset into top reservoir
+    particlesRef.current.forEach((p, i) => {
+      p.cascadePos = (i / 72) * 0.42; // Reset into top reservoir
     });
+    rechargePulseRef.current = 1.0;
   }, []);
 
   return (
