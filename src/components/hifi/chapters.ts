@@ -64,3 +64,13 @@ export const EVIDENCE_LABELS: Record<EvidenceStatus, string> = {
 };
 
 export type ChapterMeta = (typeof CHAPTERS)[number];
+
+export const STAR_PALETTE = [
+  { color: '#a8b3ff', brightness: 0.9 },
+  { color: '#cdd4ff', brightness: 1.0 },
+  { color: '#ffe8cc', brightness: 1.1 },
+  { color: '#cdd4ff', brightness: 0.85 },
+  { color: '#b8f0d5', brightness: 1.0 },
+  { color: '#d4c8f0', brightness: 1.0 },
+  { color: '#c8dff0', brightness: 1.05 },
+] as const;

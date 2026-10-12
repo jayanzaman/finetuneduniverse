@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import Link from 'next/link';
 import { GoldilocksSlider, type GoldilocksSliderProps } from './GoldilocksSlider';
 import { trackJourney } from '../../lib/analytics';
 
@@ -35,6 +36,8 @@ type ChapterFrameProps = {
   visualState?: { intensity: number; instability: number; scale: number };
   /** Source entries for the chapter's consequential quantitative claim. */
   sources?: string[];
+  /** Dedicated route for the deeper lab page. When provided, renders a direct page link. */
+  labHref?: string;
 };
 
 /**
@@ -65,6 +68,7 @@ export function ChapterFrame({
   visualState,
   sources,
   chapterIndex,
+  labHref,
 }: ChapterFrameProps) {
   const [showDeepDive, setShowDeepDive] = useState(false);
   const [labRevision, setLabRevision] = useState(0);
@@ -153,27 +157,37 @@ export function ChapterFrame({
         </div>
 
         {/* Secondary variables and lessons are intentionally opt-in. */}
-        {children && (
+        {(labHref || children) && (
           <div className="chapter-deep-dive">
             <div className="chapter-lab-actions">
-              <button
-                type="button"
-                className="hifi-btn"
-                aria-expanded={showDeepDive}
-                onClick={() => setShowDeepDive((open) => {
-                  trackJourney({ name: 'deep_lab_toggle', chapter: chapterIndex, open: !open });
-                  return !open;
-                })}
-              >
-                {showDeepDive ? 'Close deeper lab' : 'Explore the deeper lab'}
-              </button>
-              {showDeepDive && (
+              {labHref ? (
+                <Link
+                  href={labHref}
+                  className="hifi-btn"
+                  onClick={() => trackJourney({ name: 'deep_lab_toggle', chapter: chapterIndex, open: true })}
+                >
+                  Explore the deeper lab →
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className="hifi-btn"
+                  aria-expanded={showDeepDive}
+                  onClick={() => setShowDeepDive((open) => {
+                    trackJourney({ name: 'deep_lab_toggle', chapter: chapterIndex, open: !open });
+                    return !open;
+                  })}
+                >
+                  {showDeepDive ? 'Close deeper lab' : 'Explore the deeper lab'}
+                </button>
+              )}
+              {!labHref && showDeepDive && (
                 <button type="button" className="hifi-btn" onClick={() => setLabRevision((value) => value + 1)}>
                   Restore reference values
                 </button>
               )}
             </div>
-            {showDeepDive && <div key={labRevision} className="hifi-section-embed">{children}</div>}
+            {!labHref && showDeepDive && <div key={labRevision} className="hifi-section-embed">{children}</div>}
           </div>
         )}
 

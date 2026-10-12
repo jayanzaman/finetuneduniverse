@@ -3,16 +3,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
-import dynamic from 'next/dynamic';
-
-const labLoading = () => <div className="deep-lab-loading" role="status">Preparing the deeper lab…</div>;
-const BeginningSection = dynamic(() => import('./sections/BeginningSection'), { loading: labLoading });
-const MatterSection = dynamic(() => import('./sections/MatterSection'), { loading: labLoading });
-const StarlightSection = dynamic(() => import('./sections/StarlightSection'), { loading: labLoading });
-const GalacticHeartSection = dynamic(() => import('./sections/GalacticHeartSection'), { loading: labLoading });
-const PlanetsSection = dynamic(() => import('./sections/PlanetsSection'), { loading: labLoading });
-const AbiogenesisLabSection = dynamic(() => import('./sections/AbiogenesisLabSection'), { loading: labLoading });
-const LifeSection = dynamic(() => import('./sections/LifeSection'), { loading: labLoading });
 
 import { HifiBackdrop } from '../hifi/HifiBackdrop';
 import { TopNav } from '../hifi/TopNav';
@@ -31,7 +21,7 @@ import {
   modelValue,
   modelVisualState,
 } from '../hifi/chapterModels';
-import { CHAPTERS, EVIDENCE_LABELS } from '../hifi/chapters';
+import { CHAPTERS, EVIDENCE_LABELS, STAR_PALETTE } from '../hifi/chapters';
 import { trackJourney } from '../../lib/analytics';
 
 type View = { kind: 'landing' } | { kind: 'chapter'; index: number };
@@ -48,16 +38,6 @@ function viewFromLocation(): View {
   const index = ['beginning', 'matter', 'stars', 'galaxy', 'planets', 'abiogenesis', 'geology'].indexOf(match[1]);
   return index >= 0 ? { kind: 'chapter', index } : { kind: 'landing' };
 }
-
-const SECTION_COMPONENTS = [
-  BeginningSection,
-  MatterSection,
-  StarlightSection,
-  GalacticHeartSection,
-  PlanetsSection,
-  AbiogenesisLabSection,
-  LifeSection,
-] as const;
 
 export default function UniverseBuilderApp({ initialChapter }: { initialChapter?: number }) {
   const [view, setView] = useState<View>(
@@ -98,7 +78,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
 
   const handleNext = useCallback(() => {
     if (view.kind === 'landing') goChapter(0);
-    else if (view.index < SECTION_COMPONENTS.length - 1) goChapter(view.index + 1);
+    else if (view.index < CHAPTERS.length - 1) goChapter(view.index + 1);
   }, [goChapter, view]);
 
   const handlePrev = useCallback(() => {
@@ -159,16 +139,6 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
   });
 
   const activeChapter = view.kind === 'chapter' ? view.index : null;
-
-  const STAR_PALETTE = [
-    { color: '#a8b3ff', brightness: 0.9 },
-    { color: '#cdd4ff', brightness: 1.0 },
-    { color: '#ffe8cc', brightness: 1.1 },
-    { color: '#cdd4ff', brightness: 0.85 },
-    { color: '#b8f0d5', brightness: 1.0 },
-    { color: '#d4c8f0', brightness: 1.0 },
-    { color: '#c8dff0', brightness: 1.05 },
-  ];
   const starTheme = view.kind === 'chapter' ? STAR_PALETTE[view.index] : { color: '#ffffff', brightness: 1 };
   const starBrightness = starTheme.brightness * (0.7 + 0.6 * starPosition);
 
@@ -216,7 +186,6 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
               >
                 <ChapterView
                   index={view.index}
-                  cosmicTime={cosmicTime}
                   onPrimaryChange={handlePrimaryChange}
                   onDescend={() => setHandoff({ from: view.index, to: Math.min(6, view.index + 1) })}
                   onPrev={handlePrev}
@@ -242,14 +211,12 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
 
 type ChapterViewProps = {
   index: number;
-  cosmicTime: number;
   onDescend: () => void;
   onPrev: () => void;
   onPrimaryChange?: (position: number) => void;
 };
 
-function ChapterView({ index, cosmicTime, onDescend, onPrev, onPrimaryChange }: ChapterViewProps) {
-  const SectionComponent = SECTION_COMPONENTS[index];
+function ChapterView({ index, onDescend, onPrev, onPrimaryChange }: ChapterViewProps) {
   const content = CHAPTER_CONTENT[index];
   const model = CHAPTER_MODELS[index];
   const [primaryValue, setPrimaryValue] = useState(model.initial);
@@ -298,8 +265,7 @@ function ChapterView({ index, cosmicTime, onDescend, onPrev, onPrimaryChange }: 
       onPrev={onPrev}
       visualization={content.visualization(primaryValue)}
       transition={<ChapterTransition chapterIndex={index} onDescend={onDescend} />}
-    >
-      <SectionComponent educatorMode={false} cosmicTime={cosmicTime} />
-    </ChapterFrame>
+      labHref={`/questions/${CHAPTERS[index].slug}/lab`}
+    />
   );
 }

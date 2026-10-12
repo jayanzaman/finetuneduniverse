@@ -72,4 +72,29 @@ describe('core-view accessibility', () => {
 
     expect(screen.getByRole('button', { name: /explore the deeper lab/i })).toBeTruthy();
   });
+
+  it('chapter: renders accessible link to dedicated lab page when labHref is provided', () => {
+    render(
+      <ChapterFrame
+        num="01"
+        chapterIndex={0}
+        era="13.8 Bya"
+        title={<span>The Beginning</span>}
+        prose="Cosmic dawn."
+        sliderProps={{
+          label: 'Initial Entropy',
+          value: '1.0',
+          unit: 'S/k',
+          position: 0.5,
+          interactive: true,
+          ariaLabel: 'Entropy control',
+        }}
+        labHref="/questions/why-did-the-universe-begin-ordered/lab"
+      />,
+    );
+
+    const labLink = screen.getByRole('link', { name: /explore the deeper lab/i });
+    expect(labLink).toBeTruthy();
+    expect(labLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab');
+  });
 });
