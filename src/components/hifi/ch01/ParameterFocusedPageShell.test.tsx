@@ -32,6 +32,25 @@ describe('ParameterFocusedPageShell', () => {
     expect(nextLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/expansion');
   });
 
+  it('renders Parameter 02 · Focused view Expansion Rate with 3D simulation and lessons', () => {
+    const param02 = PARAMS[1]; // expansion
+    render(<ParameterFocusedPageShell param={param02} />);
+
+    expect(screen.getByText('Parameter 02 · Focused view')).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Expansion Rate');
+    expect(screen.getByText(/How fast does space stretch — Hubble constant H₀/i)).toBeTruthy();
+
+    // Hubble law math block
+    expect(screen.getByText(/Hubble's law · recession velocity = H₀ × distance/i)).toBeTruthy();
+
+    // Navigation links
+    const prevLink = screen.getByRole('link', { name: /← parameter 01: initial entropy/i });
+    expect(prevLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/entropy');
+
+    const nextLink = screen.getByRole('link', { name: /parameter 03: density fluctuations →/i });
+    expect(nextLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/fluctuations');
+  });
+
   it('renders Parameter 05 · Focused view Dark Energy Λ with lessons and navigation', () => {
     const param05 = PARAMS[4]; // darkEnergy
     render(<ParameterFocusedPageShell param={param05} />);
