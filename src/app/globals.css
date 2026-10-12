@@ -1798,5 +1798,40 @@ button, [role="button"] { touch-action: manipulation; }
   }
 }
 
+/* ─────────────────────────────────────────────────────────
+   CH 01 · INTERACTIVE ENTROPY STAGE (Main Story View)
+   ───────────────────────────────────────────────────────── */
+.chapter-entropy-stage {
+  position: absolute;
+  right: clamp(16px, 3.5vw, 64px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(360px, 41vw, 560px);
+  height: clamp(360px, 41vw, 560px);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--hair-2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  pointer-events: auto;
+  z-index: 5;
+}
 
+@media (max-width: 1024px) {
+  .chapter-entropy-stage {
+    opacity: 0.35;
+    pointer-events: none;
+    transform: translateY(-50%) scale(0.65);
+    transform-origin: right center;
+    right: -70px;
+  }
+}
 
+.chapter-experiment-layout--ch01 {
+  max-width: min(680px, 48vw) !important;
+}
+
+@media (max-width: 1024px) {
+  .chapter-experiment-layout--ch01 {
+    max-width: 100% !important;
+  }
+}

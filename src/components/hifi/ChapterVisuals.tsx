@@ -1,5 +1,7 @@
 'use client';
 
+import { EntropyViz } from './ch01/viz/EntropyViz';
+
 /**
  * The cinematic visualizations that sit behind each chapter. Pure
  * presentational SVG / CSS — adapted from hifi-chapters-*.jsx.
@@ -25,7 +27,16 @@ export function planetState(distance: number): 'hot' | 'habitable' | 'frozen' {
   return 'habitable';
 }
 
-// CH 01 — Primordial bubble
+// CH 01 — Interactive Entropy Visual Stage (Cosmic Battery & Impossible Odds)
+export function Chapter1EntropyStage({ value = 1 }: { value?: number }) {
+  return (
+    <div className="chapter-entropy-stage">
+      <EntropyViz value={value} />
+    </div>
+  );
+}
+
+// CH 01 — Primordial bubble (legacy fallback)
 export function PrimordialBubble({ entropy = 1 }: { entropy?: number }) {
   // Low entropy → orderly clustering; high entropy → chaotic dispersal.
   const cluster = Math.sqrt(Math.max(0.1, Math.min(10, entropy)));

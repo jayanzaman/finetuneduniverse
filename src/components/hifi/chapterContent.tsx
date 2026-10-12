@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react';
 import type { GoldilocksSliderProps } from './GoldilocksSlider';
 import {
-  PrimordialBubble,
+  Chapter1EntropyStage,
   ProtonViz,
   FirstStarViz,
   GalaxyViz,
@@ -60,7 +60,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'An eternally still universe — frozen perfection. No stars ignite. No time, in any meaningful sense, passes.',
     },
-    visualization: (v) => <PrimordialBubble entropy={v} />,
+    visualization: (v) => <Chapter1EntropyStage value={v} />,
   },
   {
     num: '02',

@@ -76,21 +76,32 @@ export function ChapterFrame({
     <section className="hifi hifi-frame" aria-labelledby={`ch-${num}-title`}>
       {visualization && (
         <div
-          aria-hidden
           style={{
             position: 'absolute',
             inset: 0,
-            zIndex: 2,
+            zIndex: 4,
             pointerEvents: 'none',
             overflow: 'hidden',
-            opacity: 0.72 + (visualState?.intensity ?? 0.5) * 0.28,
-            filter: `saturate(${0.7 + (visualState?.intensity ?? 0.5) * 0.6}) contrast(${1 + (visualState?.instability ?? 0) * 0.12})`,
-            transform: `scale(${visualState?.scale ?? 1})`,
-            transformOrigin: 'center',
-            transition: 'filter 220ms ease, opacity 220ms ease, transform 220ms ease',
           }}
         >
-          {visualization}
+          {chapterIndex === 0 ? (
+            visualization
+          ) : (
+            <div
+              aria-hidden
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: 0.72 + (visualState?.intensity ?? 0.5) * 0.28,
+                filter: `saturate(${0.7 + (visualState?.intensity ?? 0.5) * 0.6}) contrast(${1 + (visualState?.instability ?? 0) * 0.12})`,
+                transform: `scale(${visualState?.scale ?? 1})`,
+                transformOrigin: 'center',
+                transition: 'filter 220ms ease, opacity 220ms ease, transform 220ms ease',
+              }}
+            >
+              {visualization}
+            </div>
+          )}
         </div>
       )}
 
@@ -137,7 +148,7 @@ export function ChapterFrame({
             alignItems: 'end',
             maxWidth: 1280,
           }}
-          className="chapter-experiment-layout"
+          className={`chapter-experiment-layout ${chapterIndex === 0 ? 'chapter-experiment-layout--ch01' : ''}`}
         >
           <div style={{ minWidth: 0 }}>
             <GoldilocksSlider {...sliderProps} />
