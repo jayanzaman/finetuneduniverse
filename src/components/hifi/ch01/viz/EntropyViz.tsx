@@ -206,12 +206,12 @@ export function EntropyViz({
     activeRungRef.current = activeRungIndex;
   }, [activeRungIndex]);
 
-  // Auto-tour ladder effect when active
+  // Auto-tour ladder effect when active (3s per rung)
   useEffect(() => {
     if (!isTouring || viewMode !== 'odds') return;
     const interval = setInterval(() => {
       setActiveRungIndex((prev) => (prev + 1) % SCALE_LADDER_RUNGS.length);
-    }, 4200);
+    }, 3000);
     return () => clearInterval(interval);
   }, [isTouring, viewMode]);
 
@@ -890,6 +890,27 @@ export function EntropyViz({
     setBatteryDisplay(100);
   }, []);
 
+  const handleToggleTour = useCallback(() => {
+    setIsTouring((prev) => {
+      const next = !prev;
+      if (next) {
+        // If at the end of the ladder (Rung 5), wrap around to 0 immediately so user doesn't wait!
+        setActiveRungIndex((cur) => (cur === SCALE_LADDER_RUNGS.length - 1 ? 0 : cur));
+      }
+      return next;
+    });
+  }, []);
+
+  const handlePrevRung = useCallback(() => {
+    setIsTouring(false);
+    setActiveRungIndex((cur) => (cur - 1 + SCALE_LADDER_RUNGS.length) % SCALE_LADDER_RUNGS.length);
+  }, []);
+
+  const handleNextRung = useCallback(() => {
+    setIsTouring(false);
+    setActiveRungIndex((cur) => (cur + 1) % SCALE_LADDER_RUNGS.length);
+  }, []);
+
   return (
     <div
       ref={containerRef}
@@ -945,7 +966,10 @@ export function EntropyViz({
         >
           <button
             type="button"
-            onClick={() => setViewMode('battery')}
+            onClick={() => {
+              setViewMode('battery');
+              setIsTouring(false);
+            }}
             style={{
               background: viewMode === 'battery' ? 'rgba(111, 228, 177, 0.18)' : 'transparent',
               border: viewMode === 'battery' ? '1px solid #6FE4B1' : '1px solid transparent',
@@ -1376,22 +1400,60 @@ export function EntropyViz({
             </div>
           </div>
 
+          {/* Keyframe animation for tour progress bar */}
+          <style>{`
+            @keyframes tourProgressBar {
+              0% { width: 0%; }
+              100% { width: 100%; }
+            }
+          `}</style>
+
           {/* Tour Controls (Top Right under telemetry) */}
           <div
             style={{
               position: 'absolute',
-              right: 18,
-              top: 130,
-              zIndex: 3,
+              right: isCompact ? 12 : 18,
+              top: isCompact ? 72 : 92,
+              zIndex: 4,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
             }}
           >
+            {/* Step Backward Button */}
             <button
               type="button"
-              onClick={() => setIsTouring((prev) => !prev)}
+              onClick={handlePrevRung}
+              aria-label="Previous scale rung"
+              title="Previous scale tier (◀)"
+              style={{
+                background: 'rgba(13, 14, 32, 0.85)',
+                border: '1px solid var(--hair-2)',
+                borderRadius: 6,
+                color: 'var(--ink-soft)',
+                padding: '5px 8px',
+                fontSize: 10,
+                fontFamily: 'var(--f-mono)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              ◀
+            </button>
+
+            {/* Auto-Tour Toggle Button with animated progress bar */}
+            <button
+              type="button"
+              onClick={handleToggleTour}
               aria-label={isTouring ? 'Stop ladder tour' : 'Start scale ladder auto-tour'}
               style={{
-                background: isTouring ? 'rgba(236, 72, 153, 0.25)' : 'rgba(13, 14, 32, 0.85)',
-                border: isTouring ? '1px solid #EC4899' : '1px solid var(--hair-2)',
+                position: 'relative',
+                overflow: 'hidden',
+                background: isTouring ? 'rgba(236, 72, 153, 0.22)' : 'rgba(13, 14, 32, 0.85)',
+                border: isTouring ? '1.5px solid #EC4899' : '1px solid var(--hair-2)',
                 borderRadius: 6,
                 color: isTouring ? '#F472B6' : 'var(--ink-soft)',
                 padding: '5px 10px',
@@ -1401,9 +1463,52 @@ export function EntropyViz({
                 display: 'flex',
                 alignItems: 'center',
                 gap: 5,
+                boxShadow: isTouring ? '0 0 10px rgba(236, 72, 153, 0.35)' : 'none',
+                transition: 'all 0.2s ease',
               }}
             >
-              {isTouring ? '⏸ Pause Tour' : '▶ Auto-Tour Ladder'}
+              {isTouring && (
+                <span
+                  key={`tour-fill-${activeRungIndex}`}
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                    left: 0,
+                    height: 2.5,
+                    background: activeRung.accentColor,
+                    boxShadow: `0 0 6px ${activeRung.accentColor}`,
+                    animation: 'tourProgressBar 3000ms linear forwards',
+                  }}
+                />
+              )}
+              <span>{isTouring ? '⏸ Pause' : '▶ Auto-Tour'}</span>
+              <span style={{ fontSize: 9.5, opacity: isTouring ? 0.9 : 0.6, color: isTouring ? '#FFFFFF' : 'var(--ink-faint)' }}>
+                {activeRungIndex + 1}/6
+              </span>
+            </button>
+
+            {/* Step Forward Button */}
+            <button
+              type="button"
+              onClick={handleNextRung}
+              aria-label="Next scale rung"
+              title="Next scale tier (▶)"
+              style={{
+                background: 'rgba(13, 14, 32, 0.85)',
+                border: '1px solid var(--hair-2)',
+                borderRadius: 6,
+                color: 'var(--ink-soft)',
+                padding: '5px 8px',
+                fontSize: 10,
+                fontFamily: 'var(--f-mono)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              ▶
             </button>
           </div>
 
@@ -1457,6 +1562,8 @@ export function EntropyViz({
                   }}
                   aria-label={`Select scale rung: ${rung.label}`}
                   style={{
+                    position: 'relative',
+                    overflow: 'hidden',
                     flex: 1,
                     background: isSelected ? 'rgba(255, 255, 255, 0.12)' : 'rgba(10, 12, 28, 0.75)',
                     border: isSelected ? `1.5px solid ${rung.accentColor}` : '1px solid var(--hair-2)',
@@ -1472,6 +1579,20 @@ export function EntropyViz({
                     transition: 'all 0.15s ease',
                   }}
                 >
+                  {isTouring && isSelected && (
+                    <span
+                      key={`rung-progress-${idx}`}
+                      style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        left: 0,
+                        height: 2,
+                        background: rung.accentColor,
+                        boxShadow: `0 0 4px ${rung.accentColor}`,
+                        animation: 'tourProgressBar 3000ms linear forwards',
+                      }}
+                    />
+                  )}
                   <span style={{ fontSize: 8.5, fontFamily: 'var(--f-mono)', color: rung.accentColor, fontWeight: 600 }}>
                     {rung.exponentStr}
                   </span>

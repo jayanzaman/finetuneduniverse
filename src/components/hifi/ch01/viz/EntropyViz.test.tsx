@@ -102,5 +102,28 @@ describe('EntropyViz (3D Cosmic Hourglass & Thermodynamic Battery)', () => {
     const batteryTabBtn = screen.getByRole('button', { name: /Cosmic Battery/i });
     fireEvent.click(batteryTabBtn);
     expect(screen.getByText(/THERMODYNAMIC BATTERY · 100% CHARGED/i)).toBeTruthy();
+
+    // Switch back to Odds tab to test immediate tour wrapping and next/prev
+    fireEvent.click(oddsTabBtn);
+    const penroseBtn = screen.getByRole('button', { name: /Penrose's Number: The Initial Pinpoint/i });
+    fireEvent.click(penroseBtn);
+    expect(screen.getByText(/Penrose's Number: The Initial Pinpoint/i)).toBeTruthy();
+
+    // Clicking Auto-Tour when on Rung 5 immediately wraps to Rung 0 without waiting!
+    const startTourBtn = screen.getByRole('button', { name: /Start scale ladder auto-tour/i });
+    fireEvent.click(startTourBtn);
+    expect(screen.getByText(/Human Luck: National Lottery/i)).toBeTruthy();
+    expect(screen.getByText(/1\/6/i)).toBeTruthy();
+
+    // Clicking Next advances to Rung 1 and pauses auto-tour
+    const nextBtn = screen.getByRole('button', { name: /Next scale rung/i });
+    fireEvent.click(nextBtn);
+    expect(screen.getByText(/Cosmic Time: A Single Second/i)).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Start scale ladder auto-tour/i })).toBeTruthy();
+
+    // Clicking Prev steps back to Rung 0
+    const prevBtn = screen.getByRole('button', { name: /Previous scale rung/i });
+    fireEvent.click(prevBtn);
+    expect(screen.getByText(/Human Luck: National Lottery/i)).toBeTruthy();
   });
 });
