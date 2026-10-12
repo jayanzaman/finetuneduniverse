@@ -225,32 +225,33 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
       <div className="relative z-10">
         {/* Selected Era - Main Display */}
         <div className="w-full">
-          <div className={`relative h-96 lg:h-[500px] rounded-2xl overflow-hidden`}
-               style={{
-                 backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-                 backgroundSize: 'contain',
-                 backgroundPosition: 'center',
-                 backgroundRepeat: 'no-repeat'
-               }}>
-            {/* Background overlay for better text readability - only when no image */}
-            {!backgroundImage && (
-              <div className={`absolute inset-0 bg-gradient-to-br ${selectedEraData.gradient}`} />
-            )}
-            
-            {/* Subtle dark overlay for text readability over images */}
+          <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden bg-[var(--void-2)]">
+            {/* Background overlay / ambient gradient */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${selectedEraData.gradient} ${backgroundImage ? 'opacity-20' : 'opacity-100'}`} />
+
+            {/* Era Illustration Image */}
             {backgroundImage && (
-              <div className="absolute inset-0 bg-[var(--void)]" />
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
+                <img
+                  src={backgroundImage}
+                  alt={`${selectedEraData.name} - ${selectedEraData.description}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+                {/* Subtle dark overlay for text readability over images */}
+                <div className="absolute inset-0 bg-black/20 pointer-events-none" />
+              </div>
             )}
             
             {/* Enhanced Shimmer Effect */}
-            <div className="absolute inset-0 opacity-20">
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transform -skew-x-12 animate-shimmer" />
             </div>
             
             {/* Content - Minimal overlay for better image visibility */}
-            <div className="relative z-10 h-full flex flex-col justify-end items-end pl-6 pr-3 py-6">
+            <div className="relative z-10 h-full flex flex-col justify-end items-end pl-6 pr-3 py-6 pointer-events-none">
               {/* Era Title - Compact bottom overlay */}
-              <div className="bg-[var(--void-2)] px-4 py-2 rounded-lg backdrop-blur-sm border border-[var(--hair-2)] text-right">
+              <div className="bg-[var(--void-2)]/80 px-4 py-2 rounded-lg backdrop-blur-sm border border-[var(--hair-2)] text-right">
                 <h3 className="text-2xl font-bold text-[var(--ink)] drop-shadow-2xl font-serif">
                   {selectedEraData.name}
                 </h3>
@@ -259,7 +260,7 @@ function EvolutionCarousel({ selectedEra, onEraSelect }: { selectedEra: number; 
             </div>
             
             {/* Ring Border */}
-            <div className="absolute inset-0 rounded-2xl ring-2 ring-white/30" />
+            <div className="absolute inset-0 rounded-2xl ring-2 ring-white/30 pointer-events-none" />
           </div>
         </div>
       </div>

@@ -25,8 +25,7 @@ const spaceMono = Space_Mono({
 
 const newsreader = Newsreader({
   subsets: ["latin"],
-  weight: ["300", "400"],
-  style: ["italic"],
+  style: "italic",
   variable: "--font-newsreader",
   display: "swap",
 });
