@@ -126,4 +126,22 @@ describe('EntropyViz (3D Cosmic Hourglass & Thermodynamic Battery)', () => {
     fireEvent.click(prevBtn);
     expect(screen.getByText(/Human Luck: National Lottery/i)).toBeTruthy();
   });
+
+  it('renders purely canvas shapes and movements without text writings or tier labels when minimal is true', () => {
+    const { container } = render(<EntropyViz value={1.0} minimal />);
+
+    // Canvas should exist for pure shapes and movements
+    expect(container.querySelector('canvas')).toBeTruthy();
+
+    // All writings and text overlays must not be rendered
+    expect(screen.queryByText(/Tier 1: Gravitational Reservoir/i)).toBeNull();
+    expect(screen.queryByText(/Tier 2: Stellar Fusion Engine/i)).toBeNull();
+    expect(screen.queryByText(/Tier 3: Biosphere & Chemistry/i)).toBeNull();
+    expect(screen.queryByText(/Sink: Black Hole Graveyard/i)).toBeNull();
+    expect(screen.queryByText(/1.00 S\/k/i)).toBeNull();
+    expect(screen.queryByText(/THERMODYNAMIC BATTERY/i)).toBeNull();
+    expect(screen.queryByRole('button', { name: /pause simulation/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Cosmic Battery/i })).toBeNull();
+    expect(screen.queryByRole('button', { name: /The Impossible Odds/i })).toBeNull();
+  });
 });

@@ -31,7 +31,7 @@ export function planetState(distance: number): 'hot' | 'habitable' | 'frozen' {
 export function Chapter1EntropyStage({ value = 1 }: { value?: number }) {
   return (
     <div className="chapter-entropy-stage">
-      <EntropyViz value={value} />
+      <EntropyViz value={value} minimal={true} />
     </div>
   );
 }

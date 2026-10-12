@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react'
 export type EntropyVizProps = {
   value?: number;
   className?: string;
+  minimal?: boolean;
 };
 
 // -------------------------------------------------------------
@@ -150,6 +151,7 @@ const STATIC_PARTICLES = generateDeterministicParticles();
 export function EntropyViz({
   value = 1.0,
   className = '',
+  minimal = false,
 }: EntropyVizProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -920,14 +922,18 @@ export function EntropyViz({
         width: '100%',
         height: '100%',
         overflow: 'hidden',
-        background: 'radial-gradient(circle at center, rgba(14, 18, 36, 0.75) 0%, rgba(3, 4, 12, 0.96) 100%)',
-        borderRadius: 10,
+        background: minimal
+          ? 'transparent'
+          : 'radial-gradient(circle at center, rgba(14, 18, 36, 0.75) 0%, rgba(3, 4, 12, 0.96) 100%)',
+        borderRadius: minimal ? 0 : 10,
         userSelect: 'none',
       }}
       aria-label={
-        viewMode === 'battery'
-          ? `3D Cosmic Hourglass & Thermodynamic Battery: ${theme.title}. ${theme.subhead}`
-          : `The Impossible Odds: Scale Ladder at ${activeRung.label}. Probability ${activeRung.probabilityFraction}.`
+        minimal
+          ? 'Entropy Visual'
+          : viewMode === 'battery'
+            ? `3D Cosmic Hourglass & Thermodynamic Battery: ${theme.title}. ${theme.subhead}`
+            : `The Impossible Odds: Scale Ladder at ${activeRung.label}. Probability ${activeRung.probabilityFraction}.`
       }
     >
       {/* 3D Canvas Visual */}
@@ -948,7 +954,7 @@ export function EntropyViz({
       />
 
       {/* TOP VIEW MODE SWITCHER TABS */}
-      {!isCompact && (
+      {!minimal && !isCompact && (
         <div
           style={{
             position: 'absolute',
@@ -1008,7 +1014,7 @@ export function EntropyViz({
       )}
 
       {/* VIEW MODE 1: OPTION D (COSMIC BATTERY) OVERLAYS */}
-      {viewMode === 'battery' && (
+      {!minimal && viewMode === 'battery' && (
         <>
           {/* Top HUD */}
           <div
@@ -1313,7 +1319,7 @@ export function EntropyViz({
       )}
 
       {/* VIEW MODE 2: OPTION C (THE IMPOSSIBLE ODDS / SCALE LADDER) OVERLAYS */}
-      {viewMode === 'odds' && (
+      {!minimal && viewMode === 'odds' && (
         <>
           {/* Top Info for Active Rung */}
           <div
