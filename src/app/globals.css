@@ -1487,6 +1487,8 @@ button, [role="button"] { touch-action: manipulation; }
 
 /* ─────────────────────────────────────────────────────────
    DEDICATED PARAMETER FOCUSED VIEW PAGES (VIEWPORT CONTAINED)
+/* ─────────────────────────────────────────────────────────
+   DEDICATED PARAMETER FOCUSED VIEW PAGES (VIEWPORT CONTAINED)
    ───────────────────────────────────────────────────────── */
 .param-focused-shell {
   min-height: 100vh;
@@ -1528,7 +1530,7 @@ button, [role="button"] { touch-action: manipulation; }
   align-items: stretch;
 }
 
-/* Left Column: Visual frame + title/math */
+/* Left Column: Visual frame + compact title */
 .param-focused-left {
   display: flex;
   flex-direction: column;
@@ -1538,26 +1540,26 @@ button, [role="button"] { touch-action: manipulation; }
 
 .param-focused-header {
   flex-shrink: 0;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .param-focused-title {
-  font-family: var(--f-serif);
+  font-family: var(--f-display);
   font-size: clamp(22px, 2vw, 30px);
   line-height: 1.15;
-  font-weight: 400;
-  margin: 4px 0 6px 0;
+  font-weight: 300;
+  letter-spacing: -0.015em;
+  margin: 4px 0 2px 0;
   color: var(--ink);
 }
 
-.param-math-compact {
-  padding: 8px 14px;
-  margin: 6px 0 0 0;
-  display: inline-flex;
-  flex-direction: column;
-  gap: 2px;
-  text-align: left;
-  border-radius: 6px;
+.param-focused-sub {
+  font-family: var(--f-body);
+  font-weight: 300;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-soft);
+  margin: 0 0 6px 0;
 }
 
 .param-focused-canvas-wrapper {
@@ -1573,7 +1575,7 @@ button, [role="button"] { touch-action: manipulation; }
   box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 10px 30px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   position: relative;
-  padding: 16px;
+  padding: 14px;
   box-sizing: border-box;
 }
 
@@ -1597,16 +1599,16 @@ button, [role="button"] { touch-action: manipulation; }
   padding-right: 8px;
 }
 
-/* Sleek custom scrollbar for right pane */
+/* Visible, sleek custom scrollbar for right pane */
 .param-focused-right::-webkit-scrollbar {
   width: 6px;
 }
 .param-focused-right::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.04);
   border-radius: 3px;
 }
 .param-focused-right::-webkit-scrollbar-thumb {
-  background: var(--hair-2);
+  background: rgba(122, 123, 255, 0.45);
   border-radius: 3px;
 }
 .param-focused-right::-webkit-scrollbar-thumb:hover {
@@ -1617,7 +1619,7 @@ button, [role="button"] { touch-action: manipulation; }
   background: rgba(13, 14, 32, 0.85);
   border: 1px solid var(--hair);
   border-radius: 10px;
-  padding: 18px 22px;
+  padding: 16px 20px;
   backdrop-filter: blur(12px);
   flex-shrink: 0;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -1634,7 +1636,73 @@ button, [role="button"] { touch-action: manipulation; }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 14px;
+  margin-top: 12px;
+}
+
+/* Math Formulation Card on the Right Side */
+.param-math-card {
+  background: rgba(13, 14, 32, 0.75);
+  border: 1px solid var(--hair);
+  border-radius: 10px;
+  padding: 14px 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.param-card-section-label {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  margin-bottom: 10px;
+}
+
+.param-math-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.param-math-item {
+  padding: 8px 12px;
+  background: rgba(3, 3, 10, 0.55);
+  border: 1px solid var(--hair-2);
+  border-radius: 6px;
+}
+
+.math-expression {
+  font-family: 'Times New Roman', Cambria, Georgia, serif;
+  font-size: 17px;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  display: block;
+}
+
+.math-expression em {
+  font-style: italic;
+}
+
+.math-expression sup,
+.math-expression sub {
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: baseline;
+  position: relative;
+}
+
+.math-expression sup {
+  top: -0.45em;
+}
+
+.math-expression sub {
+  bottom: -0.25em;
+}
+
+.math-expression .op {
+  color: var(--indigo);
+  padding: 0 3px;
 }
 
 .param-question-banner {
@@ -1645,10 +1713,11 @@ button, [role="button"] { touch-action: manipulation; }
 }
 
 .param-question-text {
-  font-family: var(--f-serif);
-  font-size: 15px;
+  font-family: var(--f-body);
+  font-size: 14px;
   line-height: 1.45;
   color: var(--ink);
+  font-weight: 300;
   margin: 0;
 }
 
@@ -1664,14 +1733,14 @@ button, [role="button"] { touch-action: manipulation; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 12px;
-  margin-top: 8px;
+  padding-top: 10px;
+  margin-top: 6px;
   border-top: 1px solid var(--hair);
   gap: 16px;
 }
 
-/* Viewport-contained behavior on desktop (height: 100vh) */
-@media (min-width: 1024px) {
+/* Viewport-contained behavior on desktop when height is sufficient */
+@media (min-width: 1024px) and (min-height: 720px) {
   .param-focused-shell {
     height: 100vh;
     max-height: 100vh;
@@ -1679,8 +1748,8 @@ button, [role="button"] { touch-action: manipulation; }
   }
 }
 
-/* Responsive / Mobile layout */
-@media (max-width: 1023px) {
+/* Short desktop screens (< 720px) and mobile/tablet: enable vertical scrolling */
+@media (max-height: 719px), (max-width: 1023px) {
   .param-focused-shell {
     height: auto;
     min-height: 100vh;
@@ -1705,7 +1774,7 @@ button, [role="button"] { touch-action: manipulation; }
 
   .param-focused-canvas-wrapper {
     min-height: 280px;
-    max-height: 380px;
+    max-height: 420px;
     aspect-ratio: 1 / 1;
     margin: 0 auto;
     width: 100%;
@@ -1728,5 +1797,6 @@ button, [role="button"] { touch-action: manipulation; }
     justify-content: center;
   }
 }
+
 
 

@@ -168,27 +168,29 @@ export const EDUCATOR_CONTENT: Record<ParamKey, EducatorPanel> = {
     mathBlocks: [
       {
         expression: (
-          <>
-            Ω <span className="op">=</span> ρ / ρ<sub>c</sub>
-          </>
+          <span>
+            Ω <span className="op">=</span> ρ <span className="op">/</span> ρ<sub>c</sub>
+          </span>
         ),
-        caption: 'Density parameter: actual energy density relative to critical density',
+        caption: 'Density parameter · Actual energy density relative to critical density',
       },
       {
         expression: (
-          <>
-            d<em>s</em><sup>2</sup> <span className="op">=</span> −<em>c</em><sup>2</sup>d<em>t</em><sup>2</sup> <span className="op">+</span> <em>a</em>(<em>t</em>)<sup>2</sup> <span className="op">[</span> d<em>r</em><sup>2</sup>/(1 − <em>k</em> <em>r</em><sup>2</sup>) <span className="op">+</span> <em>r</em><sup>2</sup>dΩ<sup>2</sup> <span className="op">]</span>
-          </>
+          <span>
+            d<em>s</em><sup>2</sup> <span className="op">=</span> −<em>c</em><sup>2</sup>d<em>t</em><sup>2</sup> <span className="op">+</span> <em>a</em>(<em>t</em>)<sup>2</sup> <span className="op">[</span> d<em>r</em><sup>2</sup><span className="op">/</span>(1 − <em>k</em> <em>r</em><sup>2</sup>) <span className="op">+</span> <em>r</em><sup>2</sup>dΩ<sup>2</sup> <span className="op">]</span>
+          </span>
         ),
-        caption: 'FLRW metric · Curvature parameter k (+1, 0, −1)',
+        caption: 'FLRW spacetime metric · Curvature parameter k (+1, 0, −1)',
       },
       {
         expression: (
-          <>
-            Ω &gt; 1 (<em>k</em>=+1) ➔ <strong>S³</strong> &nbsp;|&nbsp; Ω = 1 (<em>k</em>=0) ➔ <strong>ℝ³</strong> &nbsp;|&nbsp; Ω &lt; 1 (<em>k</em>=−1) ➔ <strong>H³</strong>
-          </>
+          <span>
+            <span style={{ color: '#38BDF8', fontWeight: 600 }}>Ω &gt; 1</span> (<em>k</em>=+1) ➔ <strong>S³</strong> &nbsp;|&nbsp;{' '}
+            <span style={{ color: '#6FE4B1', fontWeight: 600 }}>Ω = 1</span> (<em>k</em>=0) ➔ <strong>ℝ³</strong> &nbsp;|&nbsp;{' '}
+            <span style={{ color: '#C084FC', fontWeight: 600 }}>Ω &lt; 1</span> (<em>k</em>=−1) ➔ <strong>H³</strong>
+          </span>
         ),
-        caption: 'The three geometries of spacetime',
+        caption: 'Spatial geometry: Closed 3-Sphere | Flat Euclidean | Hyperbolic Saddle',
       },
     ],
     sections: [

@@ -79,15 +79,6 @@ function ParameterFocusedInner({
             </div>
 
             <h1 className="param-focused-title">{param.name}</h1>
-
-            {content.mathBlocks?.map((block, i) => (
-              <div key={i} className="math-block param-math-compact">
-                <span className="math" style={{ fontSize: 22 }}>
-                  {block.expression}
-                </span>
-                <div className="math-caption">{block.caption}</div>
-              </div>
-            ))}
           </div>
 
           {/* Contained Visual Canvas */}
@@ -98,7 +89,7 @@ function ParameterFocusedInner({
           </div>
         </section>
 
-        {/* RIGHT HAND SIDE: Slider at the top, details right below */}
+        {/* RIGHT HAND SIDE: Slider at the top, rich explanations right below */}
         <section
           className="param-focused-right"
           aria-label={`${param.name} controls and explanations`}
@@ -151,8 +142,24 @@ function ParameterFocusedInner({
             </div>
           </div>
 
-          {/* Details right below the slider to explain the visual */}
+          {/* Details & Educational Content right below the slider */}
           <div className="param-details-container">
+            {/* Mathematical Formulation Section */}
+            {content.mathBlocks && content.mathBlocks.length > 0 && (
+              <div className="param-math-card">
+                <div className="param-card-section-label">Cosmological Equations</div>
+                <div className="param-math-grid">
+                  {content.mathBlocks.map((block, i) => (
+                    <div key={i} className="param-math-item">
+                      <div className="math-expression">{block.expression}</div>
+                      <div className="math-caption">{block.caption}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Scientific Focus Banner */}
             <div className="param-question-banner">
               <span className="mono" style={{ color: 'var(--indigo)', display: 'block', marginBottom: 4 }}>
                 Scientific Focus →
@@ -160,6 +167,7 @@ function ParameterFocusedInner({
               <p className="param-question-text">{param.question}</p>
             </div>
 
+            {/* Educator Lesson Cards */}
             <div className="param-focused-lessons">
               {content.sections.map((s, i) => (
                 <div
@@ -265,7 +273,7 @@ export function ParameterFocusedPageShell({
             </div>
           </nav>
 
-          <main id="main-content" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
+          <main id="main-content" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 3 }}>
             <ParameterFocusedInner param={param} />
           </main>
         </div>
