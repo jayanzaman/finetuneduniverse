@@ -48,151 +48,166 @@ function ParameterFocusedInner({
   const nextParam = currentIndex < PARAMS.length - 1 ? PARAMS[currentIndex + 1] : null;
 
   return (
-    <div className="lab-content-container param-focused-page">
-      {/* Parameter Header */}
-      <header className="lab-header">
-        <div className="lab-header-meta">
-          <Link
-            href="/questions/why-did-the-universe-begin-ordered/lab"
-            className="mono-md"
-            style={{ color: 'var(--indigo)', textDecoration: 'none' }}
-          >
-            ← Beginning Laboratory
-          </Link>
-          <span style={{ width: 1, height: 14, background: 'var(--hair-2)' }} />
-          <span className="mono">Parameter {param.n} of 06</span>
-          <span style={{ width: 1, height: 14, background: 'var(--hair-2)' }} />
-          <span className={`param-card-badge ${param.scored ? 'scored' : 'open'}`}>
-            {param.scored ? 'Scored' : 'Open question'}
-          </span>
-        </div>
-
-        <div className="focus-modal-eyebrow" style={{ marginTop: 8 }}>
-          Parameter {param.n} · Focused view
-        </div>
-
-        <h1 className="h-hero" style={{ marginTop: 8, fontSize: 'clamp(32px, 4vw, 56px)' }}>
-          {param.name}
-        </h1>
-
-        <p className="prose" style={{ marginTop: 14, maxWidth: 680 }}>
-          {param.question}
-        </p>
-      </header>
-
-      {/* Two-column Focused Layout */}
-      <div className="param-focused-layout">
-        {/* Left Column: Math + Full Canvas Visualization */}
-        <div className="param-focused-viz-col">
-          {content.mathBlocks?.map((block, i) => (
-            <div key={i} className="math-block" style={{ marginBottom: 20 }}>
-              <span className="math" style={{ fontSize: 26 }}>
-                {block.expression}
-              </span>
-              <div className="math-caption">{block.caption}</div>
-            </div>
-          ))}
-
-          <div className="param-focused-canvas-container">
-            <Viz value={value} />
-          </div>
-        </div>
-
-        {/* Right Column: Live Slider + Lesson Cards */}
-        <div className="param-focused-side-col">
-          <div className="param-focused-readout-row">
-            <div>
-              <span className="mono" style={{ color: 'var(--ink-faint)' }}>
-                Current value
-              </span>
-              <div className="param-value" style={{ fontSize: 28, marginTop: 4 }}>
-                {formatValue(param, value)}{' '}
-                <span className="unit" style={{ fontSize: 16 }}>
-                  {param.unit}
-                </span>
-              </div>
-            </div>
-
-            <span className={`param-status ${inBand ? '' : 'warn'}`} style={{ fontSize: 11 }}>
-              {inBand ? 'in band' : 'outside band'}
-            </span>
-          </div>
-
-          <div style={{ marginTop: 20 }}>
-            <GoldilocksSlider
-              label={`${param.name} · ${param.unit}`}
-              value={`${formatValue(param, value)} ${param.unit}`}
-              position={position}
-              zone={zone}
-              leftCap={param.leftCap}
-              rightCap={param.rightCap}
-              failLeft={param.failLeft}
-              failRight={param.failRight}
-              interactive
-              onPositionChange={handlePos}
-            />
-          </div>
-
-          <div style={{ marginTop: 16, display: 'flex', gap: 10 }}>
-            <button
-              type="button"
-              className="hifi-btn"
-              onClick={() => setValue(param.defaultValue)}
-              title="Reset this parameter back to reference value"
-            >
-              ⟳ Reset to default ({formatValue(param, param.defaultValue)} {param.unit})
-            </button>
-          </div>
-
-          <div className="param-focused-lessons">
-            {content.sections.map((s, i) => (
-              <div
-                key={i}
-                className={`edu-card${s.kind === 'pullquote' ? ' pullquote' : ''}`}
+    <div className="param-focused-frame">
+      {/* Visual frame & Controls side-by-side body */}
+      <div className="param-focused-body">
+        {/* LEFT HAND SIDE: Visual frame + title/math */}
+        <section
+          className="param-focused-left"
+          aria-label={`${param.name} visual simulation`}
+        >
+          {/* Compact header above visual */}
+          <div className="param-focused-header">
+            <div className="lab-header-meta" style={{ marginBottom: 6 }}>
+              <Link
+                href="/questions/why-did-the-universe-begin-ordered/lab"
+                className="mono-md"
+                style={{ color: 'var(--indigo)', textDecoration: 'none' }}
               >
-                <div className="label">{s.label}</div>
-                <div className="body">{s.body}</div>
+                ← Beginning Laboratory
+              </Link>
+              <span style={{ width: 1, height: 12, background: 'var(--hair-2)' }} />
+              <span className="mono">Parameter {param.n} of 06</span>
+              <span style={{ width: 1, height: 12, background: 'var(--hair-2)' }} />
+              <span className={`param-card-badge ${param.scored ? 'scored' : 'open'}`}>
+                {param.scored ? 'Scored' : 'Open question'}
+              </span>
+            </div>
+
+            <div className="focus-modal-eyebrow">
+              Parameter {param.n} · Focused view
+            </div>
+
+            <h1 className="param-focused-title">{param.name}</h1>
+
+            {content.mathBlocks?.map((block, i) => (
+              <div key={i} className="math-block param-math-compact">
+                <span className="math" style={{ fontSize: 22 }}>
+                  {block.expression}
+                </span>
+                <div className="math-caption">{block.caption}</div>
               </div>
             ))}
           </div>
-        </div>
+
+          {/* Contained Visual Canvas */}
+          <div className="param-focused-canvas-wrapper">
+            <div className="param-focused-canvas-aspect">
+              <Viz value={value} />
+            </div>
+          </div>
+        </section>
+
+        {/* RIGHT HAND SIDE: Slider at the top, details right below */}
+        <section
+          className="param-focused-right"
+          aria-label={`${param.name} controls and explanations`}
+        >
+          {/* Top of right side: Live Slider & Controls */}
+          <div className="param-slider-card">
+            <div className="param-focused-readout-row">
+              <div>
+                <span className="mono" style={{ color: 'var(--ink-faint)' }}>
+                  Current value
+                </span>
+                <div className="param-value" style={{ fontSize: 26, marginTop: 2 }}>
+                  {formatValue(param, value)}{' '}
+                  <span className="unit" style={{ fontSize: 15 }}>
+                    {param.unit}
+                  </span>
+                </div>
+              </div>
+
+              <span className={`param-status ${inBand ? '' : 'warn'}`} style={{ fontSize: 11 }}>
+                {inBand ? 'in band' : 'outside band'}
+              </span>
+            </div>
+
+            <div style={{ marginTop: 14 }}>
+              <GoldilocksSlider
+                label={`${param.name} · ${param.unit}`}
+                value={`${formatValue(param, value)} ${param.unit}`}
+                position={position}
+                zone={zone}
+                leftCap={param.leftCap}
+                rightCap={param.rightCap}
+                failLeft={param.failLeft}
+                failRight={param.failRight}
+                interactive
+                onPositionChange={handlePos}
+              />
+            </div>
+
+            <div style={{ marginTop: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <button
+                type="button"
+                className="hifi-btn"
+                style={{ padding: '8px 16px', fontSize: 10 }}
+                onClick={() => setValue(param.defaultValue)}
+                title="Reset this parameter back to reference value"
+              >
+                ⟳ Reset to default ({formatValue(param, param.defaultValue)} {param.unit})
+              </button>
+            </div>
+          </div>
+
+          {/* Details right below the slider to explain the visual */}
+          <div className="param-details-container">
+            <div className="param-question-banner">
+              <span className="mono" style={{ color: 'var(--indigo)', display: 'block', marginBottom: 4 }}>
+                Scientific Focus →
+              </span>
+              <p className="param-question-text">{param.question}</p>
+            </div>
+
+            <div className="param-focused-lessons">
+              {content.sections.map((s, i) => (
+                <div
+                  key={i}
+                  className={`edu-card${s.kind === 'pullquote' ? ' pullquote' : ''}`}
+                >
+                  <div className="label">{s.label}</div>
+                  <div className="body">{s.body}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* Parameter Navigation Footer */}
-      <footer className="lab-footer" style={{ marginTop: 56 }}>
-        <div className="lab-nav-footer-links">
-          {prevParam ? (
-            <Link
-              href={`/questions/why-did-the-universe-begin-ordered/lab/${paramSlug(prevParam.key)}`}
-              className="hifi-btn"
-              style={{ textDecoration: 'none' }}
-            >
-              ← Parameter {prevParam.n}: {prevParam.name}
-            </Link>
-          ) : (
-            <div />
-          )}
-
+      <footer className="param-focused-footer">
+        {prevParam ? (
           <Link
-            href="/questions/why-did-the-universe-begin-ordered/lab"
-            className="hifi-btn primary"
+            href={`/questions/why-did-the-universe-begin-ordered/lab/${paramSlug(prevParam.key)}`}
+            className="hifi-btn"
             style={{ textDecoration: 'none' }}
           >
-            Return to Beginning Laboratory
+            ← Parameter {prevParam.n}: {prevParam.name}
           </Link>
+        ) : (
+          <div />
+        )}
 
-          {nextParam ? (
-            <Link
-              href={`/questions/why-did-the-universe-begin-ordered/lab/${paramSlug(nextParam.key)}`}
-              className="hifi-btn"
-              style={{ textDecoration: 'none' }}
-            >
-              Parameter {nextParam.n}: {nextParam.name} →
-            </Link>
-          ) : (
-            <div />
-          )}
-        </div>
+        <Link
+          href="/questions/why-did-the-universe-begin-ordered/lab"
+          className="hifi-btn primary"
+          style={{ textDecoration: 'none' }}
+        >
+          Return to Beginning Laboratory
+        </Link>
+
+        {nextParam ? (
+          <Link
+            href={`/questions/why-did-the-universe-begin-ordered/lab/${paramSlug(nextParam.key)}`}
+            className="hifi-btn"
+            style={{ textDecoration: 'none' }}
+          >
+            Parameter {nextParam.n}: {nextParam.name} →
+          </Link>
+        ) : (
+          <div />
+        )}
       </footer>
     </div>
   );
@@ -215,7 +230,7 @@ export function ParameterFocusedPageShell({
   return (
     <ProgressionProvider>
       <MotionConfig reducedMotion="user">
-        <div className="hifi lab-page-shell" style={{ position: 'relative', minHeight: '100vh' }}>
+        <div className="hifi param-focused-shell" style={{ position: 'relative' }}>
           <HifiBackdrop
             seed={13}
             starColor={starTheme.color}
@@ -224,7 +239,7 @@ export function ParameterFocusedPageShell({
           />
 
           {/* Top Navigation */}
-          <nav className="hifi-nav" aria-label="Parameter navigation">
+          <nav className="hifi-nav param-focused-nav" aria-label="Parameter navigation">
             <div className="hifi-mark">
               <Link href="/" className="hifi-mark" style={{ textDecoration: 'none' }}>
                 <div className="hifi-mark-dot" />
@@ -250,7 +265,7 @@ export function ParameterFocusedPageShell({
             </div>
           </nav>
 
-          <main id="main-content">
+          <main id="main-content" style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
             <ParameterFocusedInner param={param} />
           </main>
         </div>
