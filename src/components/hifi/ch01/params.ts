@@ -152,3 +152,33 @@ export function isInBand(p: ParamDef, value: number): boolean {
 export function formatValue(p: ParamDef, value: number): string {
   return value.toFixed(p.precision);
 }
+
+/** URL slug for a parameter key. */
+export function paramSlug(key: ParamKey): string {
+  switch (key) {
+    case 'darkEnergy':
+      return 'dark-energy';
+    case 'temperature':
+      return 'cmb-uniformity';
+    default:
+      return key;
+  }
+}
+
+/** Find parameter by key, slug, number, or normalized name. */
+export function findParam(keyOrSlug: string): ParamDef | undefined {
+  const norm = keyOrSlug.toLowerCase().replace(/[-_]/g, '');
+  return PARAMS.find((p) => {
+    const pKeyNorm = p.key.toLowerCase().replace(/[-_]/g, '');
+    const pNameNorm = p.name.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return (
+      p.key === keyOrSlug ||
+      p.n === keyOrSlug ||
+      p.n === keyOrSlug.padStart(2, '0') ||
+      pKeyNorm === norm ||
+      pNameNorm === norm ||
+      (p.key === 'darkEnergy' && (norm === 'darkenergy' || norm === '05')) ||
+      (p.key === 'temperature' && (norm === 'cmbuniformity' || norm === 'temperature' || norm === '06'))
+    );
+  });
+}

@@ -26,4 +26,23 @@ describe('Instrument (Beginning lab)', () => {
     expect(screen.queryByRole('button', { name: /undo/i })).toBeNull();
     expect(screen.getAllByText('In all bands · 6 / 6').length).toBeGreaterThan(0);
   });
+
+  it('renders direct links to dedicated parameter pages for Parameter 01 and 05', () => {
+    render(
+      <ProgressionProvider>
+        <Instrument />
+      </ProgressionProvider>,
+    );
+
+    const lessonLinks = screen.getAllByRole('link', { name: /read the lesson · ↗/i });
+    expect(lessonLinks.length).toBeGreaterThanOrEqual(6);
+    expect(lessonLinks[0].getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/entropy');
+    expect(lessonLinks[4].getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/dark-energy');
+
+    const focus01Links = screen.getAllByRole('link', { name: /parameter 01 · focused view/i });
+    expect(focus01Links[0].getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/entropy');
+
+    const focus05 = screen.getByRole('link', { name: /parameter 05 · focused view/i });
+    expect(focus05.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/dark-energy');
+  });
 });

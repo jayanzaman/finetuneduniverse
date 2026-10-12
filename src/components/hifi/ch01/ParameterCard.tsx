@@ -1,11 +1,13 @@
 'use client';
 
+import Link from 'next/link';
 import { GoldilocksSlider } from '../GoldilocksSlider';
 import { VIZ_BY_KEY } from './viz';
 import {
   formatValue,
   isInBand,
   normalizedBand,
+  paramSlug,
   toNormalized,
   type ParamDef,
 } from './params';
@@ -16,6 +18,7 @@ export type ParameterCardProps = {
   onChange?: (next: number) => void;
   onMaximize?: () => void;
   onReadLesson?: () => void;
+  focusedHref?: string;
 };
 
 export function ParameterCard({
@@ -24,7 +27,11 @@ export function ParameterCard({
   onChange,
   onMaximize,
   onReadLesson,
+  focusedHref,
 }: ParameterCardProps) {
+  const targetHref =
+    focusedHref ??
+    `/questions/why-did-the-universe-begin-ordered/lab/${paramSlug(p.key)}`;
   const Viz = VIZ_BY_KEY[p.key];
   const inBand = isInBand(p, value);
   const warn = p.scored && !inBand;
@@ -79,14 +86,14 @@ export function ParameterCard({
       </div>
 
       <div className="param-foot">
-        <button type="button" className="param-lesson-btn" onClick={onReadLesson}>
+        <Link href={targetHref} className="param-lesson-btn" onClick={onReadLesson}>
           Read the lesson · ↗
-        </button>
-        <button
-          type="button"
+        </Link>
+        <Link
+          href={targetHref}
           className="param-maximize"
-          title="Focused view"
-          aria-label="Focused view"
+          title={`Parameter ${p.n} · Focused view`}
+          aria-label={`Parameter ${p.n} · Focused view`}
           onClick={onMaximize}
         >
           <svg
@@ -99,7 +106,7 @@ export function ParameterCard({
           >
             <path d="M3 7V3h4M13 9v4H9M13 3l-5 5M3 13l5-5" />
           </svg>
-        </button>
+        </Link>
       </div>
     </div>
   );
