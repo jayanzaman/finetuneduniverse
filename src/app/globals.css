@@ -1804,14 +1804,14 @@ button, [role="button"] { touch-action: manipulation; }
 .chapter-entropy-stage {
   position: absolute;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: clamp(500px, min(52vw, 92vh), 960px);
-  height: clamp(500px, min(52vw, 92vh), 960px);
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  background: transparent;
+  top: 0;
+  width: clamp(540px, 54vw, 1100px);
+  height: 100vh;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  overflow: visible;
   pointer-events: auto;
   z-index: 5;
 }
@@ -1820,11 +1820,12 @@ button, [role="button"] { touch-action: manipulation; }
   .chapter-entropy-stage {
     opacity: 0.35;
     pointer-events: none;
-    transform: translateY(-50%) scale(0.65);
-    transform-origin: right center;
+    transform: scale(0.65);
+    transform-origin: right top;
+    top: 60px;
     right: -100px;
     width: clamp(480px, 80vw, 720px);
-    height: clamp(480px, 80vw, 720px);
+    height: 600px;
   }
 }
 

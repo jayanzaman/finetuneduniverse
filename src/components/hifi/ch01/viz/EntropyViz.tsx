@@ -164,6 +164,7 @@ export function EntropyViz({
   // Animation & simulation refs
   const animFrameRef = useRef<number | null>(null);
   const valueRef = useRef<number>(value);
+  const minimalRef = useRef<boolean>(minimal);
   const isPlayingRef = useRef<boolean>(true);
   const lastTimeRef = useRef<number>(0);
   const viewModeRef = useRef<'battery' | 'odds'>('battery');
@@ -195,6 +196,10 @@ export function EntropyViz({
   useEffect(() => {
     valueRef.current = value;
   }, [value]);
+
+  useEffect(() => {
+    minimalRef.current = minimal;
+  }, [minimal]);
 
   useEffect(() => {
     isPlayingRef.current = isPlaying;
@@ -345,7 +350,7 @@ export function EntropyViz({
 
       const cx = width / 2;
       const cy = height / 2;
-      const scale = Math.min(width, height) * 0.44;
+      const scale = Math.min(width, height) * (minimalRef.current ? 0.48 : 0.44);
       const yaw = yawRef.current;
       const pitch = pitchRef.current;
 
@@ -926,6 +931,8 @@ export function EntropyViz({
           ? 'transparent'
           : 'radial-gradient(circle at center, rgba(14, 18, 36, 0.75) 0%, rgba(3, 4, 12, 0.96) 100%)',
         borderRadius: minimal ? 0 : 10,
+        border: 'none',
+        boxShadow: 'none',
         userSelect: 'none',
       }}
       aria-label={

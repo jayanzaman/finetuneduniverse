@@ -105,7 +105,7 @@ export function ChapterFrame({
         </div>
       )}
 
-      <div style={{ position: 'relative', zIndex: 3, padding: 'clamp(40px, 6vw, 72px) clamp(20px, 5vw, 64px) 80px' }}>
+      <div style={{ position: 'relative', zIndex: 6, padding: 'clamp(40px, 6vw, 72px) clamp(20px, 5vw, 64px) 80px' }}>
         {/* Chapter mark line */}
         <div style={{ display: 'flex', gap: 18, alignItems: 'center', marginBottom: 14 }}>
           <span className="mono-lg" style={{ color: 'var(--indigo)' }}>Chapter {num}</span>
