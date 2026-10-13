@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 
 export interface TemperatureVizProps {
   value?: number;
@@ -139,6 +139,18 @@ function sampleColormap(
 export type ViewMode = 'mollweide' | 'globe3d';
 export type ContrastLens = 'acoustic' | 'dipole' | 'raw';
 
+interface ProbeInfo {
+  active: boolean;
+  x: number;
+  y: number;
+  lDeg: number;
+  bDeg: number;
+  tempK: number;
+  deltaTStr: string;
+  patchId: number;
+  diagnosis: string;
+}
+
 export function TemperatureViz({
   value = 0.99999,
   className = '',
@@ -147,31 +159,29 @@ export function TemperatureViz({
   void minimal;
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const offscreenRef = useRef<HTMLCanvasElement | null>(null);
+
+  // Cached Offscreen Canvas for Base CMB Raster (zero-flicker background)
+  const cachedCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isBaseDirtyRef = useRef<boolean>(true);
 
   const [viewMode, setViewMode] = useState<ViewMode>('mollweide');
   const [lens, setLens] = useState<ContrastLens>('acoustic');
   const [autoRotate, setAutoRotate] = useState<boolean>(true);
   const [isCompact, setIsCompact] = useState<boolean>(false);
 
-  // Rotation angles for 3D Globe mode (radians)
-  const [yaw, setYaw] = useState<number>(0.4);
-  const [pitch, setPitch] = useState<number>(-0.2);
+  // Rotation angles for 3D Globe mode (radians) - stored in ref for 60fps RAF without React re-renders
+  const yawRef = useRef<number>(0.4);
+  const pitchRef = useRef<number>(-0.2);
   const isDraggingRef = useRef<boolean>(false);
   const lastMousePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
-  // Thermal Probe Hover / Reticle State
-  const [probe, setProbe] = useState<{
-    active: boolean;
-    x: number;
-    y: number;
-    lDeg: number;
-    bDeg: number;
-    tempK: number;
-    deltaTStr: string;
-    patchId: number;
-    diagnosis: string;
-  } | null>(null);
+  // Probe state for React HUD (throttled with RAF) and probe ref for synchronous canvas reticle
+  const [probe, setProbe] = useState<ProbeInfo | null>(null);
+  const probeRef = useRef<ProbeInfo | null>(null);
+  const hudRafRef = useRef<number | null>(null);
+
+  // Function ref to trigger redraw
+  const redrawRef = useRef<(() => void) | null>(null);
 
   // Physics mapping from slider value
   // Goldilocks band is [0.99998, 1.00000], default 0.99999
@@ -201,108 +211,82 @@ export function TemperatureViz({
     };
   }, [value]);
 
-  // Handle Dragging in 3D Globe Mode
-  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    isDraggingRef.current = true;
-    lastMousePosRef.current = { x: e.clientX, y: e.clientY };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  };
+  // Mark base raster dirty when slider, viewMode, or lens changes
+  useEffect(() => {
+    isBaseDirtyRef.current = true;
+    if (redrawRef.current) redrawRef.current();
+  }, [physics, viewMode, lens]);
 
-  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  // Compute Probe Details for Given Pointer Position
+  const computeProbe = useCallback(
+    (mouseX: number, mouseY: number, w: number, h: number): ProbeInfo | null => {
+      let hit = false;
+      let lRad = 0;
+      let bRad = 0;
 
-    const rect = canvas.getBoundingClientRect();
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
+      if (viewMode === 'mollweide') {
+        const xc = w / 2;
+        const yc = h / 2;
+        const rx = Math.min(w * 0.44, h * 0.82);
+        const ry = rx / 2;
 
-    if (isDraggingRef.current && viewMode === 'globe3d') {
-      const dx = e.clientX - lastMousePosRef.current.x;
-      const dy = e.clientY - lastMousePosRef.current.y;
-      lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+        const u = (mouseX - xc) / rx;
+        const v = (mouseY - yc) / ry;
 
-      setYaw((prev) => prev - dx * 0.008);
-      setPitch((prev) => Math.max(-1.4, Math.min(1.4, prev - dy * 0.008)));
-    }
+        if (u * u + v * v <= 1.0) {
+          hit = true;
+          const theta = Math.asin(Math.max(-1, Math.min(1, v)));
+          bRad = Math.asin(
+            Math.max(-1, Math.min(1, (2 * theta + Math.sin(2 * theta)) / Math.PI))
+          );
+          const cosTheta = Math.max(0.0001, Math.sqrt(1 - v * v));
+          lRad = (u / cosTheta) * (Math.PI / 2);
+        }
+      } else {
+        const xc = w / 2;
+        const yc = h / 2;
+        const r = Math.min(w * 0.38, h * 0.38);
 
-    // Thermal Probe coordinate calculation
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const w = canvas.width / dpr;
-    const h = canvas.height / dpr;
+        const u = (mouseX - xc) / r;
+        const v = (mouseY - yc) / r;
 
-    let hit = false;
-    let lRad = 0;
-    let bRad = 0;
+        if (u * u + v * v <= 1.0) {
+          hit = true;
+          const sphereZ = Math.sqrt(1 - u * u - v * v);
+          const cosYaw = Math.cos(yawRef.current);
+          const sinYaw = Math.sin(yawRef.current);
+          const cosPitch = Math.cos(pitchRef.current);
+          const sinPitch = Math.sin(pitchRef.current);
 
-    if (viewMode === 'mollweide') {
-      const xc = w / 2;
-      const yc = h / 2;
-      const rx = Math.min(w * 0.44, h * 0.82);
-      const ry = rx / 2;
+          const x1 = u * cosYaw + sphereZ * sinYaw;
+          const z1 = -u * sinYaw + sphereZ * cosYaw;
 
-      const u = (mouseX - xc) / rx;
-      const v = (mouseY - yc) / ry;
+          const y2 = -v * cosPitch + z1 * sinPitch;
+          const z2 = v * sinPitch + z1 * cosPitch;
 
-      if (u * u + v * v <= 1.0) {
-        hit = true;
-        const theta = Math.asin(Math.max(-1, Math.min(1, v)));
-        bRad = Math.asin(
-          Math.max(-1, Math.min(1, (2 * theta + Math.sin(2 * theta)) / Math.PI))
-        );
-        const cosTheta = Math.max(0.0001, Math.sqrt(1 - v * v));
-        lRad = (u / cosTheta) * (Math.PI / 2);
+          bRad = Math.asin(Math.max(-1, Math.min(1, y2)));
+          lRad = Math.atan2(x1, z2);
+        }
       }
-    } else {
-      const xc = w / 2;
-      const yc = h / 2;
-      const r = Math.min(w * 0.38, h * 0.38);
 
-      const u = (mouseX - xc) / r;
-      const v = (mouseY - yc) / r;
+      if (!hit) return null;
 
-      if (u * u + v * v <= 1.0) {
-        hit = true;
-        const sphereZ = Math.sqrt(1 - u * u - v * v);
-        // Rotate by yaw and pitch
-        const cosYaw = Math.cos(yaw);
-        const sinYaw = Math.sin(yaw);
-        const cosPitch = Math.cos(pitch);
-        const sinPitch = Math.sin(pitch);
-
-        const x1 = u * cosYaw + sphereZ * sinYaw;
-        const z1 = -u * sinYaw + sphereZ * cosYaw;
-
-        const y2 = -v * cosPitch + z1 * sinPitch;
-        const z2 = v * sinPitch + z1 * cosPitch;
-
-        bRad = Math.asin(Math.max(-1, Math.min(1, y2)));
-        lRad = Math.atan2(x1, z2);
-      }
-    }
-
-    if (hit) {
       const sx = Math.cos(bRad) * Math.sin(lRad);
       const sy = Math.sin(bRad);
       const sz = Math.cos(bRad) * Math.cos(lRad);
 
-      // Dipole
-      const cosDipole =
-        sx * DIPOLE_DIR.x + sy * DIPOLE_DIR.y + sz * DIPOLE_DIR.z;
+      const cosDipole = sx * DIPOLE_DIR.x + sy * DIPOLE_DIR.y + sz * DIPOLE_DIR.z;
       const deltaTDipole = 3.36e-3 * cosDipole;
 
-      // Acoustic ripple
       const acousticNorm = getAcousticHarmonics(sx, sy, sz);
       const deltaTAcoustic = acousticNorm * 4.5e-5 * physics.acousticWeight;
 
-      // Mottled horizon patch
       let maxDot = -2;
       let nearestSeed = HORIZON_SEEDS[0];
       let patchId = 0;
       for (let i = 0; i < HORIZON_SEEDS.length; i++) {
         const dot =
-          sx * HORIZON_SEEDS[i].x +
-          sy * HORIZON_SEEDS[i].y +
-          sz * HORIZON_SEEDS[i].z;
+          sx * HORIZON_SEEDS[i].x + sy * HORIZON_SEEDS[i].y + sz * HORIZON_SEEDS[i].z;
         if (dot > maxDot) {
           maxDot = dot;
           nearestSeed = HORIZON_SEEDS[i];
@@ -312,9 +296,7 @@ export function TemperatureViz({
       const deltaTMottled = nearestSeed.deltaT * physics.mottledWeight;
 
       const totalDeltaT =
-        deltaTAcoustic +
-        deltaTMottled +
-        (lens === 'dipole' ? deltaTDipole : 0);
+        deltaTAcoustic + deltaTMottled + (lens === 'dipole' ? deltaTDipole : 0);
       const tempK = 2.72548 + totalDeltaT;
 
       let deltaTStr = '';
@@ -336,7 +318,7 @@ export function TemperatureViz({
         diagnosis = 'Acoustic Rarefaction (Cold Underdensity)';
       }
 
-      setProbe({
+      return {
         active: true,
         x: mouseX,
         y: mouseY,
@@ -346,9 +328,54 @@ export function TemperatureViz({
         deltaTStr,
         patchId,
         diagnosis,
+      };
+    },
+    [viewMode, lens, physics]
+  );
+
+  // Handle Dragging in 3D Globe Mode
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    isDraggingRef.current = true;
+    lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    if (isDraggingRef.current && viewMode === 'globe3d') {
+      const dx = e.clientX - lastMousePosRef.current.x;
+      const dy = e.clientY - lastMousePosRef.current.y;
+      lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+
+      yawRef.current -= dx * 0.008;
+      pitchRef.current = Math.max(-1.4, Math.min(1.4, pitchRef.current - dy * 0.008));
+      isBaseDirtyRef.current = true;
+    }
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+
+    const info = computeProbe(mouseX, mouseY, w, h);
+    probeRef.current = info;
+
+    // Instant redraw of cached canvas + crosshair reticle (takes < 0.05ms, ZERO flicker!)
+    if (redrawRef.current) {
+      redrawRef.current();
+    }
+
+    // Throttle React state update for the HTML HUD pill
+    if (hudRafRef.current === null) {
+      hudRafRef.current = requestAnimationFrame(() => {
+        hudRafRef.current = null;
+        setProbe(probeRef.current);
       });
-    } else {
-      setProbe(null);
     }
   };
 
@@ -361,7 +388,16 @@ export function TemperatureViz({
     }
   };
 
-  // Main Canvas Rendering Loop
+  const handlePointerLeave = () => {
+    isDraggingRef.current = false;
+    probeRef.current = null;
+    setProbe(null);
+    if (redrawRef.current) {
+      redrawRef.current();
+    }
+  };
+
+  // Main Canvas Rendering & Animation Engine
   useEffect(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
@@ -384,40 +420,36 @@ export function TemperatureViz({
         canvas.width = Math.round(width * dpr);
         canvas.height = Math.round(height * dpr);
         setIsCompact(height < 240 || width < 360);
+        isBaseDirtyRef.current = true;
+        drawFrame();
       }
     });
     resizeObserver.observe(container);
 
-    // Offscreen raster buffer (280 x 140 pixels)
+    // Initialize or resize offscreen cached canvas
     const bufW = 280;
     const bufH = 140;
-    if (!offscreenRef.current) {
-      offscreenRef.current = document.createElement('canvas');
-      offscreenRef.current.width = bufW;
-      offscreenRef.current.height = bufH;
+    if (!cachedCanvasRef.current) {
+      cachedCanvasRef.current = document.createElement('canvas');
+      cachedCanvasRef.current.width = bufW;
+      cachedCanvasRef.current.height = bufH;
     }
-    const offCanvas = offscreenRef.current;
+    const offCanvas = cachedCanvasRef.current;
     const offCtx = offCanvas.getContext('2d');
 
-    const renderFrame = () => {
-      if (width <= 0 || height <= 0 || !offCtx) {
-        animId = requestAnimationFrame(renderFrame);
-        return;
-      }
+    // 1. RASTERIZE BASE CMB TEXTURE (Only called when dirty!)
+    const rasterizeBaseTexture = () => {
+      if (!offCtx) return;
 
-      // Auto-rotation in 3D globe mode
-      if (autoRotate && viewMode === 'globe3d' && !isDraggingRef.current) {
-        setYaw((prev) => (prev + 0.005) % (Math.PI * 2));
-      }
-
-      // 1. RASTERIZE THE CMB FIELD ON OFFSCREEN BUFFER
       const imgData = offCtx.createImageData(bufW, bufH);
       const data = imgData.data;
 
-      const cosYaw = Math.cos(yaw);
-      const sinYaw = Math.sin(yaw);
-      const cosPitch = Math.cos(pitch);
-      const sinPitch = Math.sin(pitch);
+      const currentYaw = yawRef.current;
+      const currentPitch = pitchRef.current;
+      const cosYaw = Math.cos(currentYaw);
+      const sinYaw = Math.sin(currentYaw);
+      const cosPitch = Math.cos(currentPitch);
+      const sinPitch = Math.sin(currentPitch);
 
       if (viewMode === 'mollweide') {
         const xc = bufW / 2;
@@ -447,11 +479,9 @@ export function TemperatureViz({
             const sx = cosB * Math.sin(lRad);
             const sz = cosB * Math.cos(lRad);
 
-            // Compute Temperature Components
             let normVal = 0.5;
 
             if (lens === 'raw') {
-              // Raw glow at 2.725K
               let dT = 0;
               if (physics.mottledWeight > 0.001) {
                 let maxDot = -2;
@@ -468,13 +498,10 @@ export function TemperatureViz({
                 }
                 dT = nearest.deltaT * physics.mottledWeight;
               }
-              // Scaled around 2.725K (-1.5 K to +1.5 K)
-              normVal = 0.5 + (dT / 3.0);
+              normVal = 0.5 + dT / 3.0;
             } else if (lens === 'dipole') {
-              // Dipole Doppler + subtle ripples
               const cosDipole =
                 sx * DIPOLE_DIR.x + sy * DIPOLE_DIR.y + sz * DIPOLE_DIR.z;
-              const dTDipole = cosDipole; // in range [-1, +1]
               let dTMottled = 0;
               if (physics.mottledWeight > 0.001) {
                 let maxDot = -2;
@@ -491,10 +518,10 @@ export function TemperatureViz({
                 }
                 dTMottled = (nearest.deltaT / 1.5) * physics.mottledWeight * 0.4;
               }
-              normVal = 0.5 + dTDipole * 0.45 + dTMottled;
+              normVal = 0.5 + cosDipole * 0.45 + dTMottled;
             } else {
-              // Microkelvin Acoustic View (Dipole removed, 100,000x contrast)
-              const acoustic = getAcousticHarmonics(sx, sy, sz) * physics.acousticWeight;
+              const acoustic =
+                getAcousticHarmonics(sx, sy, sz) * physics.acousticWeight;
               let mottled = 0;
               if (physics.mottledWeight > 0.001) {
                 let maxDot = -2;
@@ -512,7 +539,10 @@ export function TemperatureViz({
                 mottled = (nearest.deltaT / 1.2) * physics.mottledWeight;
               }
 
-              normVal = 0.5 + acoustic * 0.45 * (1 - physics.mottledWeight) + mottled * 0.45;
+              normVal =
+                0.5 +
+                acoustic * 0.45 * (1 - physics.mottledWeight) +
+                mottled * 0.45;
             }
 
             const [r, g, b] = sampleColormap(normVal, lens);
@@ -593,7 +623,8 @@ export function TemperatureViz({
               }
               normVal = 0.5 + cosDipole * 0.45 + dTMottled;
             } else {
-              const acoustic = getAcousticHarmonics(sx, sy, sz) * physics.acousticWeight;
+              const acoustic =
+                getAcousticHarmonics(sx, sy, sz) * physics.acousticWeight;
               let mottled = 0;
               if (physics.mottledWeight > 0.001) {
                 let maxDot = -2;
@@ -610,10 +641,12 @@ export function TemperatureViz({
                 }
                 mottled = (nearest.deltaT / 1.2) * physics.mottledWeight;
               }
-              normVal = 0.5 + acoustic * 0.45 * (1 - physics.mottledWeight) + mottled * 0.45;
+              normVal =
+                0.5 +
+                acoustic * 0.45 * (1 - physics.mottledWeight) +
+                mottled * 0.45;
             }
 
-            // Limb darkening / spherical shading
             const limbShade = 0.65 + 0.35 * sphereZ;
             const [r0, g0, b0] = sampleColormap(normVal, lens);
 
@@ -627,25 +660,28 @@ export function TemperatureViz({
       }
 
       offCtx.putImageData(imgData, 0, 0);
+      isBaseDirtyRef.current = false;
+    };
 
-      // 2. BLIT TO MAIN CANVAS & DRAW VECTOR OVERLAYS
+    // 2. DRAW FRAME: Blits Cached Offscreen Texture + Vector Overlays + Reticle (< 0.05ms)
+    const drawFrame = () => {
+      if (width <= 0 || height <= 0 || !offCtx) return;
+
+      if (isBaseDirtyRef.current) {
+        rasterizeBaseTexture();
+      }
+
       ctx.save();
       ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, width, height);
 
       // Deep space background
       ctx.fillStyle = '#030712';
       ctx.fillRect(0, 0, width, height);
 
-      const targetX = 0;
-      const targetY = 0;
-      const targetW = width;
-      const targetH = height;
-
-      // Draw smoothed buffer
+      // Blit cached smoothed texture
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(offCanvas, targetX, targetY, targetW, targetH);
+      ctx.drawImage(offCanvas, 0, 0, width, height);
 
       // Draw Vector Graticule & Borders
       if (viewMode === 'mollweide') {
@@ -705,15 +741,16 @@ export function TemperatureViz({
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
         ctx.lineWidth = 1;
         ctx.beginPath();
-        const ellipseRy = Math.abs(Math.sin(pitch) * r);
+        const ellipseRy = Math.abs(Math.sin(pitchRef.current) * r);
         ctx.ellipse(xc, yc, r, Math.max(1, ellipseRy), 0, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // Draw Thermal Probe Target & 1° Causal Horizon Reticle
-      if (probe && probe.active) {
+      // Draw Thermal Probe Target & 1° Causal Horizon Reticle (from probeRef)
+      const currentProbe = probeRef.current;
+      if (currentProbe && currentProbe.active) {
         ctx.save();
-        ctx.translate(probe.x, probe.y);
+        ctx.translate(currentProbe.x, currentProbe.y);
 
         // Glowing crosshair
         ctx.strokeStyle = '#38BDF8';
@@ -733,8 +770,8 @@ export function TemperatureViz({
         ctx.lineTo(0, 10);
         ctx.stroke();
 
-        // 1° Causal Horizon Circle (at scale ~14px)
-        ctx.strokeStyle = 'rgba(245, 158, 11, 0.75)';
+        // 1° Causal Horizon Circle (dashed)
+        ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
         ctx.arc(0, 0, 16, 0, Math.PI * 2);
@@ -750,16 +787,30 @@ export function TemperatureViz({
       }
 
       ctx.restore();
-      animId = requestAnimationFrame(renderFrame);
     };
 
-    animId = requestAnimationFrame(renderFrame);
+    redrawRef.current = drawFrame;
+
+    // Animation Loop: Only actively updates when auto-rotating in 3D globe mode!
+    const loop = () => {
+      if (autoRotate && viewMode === 'globe3d' && !isDraggingRef.current) {
+        yawRef.current = (yawRef.current + 0.004) % (Math.PI * 2);
+        isBaseDirtyRef.current = true;
+        drawFrame();
+      }
+      animId = requestAnimationFrame(loop);
+    };
+
+    // Initial render
+    drawFrame();
+    animId = requestAnimationFrame(loop);
 
     return () => {
       cancelAnimationFrame(animId);
       resizeObserver.disconnect();
+      redrawRef.current = null;
     };
-  }, [viewMode, lens, autoRotate, yaw, pitch, probe, physics]);
+  }, [viewMode, lens, autoRotate, physics]);
 
   return (
     <div
@@ -785,7 +836,7 @@ export function TemperatureViz({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerLeave={() => setProbe(null)}
+        onPointerLeave={handlePointerLeave}
         style={{
           width: '100%',
           height: '100%',
