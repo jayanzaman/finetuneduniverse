@@ -31,4 +31,36 @@ describe('GalacticHeartSection', () => {
     fireEvent.click(screen.getByRole('button', { name: /go to phase: modern milky way/i }));
     expect(screen.getByText('Modern Milky Way')).toBeTruthy();
   });
+
+  it('allows switching between instruments and toggling 3-column triptych view', () => {
+    render(<GalacticHeartSection educatorMode={true} />);
+
+    // Initially on Instrument A
+    expect(screen.getByText(/instrument a · milky way morphogenesis/i)).toBeTruthy();
+
+    // Switch to Instrument B: Sgr A* Black Hole Feedback
+    const bBtn = screen.getByRole('button', { name: /black hole feedback/i });
+    fireEvent.click(bBtn);
+    expect(screen.getByText(/instrument b · sagittarius a\* agn feedback/i)).toBeTruthy();
+
+    // Switch to Instrument C: Galactic Habitable Zone
+    const cBtn = screen.getByRole('button', { name: /galactic habitable zone/i });
+    fireEvent.click(cBtn);
+    expect(screen.getByText(/instrument c · galactic habitable zone/i)).toBeTruthy();
+
+    // Toggle 3-Column Triptych View
+    const triptychBtn = screen.getByRole('button', { name: /3-column triptych/i });
+    fireEvent.click(triptychBtn);
+
+    // In triptych mode, all three instruments are displayed
+    expect(screen.getByText(/instrument a · milky way morphogenesis/i)).toBeTruthy();
+    expect(screen.getByText(/instrument b · sagittarius a\* agn feedback/i)).toBeTruthy();
+    expect(screen.getByText(/instrument c · galactic habitable zone/i)).toBeTruthy();
+  });
+
+  it('responds to global randomizeUniverse event', () => {
+    render(<GalacticHeartSection educatorMode={false} />);
+    window.dispatchEvent(new CustomEvent('randomizeUniverse'));
+    expect(screen.getByRole('heading', { name: /milky way evolution/i })).toBeTruthy();
+  });
 });

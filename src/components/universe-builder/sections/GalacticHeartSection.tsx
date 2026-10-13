@@ -1,326 +1,352 @@
 'use client';
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../ui/card'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState, useEffect, useMemo } from 'react';
+import { MilkyWayChronologyVisual, GALAXY_PHASES } from './MilkyWayChronologyVisual';
+import { AgnFeedbackVisual } from './AgnFeedbackVisual';
+import { GalacticHabitableZoneVisual } from './GalacticHabitableZoneVisual';
+import {
+  Clock,
+  Flame,
+  Orbit,
+  LayoutGrid,
+  Maximize2,
+  BookOpen,
+  ShieldCheck,
+  AlertTriangle,
+  RotateCcw,
+  Sparkles,
+} from 'lucide-react';
 
-// Galaxy Evolution Data
-const galaxyPhases = [
-  {
-    id: 0,
-    name: "Pre-Galactic Era",
-    age: "13.8-13.6 billion years ago",
-    image: null, // No image - empty space
-    description: "The universe before galaxies existed",
-    details: "In the earliest epochs after the Big Bang, the universe was a nearly uniform sea of hydrogen and helium gas. No stars, no galaxies, no structure - just the cosmic microwave background and tiny density fluctuations that would eventually seed galaxy formation.",
-    fineTuning: "The universe needed to cool to exactly the right temperature and achieve the perfect balance of matter density. Too hot and gas couldn't clump; too cold and nuclear processes couldn't begin when stars finally formed."
-  },
-  {
-    id: 1,
-    name: "Proto-Galaxy Formation",
-    age: "13.6 billion years ago",
-    image: "/1. Proto-Galaxy Formation.png",
-    description: "Dark matter halo collapse and first gas accretion",
-    details: "The Milky Way begins as a chaotic cloud of dark matter and gas. Gravity pulls material together, but there's no organized structure yet. This phase was crucial for gathering the raw materials needed to build our galaxy.",
-    fineTuning: "If dark matter hadn't clumped at exactly the right rate, galaxies would never have formed. Too fast and everything would collapse into black holes; too slow and matter would remain forever dispersed."
-  },
-  {
-    id: 2,
-    name: "Starburst Phase", 
-    age: "12-10 billion years ago",
-    image: "/2. Starburst Phase.png",
-    description: "Intense star formation and heavy element creation",
-    details: "Massive bursts of star formation create the first heavy elements through nuclear fusion. These early stars live fast and die young, enriching the galaxy with carbon, oxygen, and iron - elements essential for planets and life.",
-    fineTuning: "The star formation rate had to be perfectly balanced. Too intense and it would consume all gas too quickly; too weak and insufficient heavy elements would form for rocky planets."
-  },
-  {
-    id: 3,
-    name: "Quasar Phase",
-    age: "10-8 billion years ago", 
-    image: "/3. Quasar Phase.png",
-    description: "Active galactic nucleus with powerful jets",
-    details: "The central supermassive black hole becomes extremely active, shooting powerful jets of energy across the galaxy. This phase regulates star formation and prevents the galaxy from growing too large.",
-    fineTuning: "The quasar phase had to end at precisely the right time. Too long and it would sterilize the entire galaxy; too short and the galaxy would become overcrowded with stars, disrupting planetary orbits."
-  },
-  {
-    id: 4,
-    name: "Early Spiral Formation",
-    age: "8-4 billion years ago",
-    image: "/4. Early Spiral Formation.png", 
-    description: "Spiral arms begin to form and stabilize",
-    details: "The galaxy settles into a rotating disk with emerging spiral arms. Star formation becomes more organized, creating the beautiful spiral pattern we see today. The galactic ecosystem begins to stabilize.",
-    fineTuning: "Spiral arm formation required precise rotational dynamics. Without the right balance of gravity and rotation, we'd have either a chaotic irregular galaxy or a featureless elliptical - neither ideal for life."
-  },
-  {
-    id: 5,
-    name: "Modern Milky Way",
-    age: "Present day",
-    image: "/Milkyway Galaxy Formation - Nature.jpg",
-    description: "Mature spiral galaxy with stable star formation",
-    details: "Today's Milky Way represents the perfect balance - a stable spiral galaxy with the right metallicity gradients, gas reservoirs, and stellar populations to support billions of planetary systems like ours.",
-    fineTuning: "Our current galaxy provides the ideal environment for life: stable orbits, appropriate heavy element abundance, regulated star formation, and protection from cosmic hazards through our location in the galactic suburbs."
-  }
-];
-
-/** Map a galactic age (billion years after the Big Bang) to a phase index. */
-function getPhaseIndex(age: number): number {
-  if (age > 13.6) return 0; // Pre-Galactic Era
-  if (age > 12.0) return 1; // Proto-Galaxy Formation
-  if (age > 10.0) return 2; // Starburst Phase
-  if (age > 8.0) return 3; // Quasar Phase
-  if (age > 4.0) return 4; // Early Spiral Formation
-  return 5; // Modern Milky Way
-}
-
-// Milky Way Evolution Carousel Component
-function MilkyWayEvolution({ 
-  currentAge,
+export default function GalacticHeartSection({
   educatorMode,
-  onAgeChange
+  cosmicTime = 0,
 }: {
-  currentAge: number;
   educatorMode: boolean;
-  onAgeChange: (age: number) => void;
+  cosmicTime?: number;
 }) {
-  // Get representative age for each phase (middle of the phase range)
-  const getPhaseAge = (phaseIndex: number) => {
-    switch (phaseIndex) {
-      case 0: return 13.7;  // Pre-Galactic Era (13.8-13.6 Gya) -> 13.7
-      case 1: return 13.0;  // Proto-Galaxy Formation (13.6-12 Gya) -> 13.0
-      case 2: return 11.0;  // Starburst Phase (12-10 Gya) -> 11.0
-      case 3: return 9.0;   // Quasar Phase (10-8 Gya) -> 9.0
-      case 4: return 6.0;   // Early Spiral Formation (8-4 Gya) -> 6.0
-      case 5: return 1.0;   // Modern Milky Way (4-0 Gya) -> 1.0
-      default: return 1.0;
-    }
-  };
+  void cosmicTime;
 
-  const currentPhase = getPhaseIndex(currentAge);
+  // The 3 Fundamental Galactic Parameters
+  // 1. Galactic Age & Phase (13.8 to 0 Gya, start at 13.8 Big Bang)
+  const [currentGalacticAge, setCurrentGalacticAge] = useState(13.8);
 
-  const nextPhase = () => {
-    const nextPhaseIndex = (currentPhase + 1) % galaxyPhases.length;
-    onAgeChange(getPhaseAge(nextPhaseIndex));
-  };
+  // 2. Sagittarius A* Black Hole Mass (log10 M☉, range 5.0 to 9.0, reference: 6.61)
+  const [blackHoleMass, setBlackHoleMass] = useState(6.61);
 
-  const prevPhase = () => {
-    const prevPhaseIndex = (currentPhase - 1 + galaxyPhases.length) % galaxyPhases.length;
-    onAgeChange(getPhaseAge(prevPhaseIndex));
-  };
+  // 3. Galactocentric Orbital Radius (kpc, range 1.0 to 20.0, reference: 8.2)
+  const [radiusKpc, setRadiusKpc] = useState(8.2);
 
-  const goToPhase = (phaseIndex: number) => {
-    onAgeChange(getPhaseAge(phaseIndex));
-  };
+  // Active Instrument Index (0: Chronology, 1: Sgr A* Feedback, 2: Habitable Zone)
+  const [activeInstrumentIndex, setActiveInstrumentIndex] = useState(0);
 
-  const currentPhaseData = galaxyPhases[currentPhase];
+  // View Mode: 'studio' (master-detail hero stage) vs 'grid' (3-column triptych)
+  const [viewMode, setViewMode] = useState<'studio' | 'grid'>('studio');
+
+  // Compute Current Phase
+  const currentPhaseIndex = useMemo(() => {
+    if (currentGalacticAge > 13.6) return 0;
+    if (currentGalacticAge > 12.0) return 1;
+    if (currentGalacticAge > 10.0) return 2;
+    if (currentGalacticAge > 7.0) return 3;
+    if (currentGalacticAge > 4.0) return 4;
+    return 5;
+  }, [currentGalacticAge]);
+
+  const currentPhase = GALAXY_PHASES[currentPhaseIndex];
+
+  // Fine-tuning band conditions
+  const isBlackHoleOptimal = blackHoleMass >= 6.0 && blackHoleMass <= 7.3;
+  const isGhzOptimal = radiusKpc >= 7.0 && radiusKpc <= 9.0;
+  const isPhaseSettled = currentPhaseIndex >= 4;
+
+  const bandStatus = [
+    { name: 'Sgr A* Mass (6.0–7.3 log₁₀ M☉)', ok: isBlackHoleOptimal },
+    { name: 'Galactic Habitable Zone (7–9 kpc)', ok: isGhzOptimal },
+    { name: 'Disk Settling (Thin Disk Era)', ok: isPhaseSettled },
+  ];
+
+  // Randomize Universe event listener
+  useEffect(() => {
+    const handleRandomize = () => {
+      setCurrentGalacticAge(Math.random() * 13.8);
+      setBlackHoleMass(5.0 + Math.random() * 4.0);
+      setRadiusKpc(1.0 + Math.random() * 19.0);
+    };
+
+    window.addEventListener('randomizeUniverse', handleRandomize);
+    return () => window.removeEventListener('randomizeUniverse', handleRandomize);
+  }, []);
+
+  // Instrument definitions
+  const instruments = [
+    {
+      id: 0,
+      title: 'Milky Way Evolution & Chronology',
+      shortTitle: 'Evolutionary Chronology',
+      icon: Clock,
+      subtitle: '13.8-billion-year morphogenesis across 6 distinct cosmological epochs',
+      badge: currentPhase.age,
+      badgeColor: 'var(--indigo)',
+    },
+    {
+      id: 1,
+      title: 'Sgr A* & The AGN Feedback Regulator',
+      shortTitle: 'Black Hole Feedback',
+      icon: Flame,
+      subtitle: 'Relativistic jets regulate cooling and halt runaway core collapse',
+      badge: `${blackHoleMass.toFixed(2)} log₁₀ M☉`,
+      badgeColor: isBlackHoleOptimal ? 'var(--goldilocks)' : 'var(--warm)',
+    },
+    {
+      id: 2,
+      title: 'The Galactic Habitable Zone (GHZ)',
+      shortTitle: 'Galactic Habitable Zone',
+      icon: Orbit,
+      subtitle: 'Balancing core radiation hazards with outer-rim metallicity scarcity',
+      badge: `${radiusKpc.toFixed(1)} kpc`,
+      badgeColor: isGhzOptimal ? 'var(--goldilocks)' : 'var(--warm)',
+    },
+  ];
 
   return (
-    <div className="relative w-full bg-[var(--void)] border border-[var(--hair)] rounded-lg overflow-hidden">
-      {/* Image Carousel */}
-      <div className="relative aspect-video bg-[var(--void-2)]">
-        {/* Image Container with proper aspect ratio */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          {currentPhaseData.image ? (
-            <img
-              src={currentPhaseData.image}
-              alt={`${currentPhaseData.name} - ${currentPhaseData.description}`}
-              loading="lazy"
-              className="max-w-full max-h-full object-contain transition-all duration-700 ease-out transform hover:scale-105"
-              style={{ filter: 'brightness(1.1) contrast(1.1)' }}
-            />
-          ) : (
-            /* Empty space visualization for Pre-Galactic Era */
-            <div className="w-full h-full flex items-center justify-center bg-[var(--void-3)]">
-              <div className="text-center space-y-4">
-                <div className="w-32 h-32 mx-auto rounded-full bg-[var(--void-2)] flex items-center justify-center border border-[var(--hair-2)]">
-                  <div className="text-4xl text-[var(--ink-soft)]">∅</div>
-                </div>
-                <div className="text-[var(--ink-mid)] text-sm font-medium">No Galaxy Structure</div>
-                <div className="text-[var(--ink-soft)] text-xs">Primordial gas clouds only</div>
+    <div className="w-full max-w-7xl mx-auto space-y-6">
+      {/* Chapter 04 Title Heading */}
+      <div className="flex items-center justify-between pb-2 border-b border-[var(--hair)]">
+        <div>
+          <h2 className="text-xl sm:text-2xl font-bold text-[var(--ink)] tracking-tight">
+            Milky Way Evolution
+          </h2>
+          <p className="text-xs sm:text-sm text-[var(--ink-soft)] mt-0.5">
+            Explore 13.8 billion years of galactic morphogenesis, black hole regulation, and habitability
+          </p>
+        </div>
+      </div>
+
+      {/* Top Laboratory Status Strip */}
+      <div className="rounded-xl border border-[var(--hair)] bg-[var(--void)] p-4 shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          {/* Left: Phase & Cosmological Status Summary */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--indigo)]/10 border border-[var(--indigo)]/30 text-[var(--indigo)]">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div aria-live="polite">
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-wider text-[var(--ink-soft)] font-mono">Current phase</span>
+                <span className="flex h-2 w-2 rounded-full bg-[var(--indigo)] animate-pulse" />
+              </div>
+              <p className="text-sm sm:text-base font-bold text-[var(--ink)]">
+                {`${currentPhase.name} · ${currentPhase.age}`}
+              </p>
+            </div>
+          </div>
+
+          {/* Center: Live Fine-Tuning Parameter Band Badges */}
+          <div className="flex flex-wrap items-center gap-2">
+            {bandStatus.map((band) => (
+              <div
+                key={band.name}
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono border transition-all ${
+                  band.ok
+                    ? 'bg-[var(--goldilocks)]/10 border-[var(--goldilocks)]/40 text-[var(--goldilocks)]'
+                    : 'bg-[var(--warm)]/10 border-[var(--warm)]/40 text-[var(--warm)]'
+                }`}
+              >
+                {band.ok ? <ShieldCheck className="w-3.5 h-3.5" /> : <AlertTriangle className="w-3.5 h-3.5" />}
+                <span>{band.name}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Right: View Mode Switcher (Studio vs 3-Column Triptych) */}
+          <div className="flex items-center gap-1.5 bg-[var(--void-2)] p-1 rounded-lg border border-[var(--hair)]">
+            <button
+              type="button"
+              onClick={() => setViewMode('studio')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded font-medium transition-all ${
+                viewMode === 'studio'
+                  ? 'bg-[var(--indigo)] text-white shadow'
+                  : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+              }`}
+              title="Focused Master-Detail Studio View"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Focused Studio</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
+              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded font-medium transition-all ${
+                viewMode === 'grid'
+                  ? 'bg-[var(--indigo)] text-white shadow'
+                  : 'text-[var(--ink-soft)] hover:text-[var(--ink)]'
+              }`}
+              title="3-Column Triptych View"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">3-Column Triptych</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Viewport Presentation */}
+      {viewMode === 'studio' ? (
+        /* ================= MASTER-DETAIL STUDIO VIEW (Default) ================= */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left Column: 65% Hero Stage Viewport */}
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            {activeInstrumentIndex === 0 && (
+              <MilkyWayChronologyVisual
+                currentAge={currentGalacticAge}
+                onAgeChange={setCurrentGalacticAge}
+                educatorMode={educatorMode}
+              />
+            )}
+            {activeInstrumentIndex === 1 && (
+              <AgnFeedbackVisual
+                blackHoleMass={blackHoleMass}
+                onMassChange={setBlackHoleMass}
+                educatorMode={educatorMode}
+              />
+            )}
+            {activeInstrumentIndex === 2 && (
+              <GalacticHabitableZoneVisual
+                radiusKpc={radiusKpc}
+                onRadiusChange={setRadiusKpc}
+                educatorMode={educatorMode}
+              />
+            )}
+          </div>
+
+          {/* Right Column: 35% Control Column & Telemetry Hub */}
+          <div className="lg:col-span-4 flex flex-col gap-4">
+            {/* Instrument Selector Tabs */}
+            <div className="rounded-xl border border-[var(--hair)] bg-[var(--void)] p-4 space-y-2.5 shadow-lg">
+              <span className="mono text-xs uppercase tracking-wider text-[var(--ink-soft)] block mb-1">
+                Select Active Instrument
+              </span>
+              <div className="flex flex-col gap-2">
+                {instruments.map((inst) => {
+                  const Icon = inst.icon;
+                  const isActive = activeInstrumentIndex === inst.id;
+                  return (
+                    <button
+                      key={inst.id}
+                      type="button"
+                      onClick={() => setActiveInstrumentIndex(inst.id)}
+                      className={`w-full text-left p-3 rounded-lg border transition-all flex items-start gap-3 ${
+                        isActive
+                          ? 'bg-[var(--void-2)] border-[var(--indigo)] shadow-md ring-1 ring-[var(--indigo)]/50'
+                          : 'bg-[var(--void)] border-[var(--hair-2)] hover:border-[var(--hair)] hover:bg-[var(--void-2)]/60'
+                      }`}
+                    >
+                      <div
+                        className={`p-2 rounded-lg border ${
+                          isActive
+                            ? 'bg-[var(--indigo)] text-white border-[var(--indigo)]'
+                            : 'bg-[var(--void-3)] text-[var(--ink-soft)] border-[var(--hair-2)]'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-1 mb-0.5">
+                          <span
+                            className={`text-xs sm:text-sm font-semibold truncate ${
+                              isActive ? 'text-[var(--ink)]' : 'text-[var(--ink-mid)]'
+                            }`}
+                          >
+                            {inst.shortTitle}
+                          </span>
+                          <span
+                            className="text-[10px] font-mono px-2 py-0.5 rounded-full border"
+                            style={{
+                              borderColor: inst.badgeColor,
+                              color: inst.badgeColor,
+                              backgroundColor: `color-mix(in srgb, ${inst.badgeColor} 10%, transparent)`,
+                            }}
+                          >
+                            {inst.badge}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-[var(--ink-soft)] leading-snug line-clamp-2">
+                          {inst.subtitle}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
-          )}
+
+            {/* Astrophysical Laws & Scientific Formulation Card */}
+            <div className="rounded-xl border border-[var(--hair)] bg-[var(--void-2)] p-4 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[var(--ink)]">
+                <BookOpen className="w-4 h-4 text-[var(--indigo)]" />
+                <span>Underlying Astrophysical Models</span>
+              </div>
+              <div className="text-xs space-y-2 text-[var(--ink-soft)]">
+                <div className="p-2.5 rounded-lg bg-[var(--void)] border border-[var(--hair-2)]">
+                  <span className="text-[var(--goldilocks)] font-mono block mb-1">
+                    The M_BH–σ Velocity Dispersion Relation
+                  </span>
+                  <p className="text-[11px] leading-relaxed">
+                    M_BH ∝ σ⁴·⁸⁶ (Kormendy & Ho 2013). The central black hole energy injection self-regulates cold gas accretion to within ~0.1% galactic mass balance.
+                  </p>
+                </div>
+                <div className="p-2.5 rounded-lg bg-[var(--void)] border border-[var(--hair-2)]">
+                  <span className="text-[var(--goldilocks)] font-mono block mb-1">
+                    Lin-Shu Spiral Density Waves & Corotation
+                  </span>
+                  <p className="text-[11px] leading-relaxed">
+                    Ω_pattern ≈ Ω_star at R ≈ 8.2 kpc (Lineweaver et al. 2004). Minimal spiral arm crossings preserve long-term circular planetary orbits.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Educator Notes Callout */}
+            {educatorMode && (
+              <div className="rounded-xl border border-[var(--warm)]/40 bg-[var(--warm-soft)]/20 p-4 space-y-2 text-xs">
+                <div className="flex items-center gap-1.5 font-semibold text-[var(--warm)]">
+                  <ShieldCheck className="w-4 h-4" />
+                  Educator Fine-Tuning Synthesis
+                </div>
+                <p className="text-[var(--ink)] leading-relaxed">
+                  Galactic habitability requires both temporal and spatial fine-tuning:
+                  temporally, the central black hole must gently quench runaway starburst without blowing the disk away; spatially, planets must emerge in the narrow golden ring where metallicity is high enough for rocky mantles while radiation hazards remain benign.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-        
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevPhase}
-          aria-label="Previous galaxy phase"
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[var(--void-2)] hover:bg-[var(--void-3)] text-[var(--ink)] p-3 rounded-full transition-all duration-300 border border-[var(--hair-2)] min-w-[44px] min-h-[44px] flex items-center justify-center"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        <button
-          onClick={nextPhase}
-          aria-label="Next galaxy phase"
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[var(--void-2)] hover:bg-[var(--void-3)] text-[var(--ink)] p-3 rounded-full transition-all duration-300 border border-[var(--hair-2)] min-w-[44px] min-h-[44px] flex items-center justify-center"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        {/* Phase Indicators */}
-        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
-          {galaxyPhases.map((phase, index) => (
-            <button
-              key={index}
-              onClick={() => goToPhase(index)}
-              aria-label={`Go to phase: ${phase.name}`}
-              className={`relative transition-all duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center`}
-            >
-              <span className={`block rounded-full transition-all duration-300 ${
-                index === currentPhase
-                  ? 'w-8 h-2 bg-[var(--ink)]'
-                  : 'w-2 h-2 bg-[var(--ink-faint)] hover:bg-[var(--indigo)]'
-              }`} />
-            </button>
-          ))}
-        </div>
-
-
-        {/* Progress Bar with Timeline Legends - Desktop only */}
-        <div className="absolute bottom-0 left-0 right-0 hidden md:block">
-          {/* Progress Bar */}
-          <div className="h-1 bg-[var(--void-3)]">
-            <div 
-              className="h-full bg-[var(--indigo)] transition-all duration-700"
-              style={{ width: `${((currentPhase + 1) / galaxyPhases.length) * 100}%` }}
+      ) : (
+        /* ================= 3-COLUMN TRIPTYCH VIEW ================= */
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="flex flex-col">
+            <MilkyWayChronologyVisual
+              currentAge={currentGalacticAge}
+              onAgeChange={setCurrentGalacticAge}
+              educatorMode={educatorMode}
             />
           </div>
-          
-          {/* Timeline Legends */}
-          <div className="flex justify-between items-center px-4 py-2 bg-[var(--void-2)] text-xs">
-            <div className="flex flex-col items-start">
-              <span className="text-[var(--ink)] font-medium">13.8 Gya</span>
-              <span className="text-[var(--ink-soft)]">Big Bang</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-[var(--ink)] font-medium">10 Gya</span>
-              <span className="text-[var(--ink-soft)]">Active Phase</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-[var(--ink)] font-medium">5 Gya</span>
-              <span className="text-[var(--ink-soft)]">Stabilization</span>
-            </div>
-            <div className="flex flex-col items-end">
-              <span className="text-[var(--ink)] font-medium">Today</span>
-              <span className="text-[var(--ink-soft)]">Modern Era</span>
-            </div>
+          <div className="flex flex-col">
+            <AgnFeedbackVisual
+              blackHoleMass={blackHoleMass}
+              onMassChange={setBlackHoleMass}
+              educatorMode={educatorMode}
+            />
           </div>
-        </div>
-      </div>
-
-      {/* Timeline - Mobile only, below image */}
-      <div className="md:hidden bg-[var(--void)] border-t border-[var(--hair)]">
-        {/* Progress Bar */}
-        <div className="h-1 bg-[var(--void-3)]">
-          <div 
-            className="h-full bg-[var(--indigo)] transition-all duration-700"
-            style={{ width: `${((currentPhase + 1) / galaxyPhases.length) * 100}%` }}
-          />
-        </div>
-        
-        {/* Timeline Legends */}
-        <div className="flex justify-between items-center px-4 py-2 text-xs">
-          <div className="flex flex-col items-start">
-            <span className="text-[var(--ink)] font-medium">13.8 Gya</span>
-            <span className="text-[var(--ink-soft)]">Big Bang</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="text-[var(--ink)] font-medium">10 Gya</span>
-            <span className="text-[var(--ink-soft)]">Active Phase</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <span className="text-[var(--ink)] font-medium">5 Gya</span>
-            <span className="text-[var(--ink-soft)]">Stabilization</span>
-          </div>
-          <div className="flex flex-col items-end">
-            <span className="text-[var(--ink)] font-medium">Today</span>
-            <span className="text-[var(--ink-soft)]">Modern Era</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Phase Information - Now below the image */}
-      <div className="p-4 bg-[var(--void-2)] border-t border-[var(--hair)]">
-        <div className="text-center space-y-3">
-          <div>
-            <h3 className="text-xl font-bold text-[var(--ink)] mb-1">{currentPhaseData.name}</h3>
-            <p className="text-sm text-[var(--goldilocks)] font-semibold mb-2">{currentPhaseData.age}</p>
-            <p
-              key={currentPhaseData.description}
-              className="text-[var(--ink-mid)] leading-relaxed text-swap"
-              style={{ minHeight: '2.6em' }}
-            >
-              {currentPhaseData.description}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Educational Content (Educator Mode) */}
-      {educatorMode && (
-        <div className="p-4 bg-[var(--void)] border-t border-[var(--hair)]">
-          <div className="space-y-3">
-            <div>
-              <h4 className="text-lg font-semibold text-[var(--ink)] mb-2">What's Happening</h4>
-              <p className="text-[var(--ink-mid)] leading-relaxed mb-3">{currentPhaseData.details}</p>
-            </div>
-            
-            <div className="bg-[var(--warm-soft)] border border-[var(--warm)] p-3 rounded-lg">
-              <p className="text-[var(--warm)] font-semibold mb-1">Fine-Tuning Insight:</p>
-              <p className="text-[var(--ink)] leading-relaxed text-sm">{currentPhaseData.fineTuning}</p>
-            </div>
+          <div className="flex flex-col">
+            <GalacticHabitableZoneVisual
+              radiusKpc={radiusKpc}
+              onRadiusChange={setRadiusKpc}
+              educatorMode={educatorMode}
+            />
           </div>
         </div>
       )}
     </div>
-  )
-}
-
-export default function GalacticHeartSection({ 
-  educatorMode, 
-  cosmicTime: _cosmicTime = 0
-}: { 
-  educatorMode: boolean; 
-  cosmicTime?: number;
-}) {
-  void _cosmicTime;
-  const [currentGalacticAge, setCurrentGalacticAge] = useState(13.8) // Start at Big Bang
-  const currentPhase = galaxyPhases[getPhaseIndex(currentGalacticAge)]
-
-  useEffect(() => {
-    const handleRandomize = () => {
-      // Reset to random point in galactic history
-      setCurrentGalacticAge(Math.random() * 13.8)
-    }
-
-    window.addEventListener('randomizeUniverse', handleRandomize)
-    return () => window.removeEventListener('randomizeUniverse', handleRandomize)
-  }, [])
-
-  return (
-    <div className="container mx-auto px-4">
-      {/* Single Milky Way Evolution Visualization */}
-      <Card className="bg-[var(--void)] border-[var(--hair)] mb-8 sm:mb-12">
-        <CardHeader>
-          <CardTitle className="text-[var(--ink)]">Milky Way Evolution</CardTitle>
-          <CardDescription className="text-[var(--ink-mid)]">
-            Explore 13.8 billion years of galactic evolution driven by our central black hole
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div aria-live="polite" className="mb-4 rounded-lg border border-[var(--hair)] bg-[var(--void-2)] px-4 py-3">
-            <span className="text-xs uppercase tracking-widest text-[var(--ink)]/50">Current phase</span>
-            <p className="text-[var(--ink)] font-semibold">{currentPhase.name} · {currentPhase.age}</p>
-          </div>
-          <MilkyWayEvolution 
-            currentAge={currentGalacticAge}
-            educatorMode={educatorMode}
-            onAgeChange={setCurrentGalacticAge}
-          />
-        </CardContent>
-      </Card>
-
-    </div>
-  )
+  );
 }
