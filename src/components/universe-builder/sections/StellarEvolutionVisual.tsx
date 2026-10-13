@@ -3,16 +3,18 @@
 import { useEffect, useRef } from 'react';
 import { ShieldCheck, AlertTriangle, Sparkles, Orbit } from 'lucide-react';
 
-interface StellarEvolutionVisualProps {
-  stellarMass: number; // 0.1 to 2.0 M☉ (optimal: 0.8 - 1.4)
-  metallicity: number; // 0.00001 to 0.08
-  starFormationRate: number; // 0.1 to 2.0 M☉/yr
+export interface StellarEvolutionVisualProps {
+  stellarMass: number; // M☉ (optimal: 0.8 - 1.4)
+  metallicity?: number; // 0.00001 to 0.08
+  starFormationRate?: number; // 0.1 to 2.0 M☉/yr
+  minimal?: boolean;
 }
 
 export function StellarEvolutionVisual({
   stellarMass,
-  metallicity,
-  starFormationRate,
+  metallicity = 0.02,
+  starFormationRate = 1.0,
+  minimal = false,
 }: StellarEvolutionVisualProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animFrameRef = useRef<number>(0);
@@ -53,19 +55,36 @@ export function StellarEvolutionVisual({
       const centerY = height / 2;
 
       // 1. Cosmic Background with Deep Gradient & Ambient Starfield
-      const bgGrad = ctx.createRadialGradient(centerX, centerY, 30, centerX, centerY, width / 1.3);
-      if (isTooDim) {
-        bgGrad.addColorStop(0, 'rgba(18, 8, 12, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(2, 2, 8, 1)');
-      } else if (isTooMassive) {
-        bgGrad.addColorStop(0, 'rgba(16, 20, 48, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(3, 2, 10, 1)');
+      if (minimal) {
+        ctx.clearRect(0, 0, width, height);
+        const bgGrad = ctx.createRadialGradient(centerX, centerY, 30, centerX, centerY, Math.max(width, height) * 0.48);
+        if (isTooDim) {
+          bgGrad.addColorStop(0, 'rgba(45, 15, 20, 0.35)');
+          bgGrad.addColorStop(1, 'transparent');
+        } else if (isTooMassive) {
+          bgGrad.addColorStop(0, 'rgba(25, 45, 110, 0.45)');
+          bgGrad.addColorStop(1, 'transparent');
+        } else {
+          bgGrad.addColorStop(0, 'rgba(55, 45, 100, 0.35)');
+          bgGrad.addColorStop(1, 'transparent');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
       } else {
-        bgGrad.addColorStop(0, 'rgba(12, 14, 34, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(2, 3, 8, 1)');
+        const bgGrad = ctx.createRadialGradient(centerX, centerY, 30, centerX, centerY, width / 1.3);
+        if (isTooDim) {
+          bgGrad.addColorStop(0, 'rgba(18, 8, 12, 0.95)');
+          bgGrad.addColorStop(1, 'rgba(2, 2, 8, 1)');
+        } else if (isTooMassive) {
+          bgGrad.addColorStop(0, 'rgba(16, 20, 48, 0.95)');
+          bgGrad.addColorStop(1, 'rgba(3, 2, 10, 1)');
+        } else {
+          bgGrad.addColorStop(0, 'rgba(12, 14, 34, 0.95)');
+          bgGrad.addColorStop(1, 'rgba(2, 3, 8, 1)');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
       }
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
 
       // Background Field Stars (Density scaled by starFormationRate)
       const fieldCount = Math.round(30 + starFormationRate * 45);
@@ -178,8 +197,8 @@ export function StellarEvolutionVisual({
           outerGlow = 'rgba(160, 40, 20, 0.3)';
         }
       } else if (isTooMassive) {
-        // Massive Blue Supergiant
-        starRadius = 36 + (stellarMass - 1.4) * 35;
+        // Massive Blue Supergiant (logarithmically scaled up to 68px to fit canvas comfortably)
+        starRadius = Math.min(68, 36 + Math.log10(Math.max(1, stellarMass)) * 24);
         starColor = stellarMass > 1.7 ? '#ffeebb' : '#d0e8ff';
         coronaGlow = stellarMass > 1.7 ? 'rgba(255, 180, 90, 0.9)' : 'rgba(140, 200, 255, 0.9)';
         outerGlow = stellarMass > 1.7 ? 'rgba(255, 90, 40, 0.5)' : 'rgba(80, 140, 255, 0.4)';
@@ -265,29 +284,33 @@ export function StellarEvolutionVisual({
   };
 
   return (
-    <div className="relative w-full h-full flex flex-col bg-[var(--void)] select-none">
+    <div className={`relative w-full h-full flex flex-col select-none ${
+      minimal ? 'bg-transparent border-none shadow-none pointer-events-auto' : 'bg-[var(--void)]'
+    }`}>
       {/* Top Telemetry Strip */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--hair)] bg-[var(--void-2)] text-xs">
-        <div className="flex items-center gap-3">
-          <span className="mono font-semibold flex items-center gap-1.5" style={{ color: isOptimal ? 'var(--goldilocks)' : 'var(--warm)' }}>
-            {isOptimal ? <ShieldCheck className="w-4 h-4 text-[var(--goldilocks)]" /> : <AlertTriangle className="w-4 h-4 text-[var(--warm)]" />}
-            {isOptimal ? 'Stable Main Sequence' : isTooDim ? 'Insufficient Mass (No Core Fusion)' : 'Runaway Mass (Supernova Collapse)'}
-          </span>
-          <span className="hidden sm:inline-block w-px h-3 bg-[var(--hair-2)]" />
-          <span className="hidden sm:inline-block mono text-[var(--ink-soft)]">
-            Fusion Lifespan: <strong className="text-[var(--ink)]">{isTooDim ? 'Trillions of yr' : isOptimal ? '~10 Billion yr' : '~10 Million yr'}</strong>
-          </span>
-          <span className="hidden md:inline-block w-px h-3 bg-[var(--hair-2)]" />
-          <span className="hidden md:inline-block mono text-[var(--ink-soft)]">
-            Rocky Planets: <strong className="text-[var(--ink)]">{hasRockyPlanets ? 'Viable (HZ Active)' : 'Not Viable'}</strong>
-          </span>
-        </div>
+      {!minimal && (
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--hair)] bg-[var(--void-2)] text-xs">
+          <div className="flex items-center gap-3">
+            <span className="mono font-semibold flex items-center gap-1.5" style={{ color: isOptimal ? 'var(--goldilocks)' : 'var(--warm)' }}>
+              {isOptimal ? <ShieldCheck className="w-4 h-4 text-[var(--goldilocks)]" /> : <AlertTriangle className="w-4 h-4 text-[var(--warm)]" />}
+              {isOptimal ? 'Stable Main Sequence' : isTooDim ? 'Insufficient Mass (No Core Fusion)' : 'Runaway Mass (Supernova Collapse)'}
+            </span>
+            <span className="hidden sm:inline-block w-px h-3 bg-[var(--hair-2)]" />
+            <span className="hidden sm:inline-block mono text-[var(--ink-soft)]">
+              Fusion Lifespan: <strong className="text-[var(--ink)]">{isTooDim ? 'Trillions of yr' : isOptimal ? '~10 Billion yr' : '~10 Million yr'}</strong>
+            </span>
+            <span className="hidden md:inline-block w-px h-3 bg-[var(--hair-2)]" />
+            <span className="hidden md:inline-block mono text-[var(--ink-soft)]">
+              Rocky Planets: <strong className="text-[var(--ink)]">{hasRockyPlanets ? 'Viable (HZ Active)' : 'Not Viable'}</strong>
+            </span>
+          </div>
 
-        <div className="flex items-center gap-1.5 text-[11px] mono text-[var(--ink-soft)]">
-          <Orbit className="w-3.5 h-3.5 text-[var(--indigo)]" />
-          <span>Accretion Physics</span>
+          <div className="flex items-center gap-1.5 text-[11px] mono text-[var(--ink-soft)]">
+            <Orbit className="w-3.5 h-3.5 text-[var(--indigo)]" />
+            <span>Accretion Physics</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main Canvas Stage */}
       <div className="relative flex-1 min-h-[360px] overflow-hidden">
@@ -295,7 +318,9 @@ export function StellarEvolutionVisual({
 
         {/* Habitable Zone Legend Overlay */}
         {hasDustDisk && (
-          <div className="absolute bottom-3 left-4 pointer-events-none text-[11px] mono text-[var(--ink-soft)] flex items-center gap-3 bg-[var(--void-2)]/85 px-3 py-1.5 rounded border border-[var(--hair)]">
+          <div className={`absolute bottom-3 left-4 pointer-events-none text-[11px] mono text-[var(--ink-soft)] flex items-center gap-3 px-3 py-1.5 rounded border border-[var(--hair)] ${
+            minimal ? 'bg-[var(--void-2)]/90 backdrop-blur-md shadow-lg' : 'bg-[var(--void-2)]/85'
+          }`}>
             <span className="flex items-center gap-1">
               <span className="w-2.5 h-0.5 bg-[var(--goldilocks)]" /> Habitable Zone Ring
             </span>
@@ -308,20 +333,24 @@ export function StellarEvolutionVisual({
         )}
 
         {/* Readout overlay */}
-        <div className="absolute top-3 right-4 pointer-events-none text-right">
+        <div className={`absolute top-4 right-4 pointer-events-none text-right ${
+          minimal ? 'bg-[var(--void-2)]/85 backdrop-blur-md p-2.5 rounded-lg border border-[var(--hair)] shadow-lg' : ''
+        }`}>
           <div className="text-xs mono uppercase tracking-wider text-[var(--ink-soft)]">Stellar Mass</div>
-          <div className="text-xl font-bold mono text-[var(--indigo)]">{stellarMass.toFixed(1)} M☉</div>
+          <div className="text-xl font-bold mono text-[var(--indigo)]">{stellarMass.toFixed(2)} M☉</div>
           <div className={`text-[11px] font-medium mono ${isOptimal ? 'text-[var(--goldilocks)]' : 'text-[var(--warm)]'}`}>
-            {isOptimal ? '✅ 0.8 – 1.4 M☉ (Optimal)' : '❌ Outside Main Sequence Window'}
+            {isOptimal ? '✅ 0.8 – 1.4 M☉ (Stable Main Sequence)' : isTooDim ? '❌ Below 0.8 M☉ (Low Luminosity / No Fusion)' : '❌ Above 1.4 M☉ (Radiation / Supernova)'}
           </div>
         </div>
       </div>
 
       {/* Physical Consequence Footer */}
-      <div className="px-4 py-2 border-t border-[var(--hair)] bg-[var(--void-2)]/60 text-xs flex items-center gap-2">
-        <Sparkles className="w-3.5 h-3.5 text-[var(--indigo)] shrink-0" />
-        <span className="text-[var(--ink-mid)]">{getStatusText()}</span>
-      </div>
+      {!minimal && (
+        <div className="px-4 py-2 border-t border-[var(--hair)] bg-[var(--void-2)]/60 text-xs flex items-center gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-[var(--indigo)] shrink-0" />
+          <span className="text-[var(--ink-mid)]">{getStatusText()}</span>
+        </div>
+      )}
     </div>
   );
 }

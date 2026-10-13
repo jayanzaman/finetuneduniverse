@@ -1799,10 +1799,11 @@ button, [role="button"] { touch-action: manipulation; }
 }
 
 /* ─────────────────────────────────────────────────────────
-   CH 01 & 02 · INTERACTIVE VISUAL STAGES (Main Story View)
+   CH 01, 02 & 03 · INTERACTIVE VISUAL STAGES (Main Story View)
    ───────────────────────────────────────────────────────── */
 .chapter-entropy-stage,
-.chapter-quark-stage {
+.chapter-quark-stage,
+.chapter-star-stage {
   position: absolute;
   right: 0;
   top: 0;
@@ -1819,7 +1820,8 @@ button, [role="button"] { touch-action: manipulation; }
 
 @media (max-width: 1024px) {
   .chapter-entropy-stage,
-  .chapter-quark-stage {
+  .chapter-quark-stage,
+  .chapter-star-stage {
     opacity: 0.35;
     pointer-events: none;
     transform: scale(0.65);

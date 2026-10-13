@@ -5,6 +5,7 @@ import type { GoldilocksSliderProps } from './GoldilocksSlider';
 import {
   Chapter1EntropyStage,
   ProtonViz,
+  Chapter3StellarStage,
   FirstStarViz,
   GalaxyViz,
   GoldilocksViz,
@@ -127,7 +128,7 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
     ghost: {
       body: 'Stars only half this mass — they fuse hydrogen, but never the heavy elements. No carbon. No water. No us, ever.',
     },
-    visualization: (v) => <FirstStarViz mass={v} />,
+    visualization: (v) => <Chapter3StellarStage mass={v} />,
   },
   {
     num: '04',

@@ -2,6 +2,7 @@
 
 import { EntropyViz } from './ch01/viz/EntropyViz';
 import { QcdFluxTubeVisual } from '../universe-builder/sections/QcdFluxTubeVisual';
+import { StellarEvolutionVisual } from '../universe-builder/sections/StellarEvolutionVisual';
 
 /**
  * The cinematic visualizations that sit behind each chapter. Pure
@@ -116,66 +117,18 @@ export function ProtonViz({ coupling = 1 }: { coupling?: number }) {
   return <Chapter2QuarkStage value={coupling} />;
 }
 
-// CH 03 — First star
-export function FirstStarViz({ mass = 1 }: { mass?: number }) {
-  // Stellar mass drives the star's size/energy: red dwarf < main sequence < supergiant.
-  const size = Math.min(420, Math.max(150, 260 * Math.pow(mass, 0.18)));
-  const glow = Math.max(0.5, Math.min(2, Math.pow(mass, 0.35)));
-  const hot = Math.max(0, Math.min(1, (Math.log10(mass) + 1.1) / 2.7));
-  const glowColor =
-    hot < 0.4 ? 'rgba(255,150,90,' : hot > 0.6 ? 'rgba(170,200,255,' : 'rgba(255,210,140,';
+// CH 03 — Interactive Stellar Stage (Main Sequence, Habitable Zone & Supernova Collapse)
+export function Chapter3StellarStage({ mass = 1 }: { mass?: number }) {
   return (
-    <div style={{ position: 'absolute', right: -60, top: '50%', transform: 'translateY(-50%)' }}>
-      <div style={{ position: 'relative', width: 820, height: 820 }}>
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle, rgba(255,240,200,0.20) 0%, rgba(231,140,90,0.18) 18%, rgba(122,123,255,0.10) 45%, transparent 70%)',
-            filter: 'blur(4px)',
-          }}
-        />
-        <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100">
-          {Array.from({ length: 14 }).map((_, i) => {
-            const a = (i / 14) * Math.PI * 2;
-            const x1 = svg(50 + Math.cos(a) * 48);
-            const y1 = svg(50 + Math.sin(a) * 48);
-            const cx = svg(50 + Math.cos(a + 0.6) * 28);
-            const cy = svg(50 + Math.sin(a + 0.6) * 28);
-            const x2 = svg(50 + Math.cos(a) * 15);
-            const y2 = svg(50 + Math.sin(a) * 15);
-            return (
-              <path
-                key={i}
-                d={`M ${x1} ${y1} Q ${cx} ${cy} ${x2} ${y2}`}
-                stroke="rgba(255,240,200,0.30)"
-                strokeWidth="0.25"
-                fill="none"
-              />
-            );
-          })}
-        </svg>
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: size,
-            height: size,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle at 38% 30%, #ffffff 0%, #fff6e0 20%, #ffd09a 45%, #d97742 75%, rgba(80,30,10,0.9) 95%)',
-            boxShadow:
-              `0 0 ${Math.round(120 * glow)}px ${Math.round(30 * glow)}px ${glowColor}${(0.55 * glow).toFixed(3)}), 0 0 ${Math.round(250 * glow)}px ${Math.round(60 * glow)}px rgba(231,140,90,${(0.35 * glow).toFixed(3)}), inset 0 0 30px rgba(80,30,10,0.4)`,
-            transition: 'width 300ms ease, height 300ms ease, box-shadow 300ms ease',
-          }}
-        />
-      </div>
+    <div className="chapter-star-stage">
+      <StellarEvolutionVisual stellarMass={mass} minimal={true} />
     </div>
   );
+}
+
+// CH 03 — First star
+export function FirstStarViz({ mass = 1 }: { mass?: number }) {
+  return <Chapter3StellarStage mass={mass} />;
 }
 
 // CH 04 — Spiral galaxy with Sgr A*

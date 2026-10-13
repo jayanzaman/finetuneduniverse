@@ -84,7 +84,7 @@ export function ChapterFrame({
             overflow: 'hidden',
           }}
         >
-          {chapterIndex === 0 || chapterIndex === 1 ? (
+          {chapterIndex === 0 || chapterIndex === 1 || chapterIndex === 2 ? (
             visualization
           ) : (
             <div
@@ -144,9 +144,9 @@ export function ChapterFrame({
             marginTop: 56,
             maxWidth: 1280,
           }}
-          className={`chapter-experiment-layout ${chapterIndex === 0 || chapterIndex === 1 ? 'chapter-experiment-layout--ch01' : ''}`}
+          className={`chapter-experiment-layout ${chapterIndex === 0 || chapterIndex === 1 || chapterIndex === 2 ? 'chapter-experiment-layout--ch01' : ''}`}
         >
-          {chapterIndex === 0 || chapterIndex === 1 ? (
+          {chapterIndex === 0 || chapterIndex === 1 || chapterIndex === 2 ? (
             <div className="ch01-experiment-stack">
               <div className="ch01-slider-wrapper">
                 <GoldilocksSlider {...sliderProps} />
