@@ -28,4 +28,29 @@ describe('StarlightSection', () => {
     fireEvent.keyDown(mass as HTMLElement, { key: 'Home' });
     expect(screen.getAllByText('0.1 M☉').length).toBeGreaterThan(0);
   });
+
+  it('allows switching active parameter and toggling to 3-column triptych view', () => {
+    render(<StarlightSection educatorMode={true} />);
+
+    // Switch to Metallicity
+    const metallicityTab = screen.getByText('2. Metallicity Spectrograph');
+    fireEvent.click(metallicityTab);
+    expect(screen.getAllByText('Metallicity').length).toBeGreaterThan(0);
+
+    // Switch to Star Formation Rate
+    const formationTab = screen.getByText('3. Cosmic Star Formation');
+    fireEvent.click(formationTab);
+    expect(screen.getAllByText('Star Formation Rate').length).toBeGreaterThan(0);
+
+    // Toggle to 3-Column Triptych view
+    const triptychToggle = screen.getByText('3-Column Triptych');
+    fireEvent.click(triptychToggle);
+    expect(screen.getAllByRole('slider').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('responds to global randomizeUniverse event', () => {
+    render(<StarlightSection educatorMode={false} />);
+    fireEvent(window, new Event('randomizeUniverse'));
+    expect(screen.getAllByText('Stellar Mass').length).toBeGreaterThan(0);
+  });
 });

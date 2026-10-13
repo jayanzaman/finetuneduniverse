@@ -1,167 +1,348 @@
 'use client';
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { MoonStar, Sparkles, Sun, Globe } from 'lucide-react'
+import { useEffect, useRef, useState, useMemo } from 'react';
+import { ShieldCheck, AlertTriangle, Play, Pause, RotateCcw, Clock, Sparkles } from 'lucide-react';
 
 interface StarFormationRateVisualProps {
-  starFormationRate: number;
+  starFormationRate: number; // 0.1 to 2.0 M☉/yr (optimal: 0.8 - 1.5)
+  onRateChange?: (rate: number) => void;
+  isTimeLapseActive?: boolean;
+  onToggleTimeLapse?: () => void;
+  currentCosmicAge?: number;
 }
 
-export function StarFormationRateVisual({ starFormationRate }: StarFormationRateVisualProps) {
-  const [currentEra, setCurrentEra] = useState(0)
+export function StarFormationRateVisual({
+  starFormationRate,
+  onRateChange,
+  isTimeLapseActive: parentTimeLapseActive,
+  onToggleTimeLapse: parentToggleTimeLapse,
+  currentCosmicAge: parentCosmicAge,
+}: StarFormationRateVisualProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animFrameRef = useRef<number>(0);
 
-  // Define cosmic eras based on star formation rate
-  const eras = [
-    {
-      name: 'Dark Ages Era',
-      period: '13.8-13.0 Gya',
-      rate: '0.1x',
-      status: 'Dormant',
-      description: 'Before first stars - factory not yet built',
-      color: 'from-gray-800 to-black',
-      icon: 'dark'
-    },
-    {
-      name: 'First Light Era',
-      period: '13.0-11.0 Gya',
-      rate: '0.5x',
-      status: 'Startup',
-      description: 'Population III stars ignite - factory startup',
-      color: 'from-blue-600 to-purple-700',
-      icon: 'first-light'
-    },
-    {
-      name: 'Peak Production Era',
-      period: '11.0-8.0 Gya',
-      rate: '1.5x',
-      status: 'Peak',
-      description: 'Maximum cosmic star formation rate',
-      color: 'from-orange-500 to-red-600',
-      icon: 'peak'
-    },
-    {
-      name: 'Modern Era',
-      period: '4.6 Gya-Today',
-      rate: '1x',
-      status: 'Standard',
-      description: 'Current galactic production rate',
-      color: 'from-green-500 to-blue-500',
-      icon: 'modern'
-    }
-  ]
+  // Local time-lapse state fallback if not managed by parent
+  const [localTimeLapse, setLocalTimeLapse] = useState(false);
+  const [localCosmicAge, setLocalCosmicAge] = useState(13.8);
 
-  // Determine current era based on formation rate
+  const isTimeLapse = parentTimeLapseActive !== undefined ? parentTimeLapseActive : localTimeLapse;
+  const cosmicAge = parentCosmicAge !== undefined ? parentCosmicAge : localCosmicAge;
+
+  const isOptimal = starFormationRate >= 0.8 && starFormationRate <= 1.5;
+  const isTooSlow = starFormationRate < 0.8;
+  const isTooViolent = starFormationRate > 1.5;
+
+  // The 5 Astronomical Cosmic Eras (Madau-Dickinson timeline)
+  const cosmicEras = useMemo(
+    () => [
+      { id: 'dark', ageRange: '> 13.0 Gyr ago', rate: 0.1, label: 'Dark Ages', redshift: 'z > 15', desc: 'Pre-stellar neutral gas cloud cooling' },
+      { id: 'first-light', ageRange: '13.0 – 11.0 Gyr', rate: 0.5, label: 'First Light (Cosmic Dawn)', redshift: 'z ~ 10', desc: 'Pop III stars ignite & reionize the cosmos' },
+      { id: 'peak', ageRange: '11.0 – 8.0 Gyr', rate: 1.5, label: 'Cosmic Noon (Peak Formation)', redshift: 'z ~ 2', desc: 'Maximum cosmic star birth rate' },
+      { id: 'post-peak', ageRange: '8.0 – 4.6 Gyr', rate: 1.2, label: 'Post-Peak Maturation', redshift: 'z ~ 1', desc: 'Disk galaxies form; chemical enrichment' },
+      { id: 'modern', ageRange: '4.6 Gyr – Today', rate: 1.0, label: 'Modern Quiescent Era', redshift: 'z = 0', desc: 'Sun & Solar System formed 4.6 Gyr ago' },
+    ],
+    []
+  );
+
+  // Internal time-lapse runner if local
   useEffect(() => {
-    if (starFormationRate <= 0.3) setCurrentEra(0) // Dark Ages
-    else if (starFormationRate <= 0.7) setCurrentEra(1) // First Light
-    else if (starFormationRate > 1.3) setCurrentEra(2) // Peak Production
-    else setCurrentEra(3) // Modern Era
-  }, [starFormationRate])
+    if (parentTimeLapseActive !== undefined) return;
+    if (!localTimeLapse) return;
 
-  const currentEraData = eras[currentEra]
+    const interval = setInterval(() => {
+      setLocalCosmicAge((prev) => {
+        const next = prev - 0.2;
+        if (next <= 0) {
+          setLocalTimeLapse(false);
+          return 13.8;
+        }
 
-  // Get factory status based on rate - using consistent short names
-  const getFactoryStatus = () => {
-    if (starFormationRate <= 0.2) return { status: 'Shutdown', color: 'text-red-400' }
-    if (starFormationRate <= 0.6) return { status: 'Maintenance', color: 'text-blue-400' }
-    if (starFormationRate <= 1.1) return { status: 'Standard', color: 'text-green-400' }
-    if (starFormationRate <= 1.6) return { status: 'High Demand', color: 'text-yellow-400' }
-    return { status: 'Emergency', color: 'text-red-400' }
-  }
+        let newRate = 1.0;
+        if (next > 13.0) newRate = 0.1;
+        else if (next > 11.0) newRate = 0.5;
+        else if (next > 8.0) newRate = 1.5;
+        else if (next > 4.6) newRate = 1.2;
+        else newRate = 1.0;
 
-  const factoryStatus = getFactoryStatus()
+        if (onRateChange) onRateChange(newRate);
+        return next;
+      });
+    }, 450);
+
+    return () => clearInterval(interval);
+  }, [localTimeLapse, parentTimeLapseActive, onRateChange]);
+
+  const handleToggle = () => {
+    if (parentToggleTimeLapse) {
+      parentToggleTimeLapse();
+    } else {
+      setLocalTimeLapse((prev) => !prev);
+    }
+  };
+
+  const handleResetTimeline = () => {
+    if (parentToggleTimeLapse && parentTimeLapseActive) {
+      parentToggleTimeLapse();
+    }
+    setLocalTimeLapse(false);
+    setLocalCosmicAge(13.8);
+    if (onRateChange) onRateChange(1.0);
+  };
+
+  // Canvas render for the Madau-Dickinson Curve
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let time = 0;
+
+    const render = () => {
+      time += 0.03;
+
+      const dpr = window.devicePixelRatio || 1;
+      const width = canvas.clientWidth || 600;
+      const height = canvas.clientHeight || 340;
+
+      if (canvas.width !== width * dpr || canvas.height !== height * dpr) {
+        canvas.width = width * dpr;
+        canvas.height = height * dpr;
+      }
+
+      ctx.save();
+      ctx.scale(dpr, dpr);
+
+      // Deep space void
+      ctx.fillStyle = 'rgba(7, 7, 26, 0.95)';
+      ctx.fillRect(0, 0, width, height);
+
+      // Chart Padding
+      const padLeft = 55;
+      const padRight = 35;
+      const padTop = 35;
+      const padBottom = 55;
+      const chartW = width - padLeft - padRight;
+      const chartH = height - padTop - padBottom;
+
+      // 1. Chart Gridlines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.lineWidth = 1;
+
+      // Horizontal rate lines: 0.5, 1.0, 1.5, 2.0 M☉/yr
+      for (let r = 0; r <= 2.0; r += 0.5) {
+        const y = padTop + chartH - (r / 2.0) * chartH;
+        ctx.beginPath();
+        ctx.moveTo(padLeft, y);
+        ctx.lineTo(width - padRight, y);
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = '9px var(--font-mono, monospace)';
+        ctx.textAlign = 'right';
+        ctx.fillText(`${r.toFixed(1)}`, padLeft - 8, y + 3);
+      }
+
+      // 2. Goldilocks Optimal Formation Band (0.8 - 1.5 M☉/yr)
+      const bandTopY = padTop + chartH - (1.5 / 2.0) * chartH;
+      const bandBottomY = padTop + chartH - (0.8 / 2.0) * chartH;
+      const bandH = bandBottomY - bandTopY;
+
+      ctx.fillStyle = 'rgba(111, 228, 177, 0.08)';
+      ctx.fillRect(padLeft, bandTopY, chartW, bandH);
+
+      ctx.strokeStyle = 'rgba(111, 228, 177, 0.25)';
+      ctx.setLineDash([3, 4]);
+      ctx.strokeRect(padLeft, bandTopY, chartW, bandH);
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = 'rgba(111, 228, 177, 0.8)';
+      ctx.font = '9px var(--font-mono, monospace)';
+      ctx.textAlign = 'right';
+      ctx.fillText('Goldilocks Formation Zone (0.8 – 1.5 M☉/yr)', width - padRight - 8, bandTopY + 14);
+
+      // 3. The Madau-Dickinson Cosmic Star Formation History Curve
+      // X maps 13.8 Gyr (Big Bang, left) to 0 Gyr (Today, right)
+      const getCurveRate = (lookbackGyr: number) => {
+        // Parametric approximation of Madau & Dickinson (2014)
+        if (lookbackGyr > 13.0) return 0.1;
+        if (lookbackGyr > 10.0) return 0.1 + ((13.0 - lookbackGyr) / 3.0) * 1.5; // Rise to Cosmic Noon (10 Gyr ago)
+        if (lookbackGyr > 4.6) return 1.6 - ((10.0 - lookbackGyr) / 5.4) * 0.45; // Decline toward solar birth
+        return 1.15 - ((4.6 - lookbackGyr) / 4.6) * 0.15; // Decline to modern day (~1.0)
+      };
+
+      ctx.beginPath();
+      for (let xPix = 0; xPix <= chartW; xPix += 2) {
+        const t = xPix / chartW;
+        const lookback = 13.8 - t * 13.8;
+        const rate = getCurveRate(lookback);
+        const yPix = padTop + chartH - (rate / 2.0) * chartH;
+
+        if (xPix === 0) ctx.moveTo(padLeft + xPix, yPix);
+        else ctx.lineTo(padLeft + xPix, yPix);
+      }
+
+      ctx.strokeStyle = '#7a7bff';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // Subtle curve fill gradient
+      ctx.lineTo(padLeft + chartW, padTop + chartH);
+      ctx.lineTo(padLeft, padTop + chartH);
+      ctx.closePath();
+      const fillGrad = ctx.createLinearGradient(0, padTop, 0, padTop + chartH);
+      fillGrad.addColorStop(0, 'rgba(122, 123, 255, 0.25)');
+      fillGrad.addColorStop(1, 'rgba(122, 123, 255, 0.0)');
+      ctx.fillStyle = fillGrad;
+      ctx.fill();
+
+      // 4. Time-Lapse Playhead Marker
+      const playheadT = Math.max(0, Math.min(1, (13.8 - cosmicAge) / 13.8));
+      const playheadX = padLeft + playheadT * chartW;
+      const currentRateY = padTop + chartH - (starFormationRate / 2.0) * chartH;
+
+      // Vertical Playhead Line
+      ctx.beginPath();
+      ctx.moveTo(playheadX, padTop);
+      ctx.lineTo(playheadX, padTop + chartH);
+      ctx.strokeStyle = isTimeLapse ? 'rgba(255, 215, 80, 0.85)' : 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash(isTimeLapse ? [] : [4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Current Rate Marker Point
+      ctx.beginPath();
+      ctx.arc(playheadX, currentRateY, 6, 0, Math.PI * 2);
+      ctx.fillStyle = isOptimal ? '#6fe4b1' : '#ff5566';
+      ctx.fill();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Pulsing halo if time-lapse is active
+      if (isTimeLapse) {
+        const pulse = Math.sin(time * 6) * 4 + 10;
+        ctx.beginPath();
+        ctx.arc(playheadX, currentRateY, pulse, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 215, 80, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // 5. X-Axis Cosmic Era Labels
+      const eraXPositions = [
+        { label: 'Dark Ages', lookback: 13.4, sub: '> 13 Gyr' },
+        { label: 'First Light', lookback: 12.0, sub: '11-13 Gyr' },
+        { label: 'Cosmic Noon (Peak)', lookback: 9.5, sub: '8-11 Gyr' },
+        { label: 'Solar Birth', lookback: 4.6, sub: '4.6 Gyr' },
+        { label: 'Today', lookback: 0.2, sub: '0 Gyr' },
+      ];
+
+      eraXPositions.forEach((era) => {
+        const ex = padLeft + ((13.8 - era.lookback) / 13.8) * chartW;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+        ctx.font = 'bold 8.5px var(--font-mono, monospace)';
+        ctx.textAlign = 'center';
+        ctx.fillText(era.label, ex, padTop + chartH + 18);
+
+        ctx.font = '7.5px var(--font-mono, monospace)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fillText(era.sub, ex, padTop + chartH + 29);
+      });
+
+      // Y-Axis Title
+      ctx.save();
+      ctx.translate(14, padTop + chartH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.font = '9px var(--font-mono, monospace)';
+      ctx.textAlign = 'center';
+      ctx.fillText('Star Formation Rate (M☉ / yr)', 0, 0);
+      ctx.restore();
+
+      ctx.restore();
+      animFrameRef.current = requestAnimationFrame(render);
+    };
+
+    render();
+
+    return () => {
+      cancelAnimationFrame(animFrameRef.current);
+    };
+  }, [starFormationRate, cosmicAge, isTimeLapse, isOptimal]);
 
   return (
-    <div className="w-full space-y-2">
-      {/* Factory Status Header - Ultra Compact */}
-      <div className="bg-black/40 rounded-lg p-2 border border-white/10">
-        <div className="flex justify-between items-center mb-1">
-          <div className="text-sm font-semibold text-white">Universe Factory Settings</div>
-          <div className="flex items-center gap-2">
-            <motion.div
-              className={`w-2 h-2 rounded-full ${
-                starFormationRate <= 0.6 ? 'bg-blue-400' :
-                starFormationRate > 1.5 ? 'bg-red-400' : 'bg-green-400'
-              }`}
-              animate={{ scale: [1, 1.2, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            />
-            <span className={`text-xs font-medium ${factoryStatus.color} w-20 text-center leading-tight`}>
-              {factoryStatus.status}
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex justify-between items-center text-xs">
-          <span className="text-gray-300">
-            <strong className="text-white">{starFormationRate.toFixed(1)}x</strong> Rate
+    <div className="relative w-full h-full flex flex-col bg-[var(--void)] select-none">
+      {/* Top Telemetry Strip */}
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--hair)] bg-[var(--void-2)] text-xs">
+        <div className="flex items-center gap-3">
+          <span className="mono font-semibold flex items-center gap-1.5" style={{ color: isOptimal ? 'var(--goldilocks)' : 'var(--warm)' }}>
+            {isOptimal ? <ShieldCheck className="w-4 h-4 text-[var(--goldilocks)]" /> : <AlertTriangle className="w-4 h-4 text-[var(--warm)]" />}
+            {isOptimal ? 'Optimal Cosmic Era (Stable Star Birth)' : isTooSlow ? 'Star-Starved (Insufficient Metals)' : 'Disruptive Feedback (Supernova Wind Storms)'}
           </span>
-          <span className="text-gray-300">
-            <strong className="text-white">{Math.min(100, starFormationRate * 50).toFixed(0)}%</strong> Efficiency
+          <span className="hidden sm:inline-block w-px h-3 bg-[var(--hair-2)]" />
+          <span className="hidden sm:inline-block mono text-[var(--ink-soft)] flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-[var(--indigo)]" />
+            Cosmic Clock: <strong className="text-[var(--ink)]">{cosmicAge.toFixed(1)} Gyr ago</strong>
           </span>
         </div>
-      </div>
 
-      {/* Cosmic Timeline - Ultra Compact */}
-      <div className="bg-black/40 rounded-lg p-2 border border-white/10">
-        <div className="text-sm font-semibold text-white mb-1 text-center">
-          Cosmic Star Formation History
-        </div>
-        
-        {/* Timeline bar */}
-        <div className="relative h-3 bg-gradient-to-r from-purple-900 via-blue-600 to-orange-500 rounded mb-1">
-          <div className="absolute inset-0 flex items-center justify-between px-1 text-xs text-white font-bold">
-            <span className="text-xs">13.8 Gya</span>
-            <span className="text-xs">Peak</span>
-            <span className="text-xs">Today</span>
-          </div>
-          
-          {/* Current position indicator */}
-          <motion.div
-            className="absolute top-0 w-1 h-full bg-white shadow-lg"
-            style={{ 
-              left: `${((starFormationRate - 0.1) / (2 - 0.1)) * 100}%` 
-            }}
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 1, repeat: Infinity }}
-          />
-        </div>
-        
-        <div className="text-xs text-gray-400 text-center">
-          <strong className="text-white">{(13.8 - starFormationRate * 5).toFixed(1)} Gya</strong> - 
-          {starFormationRate < 1 ? ' Post-Peak Era' : ' Peak Era'}
-        </div>
-      </div>
-
-      {/* Era Cards Grid - Ultra Compact 4-column layout */}
-      <div className="grid grid-cols-4 gap-1">
-        {eras.map((era, index) => (
-          <motion.div
-            key={index}
-            className={`p-1.5 rounded border transition-all duration-300 ${
-              index === currentEra
-                ? 'bg-white/10 border-white/30 scale-105'
-                : 'bg-black/20 border-white/10 hover:bg-white/5'
+        {/* Playable Transport Controls */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={handleToggle}
+            className={`px-3 py-1 rounded border text-[11px] mono flex items-center gap-1.5 transition-colors ${
+              isTimeLapse
+                ? 'bg-[var(--indigo)] text-white border-[var(--indigo)] shadow-md shadow-[var(--indigo-glow)]'
+                : 'border-[var(--hair)] text-[var(--ink-soft)] hover:text-white hover:border-[var(--hair-2)]'
             }`}
-            whileHover={{ scale: index === currentEra ? 1.05 : 1.02 }}
           >
-            <div className="flex flex-col items-center text-center">
-              <span className="mb-0.5">{
-                era.icon === 'dark' ? <MoonStar className="w-4 h-4 text-gray-400" /> :
-                era.icon === 'first-light' ? <Sparkles className="w-4 h-4 text-blue-400" /> :
-                era.icon === 'peak' ? <Sun className="w-4 h-4 text-orange-400" /> :
-                <Globe className="w-4 h-4 text-green-400" />
-              }</span>
-              <div className="text-xs font-semibold text-white mb-0.5 leading-tight">
-                {era.name.replace(' Era', '')}
-              </div>
-              <div className="text-xs text-gray-300 mb-0.5">{era.rate}</div>
-              <div className="text-xs text-gray-400 leading-tight">{era.status}</div>
-            </div>
-          </motion.div>
-        ))}
+            {isTimeLapse ? (
+              <>
+                <Pause className="w-3 h-3 text-[var(--goldilocks)]" /> Playing 13.8 Gyr History...
+              </>
+            ) : (
+              <>
+                <Play className="w-3 h-3 text-[var(--goldilocks)]" /> Play 13.8 Gyr Epoch
+              </>
+            )}
+          </button>
+          <button
+            type="button"
+            onClick={handleResetTimeline}
+            className="p-1.5 rounded border border-[var(--hair)] text-[var(--ink-soft)] hover:text-white hover:border-[var(--hair-2)] transition-colors"
+            title="Reset to Big Bang (13.8 Gyr)"
+          >
+            <RotateCcw className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+
+      {/* Main Canvas Chart Stage */}
+      <div className="relative flex-1 min-h-[340px] overflow-hidden">
+        <canvas ref={canvasRef} className="w-full h-full block" />
+
+        {/* Readout overlay */}
+        <div className="absolute top-3 right-4 pointer-events-none text-right">
+          <div className="text-xs mono uppercase tracking-wider text-[var(--ink-soft)]">Formation Rate</div>
+          <div className="text-xl font-bold mono text-[var(--indigo)]">{starFormationRate.toFixed(1)} M☉/yr</div>
+          <div className={`text-[11px] font-medium mono ${isOptimal ? 'text-[var(--goldilocks)]' : 'text-[var(--warm)]'}`}>
+            {isOptimal ? '✅ 0.8 – 1.5 M☉/yr (Optimal)' : '❌ Outside Goldilocks Band'}
+          </div>
+        </div>
+      </div>
+
+      {/* Physical Consequence Footer */}
+      <div className="px-4 py-2 border-t border-[var(--hair)] bg-[var(--void-2)]/60 text-xs flex items-center gap-2">
+        <Sparkles className="w-3.5 h-3.5 text-[var(--indigo)] shrink-0" />
+        <span className="text-[var(--ink-mid)]">
+          {isOptimal && 'Star formation peaked 10 billion years ago during "Cosmic Noon", then declined to a stable rate (1 M☉/yr) just as our Solar System was born.'}
+          {isTooSlow && 'Insufficient star formation: the galaxy is starved of supernovae, failing to seed enough heavy elements for rocky terrestrial worlds.'}
+          {isTooViolent && 'Extreme starburst: relentless supernova shockwaves and stellar winds strip gas disks, preventing planetesimals from coalescing.'}
+        </span>
       </div>
     </div>
-  )
+  );
 }
