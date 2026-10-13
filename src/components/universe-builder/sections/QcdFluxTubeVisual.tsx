@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Sparkles, Move, RotateCcw, AlertTriangle, ShieldCheck } from 'lucide-react';
 
-interface QcdFluxTubeVisualProps {
+export interface QcdFluxTubeVisualProps {
   strongForce: number; // αs value: 0.8 to 1.2, optimal 0.98 - 1.02
+  minimal?: boolean;
 }
 
 interface Quark {
@@ -21,7 +22,7 @@ interface Quark {
   isDragging?: boolean;
 }
 
-export function QcdFluxTubeVisual({ strongForce }: QcdFluxTubeVisualProps) {
+export function QcdFluxTubeVisual({ strongForce, minimal = false }: QcdFluxTubeVisualProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const animFrameRef = useRef<number>(0);
@@ -114,6 +115,62 @@ export function QcdFluxTubeVisual({ strongForce }: QcdFluxTubeVisualProps) {
     }
   }, [draggedQuarkId]);
 
+  // Touch interaction handling for mobile and tablet
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (e.touches.length !== 1) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const mouseX = touch.clientX - rect.left;
+    const mouseY = touch.clientY - rect.top;
+
+    quarksRef.current.forEach((q) => {
+      const dist = Math.hypot(q.x - mouseX, q.y - mouseY);
+      if (dist < 36) {
+        setDraggedQuarkId(q.id);
+        q.isDragging = true;
+      }
+    });
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+    if (!draggedQuarkId || e.touches.length !== 1) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const touch = e.touches[0];
+    const mouseX = touch.clientX - rect.left;
+    const mouseY = touch.clientY - rect.top;
+
+    const q = quarksRef.current.find((item) => item.id === draggedQuarkId);
+    if (q) {
+      q.x = mouseX;
+      q.y = mouseY;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const distFromCenter = Math.hypot(q.x - centerX, q.y - centerY);
+
+      if (distFromCenter > 130 && !stringSnapped) {
+        setStringSnapped(true);
+        setVacuumMesonCreated(true);
+        for (let i = 0; i < 16; i++) {
+          const angle = Math.random() * Math.PI * 2;
+          const speed = 2 + Math.random() * 4;
+          virtualPairsRef.current.push({
+            x: (q.x + centerX) / 2,
+            y: (q.y + centerY) / 2,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 1.0,
+            color: Math.random() > 0.5 ? '#ff44aa' : '#44ffff',
+          });
+        }
+      }
+    }
+  }, [draggedQuarkId, stringSnapped]);
+
   const resetQuarks = () => {
     setStringSnapped(false);
     setVacuumMesonCreated(false);
@@ -146,20 +203,37 @@ export function QcdFluxTubeVisual({ strongForce }: QcdFluxTubeVisualProps) {
       ctx.save();
       ctx.scale(dpr, dpr);
 
-      // Background void with subtle radial gradient
-      const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 20, width / 2, height / 2, width / 1.5);
-      if (isTooWeak) {
-        bgGrad.addColorStop(0, 'rgba(8, 12, 32, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(2, 3, 10, 1)');
-      } else if (isTooStrong) {
-        bgGrad.addColorStop(0, 'rgba(38, 10, 14, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(4, 2, 8, 1)');
+      // Background rendering (transparent with soft cosmic glow in minimal mode)
+      if (minimal) {
+        ctx.clearRect(0, 0, width, height);
+        const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 20, width / 2, height / 2, Math.max(width, height) * 0.45);
+        if (isTooWeak) {
+          bgGrad.addColorStop(0, 'rgba(12, 18, 50, 0.35)');
+          bgGrad.addColorStop(1, 'transparent');
+        } else if (isTooStrong) {
+          bgGrad.addColorStop(0, 'rgba(60, 15, 20, 0.4)');
+          bgGrad.addColorStop(1, 'transparent');
+        } else {
+          bgGrad.addColorStop(0, 'rgba(30, 35, 95, 0.3)');
+          bgGrad.addColorStop(1, 'transparent');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
       } else {
-        bgGrad.addColorStop(0, 'rgba(10, 16, 38, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(3, 3, 8, 1)');
+        const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 20, width / 2, height / 2, width / 1.5);
+        if (isTooWeak) {
+          bgGrad.addColorStop(0, 'rgba(8, 12, 32, 0.95)');
+          bgGrad.addColorStop(1, 'rgba(2, 3, 10, 1)');
+        } else if (isTooStrong) {
+          bgGrad.addColorStop(0, 'rgba(38, 10, 14, 0.95)');
+          bgGrad.addColorStop(1, 'rgba(4, 2, 8, 1)');
+        } else {
+          bgGrad.addColorStop(0, 'rgba(10, 16, 38, 0.95)');
+          bgGrad.addColorStop(1, 'rgba(3, 3, 8, 1)');
+        }
+        ctx.fillStyle = bgGrad;
+        ctx.fillRect(0, 0, width, height);
       }
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(0, 0, width, height);
 
       const centerX = width / 2;
       const centerY = height / 2;
@@ -376,35 +450,42 @@ export function QcdFluxTubeVisual({ strongForce }: QcdFluxTubeVisualProps) {
   }, [strongForce, isOptimal, isTooWeak, isTooStrong, stringSnapped, vacuumMesonCreated]);
 
   return (
-    <div ref={containerRef} className="relative w-full h-full flex flex-col bg-[var(--void)] select-none">
-      {/* Interactive Top Toolbelt */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--hair)] bg-[var(--void-2)] text-xs">
-        <div className="flex items-center gap-3">
-          <span className="mono font-semibold flex items-center gap-1.5" style={{ color: isOptimal ? 'var(--goldilocks)' : 'var(--warm)' }}>
-            {isOptimal ? <ShieldCheck className="w-4 h-4 text-[var(--goldilocks)]" /> : <AlertTriangle className="w-4 h-4 text-[var(--warm)]" />}
-            {isOptimal ? 'Confinement Equilibrium' : isTooWeak ? 'Confinement Failure (Void)' : 'Diproton Catastrophe'}
-          </span>
-          <span className="hidden sm:inline-block w-px h-3 bg-[var(--hair-2)]" />
-          <span className="hidden sm:inline-block mono text-[var(--ink-soft)]">
-            Tension: <strong className="text-[var(--ink)]">{stringTensionTons} metric tons</strong>
-          </span>
-          <span className="hidden md:inline-block w-px h-3 bg-[var(--hair-2)]" />
-          <span className="hidden md:inline-block mono text-[var(--ink-soft)]">
-            Radius: <strong className="text-[var(--ink)]">{protonRadiusFm} fm</strong>
-          </span>
-        </div>
+    <div
+      ref={containerRef}
+      className={`relative w-full h-full flex flex-col select-none ${
+        minimal ? 'bg-transparent border-none shadow-none pointer-events-auto' : 'bg-[var(--void)]'
+      }`}
+    >
+      {/* Interactive Top Toolbelt (Hidden in minimal mode) */}
+      {!minimal && (
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[var(--hair)] bg-[var(--void-2)] text-xs">
+          <div className="flex items-center gap-3">
+            <span className="mono font-semibold flex items-center gap-1.5" style={{ color: isOptimal ? 'var(--goldilocks)' : 'var(--warm)' }}>
+              {isOptimal ? <ShieldCheck className="w-4 h-4 text-[var(--goldilocks)]" /> : <AlertTriangle className="w-4 h-4 text-[var(--warm)]" />}
+              {isOptimal ? 'Confinement Equilibrium' : isTooWeak ? 'Confinement Failure (Void)' : 'Diproton Catastrophe'}
+            </span>
+            <span className="hidden sm:inline-block w-px h-3 bg-[var(--hair-2)]" />
+            <span className="hidden sm:inline-block mono text-[var(--ink-soft)]">
+              Tension: <strong className="text-[var(--ink)]">{stringTensionTons} metric tons</strong>
+            </span>
+            <span className="hidden md:inline-block w-px h-3 bg-[var(--hair-2)]" />
+            <span className="hidden md:inline-block mono text-[var(--ink-soft)]">
+              Radius: <strong className="text-[var(--ink)]">{protonRadiusFm} fm</strong>
+            </span>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={resetQuarks}
-            className="px-2 py-1 rounded border border-[var(--hair)] text-[10px] text-[var(--ink-soft)] hover:text-[var(--ink)] hover:border-[var(--indigo)] transition-colors flex items-center gap-1"
-            title="Reset quark positions"
-          >
-            <RotateCcw className="w-3 h-3" /> Reset
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={resetQuarks}
+              className="px-2 py-1 rounded border border-[var(--hair)] text-[10px] text-[var(--ink-soft)] hover:text-[var(--ink)] hover:border-[var(--indigo)] transition-colors flex items-center gap-1"
+              title="Reset quark positions"
+            >
+              <RotateCcw className="w-3 h-3" /> Reset
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Main Canvas Stage */}
       <div className="relative flex-1 min-h-[340px] overflow-hidden cursor-crosshair">
@@ -414,36 +495,61 @@ export function QcdFluxTubeVisual({ strongForce }: QcdFluxTubeVisualProps) {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
-          className="w-full h-full block"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleMouseUp}
+          onTouchCancel={handleMouseUp}
+          className="w-full h-full block touch-none"
         />
 
         {/* Floating Physics Legend / Drag Hint */}
-        <div className="absolute bottom-3 left-4 pointer-events-none text-[11px] mono text-[var(--ink-soft)] flex items-center gap-2 bg-[var(--void-2)]/85 px-3 py-1.5 rounded border border-[var(--hair)]">
+        <div className={`absolute bottom-4 left-4 pointer-events-none text-[11px] mono text-[var(--ink-soft)] flex items-center gap-2 px-3 py-1.5 rounded border border-[var(--hair)] ${
+          minimal ? 'bg-[var(--void-2)]/90 backdrop-blur-md shadow-lg' : 'bg-[var(--void-2)]/85'
+        }`}>
           <Move className="w-3 h-3 text-[var(--indigo)] animate-pulse" />
           <span>Interactive: Click & drag any quark to test gluon flux-tube tension</span>
         </div>
 
         {/* Real-time Subatomic Readout Overlay */}
-        <div className="absolute top-3 right-4 pointer-events-none text-right">
+        <div className={`absolute top-4 right-4 pointer-events-none text-right ${
+          minimal ? 'bg-[var(--void-2)]/85 backdrop-blur-md p-2.5 rounded-lg border border-[var(--hair)] shadow-lg' : ''
+        }`}>
           <div className="text-xs mono uppercase tracking-wider text-[var(--ink-soft)]">QCD Coupling</div>
           <div className="text-xl font-bold mono text-[var(--indigo)]">{strongForce.toFixed(3)} αs</div>
           <div className={`text-[11px] font-medium mono ${isOptimal ? 'text-[var(--goldilocks)]' : 'text-[var(--warm)]'}`}>
             {isOptimal ? '✅ 4% Safe Window' : isTooWeak ? '❌ Below 0.98 αs' : '❌ Above 1.02 αs'}
           </div>
         </div>
+
+        {/* Reset button when minimal */}
+        {minimal && (stringSnapped || Math.abs(strongForce - 1.0) > 0.05) && (
+          <div className="absolute top-4 left-4 pointer-events-auto">
+            <button
+              type="button"
+              onClick={resetQuarks}
+              className="px-2.5 py-1 rounded bg-[var(--void-2)]/90 backdrop-blur-md border border-[var(--hair)] text-[11px] text-[var(--ink)] hover:border-[var(--indigo)] transition-colors flex items-center gap-1.5 shadow-lg"
+              title="Reset quark positions"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-[var(--indigo)]" />
+              <span>Reset Quarks</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Sub-canvas Physical Consequence Bar */}
-      <div className="px-4 py-2 border-t border-[var(--hair)] bg-[var(--void-2)]/60 text-xs flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 text-[var(--indigo)]" />
-          <span className="text-[var(--ink-mid)]">
-            {isOptimal && 'Stable protons enable hydrogen stars, stellar nucleosynthesis, and complex organic chemistry.'}
-            {isTooWeak && 'Gluon flux tube fails: quarks separate into an unbound plasma. No hydrogen or atoms can ever form.'}
-            {isTooStrong && 'Diprotons (^2He) become tightly bound: all primordial hydrogen fuses violently into helium-2 during the Big Bang.'}
-          </span>
+      {/* Sub-canvas Physical Consequence Bar (Hidden in minimal mode) */}
+      {!minimal && (
+        <div className="px-4 py-2 border-t border-[var(--hair)] bg-[var(--void-2)]/60 text-xs flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-3.5 h-3.5 text-[var(--indigo)]" />
+            <span className="text-[var(--ink-mid)]">
+              {isOptimal && 'Stable protons enable hydrogen stars, stellar nucleosynthesis, and complex organic chemistry.'}
+              {isTooWeak && 'Gluon flux tube fails: quarks separate into an unbound plasma. No hydrogen or atoms can ever form.'}
+              {isTooStrong && 'Diprotons (^2He) become tightly bound: all primordial hydrogen fuses violently into helium-2 during the Big Bang.'}
+            </span>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

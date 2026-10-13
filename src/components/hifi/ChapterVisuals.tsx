@@ -1,6 +1,7 @@
 'use client';
 
 import { EntropyViz } from './ch01/viz/EntropyViz';
+import { QcdFluxTubeVisual } from '../universe-builder/sections/QcdFluxTubeVisual';
 
 /**
  * The cinematic visualizations that sit behind each chapter. Pure
@@ -32,6 +33,15 @@ export function Chapter1EntropyStage({ value = 1 }: { value?: number }) {
   return (
     <div className="chapter-entropy-stage">
       <EntropyViz value={value} minimal={true} />
+    </div>
+  );
+}
+
+// CH 02 — Interactive Quark Stage (QCD Gluon Flux-Tube & String-Breaking)
+export function Chapter2QuarkStage({ value = 1 }: { value?: number }) {
+  return (
+    <div className="chapter-quark-stage">
+      <QcdFluxTubeVisual strongForce={value} minimal={true} />
     </div>
   );
 }
@@ -103,109 +113,7 @@ export function PrimordialBubble({ entropy = 1 }: { entropy?: number }) {
 
 // CH 02 — Proton (three quarks bound by gluon strands)
 export function ProtonViz({ coupling = 1 }: { coupling?: number }) {
-  // Strong-coupling ratio drives how tightly the quarks are bound: below band
-  // they drift apart, above band they over-bind.
-  const t = Math.max(0, Math.min(1, (coupling - 0.8) / 0.4));
-  const spread = 1.3 - 0.6 * t;
-  const tubeOpacity = 0.4 + 0.6 * t;
-  const quarks = [
-    { ox: 0, oy: -25, label: 'u', color: '#A8B3FF' },
-    { ox: -25, oy: 20, label: 'u', color: '#A8B3FF' },
-    { ox: 25, oy: 20, label: 'd', color: '#E78C5A' },
-  ];
-  const pts = quarks.map((q) => ({
-    x: svg(50 + q.ox * spread),
-    y: svg(50 + q.oy * spread),
-  }));
-  const edges: Array<[number, number]> = [[0, 1], [0, 2], [1, 2]];
-
-  return (
-    <div style={{ position: 'absolute', right: -60, top: '50%', transform: 'translateY(-50%)' }}>
-      <div style={{ position: 'relative', width: 760, height: 760 }}>
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            borderRadius: '50%',
-            background:
-              'radial-gradient(circle at 50% 50%, rgba(122,123,255,0.20) 0%, rgba(79,80,232,0.10) 40%, transparent 70%)',
-            filter: 'blur(2px)',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: '8%',
-            borderRadius: '50%',
-            border: '1px dashed rgba(180,190,255,0.25)',
-          }}
-        />
-        <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100">
-          <defs>
-            <linearGradient id="ftu-gluon1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#7A7BFF" stopOpacity="0.8" />
-              <stop offset="50%" stopColor="#ffffff" stopOpacity="1" />
-              <stop offset="100%" stopColor="#7A7BFF" stopOpacity="0.8" />
-            </linearGradient>
-          </defs>
-          {edges.map(([a, b]) => (
-            <line
-              key={`${a}-${b}`}
-              x1={pts[a].x}
-              y1={pts[a].y}
-              x2={pts[b].x}
-              y2={pts[b].y}
-              stroke="url(#ftu-gluon1)"
-              strokeWidth="0.5"
-              opacity={tubeOpacity}
-            />
-          ))}
-        </svg>
-
-        {quarks.map((q, i) => (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `${pts[i].x}%`,
-              top: `${pts[i].y}%`,
-              transform: 'translate(-50%, -50%)',
-              width: 90,
-              height: 90,
-              borderRadius: '50%',
-              background: `radial-gradient(circle at 35% 30%, #ffffff 0%, ${q.color} 35%, rgba(20,20,60,0.7) 80%)`,
-              boxShadow: `0 0 ${30 + t * 30}px ${q.color}80, inset 0 0 18px rgba(0,0,0,0.4)`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontFamily: 'var(--f-display)',
-              fontSize: 28,
-              fontWeight: 300,
-              color: 'var(--ink)',
-              transition: 'left 300ms ease, top 300ms ease, box-shadow 300ms ease',
-            }}
-          >
-            {q.label}
-          </div>
-        ))}
-
-        <div
-          className="mono"
-          style={{
-            position: 'absolute',
-            left: '50%',
-            top: '54%',
-            transform: 'translateX(-50%)',
-            color: 'var(--ink-soft)',
-            fontSize: 10,
-            letterSpacing: '0.4em',
-          }}
-        >
-          P R O T O N
-        </div>
-      </div>
-    </div>
-  );
+  return <Chapter2QuarkStage value={coupling} />;
 }
 
 // CH 03 — First star
