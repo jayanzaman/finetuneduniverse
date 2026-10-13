@@ -32,4 +32,34 @@ describe('MatterSection', () => {
     expect(screen.getByText('0.800')).toBeTruthy();
     expect(screen.getByText('❌ Unstable')).toBeTruthy();
   });
+
+  it('allows switching active parameter and toggling to 2x2 grid view', () => {
+    render(<MatterSection educatorMode={true} />);
+
+    // Switch to Mass Hierarchy
+    const hierarchyTab = screen.getByText('2. Mass Hierarchy');
+    fireEvent.click(hierarchyTab);
+    expect(screen.getByText('The Hierarchy Problem')).toBeTruthy();
+
+    // Switch to Matter vs Antimatter
+    const matterTab = screen.getByText('3. Matter Asymmetry');
+    fireEvent.click(matterTab);
+    expect(screen.getByText('Baryogenesis')).toBeTruthy();
+
+    // Switch to Proton Stability
+    const protonTab = screen.getByText('4. Proton Stability');
+    fireEvent.click(protonTab);
+    expect(screen.getByText('Mass Gap & Threshold')).toBeTruthy();
+
+    // Toggle to 2x2 Quad Deck view
+    const gridToggle = screen.getByText('2×2 Quad Deck');
+    fireEvent.click(gridToggle);
+    expect(screen.getAllByRole('slider').length).toBe(4);
+  });
+
+  it('responds to global randomizeUniverse event', () => {
+    render(<MatterSection educatorMode={false} />);
+    fireEvent(window, new Event('randomizeUniverse'));
+    expect(screen.getByText('Outcome')).toBeTruthy();
+  });
 });
