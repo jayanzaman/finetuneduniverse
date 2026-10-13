@@ -372,36 +372,95 @@ export const EDUCATOR_CONTENT: Record<ParamKey, EducatorPanel> = {
   },
 
   temperature: {
+    mathBlocks: [
+      {
+        expression: (
+          <span>
+            <span style={{ color: '#38BDF8', fontWeight: 600 }}>ΔT / T ≈ 10<sup>−5</sup></span>
+            &nbsp;·&nbsp;
+            <span style={{ color: '#F59E0B', fontWeight: 600 }}>T<sub>0</sub> <span className="op">=</span> 2.7255 K</span>
+            &nbsp;(±18 μK)
+          </span>
+        ),
+        caption: 'The Uniformity Fine-Tuning · temperatures match to 1 part in 100,000 across the entire sky',
+      },
+      {
+        expression: (
+          <span>
+            θ<sub>horizon</sub> ≈ 1° &nbsp;➔&nbsp; <span style={{ color: '#C084FC', fontWeight: 600 }}>N<sub>patches</sub> ≈ 90 to 100</span>
+          </span>
+        ),
+        caption: 'The Horizon Paradox · opposite sides of the sky were separated by ~90 disjoint causal horizon volumes',
+      },
+    ],
     sections: [
       {
         kind: 'lesson',
-        label: 'What it is',
+        label: 'What You See in the All-Sky Projection',
         body: (
           <>
-            The cosmic microwave background — a uniform <em>2.7250 K</em> glow filling the sky,
-            relic light from when the universe became transparent. Uniform to roughly{' '}
-            <em>1 part in 100,000</em>.
+            The visualization renders an interactive <strong>Mollweide projection</strong> of the Cosmic Microwave Background (CMB) — relic afterglow released when the universe cooled to ~3,000 K during recombination (380,000 years after the Big Bang, <em>z</em> ≈ 1100).
+            <br /><br />
+            • <strong>Mollweide 2D vs. 3D Globe</strong>: Use the top-left toggle to switch between the full elliptical all-sky projection and an interactive rotatable 3D celestial sphere.
+            <br /><br />
+            • <strong>Interactive Thermal Probe</strong>: Hover or drag anywhere across the celestial map to inspect local Galactic coordinates (<em>ℓ, b</em>), absolute temperature (down to microkelvins), and the 1° causal horizon reticle.
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'The 3 Contrast Lenses · From 2.7 K to Microkelvins',
+        body: (
+          <>
+            Use the lens selector at the top to peel back observational scales:
+            <br /><br />
+            • <strong>Raw Glow (2.725 K)</strong>: What human eyes would see if tuned to microwave frequencies — a completely uniform, featureless blackbody bath, smooth to better than 99.9%.
+            <br /><br />
+            • <strong>Dipole Doppler (3.36 mK)</strong>: Reveals the Doppler shift caused by Earth and the Milky Way racing through the cosmos at 370 km/s toward constellation Leo / the Great Attractor. One half of the sky is blueshifted (warmer), and the opposite half is redshifted (cooler).
+            <br /><br />
+            • <strong>Microkelvin Fluctuation View (±18 μK)</strong>: Amplifies contrast by 100,000× with the dipole and galactic plane foregrounds subtracted. This exposes the primordial acoustic oscillations (hot compressions and cold rarefactions) mapped by the Planck satellite.
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'The Horizon Problem · Why Patches Shouldn\'t Agree',
+        body: (
+          <>
+            Look at opposite edges of the Mollweide ellipse (separated by 180°). Today, they are separated by nearly 28 billion light-years.
+            <br /><br />
+            When the CMB was emitted 380,000 years after the Big Bang, light could only have traveled about <strong>1 degree across the sky</strong> (~900,000 light-years). This means the observable sky was divided into <strong>over 90 completely disconnected causal bubbles</strong> that had never exchanged a single photon or heat ray.
+            <br /><br />
+            In standard thermodynamics, two systems that cannot communicate cannot equalize their temperature. Why, then, are their temperatures identical to 1 part in 100,000?
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'How the Slider Alters the Cosmic Tapestry',
+        body: (
+          <>
+            Move the slider above to explore varying degrees of thermal coordination:
+            <br /><br />
+            • <strong>Low Uniformity (&lt; 0.99998, &quot;Mottled&quot;)</strong>:
+            Simulates a universe without Cosmic Inflation. Disjoint horizon patches fail to equilibrate, producing a chaotic patchwork of independent cells with temperature discrepancies of whole Kelvins (±0.5 K to ±1.5 K).
+            <br /><br />
+            • <strong>Goldilocks Band [0.99998 – 1.00000, &quot;Uniform&quot;]</strong>:
+            All-sky thermal equilibrium is achieved, leaving behind only the exquisite ±18 μK quantum acoustic ripples. These subtle density ripples were essential: they acted as the gravitational seeds for galaxies, stars, and planets without causing the universe to collapse into primordial black holes.
+            <br /><br />
+            • <strong>Total Uniformity (1.00000)</strong>:
+            Spacetime is completely isotropic with zero density perturbations. Without microkelvin fluctuations, gravity has no overdensities to collapse, leaving a sterile, homogeneous void forever.
           </>
         ),
       },
       {
         kind: 'pullquote',
-        label: 'The horizon problem',
+        label: 'The Inflationary Fine-Tuning',
         body: (
           <>
-            Regions of sky that could never have communicated — beyond each other&apos;s causal
-            horizons — show identical temperatures. How did they &quot;know&quot; to agree?
-          </>
-        ),
-      },
-      {
-        kind: 'lesson',
-        label: 'Inflation, possibly',
-        body: (
-          <>
-            Cosmic inflation suggests the entire observable universe was once in close causal
-            contact, then expanded exponentially. It solves the horizon problem — at the cost of
-            requiring its own finely-tuned initial conditions.
+            Cosmic inflation resolves the horizon paradox by positing that between 10<sup>−36</sup> s and 10<sup>−32</sup> s, a subatomic patch already in thermal contact was stretched exponentially by at least <em>e<sup>60</sup></em> (~10<sup>26</sup>×) to encompass our entire observable universe.
+            <br /><br />
+            Yet inflation introduces its own profound fine-tuning: the scalar inflaton potential <em>V(φ)</em> must be extraordinarily flat, requiring precision initial conditions to initiate inflation and terminate it without destroying structure.
           </>
         ),
       },

@@ -80,20 +80,48 @@ describe('ParameterFocusedPageShell', () => {
     const nextLink = screen.getByRole('link', { name: /parameter 06: cmb uniformity →/i });
     expect(nextLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/cmb-uniformity');
   });
+
+  it('renders Parameter 06 · Focused view CMB Uniformity with lessons, math blocks, and navigation', () => {
+    const param06 = PARAMS[5]; // temperature
+    render(<ParameterFocusedPageShell param={param06} />);
+
+    expect(screen.getByText('Parameter 06 · Focused view')).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('CMB Uniformity');
+    expect(
+      screen.getByText(/Why is the background temperature uniform across regions that never had time to communicate/i)
+    ).toBeTruthy();
+
+    // Math blocks
+    expect(screen.getByText(/The Uniformity Fine-Tuning · temperatures match to 1 part in 100,000/i)).toBeTruthy();
+    expect(screen.getByText(/The Horizon Paradox · opposite sides of the sky were separated/i)).toBeTruthy();
+
+    // Educational cards
+    expect(screen.getByText(/What You See in the All-Sky Projection/i)).toBeTruthy();
+    expect(screen.getByText(/The 3 Contrast Lenses · From 2.7 K to Microkelvins/i)).toBeTruthy();
+    expect(screen.getByText(/The Horizon Problem · Why Patches Shouldn't Agree/i)).toBeTruthy();
+    expect(screen.getByText(/How the Slider Alters the Cosmic Tapestry/i)).toBeTruthy();
+    expect(screen.getByText(/The Inflationary Fine-Tuning/i)).toBeTruthy();
+
+    // Previous parameter link to Parameter 05
+    const prevLink = screen.getByRole('link', { name: /← parameter 05: dark energy λ/i });
+    expect(prevLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/dark-energy');
+  });
 });
 
 describe('/questions/[slug]/lab/[param] route helpers', () => {
-  it('generateStaticParams includes entropy, dark-energy, 01, and 05', () => {
+  it('generateStaticParams includes entropy, dark-energy, cmb-uniformity, 01, 05, and 06', () => {
     const params = generateStaticParams();
     const slugs = params.map((p) => p.param);
 
     expect(slugs).toContain('entropy');
     expect(slugs).toContain('dark-energy');
+    expect(slugs).toContain('cmb-uniformity');
     expect(slugs).toContain('01');
     expect(slugs).toContain('05');
+    expect(slugs).toContain('06');
   });
 
-  it('generateMetadata returns canonical title for Initial Entropy and Dark Energy', async () => {
+  it('generateMetadata returns canonical title for Initial Entropy, Dark Energy, and CMB Uniformity', async () => {
     const meta01 = await generateMetadata({
       params: Promise.resolve({
         slug: 'why-did-the-universe-begin-ordered',
@@ -109,5 +137,13 @@ describe('/questions/[slug]/lab/[param] route helpers', () => {
       }),
     });
     expect(meta05.title).toBe('Parameter 05 · Focused view: Dark Energy Λ | Finetuned Universe');
+
+    const meta06 = await generateMetadata({
+      params: Promise.resolve({
+        slug: 'why-did-the-universe-begin-ordered',
+        param: 'cmb-uniformity',
+      }),
+    });
+    expect(meta06.title).toBe('Parameter 06 · Focused view: CMB Uniformity | Finetuned Universe');
   });
 });

@@ -115,7 +115,7 @@ export const PARAMS: ParamDef[] = [
     n: '06',
     key: 'temperature',
     name: 'CMB Uniformity',
-    question: 'How uniform is the background temperature?',
+    question: 'Why is the background temperature uniform across regions that never had time to communicate?',
     unit: 'K · ΔT ±18μK',
     range: [0.9, 1],
     band: [0.99998, 1],
