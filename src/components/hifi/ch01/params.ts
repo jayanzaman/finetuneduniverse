@@ -101,7 +101,7 @@ export const PARAMS: ParamDef[] = [
     n: '05',
     key: 'darkEnergy',
     name: 'Dark Energy Λ',
-    question: 'How strong is the force pushing the universe apart?',
+    question: 'How does the non-diluting energy of empty space come to dominate 70% of the universe?',
     unit: 'Λ',
     range: [0, 2],
     band: [0.8, 1.2],

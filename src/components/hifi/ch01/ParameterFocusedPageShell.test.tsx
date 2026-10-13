@@ -51,13 +51,26 @@ describe('ParameterFocusedPageShell', () => {
     expect(nextLink.getAttribute('href')).toBe('/questions/why-did-the-universe-begin-ordered/lab/fluctuations');
   });
 
-  it('renders Parameter 05 · Focused view Dark Energy Λ with lessons and navigation', () => {
+  it('renders Parameter 05 · Focused view Dark Energy Λ with lessons, math blocks, and navigation', () => {
     const param05 = PARAMS[4]; // darkEnergy
     render(<ParameterFocusedPageShell param={param05} />);
 
     expect(screen.getByText('Parameter 05 · Focused view')).toBeTruthy();
     expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Dark Energy Λ');
-    expect(screen.getByText(/How strong is the force pushing the universe apart/i)).toBeTruthy();
+    expect(
+      screen.getByText(/How does the non-diluting energy of empty space come to dominate 70% of the universe/i)
+    ).toBeTruthy();
+
+    // Math blocks
+    expect(screen.getByText(/The Non-Dilution Law · matter thins as 1\/Volume/i)).toBeTruthy();
+    expect(screen.getByText(/Today's cosmic energy budget/i)).toBeTruthy();
+
+    // Educational cards
+    expect(screen.getByText(/What You See in the 3D Cosmic Cube/i)).toBeTruthy();
+    expect(screen.getByText(/The Dilution Curves Tab · ρ\(a\) & The Crossover Point/i)).toBeTruthy();
+    expect(screen.getByText(/The 70% Energy Budget Gauge/i)).toBeTruthy();
+    expect(screen.getByText(/How the Slider Alters Cosmic Fate/i)).toBeTruthy();
+    expect(screen.getByText(/The Cosmological Constant Problem/i)).toBeTruthy();
 
     // Previous parameter link to Parameter 04
     const prevLink = screen.getByRole('link', { name: /← parameter 04: universe shape/i });

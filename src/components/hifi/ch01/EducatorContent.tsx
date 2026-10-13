@@ -258,37 +258,113 @@ export const EDUCATOR_CONTENT: Record<ParamKey, EducatorPanel> = {
   },
 
   darkEnergy: {
+    mathBlocks: [
+      {
+        expression: (
+          <span>
+            <span style={{ color: '#F59E0B', fontWeight: 600 }}>
+              ρ<sub>m</sub>(<em>a</em>) ∝ <em>a</em><sup>−3</sup>
+            </span>
+            &nbsp;vs&nbsp;
+            <span style={{ color: '#C084FC', fontWeight: 600 }}>
+              ρ<sub>Λ</sub> <span className="op">=</span> const
+            </span>
+          </span>
+        ),
+        caption: 'The Non-Dilution Law · matter thins as 1/Volume (a⁻³), vacuum energy density never dilutes',
+      },
+      {
+        expression: (
+          <span>
+            <span style={{ color: '#C084FC', fontWeight: 600 }}>Ω<sub>Λ</sub> ≈ 68.3%</span>
+            <span style={{ color: '#888', margin: '0 6px' }}>+</span>
+            <span style={{ color: '#F59E0B', fontWeight: 600 }}>Ω<sub>c</sub> ≈ 26.8%</span>
+            <span style={{ color: '#888', margin: '0 6px' }}>+</span>
+            <span style={{ color: '#38BDF8', fontWeight: 600 }}>Ω<sub>b</sub> ≈ 4.9%</span>
+            <span className="op" style={{ margin: '0 6px' }}>=</span>
+            <strong>100%</strong>
+          </span>
+        ),
+        caption: "Today's cosmic energy budget (a = 1.0) · ~70% dark energy, ~27% cold dark matter, ~5% atoms",
+      },
+    ],
     sections: [
       {
         kind: 'lesson',
-        label: 'What it is',
+        label: 'What You See in the 3D Cosmic Cube',
         body: (
           <>
-            A small, positive energy density of space itself — Λ in Einstein&apos;s equations.
-            Roughly 70% of the universe&apos;s current energy budget. It does not dilute as space
-            expands.
+            Watch the cube as space stretches:
+            <br /><br />
+            • <strong>Golden Matter Particles (ρ<sub>m</sub> ∝ a<sup>−3</sup>)</strong>:
+            Represent galaxies and cold dark matter clusters. Because the total mass remains fixed while the volume of space expands by a factor of <em>a<sup>3</sup></em>, the physical matter density steadily drops. The particles drift farther apart, growing increasingly sparse.
+            <br /><br />
+            • <strong>Purple Quantum Vacuum Matrix (ρ<sub>Λ</sub> = const)</strong>:
+            Represents the intrinsic energy density of empty space (Einstein&apos;s cosmological constant Λ). Unlike matter or radiation, space does not &quot;stretch thin.&quot; As new volume is created by expansion, new vacuum energy is created with it at an invariant rate of ~6 × 10<sup>−10</sup> J/m³. Its density per cubic meter never dilutes.
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'The Dilution Curves Tab · ρ(a) & The Crossover Point',
+        body: (
+          <>
+            Click the <strong>Dilution Curves</strong> tab at the top-left of the visual to inspect the logarithmic density history:
+            <br /><br />
+            • <strong>The Plunging Amber Curve</strong>:
+            In the early cosmos (<em>a</em> &lt; 0.5), matter dominated the universe by more than 10 to 1. But its curve plunges steeply as 1/<em>a<sup>3</sup></em> over cosmic time.
+            <br /><br />
+            • <strong>The Flat Purple Line</strong>:
+            Remains completely horizontal across all epochs. Because it never drops, it was inevitable that dark energy would eventually catch up.
+            <br /><br />
+            • <strong>The Crossover Point (a ≈ 0.75, ~9.8 billion years)</strong>:
+            Where the two curves intersect. Around 4 billion years ago, vacuum energy surpassed matter density. At that exact pivot, the gravitational deceleration of the cosmos flipped into accelerated cosmic expansion.
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'The 70% Energy Budget Gauge',
+        body: (
+          <>
+            The segmented bar above the canvas tracks our current epoch (<strong>Today · a = 1.0</strong>):
+            <br /><br />
+            • <strong>Dark Energy (Ω<sub>Λ</sub> ≈ 68.3% ~ 70%)</strong>: The dominant constituent of the universe today, driving galaxies apart at an ever-accelerating pace.
+            <br />
+            • <strong>Cold Dark Matter (Ω<sub>c</sub> ≈ 26.8%)</strong>: Invisible gravitational scaffolding that bound early gas into galaxy halos.
+            <br />
+            • <strong>Baryonic Atoms (Ω<sub>b</sub> ≈ 4.9%)</strong>: All stars, planets, nebulae, and living organisms comprise less than 5% of the cosmos.
+            <br /><br />
+            In the distant future (<em>a</em> &gt; 1.5), matter will dilute toward 0%, leaving dark energy to occupy &gt;99% of the cosmic budget.
+          </>
+        ),
+      },
+      {
+        kind: 'lesson',
+        label: 'How the Slider Alters Cosmic Fate',
+        body: (
+          <>
+            Move the slider above to test alternate strengths of Λ:
+            <br /><br />
+            • <strong>Goldilocks Band [0.80 – 1.20 Λ]</strong>:
+            Allows gravity to hold matter together long enough for first-generation stars, heavy-element nucleosynthesis, and planetary systems to form before dark energy acceleration takes over.
+            <br />
+            • <strong>High Λ (&gt; 1.20, &quot;Tears Apart&quot;)</strong>:
+            Acceleration triggers prematurely during the first billion years. Spacetime expands faster than gravitational collapse can bind protogalaxies, preventing stars and galaxies from ever condensing.
+            <br />
+            • <strong>Low / Zero Λ (&lt; 0.80, &quot;Collapses&quot;)</strong>:
+            Without enough positive vacuum repulsion, the mutual gravitational attraction of matter eventually arrests expansion and pulls the entire universe back into a scorching Big Crunch.
           </>
         ),
       },
       {
         kind: 'pullquote',
-        label: 'The cosmological constant problem',
+        label: 'The Cosmological Constant Problem',
         body: (
           <>
-            Quantum field theory predicts a vacuum energy <em>10<sup>120</sup></em> times larger
-            than the observed value. The largest disagreement between theory and observation in all
-            of physics.
-          </>
-        ),
-      },
-      {
-        kind: 'lesson',
-        label: 'Why it matters',
-        body: (
-          <>
-            Too strong and structure can never form — galaxies are torn apart before they
-            coalesce. Too weak and expansion never accelerates. Our Λ sits in a narrow band that
-            permits both stars and observers.
+            When quantum field theorists calculate the zero-point energy of vacuum fields up to the Planck scale, they obtain an answer roughly <strong>10<sup>120</sup> times larger</strong> than the observed density of dark energy.
+            <br /><br />
+            If Λ had taken its naturally predicted quantum value, space would have blown apart in a fraction of a second, precluding any chemistry or life. Physicists consider this 120-order-of-magnitude discrepancy the most extreme fine-tuning problem in theoretical physics.
           </>
         ),
       },
