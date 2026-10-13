@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Sparkles, Flame, ShieldCheck, AlertTriangle, Eye, RotateCcw } from 'lucide-react';
+import { Sparkles, Flame, ShieldCheck, AlertTriangle, RotateCcw, Activity } from 'lucide-react';
 
 interface PrimordialCrucibleVisualProps {
   asymmetry: number; // 0.0 to 0.20, optimal 0.08 to 0.12 (displayed as value * 100 %)
 }
 
 interface Particle {
+  id: number;
   x: number;
   y: number;
   vx: number;
@@ -16,6 +17,8 @@ interface Particle {
   color: string;
   size: number;
   alpha: number;
+  history: Array<{ x: number; y: number }>;
+  morphing?: number; // 0 to 1 for visual transition flash
   annihilated?: boolean;
 }
 
@@ -37,55 +40,94 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
   const isOverdense = asymmetry > 0.12;
 
   const [epoch, setEpoch] = useState<'furnace' | 'annihilating' | 'survivor'>('furnace');
-  const [annihilationProgress, setAnnihilationProgress] = useState<number>(0);
+  const [liveRatio, setLiveRatio] = useState<{ matter: number; antimatter: number }>({ matter: 50, antimatter: 50 });
 
   const particlesRef = useRef<Particle[]>([]);
   const photonRingsRef = useRef<PhotonRing[]>([]);
+  const nextParticleId = useRef<number>(1);
 
-  // Initialize primordial particle soup
+  // Initialize a stable population of particles
   const initParticles = useCallback((asymm: number) => {
-    const total = 140;
-    const matterRatio = 0.5 + (asymm * 0.5); // 0.5 at 0%, 0.55 at 10%
+    const total = 110;
+    const matterRatio = 0.5 + asymm * 0.5;
     const matterCount = Math.round(total * matterRatio);
     const antimatterCount = total - matterCount;
 
     const particles: Particle[] = [];
-    for (let i = 0; i < matterCount; i++) {
-      const isTheOne = i === 0 && asymm > 0.01;
-      particles.push({
-        x: Math.random() * 500 + 50,
-        y: Math.random() * 320 + 40,
-        vx: (Math.random() - 0.5) * 4.5,
-        vy: (Math.random() - 0.5) * 4.5,
-        type: isTheOne ? 'survivor' : 'matter',
-        color: '#00f0ff',
-        size: isTheOne ? 4.5 : 3,
-        alpha: 1,
-      });
-    }
+    nextParticleId.current = 1;
 
-    for (let i = 0; i < antimatterCount; i++) {
+    for (let i = 0; i < total; i++) {
+      const isMatter = i < matterCount;
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1.8 + Math.random() * 2.0;
+
       particles.push({
-        x: Math.random() * 500 + 50,
+        id: nextParticleId.current++,
+        x: Math.random() * 520 + 40,
         y: Math.random() * 320 + 40,
-        vx: (Math.random() - 0.5) * 4.5,
-        vy: (Math.random() - 0.5) * 4.5,
-        type: 'antimatter',
-        color: '#ff2277',
-        size: 3,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        type: isMatter ? 'matter' : 'antimatter',
+        color: isMatter ? '#00e5ff' : '#ff2a77',
+        size: isMatter ? 3.5 : 3.2,
         alpha: 1,
+        history: [],
       });
     }
 
     particlesRef.current = particles;
     photonRingsRef.current = [];
+    setLiveRatio({
+      matter: Math.round((matterCount / total) * 100),
+      antimatter: Math.round((antimatterCount / total) * 100),
+    });
   }, []);
 
+  // First-time mount initialization
   useEffect(() => {
-    initParticles(asymmetry);
-    setEpoch('furnace');
-    setAnnihilationProgress(0);
+    if (particlesRef.current.length === 0) {
+      initParticles(asymmetry);
+    }
   }, [asymmetry, initParticles]);
+
+  // Dynamically update population when slider moves WITHOUT destroying or resetting positions
+  useEffect(() => {
+    const total = particlesRef.current.length || 110;
+    const targetMatterRatio = 0.5 + asymmetry * 0.5;
+    const targetMatterCount = Math.round(total * targetMatterRatio);
+
+    const activeParticles = particlesRef.current.filter((p) => !p.annihilated);
+    const currentMatterCount = activeParticles.filter((p) => p.type === 'matter' || p.type === 'survivor').length;
+    const diff = targetMatterCount - currentMatterCount;
+
+    if (diff > 0) {
+      // Need more matter: convert antimatter particles to matter with an ionization burst
+      let converted = 0;
+      for (const p of activeParticles) {
+        if (p.type === 'antimatter' && converted < diff) {
+          p.type = 'matter';
+          p.color = '#00e5ff';
+          p.morphing = 1.0;
+          converted++;
+        }
+      }
+    } else if (diff < 0) {
+      // Need more antimatter: convert matter particles back
+      let converted = 0;
+      const needed = Math.abs(diff);
+      for (const p of activeParticles) {
+        if (p.type === 'matter' && converted < needed) {
+          p.type = 'antimatter';
+          p.color = '#ff2a77';
+          p.morphing = 1.0;
+          converted++;
+        }
+      }
+    }
+
+    const matterPct = Math.round(targetMatterRatio * 100);
+    setLiveRatio({ matter: matterPct, antimatter: 100 - matterPct });
+  }, [asymmetry]);
 
   const triggerAnnihilation = () => {
     if (epoch === 'furnace') {
@@ -93,7 +135,6 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
     } else {
       initParticles(asymmetry);
       setEpoch('furnace');
-      setAnnihilationProgress(0);
     }
   };
 
@@ -106,7 +147,7 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
     let time = 0;
 
     const render = () => {
-      time += 0.03;
+      time += 0.025;
 
       const dpr = window.devicePixelRatio || 1;
       const width = canvas.clientWidth || 600;
@@ -120,72 +161,239 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
       ctx.save();
       ctx.scale(dpr, dpr);
 
-      // Deep space void with thermal radiation background
-      const bgGrad = ctx.createRadialGradient(width / 2, height / 2, 20, width / 2, height / 2, width / 1.3);
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      // Radial background influenced by asymmetry regime
+      const bgGrad = ctx.createRadialGradient(centerX, centerY, 20, centerX, centerY, width / 1.3);
       if (epoch === 'survivor') {
-        bgGrad.addColorStop(0, 'rgba(6, 12, 26, 0.95)');
+        bgGrad.addColorStop(0, 'rgba(8, 16, 32, 0.95)');
         bgGrad.addColorStop(1, 'rgba(2, 2, 8, 1)');
-      } else if (epoch === 'annihilating') {
-        bgGrad.addColorStop(0, 'rgba(38, 26, 10, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(4, 3, 10, 1)');
+      } else if (isPureLight) {
+        // High thermal annihilation glow
+        bgGrad.addColorStop(0, 'rgba(32, 10, 28, 0.95)');
+        bgGrad.addColorStop(1, 'rgba(3, 2, 10, 1)');
+      } else if (isOverdense) {
+        // Heavy gravitational well core
+        bgGrad.addColorStop(0, 'rgba(30, 20, 8, 0.95)');
+        bgGrad.addColorStop(1, 'rgba(4, 2, 8, 1)');
       } else {
-        bgGrad.addColorStop(0, 'rgba(24, 10, 36, 0.95)');
-        bgGrad.addColorStop(1, 'rgba(3, 3, 8, 1)');
+        // Optimal cosmos: balanced, deep blue-violet
+        bgGrad.addColorStop(0, 'rgba(12, 16, 38, 0.95)');
+        bgGrad.addColorStop(1, 'rgba(2, 3, 8, 1)');
       }
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 
-      const centerX = width / 2;
-      const centerY = height / 2;
+      // Subtle gravitational or orbital guide ring in optimal/overdense regimes
+      if (isOptimal) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 120, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(111, 228, 177, 0.08)';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([6, 12]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if (isOverdense) {
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 45, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(231, 140, 90, 0.15)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
 
-      // Handle Annihilation Sequence
+      // Handle Manual Annihilation Sequence Transition
       if (epoch === 'annihilating') {
-        setAnnihilationProgress((prev) => {
-          const next = prev + 0.015;
-          if (next >= 1) {
-            setEpoch('survivor');
-            return 1;
-          }
-          return next;
-        });
-
-        // Pair annihilation logic
         const matters = particlesRef.current.filter((p) => p.type === 'matter' && !p.annihilated);
         const antis = particlesRef.current.filter((p) => p.type === 'antimatter' && !p.annihilated);
 
-        const pairsToAnnihilate = Math.min(matters.length, antis.length, 3);
-        for (let i = 0; i < pairsToAnnihilate; i++) {
-          const m = matters[i];
-          const a = antis[i];
-          if (m && a) {
-            m.annihilated = true;
-            a.annihilated = true;
+        if (antis.length > 0 && matters.length > 0) {
+          const pairsToKill = Math.min(matters.length, antis.length, 2);
+          for (let i = 0; i < pairsToKill; i++) {
+            const m = matters[i];
+            const a = antis[i];
+            if (m && a) {
+              m.annihilated = true;
+              a.annihilated = true;
 
-            const midX = (m.x + a.x) / 2;
-            const midY = (m.y + a.y) / 2;
-            // Spawn gamma-ray photon shockwaves
-            photonRingsRef.current.push({
-              x: midX,
-              y: midY,
-              radius: 4,
-              maxRadius: 40 + Math.random() * 30,
-              alpha: 1,
-              color: '#ffd055',
-            });
+              const midX = (m.x + a.x) / 2;
+              const midY = (m.y + a.y) / 2;
+              photonRingsRef.current.push({
+                x: midX,
+                y: midY,
+                radius: 4,
+                maxRadius: 50,
+                alpha: 1,
+                color: '#ffd055',
+              });
+            }
+          }
+        } else {
+          setEpoch('survivor');
+          // Promote remaining matter particle to survivor
+          const survivor = particlesRef.current.find((p) => p.type === 'matter' && !p.annihilated);
+          if (survivor) {
+            survivor.type = 'survivor';
+            survivor.color = '#00f0ff';
           }
         }
       }
 
-      // Update and Draw Particles
-      particlesRef.current.forEach((p) => {
-        if (p.annihilated) return;
+      // === KINEMATICS ENGINE: MOVEMENT LINKED DIRECTLY TO ASYMMETRY ===
+      const activeParticles = particlesRef.current.filter((p) => !p.annihilated);
+
+      // Physics parameters governed by asymmetry slider:
+      // 1. Mutual Annihilation Attraction Force: Strongest when asymmetry is near 0.
+      const attractionStrength = Math.max(0.05, 0.45 - asymmetry * 1.8);
+
+      // 2. Coherent Orbital Torque: Maximized in the Goldilocks zone (0.08 - 0.12).
+      const orbitalStrength = isOptimal ? 0.045 : 0.005;
+
+      // 3. Gravitational Collapse Inward Pull: Dominates at high asymmetry (> 0.12).
+      const collapsePull = isOverdense ? (asymmetry - 0.12) * 0.8 : 0;
+
+      // 4. Kinetic Velocity Limit & Damping
+      const maxSpeed = isPureLight ? 5.2 : isOptimal ? 2.4 : 6.0;
+
+      for (let i = 0; i < activeParticles.length; i++) {
+        const p = activeParticles[i];
+
+        // Store trail history
+        p.history.push({ x: p.x, y: p.y });
+        const trailLength = isOptimal ? 8 : isOverdense ? 10 : 4;
+        if (p.history.length > trailLength) {
+          p.history.shift();
+        }
 
         if (epoch === 'survivor' && p.type === 'survivor' && !isPureLight) {
-          // Survivor drifts gracefully to center
+          // Solitary survivor drifts gracefully to center
           p.x += (centerX - p.x) * 0.05;
           p.y += (centerY - p.y) * 0.05;
+        } else {
+          // Inter-particle forces: Matter attracts Antimatter (Mutual Collision Attraction)
+          for (let j = i + 1; j < activeParticles.length; j++) {
+            const p2 = activeParticles[j];
+            const dx = p2.x - p.x;
+            const dy = p2.y - p.y;
+            const distSq = dx * dx + dy * dy;
 
-          // Grand Survivor Halo
+            if (distSq > 1 && distSq < 14000) {
+              const dist = Math.sqrt(distSq);
+
+              if (p.type !== p2.type) {
+                // Opposite charges: mutual attraction for annihilation
+                const force = (attractionStrength * 30) / (distSq + 80);
+                const fx = (dx / dist) * force;
+                const fy = (dy / dist) * force;
+
+                p.vx += fx;
+                p.vy += fy;
+                p2.vx -= fx;
+                p2.vy -= fy;
+
+                // Micro-annihilation spark on proximity during furnace epoch
+                if (dist < 8 && Math.random() < 0.25) {
+                  photonRingsRef.current.push({
+                    x: (p.x + p2.x) / 2,
+                    y: (p.y + p2.y) / 2,
+                    radius: 2,
+                    maxRadius: 22,
+                    alpha: 0.85,
+                    color: '#ffd055',
+                  });
+                }
+              } else {
+                // Same charges: gentle repulsive separation
+                const rep = 8 / (distSq + 40);
+                p.vx -= (dx / dist) * rep;
+                p.vy -= (dy / dist) * rep;
+              }
+            }
+          }
+
+          // Global Field Forces:
+          const distToCenter = Math.hypot(p.x - centerX, p.y - centerY) || 1;
+
+          if (isOptimal) {
+            // Goldilocks: Smooth orbital swirl (Coriolis centripetal drift forming cosmic structures)
+            const tangentX = -(p.y - centerY) / distToCenter;
+            const tangentY = (p.x - centerX) / distToCenter;
+
+            p.vx += tangentX * orbitalStrength * 1.5;
+            p.vy += tangentY * orbitalStrength * 1.5;
+
+            // Soft radial stabilizer toward orbit ring (r ~ 120px)
+            const orbitOffset = distToCenter - 120;
+            p.vx -= ((p.x - centerX) / distToCenter) * orbitOffset * 0.003;
+            p.vy -= ((p.y - centerY) / distToCenter) * orbitOffset * 0.003;
+
+            // Gentle damping for majestic, glassy laminar motion
+            p.vx *= 0.985;
+            p.vy *= 0.985;
+          } else if (isOverdense) {
+            // Excess matter: Strong gravitational collapse toward center core
+            const grav = collapsePull * (120 / (distToCenter + 30));
+            p.vx -= ((p.x - centerX) / distToCenter) * grav;
+            p.vy -= ((p.y - centerY) / distToCenter) * grav;
+
+            // Spiral component
+            const tangentX = -(p.y - centerY) / distToCenter;
+            const tangentY = (p.x - centerX) / distToCenter;
+            p.vx += tangentX * 0.2;
+            p.vy += tangentY * 0.2;
+          } else {
+            // Low asymmetry: High thermal agitation (erratic Brownian jitter)
+            p.vx += (Math.random() - 0.5) * 0.35;
+            p.vy += (Math.random() - 0.5) * 0.35;
+          }
+
+          // Speed clamp
+          const currentSpeed = Math.hypot(p.vx, p.vy);
+          if (currentSpeed > maxSpeed) {
+            p.vx = (p.vx / currentSpeed) * maxSpeed;
+            p.vy = (p.vy / currentSpeed) * maxSpeed;
+          }
+
+          // Apply position update
+          p.x += p.vx;
+          p.y += p.vy;
+
+          // Soft boundary bounce
+          if (p.x < 15) {
+            p.x = 15;
+            p.vx = Math.abs(p.vx) * 0.9;
+          } else if (p.x > width - 15) {
+            p.x = width - 15;
+            p.vx = -Math.abs(p.vx) * 0.9;
+          }
+          if (p.y < 15) {
+            p.y = 15;
+            p.vy = Math.abs(p.vy) * 0.9;
+          } else if (p.y > height - 15) {
+            p.y = height - 15;
+            p.vy = -Math.abs(p.vy) * 0.9;
+          }
+        }
+
+        // --- RENDER PARTICLES & LUMINOUS VELOCITY TRAILS ---
+        // 1. Draw glowing velocity trail
+        if (p.history.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(p.history[0].x, p.history[0].y);
+          for (let h = 1; h < p.history.length; h++) {
+            ctx.lineTo(p.history[h].x, p.history[h].y);
+          }
+          ctx.lineTo(p.x, p.y);
+
+          const trailAlpha = isOptimal ? 0.35 : isOverdense ? 0.45 : 0.2;
+          ctx.strokeStyle = p.type === 'matter' ? `rgba(0, 229, 255, ${trailAlpha})` : `rgba(255, 42, 119, ${trailAlpha})`;
+          ctx.lineWidth = isOptimal ? 1.8 : 1.2;
+          ctx.stroke();
+        }
+
+        // 2. Draw particle core & glow
+        if (epoch === 'survivor' && p.type === 'survivor' && !isPureLight) {
+          // Grand survivor aura
           const sGlow = ctx.createRadialGradient(p.x, p.y, 4, p.x, p.y, 65);
           sGlow.addColorStop(0, 'rgba(0, 240, 255, 0.9)');
           sGlow.addColorStop(0.3, 'rgba(111, 228, 177, 0.5)');
@@ -196,44 +404,39 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
           ctx.arc(p.x, p.y, 65, 0, Math.PI * 2);
           ctx.fill();
 
-          // Seed of Cosmic Structure (Hydrogen Orbit ring around survivor)
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 35, 0, Math.PI * 2);
-          ctx.strokeStyle = 'rgba(111, 228, 177, 0.4)';
-          ctx.lineWidth = 1;
-          ctx.setLineDash([4, 4]);
-          ctx.stroke();
-          ctx.setLineDash([]);
+          ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
         } else {
-          // Primordial motion
-          p.x += p.vx;
-          p.y += p.vy;
+          // Morphing flash if particle just converted from slider movement
+          if (p.morphing && p.morphing > 0) {
+            p.morphing -= 0.05;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 8 + p.morphing * 10, 0, Math.PI * 2);
+            ctx.fillStyle = p.type === 'matter' ? 'rgba(0, 229, 255, 0.6)' : 'rgba(255, 42, 119, 0.6)';
+            ctx.fill();
+          }
 
-          if (p.x < 10 || p.x > width - 10) p.vx *= -1;
-          if (p.y < 10 || p.y > height - 10) p.vy *= -1;
+          // Particle body
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+
+          // Core bright center
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 0.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
         }
+      }
 
-        // Render Particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.type === 'survivor' && epoch === 'survivor' ? 6 : p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-
-        // Particle subtle glow
-        const glow = ctx.createRadialGradient(p.x, p.y, 1, p.x, p.y, 10);
-        glow.addColorStop(0, p.color);
-        glow.addColorStop(1, 'transparent');
-        ctx.fillStyle = glow;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, 10, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // Update and Draw Expanding Photon Rings (The CMB Precursor)
+      // 3. Render Expanding Photon Annihilation Shockwaves
       for (let i = photonRingsRef.current.length - 1; i >= 0; i--) {
         const ring = photonRingsRef.current[i];
         ring.radius += 2.2;
-        ring.alpha -= 0.035;
+        ring.alpha -= 0.04;
 
         if (ring.alpha <= 0) {
           photonRingsRef.current.splice(i, 1);
@@ -243,11 +446,61 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
         ctx.beginPath();
         ctx.arc(ring.x, ring.y, ring.radius, 0, Math.PI * 2);
         ctx.strokeStyle = `rgba(255, 215, 80, ${ring.alpha})`;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.8;
         ctx.stroke();
       }
 
-      // If epoch is survivor, draw cosmic narrative overlay
+      // === ON-CANVAS KINETIC TELEMETRY HUD ===
+      // Live dynamic badge showing the kinetic regime
+      ctx.fillStyle = 'rgba(7, 7, 26, 0.85)';
+      ctx.strokeStyle = isOptimal ? 'rgba(111, 228, 177, 0.4)' : isPureLight ? 'rgba(255, 42, 119, 0.4)' : 'rgba(231, 140, 90, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(16, 16, 260, 48, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = isOptimal ? '#6fe4b1' : isPureLight ? '#ff6699' : '#e78c5a';
+      ctx.font = 'bold 10px var(--font-mono, monospace)';
+      ctx.textAlign = 'left';
+      ctx.fillText(
+        isOptimal
+          ? '● COHERENT COSMIC ORBITS (STABLE MATTER)'
+          : isPureLight
+          ? '▲ HIGH-ENTROPY ANNIHILATION CHAOS'
+          : '▼ GRAVITATIONAL COLLAPSE CLUSTERING',
+        26,
+        34
+      );
+
+      ctx.font = '9px var(--font-mono, monospace)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+      ctx.fillText(
+        isOptimal
+          ? 'Laminar swirl: Proto-atomic stable rotation'
+          : isPureLight
+          ? 'Frenetic collision pull: 100% mutual destruction'
+          : 'Centripetal collapse: Black hole clustering',
+        26,
+        50
+      );
+
+      // Real-time population ratio mini-meter (top center)
+      const barX = width / 2 - 80;
+      const barY = 22;
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+      ctx.fillRect(barX, barY, 160, 6);
+      ctx.fillStyle = '#00e5ff';
+      ctx.fillRect(barX, barY, (160 * liveRatio.matter) / 100, 6);
+      ctx.fillStyle = '#ff2a77';
+      ctx.fillRect(barX + (160 * liveRatio.matter) / 100, barY, (160 * liveRatio.antimatter) / 100, 6);
+
+      ctx.font = '9px var(--font-mono, monospace)';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(`Matter ${liveRatio.matter}% : Antimatter ${liveRatio.antimatter}%`, width / 2, barY + 20);
+
+      // Narrative text for survivor epoch
       if (epoch === 'survivor') {
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 12px var(--font-mono, monospace)';
@@ -268,7 +521,7 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
     return () => {
       cancelAnimationFrame(animFrameRef.current);
     };
-  }, [epoch, isPureLight, isOptimal, isOverdense]);
+  }, [asymmetry, epoch, isPureLight, isOptimal, isOverdense, liveRatio]);
 
   return (
     <div className="relative w-full h-full flex flex-col bg-[var(--void)] select-none">
@@ -281,7 +534,7 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
           </span>
           <span className="hidden sm:inline-block w-px h-3 bg-[var(--hair-2)]" />
           <span className="hidden sm:inline-block mono text-[var(--ink-soft)]">
-            CMB Photons/Baryon: <strong className="text-[var(--ink)]">~2,000,000,000 : 1</strong>
+            Kinetic Phase: <strong className="text-[var(--ink)]">{isOptimal ? 'Coherent Orbit' : isPureLight ? 'Annihilation Chaos' : 'Gravitational Clumping'}</strong>
           </span>
         </div>
 
@@ -315,13 +568,16 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
         {/* Legend */}
         <div className="absolute bottom-3 left-4 pointer-events-none text-[11px] mono text-[var(--ink-soft)] flex items-center gap-3 bg-[var(--void-2)]/85 px-3 py-1.5 rounded border border-[var(--hair)]">
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#00f0ff]" /> Matter (Quarks)
+            <span className="w-2.5 h-2.5 rounded-full bg-[#00e5ff]" /> Matter (Quarks)
           </span>
           <span className="flex items-center gap-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#ff2277]" /> Antimatter (Antiquarks)
+            <span className="w-2.5 h-2.5 rounded-full bg-[#ff2a77]" /> Antimatter (Antiquarks)
           </span>
           <span className="flex items-center gap-1">
             <span className="w-2.5 h-2.5 rounded-full bg-[#ffd055]" /> Photons (2γ)
+          </span>
+          <span className="hidden md:inline-flex items-center gap-1 text-[var(--indigo)]">
+            <Activity className="w-3 h-3" /> Drag slider to see motion phase change
           </span>
         </div>
 
@@ -339,9 +595,9 @@ export function PrimordialCrucibleVisual({ asymmetry }: PrimordialCrucibleVisual
       <div className="px-4 py-2 border-t border-[var(--hair)] bg-[var(--void-2)]/60 text-xs flex items-center gap-2">
         <Sparkles className="w-3.5 h-3.5 text-[var(--indigo)] shrink-0" />
         <span className="text-[var(--ink-mid)]">
-          {isOptimal && 'A one-in-a-billion surplus escaped annihilation. That solitary remnant is every star, planet, ocean, and person that has ever existed.'}
-          {isPureLight && 'Complete annihilation: quarks and antiquarks paired off perfectly into radiation. The universe is a sterile void of light.'}
-          {isOverdense && 'Too much matter survived: baryon density suffocates stellar formation, collapsing the early universe into supermassive black holes.'}
+          {isOptimal && 'Watch the motion: At 8–12%, particles break out of chaotic collision loops into smooth, stable rotational orbits—the kinematic birth of atomic structure.'}
+          {isPureLight && 'Watch the motion: Below 8%, mutual attraction drives relentless zigzag collisions. All particles pair off and perish into pure radiation.'}
+          {isOverdense && 'Watch the motion: Above 12%, mutual gravitational attraction overpowers radiation pressure, pulling particles into dense, black-hole-forming clumps.'}
         </span>
       </div>
     </div>
