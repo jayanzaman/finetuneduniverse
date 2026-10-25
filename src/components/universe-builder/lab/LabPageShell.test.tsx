@@ -21,6 +21,12 @@ vi.mock('../sections/LifeSection', () => ({
   ),
 }));
 
+vi.mock('../sections/CodeWithinSection', () => ({
+  default: ({ educatorMode }: { educatorMode?: boolean }) => (
+    <div data-testid="mock-code-lab">Code Lab Content (Educator: {String(educatorMode)})</div>
+  ),
+}));
+
 describe('LabPageShell', () => {
   it('renders header, metadata, and controls for Chapter 01', async () => {
     render(<LabPageShell chapterIndex={0} />);
@@ -46,25 +52,26 @@ describe('LabPageShell', () => {
     expect(nextLabLink.getAttribute('href')).toBe(`/questions/${CHAPTERS[1].slug}/lab`);
   });
 
-  it('renders navigation links for Chapter 07 (last chapter)', () => {
-    render(<LabPageShell chapterIndex={6} />);
+  it('renders navigation links for the last chapter', () => {
+    const lastIndex = CHAPTERS.length - 1;
+    render(<LabPageShell chapterIndex={lastIndex} />);
 
-    expect(screen.getByRole('link', { name: /back to chapter 07/i })).toBeTruthy();
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('Geologic Time');
+    expect(screen.getByRole('link', { name: /back to chapter 08/i })).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toContain('The Code Within');
 
     // Has previous lab link, no next lab link
-    const prevLabLink = screen.getByRole('link', { name: /previous lab: ch 06/i });
-    expect(prevLabLink.getAttribute('href')).toBe(`/questions/${CHAPTERS[5].slug}/lab`);
+    const prevLabLink = screen.getByRole('link', { name: /previous lab: ch 07/i });
+    expect(prevLabLink.getAttribute('href')).toBe(`/questions/${CHAPTERS[lastIndex - 1].slug}/lab`);
     expect(screen.queryByRole('link', { name: /next lab/i })).toBeNull();
   });
 });
 
 describe('/questions/[slug]/lab route functions', () => {
-  it('generateStaticParams returns all 7 chapter slugs', () => {
+  it('generateStaticParams returns all chapter slugs', () => {
     const params = generateStaticParams();
-    expect(params).toHaveLength(7);
+    expect(params).toHaveLength(CHAPTERS.length);
     expect(params[0].slug).toBe('why-did-the-universe-begin-ordered');
-    expect(params[6].slug).toBe('why-did-complex-life-take-so-long');
+    expect(params[CHAPTERS.length - 1].slug).toBe('how-do-four-letters-write-a-person');
   });
 
   it('generateMetadata returns canonical title and description', async () => {

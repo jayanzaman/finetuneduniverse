@@ -25,6 +25,7 @@ const SECTION_COMPONENTS = [
   dynamic(() => import('../sections/PlanetsSection'), { loading: labLoading }),
   dynamic(() => import('../sections/AbiogenesisLabSection'), { loading: labLoading }),
   dynamic(() => import('../sections/LifeSection'), { loading: labLoading }),
+  dynamic(() => import('../sections/CodeWithinSection'), { loading: labLoading }),
 ] as const;
 
 export function LabPageShell({ chapterIndex }: { chapterIndex: number }) {

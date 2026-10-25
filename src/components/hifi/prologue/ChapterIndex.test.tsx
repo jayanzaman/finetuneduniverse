@@ -13,10 +13,10 @@ afterEach(() => {
 });
 
 describe('ChapterIndex', () => {
-  it('renders all seven chapters with frontier status on chapter 01 for a fresh visitor', async () => {
+  it('renders all eight chapters with frontier status on chapter 01 for a fresh visitor', async () => {
     const { container } = wrap(<ChapterIndex onSelectChapter={() => {}} />);
     const rows = container.querySelectorAll('.prologue-row');
-    expect(rows.length).toBe(7);
+    expect(rows.length).toBe(8);
 
     await waitFor(() => expect(rows[0].textContent).toContain('continue here'));
     expect(rows[0].className).toContain('is-frontier');

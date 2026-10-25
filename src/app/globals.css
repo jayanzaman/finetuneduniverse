@@ -1890,3 +1890,13 @@ button, [role="button"] { touch-action: manipulation; }
     max-width: 100%;
   }
 }
+
+/* ─── ch08 The Code Within — scrolly deeper lab ─── */
+.ch08-step-title {
+  font-family: var(--f-display);
+  font-weight: 300;
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}

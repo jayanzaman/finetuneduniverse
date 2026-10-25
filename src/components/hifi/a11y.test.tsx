@@ -18,7 +18,7 @@ function stubMatchMedia() {
 }
 
 describe('core-view accessibility', () => {
-  it('landing: exposes a document heading and seven named chapter rows', () => {
+  it('landing: exposes a document heading and eight named chapter rows', () => {
     stubMatchMedia();
     render(
       <ProgressionProvider>
@@ -30,7 +30,7 @@ describe('core-view accessibility', () => {
     expect(screen.getByRole('button', { name: /begin the descent/i })).toBeTruthy();
 
     const rows = screen.getAllByRole('button').filter((b) => b.className.includes('prologue-row'));
-    expect(rows).toHaveLength(7);
+    expect(rows).toHaveLength(8);
     for (const row of rows) {
       expect((row.textContent || '').trim().length).toBeGreaterThan(0);
     }

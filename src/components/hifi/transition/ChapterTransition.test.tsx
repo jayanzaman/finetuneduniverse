@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import { ChapterTransition } from './ChapterTransition';
+import { CHAPTERS } from '../chapters';
 import { ProgressionProvider, useProgression } from '../progression/ProgressionContext';
 
 vi.mock('../audio/cues', () => ({ cue: vi.fn() }));
@@ -132,7 +133,7 @@ describe('ChapterTransition — earned', () => {
 
 describe('ChapterTransition — final chapter', () => {
   it('renders the closing block instead of a transition', async () => {
-    renderTransition(6);
+    renderTransition(CHAPTERS.length - 1);
     await waitFor(() => {
       expect(document.querySelector('.transition-closing')).toBeTruthy();
     });

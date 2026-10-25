@@ -1,5 +1,5 @@
 /**
- * The seven chapters of the descent — shared metadata used by the
+ * The eight chapters of the descent — shared metadata used by the
  * top nav, chapter rail, landing strip, and the per-section chapter frame.
  */
 export const CHAPTERS = [
@@ -52,6 +52,13 @@ export const CHAPTERS = [
     openQuestion: 'How repeatable that trajectory would be on another habitable planet remains unknown.',
     evidence: 'observed-model',
   },
+  {
+    n: '08', slug: 'how-do-four-letters-write-a-person', t: 'Code', long: 'The Code Within', d: 'The genome', era: 'you',
+    question: 'How do four letters write a person?',
+    currentAnswer: 'Every diploid cell in your body carries a genome of about 6.2 billion base pairs written in a four-letter code: A, C, G, and T. Within it, 61 of the 64 possible three-letter codons specify the 20 amino acids, while the remaining 3 signal stop. Only about 1–2% of the genome codes for protein; the rest largely regulates when, where, and how much of each protein is made.',
+    openQuestion: 'How a four-letter code gives rise to consciousness — whether sentience is fully reducible to it — remains open.',
+    evidence: 'observed-model',
+  },
 ] as const;
 
 export type EvidenceStatus = (typeof CHAPTERS)[number]['evidence'];
@@ -73,4 +80,5 @@ export const STAR_PALETTE = [
   { color: '#b8f0d5', brightness: 1.0 },
   { color: '#d4c8f0', brightness: 1.0 },
   { color: '#c8dff0', brightness: 1.05 },
+  { color: '#ecc8d4', brightness: 1.0 },
 ] as const;

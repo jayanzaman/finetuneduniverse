@@ -35,7 +35,7 @@ function viewFromLocation(): View {
   }
   const match = window.location.hash.match(/^#\/chapter\/([^/?]+)/);
   if (!match) return { kind: 'landing' };
-  const index = ['beginning', 'matter', 'stars', 'galaxy', 'planets', 'abiogenesis', 'geology'].indexOf(match[1]);
+  const index = ['beginning', 'matter', 'stars', 'galaxy', 'planets', 'abiogenesis', 'geology', 'code'].indexOf(match[1]);
   return index >= 0 ? { kind: 'chapter', index } : { kind: 'landing' };
 }
 
@@ -67,7 +67,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
   const goChapter = useCallback(
     (index: number) => {
       setChapterMenuOpen(false);
-      const nextIndex = Math.max(0, Math.min(6, index));
+      const nextIndex = Math.max(0, Math.min(CHAPTERS.length - 1, index));
       const priorIndex = view.kind === 'chapter' ? view.index : -1;
       const method = priorIndex >= 0 && Math.abs(priorIndex - nextIndex) === 1 ? 'guided' : 'skip';
       trackJourney({ name: 'chapter_view', chapter: nextIndex, method });
@@ -187,7 +187,7 @@ export default function UniverseBuilderApp({ initialChapter }: { initialChapter?
                 <ChapterView
                   index={view.index}
                   onPrimaryChange={handlePrimaryChange}
-                  onDescend={() => setHandoff({ from: view.index, to: Math.min(6, view.index + 1) })}
+                  onDescend={() => setHandoff({ from: view.index, to: Math.min(CHAPTERS.length - 1, view.index + 1) })}
                   onPrev={handlePrev}
                 />
               </motion.div>

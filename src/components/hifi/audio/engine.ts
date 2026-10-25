@@ -1,5 +1,5 @@
 import { DEFAULT_PALETTE, type ChapterPalette } from './palette';
-import type { CueName } from './cues';
+import { CODON_CUE, type CueName } from './cues';
 
 /**
  * Narrow structural subset of the Tone.js module this engine uses.
@@ -103,6 +103,8 @@ export function createEngine(tone: ToneLike): AudioEngine {
         palette.cadence.forEach((note, i) => {
           cueSynth.triggerAttackRelease(note, '8n', t0 + i * 0.18);
         });
+      } else if (name === 'codon') {
+        cueSynth.triggerAttackRelease(CODON_CUE.note, '16n', t0);
       } else {
         // broken — a falling gesture
         cueSynth.triggerAttackRelease('E3', '8n', t0);

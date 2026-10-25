@@ -9,13 +9,13 @@ afterEach(() => {
 });
 
 describe('LabsDirectoryPage', () => {
-  it('renders all 7 laboratory cards with links to dedicated lab pages', () => {
+  it('renders all laboratory cards with links to dedicated lab pages', () => {
     render(<LabsDirectoryPage />);
 
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/The Seven Laboratories/i);
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toMatch(/The Eight Laboratories/i);
 
     const openLabLinks = screen.getAllByRole('link', { name: /open laboratory →/i });
-    expect(openLabLinks).toHaveLength(7);
+    expect(openLabLinks).toHaveLength(CHAPTERS.length);
 
     openLabLinks.forEach((link, idx) => {
       expect(link.getAttribute('href')).toBe(`/questions/${CHAPTERS[idx].slug}/lab`);

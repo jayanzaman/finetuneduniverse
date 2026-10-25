@@ -451,6 +451,68 @@ export function PrimordialEarthViz({ flux = 13.5 }: { flux?: number }) {
   );
 }
 
+// CH 08 — Genome: double helix with base-pair rungs
+export function GenomeViz({ value = 150 }: { value?: number }) {
+  // Protein length (amino acids) subtly drives the rung count and brightness.
+  const t = Math.max(0, Math.min(1, (value - 10) / 990));
+  const rungCount = 6 + Math.round(t * 8);
+  const rungOpacity = 0.45 + t * 0.35;
+  const amplitude = 14;
+  const strandPoint = (phase: number, i: number, steps: number) => {
+    const y = 8 + (i / steps) * 84;
+    const x = svg(50 + Math.sin(phase + (y / 84) * Math.PI * 4) * amplitude);
+    return { x, y: svg(y) };
+  };
+  const steps = 60;
+  const strandA: string[] = [];
+  const strandB: string[] = [];
+  for (let i = 0; i <= steps; i++) {
+    const a = strandPoint(0, i, steps);
+    const b = strandPoint(Math.PI, i, steps);
+    strandA.push(`${a.x},${a.y}`);
+    strandB.push(`${b.x},${b.y}`);
+  }
+
+  return (
+    <div style={{ position: 'absolute', right: -40, top: '50%', transform: 'translateY(-50%)' }}>
+      <div style={{ position: 'relative', width: 760, height: 760 }}>
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            borderRadius: '50%',
+            background:
+              'radial-gradient(circle, rgba(111,228,177,0.14) 0%, rgba(122,123,255,0.10) 40%, transparent 70%)',
+            filter: 'blur(2px)',
+          }}
+        />
+        <svg style={{ position: 'absolute', inset: 0 }} viewBox="0 0 100 100">
+          {Array.from({ length: rungCount }).map((_, i) => {
+            const y = 8 + ((i + 0.5) / rungCount) * 84;
+            const phase = (y / 84) * Math.PI * 4;
+            const x1 = svg(50 + Math.sin(phase) * amplitude);
+            const x2 = svg(50 + Math.sin(phase + Math.PI) * amplitude);
+            return (
+              <line
+                key={i}
+                x1={x1}
+                y1={svg(y)}
+                x2={x2}
+                y2={svg(y)}
+                stroke="var(--goldilocks)"
+                strokeWidth="0.35"
+                opacity={rungOpacity}
+              />
+            );
+          })}
+          <polyline points={strandA.join(' ')} fill="none" stroke="var(--indigo)" strokeWidth="0.5" opacity="0.8" />
+          <polyline points={strandB.join(' ')} fill="none" stroke="var(--indigo)" strokeWidth="0.5" opacity="0.8" />
+        </svg>
+      </div>
+    </div>
+  );
+}
+
 // CH 07 — Curved earth limb (the column lives in the chapter body)
 export function EarthLimbViz({ oxygenTiming = 2.4 }: { oxygenTiming?: number }) {
   // Oxygenation timing drives the atmosphere/land palette: hazy before the

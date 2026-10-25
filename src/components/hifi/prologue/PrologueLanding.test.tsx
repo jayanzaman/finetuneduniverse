@@ -10,7 +10,7 @@ afterEach(() => {
 });
 
 describe('PrologueLanding', () => {
-  it('renders the hero and the seven-chapter index', () => {
+  it('renders the hero and the eight-chapter index', () => {
     vi.stubGlobal(
       'matchMedia',
       vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })
@@ -21,6 +21,6 @@ describe('PrologueLanding', () => {
       </ProgressionProvider>
     );
     expect(container.querySelector('.prologue-hero')).toBeTruthy();
-    expect(container.querySelectorAll('.prologue-row').length).toBe(7);
+    expect(container.querySelectorAll('.prologue-row').length).toBe(8);
   });
 });

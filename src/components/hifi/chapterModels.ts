@@ -144,6 +144,33 @@ export const CHAPTER_MODELS: ChapterModel[] = [
       'Later oxygenation: less time remains for oxygen-dependent complexity.',
     ),
   },
+  {
+    min: 10,
+    max: 1000,
+    initial: 150,
+    precision: 0,
+    unit: 'amino acids',
+    sources: [
+      'Keefe & Szostak (2001) Nature 410, 715',
+      'Dill & MacCallum (2012) Science 338, 1042',
+      'Freeland & Hurst (1998) J Mol Evol 47, 238',
+    ],
+    band: [10, 1000],
+    formula: 'Possible sequences = 20^N ≈ 10^(1.3N)',
+    format: (value) => `${Math.round(value)} aa`,
+    outcome: (value) => {
+      const n = Math.round(value);
+      const exponent = Math.round(n * Math.log10(20));
+      const overAtoms = exponent - 80;
+      const comparison =
+        overAtoms > 0
+          ? `more than 10^${overAtoms}× the ~10^80 atoms in the observable universe`
+          : overAtoms === 0
+            ? `on the order of the ~10^80 atoms in the observable universe`
+            : `still fewer than the ~10^80 atoms in the observable universe`;
+      return `A protein ${n} amino acids long has 20^N ≈ 10^${exponent} possible sequences — ${comparison}.`;
+    },
+  },
 ];
 
 export function modelPosition(model: ChapterModel, value: number): number {

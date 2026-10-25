@@ -3,7 +3,7 @@ import { CHAPTERS, EVIDENCE_LABELS } from './chapters';
 
 describe('chapter claim metadata', () => {
   it('exposes question, answer, open question, and an evidence status per chapter', () => {
-    expect(CHAPTERS).toHaveLength(7);
+    expect(CHAPTERS).toHaveLength(8);
     for (const chapter of CHAPTERS) {
       expect(chapter.question.length).toBeGreaterThan(10);
       expect(chapter.currentAnswer.length).toBeGreaterThan(10);

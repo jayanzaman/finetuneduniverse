@@ -7,9 +7,11 @@ import { SoundToggle } from '../../components/hifi/audio/SoundToggle';
 
 export const metadata: Metadata = {
   title: 'Interactive Laboratories | Finetuned Universe',
-  description: 'Explore the 7 individual scientific fine-tuning laboratories across cosmic history.',
+  description: `Explore the ${CHAPTERS.length} individual scientific fine-tuning laboratories across cosmic history.`,
   alternates: { canonical: '/labs' },
 };
+
+const COUNT_WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
 
 export default function LabsDirectoryPage() {
   return (
@@ -44,7 +46,7 @@ export default function LabsDirectoryPage() {
           </div>
 
           <h1 className="h-hero" style={{ fontSize: 'clamp(32px, 4.5vw, 56px)' }}>
-            The Seven Laboratories
+            The {COUNT_WORDS[CHAPTERS.length] ?? CHAPTERS.length} Laboratories
           </h1>
 
           <p className="prose" style={{ marginTop: 20, maxWidth: 680 }}>
@@ -53,7 +55,7 @@ export default function LabsDirectoryPage() {
           </p>
         </header>
 
-        {/* Grid of 7 Labs */}
+        {/* Grid of labs, one per chapter */}
         <div className="lab-directory-grid">
           {CHAPTERS.map((chapter) => (
             <article key={chapter.slug} className="lab-directory-card">

@@ -11,6 +11,7 @@ import {
   GoldilocksViz,
   PrimordialEarthViz,
   EarthLimbViz,
+  GenomeViz,
 } from './ChapterVisuals';
 
 /**
@@ -264,5 +265,37 @@ export const CHAPTER_CONTENT: ChapterContent[] = [
       body: 'Oxygen arrived neither too fast nor too slow. A billion years off and complex life never gets its window — Earth stays a microbial planet forever.',
     },
     visualization: (v) => <EarthLimbViz oxygenTiming={v} />,
+  },
+  {
+    num: '08',
+    era: 't = conception · you',
+    title: (
+      <>
+        The code
+        <br />
+        within<em>.</em>
+      </>
+    ),
+    prose: (
+      <>
+        Now zoom past the planets, past the continents, into a single cell. There, a
+        four-letter code — <em>six billion letters</em> in every copy of you — spells
+        out every protein you are made of. Change the length of one protein, and the
+        number of possible spellings explodes past anything the cosmos can count.
+      </>
+    ),
+    sliderProps: {
+      label: 'Protein length · N',
+      value: '150',
+      unit: 'amino acids',
+      position: 0.14,
+      zone: [0, 1],
+      leftCap: '10 aa',
+      rightCap: '1,000 aa',
+    },
+    ghost: {
+      body: 'There is no wrong setting here. Every length writes an astronomical library of possible proteins — evolution only had to find a few that fold.',
+    },
+    visualization: (v) => <GenomeViz value={v} />,
   },
 ];

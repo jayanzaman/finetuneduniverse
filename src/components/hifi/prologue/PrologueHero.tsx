@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { prefersReducedMotion } from '../motion';
 import { useProgression } from '../progression/ProgressionContext';
+import { CHAPTERS } from '../chapters';
 
 type Phase = 'pending' | 'revealing' | 'resting';
 
@@ -107,7 +108,7 @@ export function PrologueHero({
           Tune any one of them slightly — and there are no stars, no chemistry, no you.
         </p>
         <p className={lineClass(2)}>
-          This is the story of the <em>seven thresholds</em> everything had to cross.
+          This is the story of the <em>{CHAPTERS.length} thresholds</em> everything had to cross.
         </p>
       </div>
 
@@ -118,7 +119,7 @@ export function PrologueHero({
       </div>
 
       <div className={`prologue-scrollcue mono${settled ? ' is-visible' : ''}`} aria-hidden="true">
-        <span>the seven chapters</span>
+        <span>the {CHAPTERS.length} chapters</span>
         <span className="prologue-chevron">⌄</span>
       </div>
     </section>

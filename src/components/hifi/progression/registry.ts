@@ -23,16 +23,29 @@ export function legacyComponentId(chapterIndex: number): string {
   return `ch${CHAPTERS[chapterIndex].n}:legacy`;
 }
 
-export const CHAPTER_COMPONENTS: ChapterComponents[] = CHAPTERS.map((chapter, i) =>
-  i === 0
-    ? {
-        chapterIndex: 0,
-        legacy: false,
-        components: PARAMS.map((p) => ({ id: `ch01:${p.key}`, name: p.name })),
-      }
-    : {
-        chapterIndex: i,
-        legacy: true,
-        components: [{ id: legacyComponentId(i), name: chapter.long }],
-      }
-);
+const CH08_COMPONENTS: ComponentDef[] = [
+  { id: 'ch08:storage', name: 'Genome Storage' },
+  { id: 'ch08:odometer', name: 'Mutation Odometer' },
+  { id: 'ch08:codon', name: 'Codon Table' },
+  { id: 'ch08:shuffle', name: 'Gene Shuffle' },
+  { id: 'ch08:sequence', name: 'Protein Sequencer' },
+  { id: 'ch08:sibling', name: 'Sibling Genomes' },
+];
+
+export const CHAPTER_COMPONENTS: ChapterComponents[] = CHAPTERS.map((chapter, i) => {
+  if (i === 0) {
+    return {
+      chapterIndex: 0,
+      legacy: false,
+      components: PARAMS.map((p) => ({ id: `ch01:${p.key}`, name: p.name })),
+    };
+  }
+  if (i === 7) {
+    return { chapterIndex: 7, legacy: false, components: CH08_COMPONENTS };
+  }
+  return {
+    chapterIndex: i,
+    legacy: true,
+    components: [{ id: legacyComponentId(i), name: chapter.long }],
+  };
+});

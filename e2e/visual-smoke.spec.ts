@@ -8,6 +8,7 @@ const CHAPTERS = [
   '/questions/how-narrow-is-planetary-habitability',
   '/questions/can-chemistry-begin-copying-itself',
   '/questions/why-did-complex-life-take-so-long',
+  '/questions/how-do-four-letters-write-a-person',
 ];
 
 const ROUTES = ['/', ...CHAPTERS];
@@ -42,7 +43,7 @@ test.describe('guided story visual smoke', () => {
     const errors = captureErrors(page);
     await page.goto(CHAPTERS[0], { waitUntil: 'networkidle' });
     await expect(page.locator('.gs-track')).toBeVisible();
-    await expect(page.getByRole('button', { name: /explore the deeper lab/i })).toBeVisible();
+    await expect(page.getByRole('link', { name: /explore the deeper lab/i })).toBeVisible();
     expect(errors).toEqual([]);
   });
 });

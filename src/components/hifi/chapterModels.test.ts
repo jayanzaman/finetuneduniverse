@@ -3,7 +3,7 @@ import { CHAPTER_MODELS, modelPosition, modelReadout, modelValue, modelVisualSta
 
 describe('chapter story models', () => {
   it('provides one model for every chapter', () => {
-    expect(CHAPTER_MODELS).toHaveLength(7);
+    expect(CHAPTER_MODELS).toHaveLength(8);
   });
 
   it('round-trips normalized positions and real values', () => {
