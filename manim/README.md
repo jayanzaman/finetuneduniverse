@@ -34,7 +34,7 @@ micromamba create -p manim/.venv -c conda-forge \
 # 2. TinyTeX (https://yihui.org/tinytex/) — MathTex needs latex + dvisvgm:
 #    install TinyTeX to ~/.TinyTeX, then:
 tlmgr install babel-english standalone preview dvisvgm amsmath mathtools \
-  amsfonts ec cm-super dsfont setspace relsize ragged2e everysel mathastext
+  amsfonts ec cm-super doublestroke setspace relsize ragged2e everysel mathastext
 
 # 3. Site fonts (Manim's Text uses Pango, which reads fontconfig):
 #    place Unbounded.ttf, SpaceGrotesk.ttf, SpaceMono-*.ttf, Newsreader*.ttf
