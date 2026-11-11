@@ -1,0 +1,1 @@
+"""FTU Manim pipeline package."""

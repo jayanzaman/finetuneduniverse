@@ -1,0 +1,5 @@
+# media/ is render output; .venv is the local micromamba env (python 3.12).
+media/
+.venv/
+__pycache__/
+.pytest_cache/
