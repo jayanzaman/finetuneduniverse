@@ -12,12 +12,14 @@ from pathlib import Path
 
 import pytest
 
+from env import bin as _bin
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "public" / "math" / "_smoke"
 MANIFEST = ROOT / "public" / "math" / "manifest.json"
 
-FFPROBE = ROOT / "manim" / ".venv" / "bin" / "ffprobe"
-FFMPEG = ROOT / "manim" / ".venv" / "bin" / "ffmpeg"
+FFPROBE = _bin("ffprobe")
+FFMPEG = _bin("ffmpeg")
 
 
 def probe(path, entry):
@@ -46,7 +48,7 @@ def rendered():
     yield
     shutil.rmtree(OUT, ignore_errors=True)
     subprocess.run(
-        [str(ROOT / "manim" / ".venv" / "bin" / "python"), "manim/ftu/build_manifest.py"],
+        [_bin("python"), "manim/ftu/build_manifest.py"],
         cwd=ROOT,
         check=True,
     )

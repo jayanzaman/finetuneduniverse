@@ -23,6 +23,7 @@ import ftu.constants as C
 import ftu.style as style
 from ftu.levinthal import mfpt_seconds
 from ftu.physics import dilution_line, dilution_slopes
+from env import bin as _bin
 from harness import build_scene, plan_assume_by_scene
 from scenes.ch1 import S1_2_Dilution
 from scenes.ch8 import S8_3_Levinthal
@@ -30,7 +31,7 @@ from scenes.ch8 import S8_3_Levinthal
 ROOT = Path(__file__).resolve().parents[2]
 MATH = ROOT / "public" / "math"
 SCENES_DIR = ROOT / "manim" / "scenes"
-FFMPEG = ROOT / "manim" / ".venv" / "bin" / "ffmpeg"
+FFMPEG = _bin("ffmpeg")
 
 PILOT_CLASSES = {"1.2": S1_2_Dilution, "8.3": S8_3_Levinthal}
 EXPECTED_BEATS = {
@@ -159,7 +160,7 @@ def _rgb(path, extra_in=()):
         capture_output=True, check=True,
     ).stdout
     probe = subprocess.run(
-        [str(ROOT / "manim" / ".venv" / "bin" / "ffprobe"), "-v", "error",
+        [_bin("ffprobe"), "-v", "error",
          "-show_entries", "stream=width,height", "-of", "json", str(path)],
         capture_output=True, text=True, check=True,
     )

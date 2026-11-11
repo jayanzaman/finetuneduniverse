@@ -64,10 +64,13 @@ test.describe('MathClip (Manim pilot 1.2)', () => {
     await context.close();
   });
 
-  test('desktop viewport loads the landscape asset', async ({ page }) => {
+  test('desktop viewport loads the landscape asset', async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    const page = await context.newPage();
     await page.goto(CH01_CLIP_PAGE, { waitUntil: 'networkidle' });
     const video = page.locator('[data-math-clip="1.2"] video').first();
     await expect(video).toHaveAttribute('src', /\.landscape\.mp4$/);
+    await context.close();
   });
 
   test('every beat is its own clip in scroll order', async ({ page }) => {

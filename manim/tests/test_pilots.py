@@ -11,12 +11,14 @@ from pathlib import Path
 
 import pytest
 
+from env import bin as _bin
+
 ROOT = Path(__file__).resolve().parents[2]
 MATH = ROOT / "public" / "math"
 MANIFEST = MATH / "manifest.json"
 
-FFPROBE = ROOT / "manim" / ".venv" / "bin" / "ffprobe"
-FFMPEG = ROOT / "manim" / ".venv" / "bin" / "ffmpeg"
+FFPROBE = _bin("ffprobe")
+FFMPEG = _bin("ffmpeg")
 
 PILOTS = {
     "1.2": {"b1_cube", "b2_light", "b3_slopes", "b4_markers", "close"},
