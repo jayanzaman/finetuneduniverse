@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { MotionConfig } from 'framer-motion';
 
@@ -160,21 +160,45 @@ function ParameterFocusedInner({
               </div>
             )}
 
-            {/* Manim pilot clip: the dilution-law math behind the Dark Energy Λ page */}
+            {/* Manim pilot: the dilution-law math behind the Dark Energy Λ page,
+                one clip per beat in scroll order (ground rule: one clip per scroll step) */}
             {param.key === 'darkEnergy' && (
               <div className="param-math-card" style={{ marginTop: 14 }}>
                 <div className="param-card-section-label">The math, animated · scene 1.2</div>
-                <MathClip
-                  sceneId="1.2"
-                  beat="b3_slopes"
-                  equation={
-                    <span>
-                      ρ<sub><em>r</em></sub> ∝ <em>a</em><sup>−4</sup>&ensp;·&ensp;
-                      ρ<sub><em>m</em></sub> ∝ <em>a</em><sup>−3</sup>&ensp;·&ensp;
-                      ρ<sub>Λ</sub> = const
-                    </span>
-                  }
-                />
+                {([
+                  { beat: 'b1_cube' },
+                  {
+                    beat: 'b2_light',
+                    equation: (
+                      <span>
+                        ρ<sub><em>r</em></sub> ∝ <em>a</em><sup>−4</sup>&ensp;·&ensp;
+                        ρ<sub><em>m</em></sub> ∝ <em>a</em><sup>−3</sup>&ensp;·&ensp;
+                        ρ<sub>Λ</sub> = const
+                      </span>
+                    ),
+                  },
+                  {
+                    beat: 'b3_slopes',
+                    equation: (
+                      <span>
+                        ρ<sub><em>r</em></sub> ∝ <em>a</em><sup>−4</sup>&ensp;·&ensp;
+                        ρ<sub><em>m</em></sub> ∝ <em>a</em><sup>−3</sup>&ensp;·&ensp;
+                        ρ<sub>Λ</sub> = const
+                      </span>
+                    ),
+                  },
+                  {
+                    beat: 'b4_markers',
+                    equation: (
+                      <span>
+                        ä/<em>a</em> = −(4π<em>G</em>/3)(ρ<sub><em>m</em></sub> − 2ρ<sub>Λ</sub>)
+                      </span>
+                    ),
+                  },
+                  { beat: 'close' },
+                ] as { beat: string; equation?: ReactNode }[]).map(({ beat, equation }) => (
+                  <MathClip key={beat} sceneId="1.2" beat={beat} equation={equation} className="mt-4" />
+                ))}
               </div>
             )}
 

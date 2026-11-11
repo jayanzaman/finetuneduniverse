@@ -2,6 +2,8 @@
 
 import importlib
 import os
+import re
+from pathlib import Path
 
 import ftu.style as style
 from manim import DashedLine, Line, NumberLine, Rectangle, Text, VGroup, config
@@ -86,3 +88,90 @@ def test_assumption_line_fits_frame():
     scene = _scene()
     line = scene.assumption_line("x " * 200)
     assert line.width <= config.frame_width * 0.95
+
+
+# --- epic test 5: ASCII -> symbols mapping, the single place is ftu/style.py
+
+
+def test_symbols_mapping_cases():
+    assert style.symbols("flat LambdaCDM model") == "flat ΛCDM model"
+    assert style.symbols("the Lambda term") == "the Λ term"
+    assert style.symbols("eta = 6e-10") == "η = 6 × 10⁻¹⁰"
+    assert style.symbols("sigma and mu") == "σ and μ"
+    assert style.symbols("maximum") == "maximum"  # whole words only
+    assert style.symbols("67.4 +/- 0.5") == "67.4 ± 0.5"
+    assert style.symbols("200x the observed value") == "200× the observed value"
+    assert style.symbols("Q at 1e-5") == "Q at 10⁻⁵"
+    assert style.symbols("1e80 baryons") == "10⁸⁰ baryons"
+    assert style.symbols("about 1.6e9 photons") == "about 1.6 × 10⁹ photons"
+    assert style.symbols("2.5e3 K") == "2.5 × 10³ K"
+
+
+def _plan_assume_lines():
+    """ASSUME wording per scene, parsed from the plan (never restated here)."""
+    import re
+
+    plan = (Path(__file__).parents[2] / "docs" / "manim-plan.md").read_text()
+    lines, current = [], None
+    for raw in plan.splitlines():
+        if raw.startswith("ASSUME: "):
+            current = raw[len("ASSUME: "):].strip().strip('"')
+            lines.append(current)
+        elif current is not None and raw.startswith("   ") and raw.strip():
+            lines[-1] += " " + raw.strip().strip('"')
+        elif raw.strip():
+            current = None
+    assert len(lines) >= 20, "expected an ASSUME line per scene in the plan"
+    return [re.sub(r"\s+", " ", line) for line in lines]
+
+
+def test_every_plan_assume_line_maps_without_ascii_leftovers():
+    forbidden = re.compile(r"\b(Lambda|LambdaCDM|eta|sigma|mu)\b|\b\d+(?:\.\d+)?e-?\d+\b|\+/-|\b\d+x\b")
+    for raw in _plan_assume_lines():
+        mapped = style.symbols(raw)
+        assert not forbidden.search(mapped), f"unmapped ASCII left in {mapped!r}"
+
+
+def test_assumption_line_records_mapped_text():
+    scene = _scene()
+    raw = "Flat LambdaCDM with Planck 2018 values."
+    scene.assumption_line(raw)
+    assert scene.assumption_text == style.symbols(raw)
+
+
+# --- epic test 15: readable at 390 px (portrait: 12 CSS px = 0.196 units)
+
+
+def test_assumption_line_never_shrinks_below_floor_in_portrait(monkeypatch):
+    monkeypatch.setenv("FTU_PORTRAIT", "1")
+    style.apply_aspect_from_env()
+    try:
+        for raw in _plan_assume_lines():
+            scene = style.FTUScene()
+            line = scene.assumption_line(raw)
+            texts = [m for m in line.get_family() if isinstance(m, Text)]
+            if isinstance(line, Text):
+                texts.append(line)
+            assert texts, f"no Text produced for {raw!r}"
+            for t in texts:
+                assert t.height >= style.MIN_TEXT_HEIGHT * 0.99, (
+                    f"line {t.text!r} is {t.height:.3f} units, below {style.MIN_TEXT_HEIGHT}"
+                )
+            assert line.width <= config.frame_width * 0.95
+    finally:
+        monkeypatch.delenv("FTU_PORTRAIT")
+        style.apply_aspect_from_env()
+
+
+def test_closing_frame_records_spec():
+    scene = _scene()
+    walls = [(0.5, "solid", "lo"), (1.7, "dashed", "hi")]
+    scene.closing_frame(0.0, 3.0, band=(0.5, 1.7), walls=walls, marker=1.293)
+    assert scene.closing_spec == {
+        "axis_min": 0.0,
+        "axis_max": 3.0,
+        "band": (0.5, 1.7),
+        "walls": walls,
+        "marker": 1.293,
+        "log": False,
+    }

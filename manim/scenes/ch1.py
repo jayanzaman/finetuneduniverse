@@ -23,6 +23,8 @@ from manim import (
 )
 
 from ftu.constants import A_ACCEL, A_CROSS
+from ftu.physics import dilution_line, dilution_slopes
+from ftu.tex import TEX
 from ftu.style import (
     FONT_BODY,
     FONT_MONO,
@@ -30,9 +32,11 @@ from ftu.style import (
     INK,
     INK_MID,
     INK_SOFT,
+    MIN_TEXT_HEIGHT,
     WARM,
     FTUScene,
     apply_aspect_from_env,
+    readable_text,
 )
 
 apply_aspect_from_env()
@@ -67,7 +71,7 @@ class S1_2_Dilution(FTUScene):
         dots = VGroup(
             *[
                 Dot(
-                    cube.point_from_proportion(0.5)
+                    cube.get_center()
                     + np.array(
                         [
                             rng.uniform(-0.4, 0.4) * side,
@@ -89,22 +93,25 @@ class S1_2_Dilution(FTUScene):
 
         # ---- B1: a cube of space grows; side x2, volume x8, particles fixed
         self.next_section("b1_cube")
-        side = config.frame_height * 0.22
+        side = min(config.frame_height, config.frame_width) * 0.22
         group, dots = self.build_cube(side)
         group.shift([-config.frame_width * 0.22, 0.1, 0])
         self.play(FadeIn(group), run_time=1)
 
         label_kwargs = {"font": FONT_BODY, "color": INK}
-        side_lbl = Text("side ×2", **label_kwargs)
-        vol_lbl = Text("volume ×8", **label_kwargs)
-        count_lbl = Text(f"particles: {self.N_PARTICLES} → {self.N_PARTICLES}", font=FONT_MONO, color=INK_MID)
-        labels = VGroup(side_lbl, vol_lbl, count_lbl).arrange(direction=np.array([0, -1, 0]), aligned_edge=np.array([-1, 0, 0]), buff=0.4)
-        for lbl in (side_lbl, vol_lbl, count_lbl):
-            lbl.scale_to_fit_width(config.frame_width * 0.28)
+        side_lbl = readable_text("side ×2", **label_kwargs)
+        vol_lbl = readable_text("volume ×8", **label_kwargs)
+        count_lbl = readable_text(
+            f"particles: {self.N_PARTICLES} → {self.N_PARTICLES} (schematic)",
+            font=FONT_MONO,
+            color=INK_MID,
+            max_width=config.frame_width * 0.3,
+        )
+        labels = VGroup(side_lbl, vol_lbl, count_lbl)
         labels.arrange(direction=np.array([0, -1, 0]), aligned_edge=np.array([-1, 0, 0]), buff=0.35)
         labels.move_to([config.frame_width * 0.18, 0.1, 0])
 
-        self.play(Write(side_lbl), group.animate.scale(2), run_time=2)
+        self.play(Write(side_lbl), group.animate.scale(2, about_point=group.get_center()), run_time=2)
         self.play(Write(vol_lbl), run_time=1)
         self.play(Write(count_lbl), run_time=1)
         self.wait(0.5)
@@ -120,19 +127,20 @@ class S1_2_Dilution(FTUScene):
         self.play(FadeIn(wave), run_time=1)
         self.play(wave.animate.stretch(1.35, dim=0, about_point=group.get_center()), run_time=1.5)
 
-        eq_matter = MathTex(r"\rho_m \propto a^{-3}", color=WARM)
-        eq_rad = MathTex(r"\rho_r \propto a^{-4}", color=GOLDILOCKS)
-        eq_lambda = MathTex(r"\rho_\Lambda = \mathrm{const}", color=LAMBDA_PURPLE)
-        note_matter = Text("matter thins with volume", font=FONT_BODY, color=INK_SOFT)
-        note_rad = Text("light redshifts — one more power of a", font=FONT_BODY, color=INK_SOFT)
-        note_lambda = Text("the vacuum does not dilute", font=FONT_BODY, color=INK_SOFT)
+        # B2's rows are the three terms of the TEX entry, split on \qquad
+        tex_rad, tex_matter, tex_lambda = TEX["1.2"][0].split(r"\qquad")
+        eq_matter = MathTex(tex_matter, color=WARM)
+        eq_rad = MathTex(tex_rad, color=GOLDILOCKS)
+        eq_lambda = MathTex(tex_lambda, color=LAMBDA_PURPLE)
+        note_matter = readable_text("matter thins with volume", font=FONT_BODY, color=INK_SOFT)
+        note_rad = readable_text("light redshifts — one more power of a", font=FONT_BODY, color=INK_SOFT)
+        note_lambda = readable_text("the vacuum does not dilute", font=FONT_BODY, color=INK_SOFT)
         rows = VGroup(
             VGroup(eq_matter, note_matter),
             VGroup(eq_rad, note_rad),
             VGroup(eq_lambda, note_lambda),
         )
         for row in rows:
-            row[1].scale_to_fit_width(config.frame_width * 0.22)
             row.arrange(direction=np.array([1, 0, 0]), buff=0.3)
         rows.arrange(direction=np.array([0, -1, 0]), aligned_edge=np.array([-1, 0, 0]), buff=0.45)
         rows.move_to([0, config.frame_height * 0.08, 0])
@@ -143,10 +151,12 @@ class S1_2_Dilution(FTUScene):
         # ---- B3: exponents become slopes on log-log axes
         self.next_section("b3_slopes")
         eq = MathTex(
-            r"\rho_r \propto a^{-4} \qquad \rho_m \propto a^{-3} \qquad \rho_\Lambda = \mathrm{const}",
+            TEX["1.2"][0],
             substrings_to_isolate=["^{-4}", "^{-3}", r"\mathrm{const}"],
         )
         eq.scale_to_fit_width(config.frame_width * 0.7)
+        if eq.height < MIN_TEXT_HEIGHT:  # readability floor (epic test 15)
+            eq.scale_to_fit_height(MIN_TEXT_HEIGHT)
         eq.to_edge(np.array([0, 1, 0]), buff=0.6)
         self.play(TransformMatchingTex(rows[0][0].copy(), eq), FadeOut(rows), run_time=1.2)
 
@@ -158,36 +168,38 @@ class S1_2_Dilution(FTUScene):
             tips=False,
         )
         axes.move_to([0, -config.frame_height * 0.08, 0])
-        x_lbl = Text("log a", font=FONT_BODY, color=INK_MID)
-        x_lbl.scale_to_fit_width(config.frame_width * 0.08)
+        x_lbl = readable_text("log a", font=FONT_BODY, color=INK_MID)
         x_lbl.next_to(axes, np.array([1, -1, 0]), buff=0.15)
-        y_lbl = Text("log ρ", font=FONT_BODY, color=INK_MID)
-        y_lbl.scale_to_fit_width(config.frame_width * 0.08)
+        y_lbl = readable_text("log ρ", font=FONT_BODY, color=INK_MID)
         y_lbl.next_to(axes, np.array([-1, 1, 0]), buff=0.15)
 
         # slopes: in log-log space, density ~ a^n becomes a line of slope n
+        s_rad, s_mat, s_lam = dilution_slopes()
         x0, x1 = -1.0, 0.0
-        line_rad = axes.plot(lambda x: 4.0 + 4.0 * (x - x0) / 1.0 * -1, x_range=[x0, x1], color=GOLDILOCKS)
-        line_matter = axes.plot(lambda x: 3.0 + 3.0 * (x - x0) / 1.0 * -1, x_range=[x0, x1], color=WARM)
-        line_lambda = axes.plot(lambda x: 1.0, x_range=[x0, x1], color=LAMBDA_PURPLE)
+        line_rad = axes.plot(dilution_line(s_rad, 0.0), x_range=[x0, x1], color=GOLDILOCKS)
+        line_matter = axes.plot(dilution_line(s_mat, 0.0), x_range=[x0, x1], color=WARM)
+        line_lambda = axes.plot(dilution_line(s_lam, 1.0), x_range=[x0, x1], color=LAMBDA_PURPLE)
         self.play(Write(axes), Write(x_lbl), Write(y_lbl), run_time=1.2)
         self.play(LaggedStart(Write(line_rad), Write(line_matter), Write(line_lambda), lag_ratio=0.35), run_time=2.5)
 
         slopes = VGroup(
-            MathTex(r"\text{slope } {-4}", color=GOLDILOCKS),
-            MathTex(r"\text{slope } {-3}", color=WARM),
-            MathTex(r"\text{slope } {0}", color=LAMBDA_PURPLE),
+            MathTex(rf"\text{{slope }} {{{s_rad}}}", color=GOLDILOCKS),
+            MathTex(rf"\text{{slope }} {{{s_mat}}}", color=WARM),
+            MathTex(rf"\text{{slope }} {{{s_lam}}}", color=LAMBDA_PURPLE),
         )
         slopes[0].next_to(line_rad, np.array([-1, 0, 0]), buff=0.2)
         slopes[1].next_to(line_matter, np.array([-1, 0, 0]), buff=0.2)
         slopes[2].next_to(line_lambda, np.array([1, 0, 0]), buff=0.2)
-        for s in slopes:
-            s.scale_to_fit_width(config.frame_width * 0.12)
         self.play(TransformMatchingTex(eq, slopes), run_time=1.5)
         self.wait(0.5)
 
         # ---- B4: acceleration onset and density crossover are two moments
         self.next_section("b4_markers")
+        accel_eq = MathTex(TEX["1.2"][1], color=INK)
+        accel_eq.scale_to_fit_width(config.frame_width * 0.6)
+        if accel_eq.height < MIN_TEXT_HEIGHT:
+            accel_eq.scale_to_fit_height(MIN_TEXT_HEIGHT)
+        accel_eq.to_edge(np.array([0, 1, 0]), buff=0.8)
         a_axis = NumberLine(
             x_range=[0.1, 1.0, 0.1],
             length=config.frame_width * 0.7,
@@ -195,10 +207,14 @@ class S1_2_Dilution(FTUScene):
             include_ticks=True,
         )
         a_axis.move_to([0, -config.frame_height * 0.05, 0])
-        accel_lbl = Text(f"acceleration begins · a = {A_ACCEL}", font=FONT_BODY, color=GOLDILOCKS)
-        cross_lbl = Text(f"densities cross · a = {A_CROSS}", font=FONT_BODY, color=WARM)
-        accel_lbl.scale_to_fit_width(config.frame_width * 0.3)
-        cross_lbl.scale_to_fit_width(config.frame_width * 0.3)
+        accel_lbl = readable_text(
+            f"acceleration begins · a = {A_ACCEL}", font=FONT_BODY, color=GOLDILOCKS,
+            max_width=config.frame_width * 0.34,
+        )
+        cross_lbl = readable_text(
+            f"densities cross · a = {A_CROSS}", font=FONT_BODY, color=WARM,
+            max_width=config.frame_width * 0.34,
+        )
         p_accel = a_axis.number_to_point(A_ACCEL)
         p_cross = a_axis.number_to_point(A_CROSS)
         m_accel = Dot(p_accel, color=GOLDILOCKS, radius=0.08)
@@ -207,6 +223,7 @@ class S1_2_Dilution(FTUScene):
         cross_lbl.next_to(m_cross, np.array([0, 1, 0]), buff=0.25)
 
         self.play(FadeOut(axes), FadeOut(x_lbl), FadeOut(y_lbl), FadeOut(line_rad), FadeOut(line_matter), FadeOut(line_lambda), FadeOut(slopes), run_time=0.8)
+        self.play(Write(accel_eq), run_time=1.2)
         self.play(Write(a_axis), run_time=1)
         self.play(FadeIn(m_accel), Write(accel_lbl), run_time=1.2)
         self.play(FadeIn(m_cross), Write(cross_lbl), run_time=1.2)
@@ -216,7 +233,7 @@ class S1_2_Dilution(FTUScene):
         self.next_section("close")
         self.play(
             FadeOut(a_axis), FadeOut(m_accel), FadeOut(m_cross),
-            FadeOut(accel_lbl), FadeOut(cross_lbl),
+            FadeOut(accel_lbl), FadeOut(cross_lbl), FadeOut(accel_eq),
             run_time=0.6,
         )
         frame = self.closing_frame(

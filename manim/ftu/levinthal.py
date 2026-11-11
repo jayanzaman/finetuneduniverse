@@ -7,17 +7,17 @@ k1 corrections per second, K = nu * exp(-U/kT), start with all bonds wrong.
 
 High-precision arithmetic (mpmath) is required: binomial coefficients and K^m
 span hundreds of orders of magnitude. Check values live in
-ftu.constants.LEVINTHAL_MFPT_CHECKS and are asserted by test_levinthal.py.
+ftu.constants.LEVINTHAL_CHECK_S and are asserted by test_levinthal.py.
 """
 
 from mpmath import binomial, exp, mp, mpf
 
-from ftu.constants import LEVINTHAL_K1, LEVINTHAL_N, LEVINTHAL_NU
+from ftu.constants import LEVINTHAL
 
 mp.dps = 50
 
 
-def mfpt_seconds(U, N=LEVINTHAL_N, nu=LEVINTHAL_NU, k1=LEVINTHAL_K1):
+def mfpt_seconds(U, N=LEVINTHAL["N"], nu=LEVINTHAL["nu"], k1=LEVINTHAL["k1_per_s"]):
     """Exact mean first-passage time in seconds at energy bias U (units of kT)."""
     N = int(N)
     K = mpf(nu) * exp(-mpf(U))

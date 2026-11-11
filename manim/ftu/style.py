@@ -7,11 +7,13 @@ coordinates.
 """
 
 import os
+import re
 
 from manim import (
     DashedLine,
     DecimalNumber,
     DOWN,
+    LEFT,
     Line,
     MathTex,
     NumberLine,
@@ -47,6 +49,83 @@ FPS = 30
 LANDSCAPE_PIXELS = (1920, 1080)
 PORTRAIT_PIXELS = (1080, 1350)
 
+# --- readability floor (epic test 15) ---
+# Portrait: 8 units = 1350 px, shown 390 px wide -> 12 CSS px = 33 render px
+# = 0.196 scene units. No single-line text may be shorter than MIN_TEXT_HEIGHT.
+MIN_TEXT_HEIGHT = 0.196
+TARGET_TEXT_HEIGHT = 0.24
+
+# --- ASCII -> symbols mapping (epic test 5; the single place it lives) ---
+_SUPERSCRIPTS = str.maketrans("0123456789-+", "⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺")
+_WORD_MAP = [("LambdaCDM", "ΛCDM"), ("Lambda", "Λ"), ("eta", "η"), ("sigma", "σ"), ("mu", "μ")]
+_SCI_RE = re.compile(r"\b(\d+(?:\.\d+)?)e(-?\d+)\b")
+
+
+def symbols(text):
+    """Typeset plan ASCII wording in Unicode (epic test 5).
+
+    Whole words only, so "maximum" stays "maximum". Applied by
+    assumption_line(); nothing else may change.
+    """
+    for word, symbol in _WORD_MAP:
+        text = re.sub(rf"\b{word}\b", symbol, text)
+    text = text.replace("+/-", "±")
+    text = re.sub(r"\b(\d+)x\b", r"\1×", text)
+
+    def _sci(match):
+        mantissa, exponent = match.group(1), match.group(2).translate(_SUPERSCRIPTS)
+        if mantissa == "1":
+            return f"10{exponent}"
+        return f"{mantissa} × 10{exponent}"
+
+    return _SCI_RE.sub(_sci, text)
+
+
+def _font_size_for_height(height, font):
+    probe = Text("Ag", font=font, font_size=48)
+    return 48 * height / probe.height
+
+
+def _text_at_height(line, font, color, height):
+    """A single-line Text whose rendered height is exactly `height`
+    (font size is linear in rendered height; measure the line itself)."""
+    probe = Text(line, font=font, font_size=_font_size_for_height(height, font), color=color)
+    probe.scale(height / probe.height)
+    return probe
+
+
+def _wrap_to_width(text, font, color, height, max_width):
+    """Greedy word wrap; each rendered line (at `height`) must fit max_width."""
+    lines, current = [], ""
+    for word in text.split(" "):
+        candidate = f"{current} {word}".strip()
+        if not current or _text_at_height(candidate, font, color, height).width <= max_width:
+            current = candidate
+        else:
+            lines.append(current)
+            current = word
+    lines.append(current)
+    return "\n".join(lines)
+
+
+def readable_text(text, font=FONT_BODY, color=INK, max_width=None, height=TARGET_TEXT_HEIGHT):
+    """Text at a readable size: never shorter than MIN_TEXT_HEIGHT per line;
+    wraps to fit max_width instead of shrinking (epic test 15). Returns a
+    single Text for one line, else a VGroup with one Text per line so each
+    line's height stays measurable."""
+    if max_width is not None:
+        text = "\n".join(
+            _wrap_to_width(part, font, color, height, max_width) for part in text.split("\n")
+        )
+    parts = [_text_at_height(line, font, color, height) for line in text.split("\n")]
+    for part in parts:
+        assert part.height >= MIN_TEXT_HEIGHT * 0.99, (
+            f"text {part.text!r} is {part.height:.3f} units tall, below the {MIN_TEXT_HEIGHT} floor"
+        )
+    if len(parts) == 1:
+        return parts[0]
+    return VGroup(*parts).arrange(DOWN, buff=height * 0.4, aligned_edge=LEFT)
+
 
 def apply_aspect_from_env():
     """Read FTU_PORTRAIT and set frame/pixel geometry accordingly.
@@ -78,13 +157,19 @@ class FTUScene(Scene):
     def assumption_line(self, text):
         """The scene's ASSUME line: small, muted, pinned to the bottom edge.
 
-        Ground rule 5: wording comes verbatim from docs/manim-plan.md.
+        Ground rule 5: wording comes verbatim from docs/manim-plan.md; the
+        ASCII-to-symbols mapping (epic test 5) is applied here and the mapped
+        text is recorded as self.assumption_text. Lines wrap instead of
+        shrinking below the 390 px readability floor (epic test 15).
         """
-        line = Text(text, font=FONT_BODY, color=INK_SOFT)
-        # readable at 390px wide: no smaller than this fraction of frame width
-        line.scale_to_fit_width(config.frame_width * 0.92)
-        if line.height > 0.45:
-            line.scale_to_fit_height(0.45)
+        mapped = symbols(text)
+        self.assumption_text = mapped
+        line = readable_text(
+            mapped,
+            font=FONT_BODY,
+            color=INK_SOFT,
+            max_width=config.frame_width * 0.92,
+        )
         line.to_edge(DOWN, buff=0.25)
         return line
 
@@ -102,9 +187,18 @@ class FTUScene(Scene):
         log: if True, positions are placed by log10(value).
         tick_step / include_numbers: override tick spacing; optionally label
         ticks (small, muted).
-        All labels are clamped inside the frame.
+        All labels are clamped inside the frame. Records the arguments on the
+        scene as self.closing_spec (epic test 4).
         Returns a VGroup; the scene animates it in as its own section.
         """
+        self.closing_spec = {
+            "axis_min": axis_min,
+            "axis_max": axis_max,
+            "band": band,
+            "walls": list(walls or []),
+            "marker": marker,
+            "log": log,
+        }
 
         def pos(x):
             import math
@@ -113,13 +207,16 @@ class FTUScene(Scene):
 
         lo, hi = pos(axis_min), pos(axis_max)
         axis_width = config.frame_width * 0.8
+        # tick numbers must also clear the 390 px readability floor
+        num_probe = DecimalNumber(0, font_size=48)
+        tick_font_size = 48 * TARGET_TEXT_HEIGHT / num_probe.height
         axis = NumberLine(
             x_range=[lo, hi, tick_step or (hi - lo) / 8],
             length=axis_width,
             color=INK_MID,
             include_ticks=True,
             include_numbers=include_numbers,
-            font_size=20,
+            font_size=tick_font_size,
         )
 
         parts = [axis]
@@ -164,8 +261,9 @@ class FTUScene(Scene):
                     color=WARM,
                     stroke_width=6,
                 )
-            wall_label = Text(label, font=FONT_BODY, color=WARM)
-            wall_label.scale_to_fit_width(config.frame_width * 0.18)
+            wall_label = readable_text(
+                label, font=FONT_BODY, color=WARM, max_width=config.frame_width * 0.22
+            )
             side = UP if i % 2 == 0 else DOWN
             wall_label.next_to(wall, side, buff=0.15)
             clamp_inside(wall_label)
@@ -179,9 +277,15 @@ class FTUScene(Scene):
                 color=INDIGO,
                 stroke_width=6,
             )
-            marker_label = Text("our universe", font=FONT_BODY, color=INDIGO)
-            marker_label.scale_to_fit_width(config.frame_width * 0.16)
-            marker_label.next_to(dot_line, DOWN, buff=0.15)
+            marker_label = readable_text("our universe", font=FONT_BODY, color=INDIGO)
+            # labels alternate above/below by wall index; put the marker on the
+            # opposite side of the nearest wall so the two never collide
+            if walls:
+                nearest = min(range(len(walls)), key=lambda i: abs(pos(walls[i][0]) - pos(marker)))
+                marker_side = DOWN if nearest % 2 == 0 else UP
+            else:
+                marker_side = DOWN
+            marker_label.next_to(dot_line, marker_side, buff=0.15)
             clamp_inside(marker_label)
             parts += [dot_line, marker_label]
 
@@ -200,8 +304,12 @@ class FTUScene(Scene):
     def not_implemented(self, title):
         """Placeholder for scenes scheduled in Stage 3."""
         self.next_section("placeholder")
-        t = Text(f"{title}\n(scene scheduled — see docs/manim-plan.md)", font=FONT_BODY, color=INK)
-        t.scale_to_fit_width(config.frame_width * 0.8)
+        t = readable_text(
+            f"{title}\n(scene scheduled — see docs/manim-plan.md)",
+            font=FONT_BODY,
+            color=INK,
+            max_width=config.frame_width * 0.8,
+        )
         self.add(t)
         self.wait(0.5)
 
@@ -209,6 +317,10 @@ class FTUScene(Scene):
 __all__ = [
     "FTUScene",
     "apply_aspect_from_env",
+    "symbols",
+    "readable_text",
+    "MIN_TEXT_HEIGHT",
+    "TARGET_TEXT_HEIGHT",
     "VOID",
     "VOID_2",
     "VOID_3",

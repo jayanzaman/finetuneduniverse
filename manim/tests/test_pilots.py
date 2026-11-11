@@ -66,9 +66,14 @@ def test_beats_present_both_aspects(scene_id):
         for aspect, dims in (("landscape", (1920, 1080)), ("portrait", (1080, 1350))):
             clip = MATH / scene_id / f"{beat}.{aspect}.mp4"
             assert clip.exists(), f"missing {clip.name}"
-            stream = probe(clip, "stream=width,height,avg_frame_rate")["streams"][0]
+            probed = probe(clip, "stream=index,codec_type,codec_name,width,height,avg_frame_rate,pix_fmt")
+            streams = probed["streams"]
+            assert len(streams) == 1, f"{clip.name} has {len(streams)} streams (audio not allowed)"
+            stream = streams[0]
             assert (stream["width"], stream["height"]) == dims
             assert stream["avg_frame_rate"] == "30/1"
+            assert stream["codec_name"] == "h264", f"{clip.name}: {stream['codec_name']}"
+            assert stream["pix_fmt"] == "yuv420p", f"{clip.name}: {stream['pix_fmt']} (alpha not allowed)"
 
 
 @pytest.mark.parametrize("scene_id", sorted(PILOTS))

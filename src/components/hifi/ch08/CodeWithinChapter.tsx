@@ -99,17 +99,42 @@ const INTERACTIVES: Record<string, ReactNode> = {
   'probability-b': (
     <>
       <SequenceSpace />
+      {/* Manim pilot: Levinthal's paradox, one clip per beat in scroll order */}
       <div className="mt-8">
-        <MathClip
-          sceneId="8.3"
-          beat="b3_dial"
-          equation={
-            <span>
-              τ ≈ (1 + <em>K</em>)<sup><em>N</em></sup> / <em>N</em> k₀&ensp;·&ensp;
-              <em>K</em> = ν e<sup>−U/kT</sup>
-            </span>
-          }
-        />
+        {([
+          {
+            beat: 'b1_configurations',
+            equation: (
+              <span>
+                3<sup>100</sup> ≈ 5.15 × 10<sup>47</sup> configurations
+              </span>
+            ),
+          },
+          {
+            beat: 'b2_blind_search',
+            equation: (
+              <span>
+                blind search ≈ 10<sup>27</sup> yr&ensp;·&ensp;universe ≈ 10<sup>10</sup> yr
+              </span>
+            ),
+          },
+          {
+            beat: 'b3_dial',
+            equation: (
+              <span>
+                τ ≈ (1 + <em>K</em>)<sup><em>N</em></sup> / <em>N</em> k₀&ensp;·&ensp;
+                <em>K</em> = ν e<sup>−U/kT</sup>
+              </span>
+            ),
+          },
+          {
+            beat: 'b4_one_second',
+            equation: <span>U = 2 kT → about one second</span>,
+          },
+          { beat: 'close' },
+        ] as { beat: string; equation?: ReactNode }[]).map(({ beat, equation }) => (
+          <MathClip key={beat} sceneId="8.3" beat={beat} equation={equation} className="mt-4" />
+        ))}
       </div>
     </>
   ),

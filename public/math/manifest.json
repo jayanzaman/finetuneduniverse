@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T18:20:12.082882+00:00",
+  "generated_at": "2026-11-11T22:07:20.790045+00:00",
   "scenes": {
     "1.2": {
       "beats": [
@@ -45,8 +45,8 @@
           "portrait": 6.9
         },
         "b4_markers": {
-          "landscape": 4.7,
-          "portrait": 4.7
+          "landscape": 5.9,
+          "portrait": 5.9
         },
         "close": {
           "landscape": 2.4,

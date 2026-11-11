@@ -1,0 +1,54 @@
+name: Manim
+
+on:
+  push:
+    paths: ['manim/**', 'docs/manim-plan.md', 'public/math/**']
+  pull_request:
+    paths: ['manim/**', 'docs/manim-plan.md']
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # pycairo has no Linux wheel, so Python comes from conda-forge
+      - uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: manim
+          cache-environment: true
+          create-args: >-
+            --channel conda-forge
+            python=3.12
+            pycairo=1.29.2
+            cairo=1.18.6
+            ffmpeg=9.0.2
+            manim=0.22.1
+            mpmath
+            numpy
+            pytest
+
+      # MathTex needs a TeX distro; Manim ships none (ground rule 1)
+      - name: TinyTeX
+        run: |
+          curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh
+          export PATH="$HOME/.TinyTeX/bin/x86_64-linux:$PATH"
+          tlmgr install babel-english standalone preview dvisvgm amsmath \
+            mathtools amsfonts ec cm-super dsfont setspace relsize ragged2e \
+            everysel mathastext
+          echo "$HOME/.TinyTeX/bin/x86_64-linux" >> "$GITHUB_PATH"
+
+      # Manim's Text uses Pango -> fontconfig; install the site's fonts
+      - name: Fonts
+        run: |
+          mkdir -p ~/.fonts
+          base=https://github.com/google/fonts/raw/main/ofl
+          curl -sL "$base/unbounded/Unbounded%5Bwght%5D.ttf" -o ~/.fonts/Unbounded.ttf
+          curl -sL "$base/spacegrotesk/SpaceGrotesk%5Bwght%5D.ttf" -o ~/.fonts/SpaceGrotesk.ttf
+          curl -sL "$base/spacemono/SpaceMono-Regular.ttf" -o ~/.fonts/SpaceMono-Regular.ttf
+          curl -sL "$base/spacemono/SpaceMono-Bold.ttf" -o ~/.fonts/SpaceMono-Bold.ttf
+          curl -sL "$base/newsreader/Newsreader%5Bopsz%2Cwght%5D.ttf" -o ~/.fonts/Newsreader.ttf
+          fc-cache -f
+
+      - name: pytest
+        run: cd manim && PYTHONPATH=.:tests python -m pytest tests/ -q
