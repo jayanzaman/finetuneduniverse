@@ -27,7 +27,7 @@ comes from conda-forge via micromamba; TeX comes from TinyTeX.
 # 1. micromamba (https://mamba.readthedocs.io) — install the binary, then:
 micromamba create -p manim/.venv -c conda-forge \
   python=3.12 pycairo=1.29.2 cairo=1.18.6 ffmpeg=9.0.2 \
-  manim=0.22.1 mpmath numpy pytest
+  manim=0.22.1 mpmath numpy pytest jsonschema
 # (conda-forge pulls in the remaining python deps: numpy 2.5.4, mpmath 1.4.1,
 #  pillow 12.2.0, scipy 1.18.1, pytest 9.0.3, ManimPango 0.7.1, …)
 

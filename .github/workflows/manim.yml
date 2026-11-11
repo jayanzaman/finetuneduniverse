@@ -28,6 +28,7 @@ jobs:
             mpmath
             numpy
             pytest
+            jsonschema
 
       # MathTex needs a TeX distro; Manim ships none (ground rule 1)
       - name: TinyTeX
