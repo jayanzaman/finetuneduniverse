@@ -59,15 +59,14 @@ render_scene() {
     # collect section clips + poster into public/math/<id>/
     local out="$ROOT/public/math/$id"
     mkdir -p "$out"
-    find "$media" -path '*sections*' -name '*.mp4' | while read -r clip; do
+    find "$media" -path '*sections*' -name "${scene}_*.mp4" | while read -r clip; do
       base=$(basename "$clip" .mp4)
       # strip leading "<Scene>_" / index prefixes, keep the section name
       beat=$(echo "$base" | sed -E "s/^${scene}_?[0-9]*_?//; s/[^A-Za-z0-9_-]/_/g")
       [ -n "$beat" ] || beat=$(basename "$clip" .mp4)
       cp "$clip" "$out/$beat.$aspect.mp4"
     done
-    poster=$(find "$media/images" -name '*.png' -newer "$media" 2>/dev/null | head -1 || true)
-    [ -n "${poster:-}" ] || poster=$(find "$media/images" -name '*.png' 2>/dev/null | head -1 || true)
+    poster=$(find "$media/images" -name "${scene}_*.png" 2>/dev/null | head -1 || true)
     [ -n "${poster:-}" ] && cp "$poster" "$out/poster.$aspect.png"
   done
 }

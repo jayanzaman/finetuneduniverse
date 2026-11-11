@@ -1,4 +1,119 @@
 {
-  "generated_at": "2026-11-11T17:20:39.899697+00:00",
-  "scenes": {}
+  "generated_at": "2026-11-11T18:20:12.082882+00:00",
+  "scenes": {
+    "1.2": {
+      "beats": [
+        "b1_cube",
+        "b2_light",
+        "b3_slopes",
+        "b4_markers",
+        "close"
+      ],
+      "files": {
+        "b1_cube": {
+          "landscape": "/math/1.2/b1_cube.landscape.mp4",
+          "portrait": "/math/1.2/b1_cube.portrait.mp4"
+        },
+        "b2_light": {
+          "landscape": "/math/1.2/b2_light.landscape.mp4",
+          "portrait": "/math/1.2/b2_light.portrait.mp4"
+        },
+        "b3_slopes": {
+          "landscape": "/math/1.2/b3_slopes.landscape.mp4",
+          "portrait": "/math/1.2/b3_slopes.portrait.mp4"
+        },
+        "b4_markers": {
+          "landscape": "/math/1.2/b4_markers.landscape.mp4",
+          "portrait": "/math/1.2/b4_markers.portrait.mp4"
+        },
+        "close": {
+          "landscape": "/math/1.2/close.landscape.mp4",
+          "portrait": "/math/1.2/close.portrait.mp4"
+        }
+      },
+      "durations": {
+        "b1_cube": {
+          "landscape": 5.5,
+          "portrait": 5.5
+        },
+        "b2_light": {
+          "landscape": 6.3,
+          "portrait": 6.3
+        },
+        "b3_slopes": {
+          "landscape": 6.9,
+          "portrait": 6.9
+        },
+        "b4_markers": {
+          "landscape": 4.7,
+          "portrait": 4.7
+        },
+        "close": {
+          "landscape": 2.4,
+          "portrait": 2.4
+        }
+      },
+      "posters": {
+        "landscape": "/math/1.2/poster.landscape.png",
+        "portrait": "/math/1.2/poster.portrait.png"
+      }
+    },
+    "8.3": {
+      "beats": [
+        "b1_configurations",
+        "b2_blind_search",
+        "b3_dial",
+        "b4_one_second",
+        "close"
+      ],
+      "files": {
+        "b1_configurations": {
+          "landscape": "/math/8.3/b1_configurations.landscape.mp4",
+          "portrait": "/math/8.3/b1_configurations.portrait.mp4"
+        },
+        "b2_blind_search": {
+          "landscape": "/math/8.3/b2_blind_search.landscape.mp4",
+          "portrait": "/math/8.3/b2_blind_search.portrait.mp4"
+        },
+        "b3_dial": {
+          "landscape": "/math/8.3/b3_dial.landscape.mp4",
+          "portrait": "/math/8.3/b3_dial.portrait.mp4"
+        },
+        "b4_one_second": {
+          "landscape": "/math/8.3/b4_one_second.landscape.mp4",
+          "portrait": "/math/8.3/b4_one_second.portrait.mp4"
+        },
+        "close": {
+          "landscape": "/math/8.3/close.landscape.mp4",
+          "portrait": "/math/8.3/close.portrait.mp4"
+        }
+      },
+      "durations": {
+        "b1_configurations": {
+          "landscape": 4.0,
+          "portrait": 4.0
+        },
+        "b2_blind_search": {
+          "landscape": 3.8,
+          "portrait": 3.8
+        },
+        "b3_dial": {
+          "landscape": 9.1,
+          "portrait": 9.1
+        },
+        "b4_one_second": {
+          "landscape": 2.0,
+          "portrait": 2.0
+        },
+        "close": {
+          "landscape": 2.6,
+          "portrait": 2.6
+        }
+      },
+      "posters": {
+        "landscape": "/math/8.3/poster.landscape.png",
+        "portrait": "/math/8.3/poster.portrait.png"
+      }
+    }
+  }
 }

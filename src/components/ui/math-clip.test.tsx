@@ -17,14 +17,17 @@ function mockMatchMedia(opts: { reduced?: boolean; portrait?: boolean }) {
     return {
       matches,
       media: query,
-      addEventListener: (_: string, h: MediaQueryHandler) =>
-        listeners.set(query, (listeners.get(query) ?? new Set()).add(h)),
-      removeEventListener: (_: string, h: MediaQueryHandler) => listeners.get(query)?.delete(h),
+      addEventListener: (_: string, h: MediaQueryHandler) => {
+        listeners.set(query, (listeners.get(query) ?? new Set()).add(h));
+      },
+      removeEventListener: (_: string, h: MediaQueryHandler) => {
+        listeners.get(query)?.delete(h);
+      },
       onchange: null,
       addListener: () => {},
       removeListener: () => {},
       dispatchEvent: () => false,
-    } as MediaQueryList;
+    } as unknown as MediaQueryList;
   });
 }
 

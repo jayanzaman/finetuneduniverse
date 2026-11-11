@@ -18,6 +18,7 @@ import {
 } from './params';
 import { EDUCATOR_CONTENT } from './EducatorContent';
 import { ProgressionProvider, useProgression } from '../progression/ProgressionContext';
+import { MathClip } from '../../ui/math-clip';
 import { HifiBackdrop } from '../HifiBackdrop';
 import { SoundToggle } from '../audio/SoundToggle';
 import { STAR_PALETTE } from '../chapters';
@@ -156,6 +157,24 @@ function ParameterFocusedInner({
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Manim pilot clip: the dilution-law math behind the Dark Energy Λ page */}
+            {param.key === 'darkEnergy' && (
+              <div className="param-math-card" style={{ marginTop: 14 }}>
+                <div className="param-card-section-label">The math, animated · scene 1.2</div>
+                <MathClip
+                  sceneId="1.2"
+                  beat="b3_slopes"
+                  equation={
+                    <span>
+                      ρ<sub><em>r</em></sub> ∝ <em>a</em><sup>−4</sup>&ensp;·&ensp;
+                      ρ<sub><em>m</em></sub> ∝ <em>a</em><sup>−3</sup>&ensp;·&ensp;
+                      ρ<sub>Λ</sub> = const
+                    </span>
+                  }
+                />
               </div>
             )}
 

@@ -129,6 +129,7 @@ LEVINTHAL_NU = 2  # wrong states per bond
 LEVINTHAL_K1 = 1e9  # corrections per second
 LEVINTHAL_CONFIGS = 5.15e47  # 3^100 configurations
 LEVINTHAL_BLIND_YEARS = 1e27  # classic estimate at 1e13 trials per second
+LEVINTHAL_BLIND_RATE = 1e13  # trials per second behind the classic 1e27-year figure
 LEVINTHAL_ONE_SECOND_AT_U = 2  # folding takes ~1 s at U = 2 kT
 UNIVERSE_AGE_YR = 1e10  # years
 # Exact MFPT check values (seconds), plan-mandated, for test_levinthal.py:

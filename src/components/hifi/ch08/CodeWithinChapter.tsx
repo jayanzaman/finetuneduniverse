@@ -17,6 +17,7 @@ import { CodonWheel } from './interactives/CodonWheel';
 import { ShuffleTheCode } from './interactives/ShuffleTheCode';
 import { SequenceSpace } from './interactives/SequenceSpace';
 import { SiblingRoller } from './interactives/SiblingRoller';
+import { MathClip } from '../../ui/math-clip';
 
 function StatBlock({ stat }: { stat: StatCopy }) {
   return (
@@ -95,7 +96,23 @@ const INTERACTIVES: Record<string, ReactNode> = {
   'to-pluto': <DnaOdometer />,
   'sixty-four-words': <CodonWheel />,
   'probability-a': <ShuffleTheCode />,
-  'probability-b': <SequenceSpace />,
+  'probability-b': (
+    <>
+      <SequenceSpace />
+      <div className="mt-8">
+        <MathClip
+          sceneId="8.3"
+          beat="b3_dial"
+          equation={
+            <span>
+              τ ≈ (1 + <em>K</em>)<sup><em>N</em></sup> / <em>N</em> k₀&ensp;·&ensp;
+              <em>K</em> = ν e<sup>−U/kT</sup>
+            </span>
+          }
+        />
+      </div>
+    </>
+  ),
   'probability-c': <SiblingRoller />,
 };
 
