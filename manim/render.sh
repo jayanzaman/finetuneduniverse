@@ -16,6 +16,15 @@ PYBIN="$ROOT/manim/.venv/bin"
 export PATH="$PYBIN:$HOME/.TinyTeX/bin/x86_64-linux:$HOME/.local/bin:$PATH"
 export PYTHONPATH="$ROOT/manim"
 
+# Local dev renders through manim/.venv; CI provides manim/python on PATH via conda
+if [ -x "$PYBIN/manim" ]; then
+  MANIM="$PYBIN/manim"
+  PYTHON="$PYBIN/python"
+else
+  MANIM="manim"
+  PYTHON="python"
+fi
+
 TARGET="${1:-}"
 
 scene_file_for() {
@@ -47,12 +56,12 @@ render_scene() {
     [ "$aspect" = portrait ] && portrait_flag=1
     local media="$ROOT/manim/media/$aspect"
 
-    FTU_PORTRAIT=$portrait_flag "$PYBIN/manim" render \
+    FTU_PORTRAIT=$portrait_flag "$MANIM" render \
       --save_sections --media_dir "$media" \
       "$ROOT/manim/scenes/$file.py" "$scene"
 
     # poster: last frame of the closing section
-    FTU_PORTRAIT=$portrait_flag "$PYBIN/manim" render -s \
+    FTU_PORTRAIT=$portrait_flag "$MANIM" render -s \
       --media_dir "$media" \
       "$ROOT/manim/scenes/$file.py" "$scene"
 
@@ -85,5 +94,5 @@ for s in "${SCENES[@]}"; do
   render_scene "$s"
 done
 
-"$PYBIN/python" "$ROOT/manim/ftu/build_manifest.py"
+"$PYTHON" "$ROOT/manim/ftu/build_manifest.py"
 echo "=== render complete ==="
