@@ -1,6 +1,7 @@
 name: Manim
 
 on:
+  workflow_dispatch:
   push:
     paths: ['manim/**', 'docs/manim-plan.md', 'public/math/**']
   pull_request:
