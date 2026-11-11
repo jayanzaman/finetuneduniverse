@@ -51,4 +51,4 @@ jobs:
           fc-cache -f
 
       - name: pytest
-        run: cd manim && PYTHONPATH=.:tests python -m pytest tests/ -q
+        run: cd manim && PYTHONPATH=.:tests micromamba run -n manim python -m pytest tests/ -q
